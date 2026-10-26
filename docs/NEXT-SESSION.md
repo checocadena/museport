@@ -48,8 +48,11 @@
 **Not attempted:** `attention_forward`, `attention_backward`, `nccl_all_reduce`.
 
 ## Repository
-- This repository is a standalone extract of the hackathon work, made on Oct 26 from the
-  development repository with no earlier history. Development continues here.
+- This repository (`checocadena/museport`) is a standalone extract of the hackathon work, made
+  on Oct 26 from the development repository with no earlier history. Development continues
+  here, on branches with PRs.
+- The development repository was renamed `checocadena/museport-dev` and made private. Do not
+  push it here: it carries early toolkit-derived files in its history.
 - The toolkit's `native_flags` change (toolkit #20) is merged and pinned (`7138b09`).
 
 ## Spend (known; caps: $5 development, $20 comparison runs, $1 per run)

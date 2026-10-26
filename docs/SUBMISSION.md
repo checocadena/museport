@@ -14,7 +14,7 @@ The demo should then show only this repository's work:
 - GPU results, then the results table.
 
 ## Repository
-- Public, created at the event: https://github.com/checocadena/museport-hackathon.
+- Public, created at the event: https://github.com/checocadena/museport.
 - Contains only hackathon work. The toolkit is a pinned pip dependency and none of its code
   or history is in this repository. Third-party llm.c code in `evidence/` carries its MIT
   notice ([`THIRD_PARTY.md`](../THIRD_PARTY.md)).
