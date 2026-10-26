@@ -1,0 +1,8 @@
+{
+  "command": "/usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.c7SkWYkhjq/task /tmp/tmp.c7SkWYkhjq/task/crossentropy_softmax_backward_harness.cu -o build/native",
+  "returncode": 0,
+  "duration_s": 1.111488,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.c7SkWYkhjq/out/work"
+}

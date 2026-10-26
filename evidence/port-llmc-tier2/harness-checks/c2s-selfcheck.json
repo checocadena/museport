@@ -1,0 +1,103 @@
+{
+  "t2-global-norm": {
+    "status": "task_written",
+    "steps": {
+      "reference_build": {
+        "returncode": 0,
+        "stderr": ""
+      },
+      "migrate": {
+        "status": "ok",
+        "summary": "migrated 1 CUDA file(s) -> 2 file(s); 31 DPCT warning(s) (DPCT1005x2, DPCT1009x1, DPCT1010x6, DPCT1024x2, DPCT1049x5, DPCT1051x2, DPCT1065x3, DPCT1093x2, DPCT1096x1, DPCT1098x3, DPCT1101x3, DPCT1118x1)"
+      },
+      "compile": {
+        "status": "ok",
+        "summary": "compiled 1 source(s) -> <scratch>/t2runs/t2-global-norm/check/build/candidate (214 warning(s))"
+      },
+      "verify": {
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 1.19e-07, atol 0.01)"
+      }
+    }
+  },
+  "t2-layernorm-forward": {
+    "status": "task_written",
+    "steps": {
+      "reference_build": {
+        "returncode": 0,
+        "stderr": ""
+      },
+      "migrate": {
+        "status": "ok",
+        "summary": "migrated 1 CUDA file(s) -> 2 file(s); 55 DPCT warning(s) (DPCT1005x2, DPCT1009x1, DPCT1010x10, DPCT1024x2, DPCT1026x1, DPCT1027x1, DPCT1049x8, DPCT1051x2, DPCT1065x2, DPCT1083x3, DPCT1093x2, DPCT1098x17, DPCT1110x1, DPCT1118x3)"
+      },
+      "compile": {
+        "status": "ok",
+        "summary": "compiled 1 source(s) -> <scratch>/t2runs/t2-layernorm-forward/check/build/candidate (218 warning(s))"
+      },
+      "verify": {
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 1.19e-06, atol 1e-05)"
+      }
+    }
+  },
+  "t2-softmax-forward": {
+    "status": "harness_check_failed",
+    "steps": {
+      "reference_build": {
+        "returncode": 0,
+        "stderr": ""
+      },
+      "migrate": {
+        "status": "ok",
+        "summary": "migrated 1 CUDA file(s) -> 2 file(s); 56 DPCT warning(s) (DPCT1005x2, DPCT1009x1, DPCT1010x5, DPCT1024x2, DPCT1049x8, DPCT1051x2, DPCT1064x2, DPCT1065x11, DPCT1083x4, DPCT1093x2, DPCT1096x7, DPCT1098x5, DPCT1110x1, DPCT1118x3, DPCT1121x1)"
+      },
+      "compile": {
+        "status": "fail",
+        "summary": "compile failed with 1 error(s) at <scratch>/t2runs/t2-softmax-forward/check/migrated/softmax_forward_harness.dp.cpp:407: no matching function for call to 'reduce_over_group'"
+      }
+    }
+  },
+  "t2-classifier-fused": {
+    "status": "harness_check_failed",
+    "steps": {
+      "reference_build": {
+        "returncode": 0,
+        "stderr": ""
+      },
+      "migrate": {
+        "status": "ok",
+        "summary": "migrated 1 CUDA file(s) -> 2 file(s); 38 DPCT warning(s) (DPCT1005x2, DPCT1009x1, DPCT1010x6, DPCT1024x2, DPCT1049x5, DPCT1051x2, DPCT1065x8, DPCT1093x2, DPCT1096x2, DPCT1098x6, DPCT1101x1, DPCT1118x1)"
+      },
+      "compile": {
+        "status": "ok",
+        "summary": "compiled 1 source(s) -> <scratch>/t2runs/t2-classifier-fused/check/build/candidate (226 warning(s))"
+      },
+      "verify": {
+        "status": "fail",
+        "summary": "FAIL: 0/1 case(s) match; first failure: 86634 of 16082560 element(s) outside tolerance"
+      }
+    }
+  },
+  "t2-layernorm-backward": {
+    "status": "task_written",
+    "steps": {
+      "reference_build": {
+        "returncode": 0,
+        "stderr": ""
+      },
+      "migrate": {
+        "status": "ok",
+        "summary": "migrated 1 CUDA file(s) -> 2 file(s); 89 DPCT warning(s) (DPCT1005x2, DPCT1009x1, DPCT1010x3, DPCT1024x2, DPCT1049x11, DPCT1051x2, DPCT1065x24, DPCT1078x1, DPCT1083x9, DPCT1093x2, DPCT1096x1, DPCT1098x15, DPCT1110x9, DPCT1118x7)"
+      },
+      "compile": {
+        "status": "ok",
+        "summary": "compiled 1 source(s) -> <scratch>/t2runs/t2-layernorm-backward/check/build/candidate (302 warning(s))"
+      },
+      "verify": {
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 1.72e-05, atol 0.001)"
+      }
+    }
+  }
+}

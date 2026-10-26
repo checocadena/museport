@@ -1,0 +1,680 @@
+{
+  "model": "muse-spark-1.3",
+  "provider": "meta",
+  "usage": {
+    "input_tokens": 135343,
+    "output_tokens": 22499,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0
+  },
+  "cost_usd": 0.2647995,
+  "plan": {
+    "items": [
+      {
+        "approach": "Port common.h to SYCL 2020 header: cuda_check/cublasCheck to SYCL exception handling, setup_main cudaSetDevice/cudaGetDeviceProperties/cublasCreate/cublasLtCreate/cudaMalloc workspace to sycl::queue device selection plus oneMath queue and USM workspace, ceil_div/Packed128/load128/store128/load128cs/store128cs/store128cg to aligned struct with sycl::vec and plain USM loads (drop streaming hints), warpReduceSum/blockReduce to sub-group shuffles plus sycl::local_accessor and joint_reduce, floatX/floatN/CUBLAS_LOWP selection to sycl::ext::oneapi::bfloat16 alias, WARP_SIZE/__CUDA_ARCH__/MAX_1024_THREADS_BLOCKS/__launch_bounds__ to queried sub-group and work-group limits, memcpy_convert/validate_result/benchmark_kernel cudaMemcpy/cudaEvent to queue memcpy/memset and SYCL profiling events.",
+        "depends_on": [],
+        "files": [
+          "common.h"
+        ],
+        "id": "common",
+        "kernels": [],
+        "library_mappings": [
+          {
+            "from": "cuBLAS",
+            "notes": "cublas_handle, cublasSgemm setup and CUBLAS_TF32_TENSOR_OP_MATH map to oneMath BLAS queue and compute mode; no cublasHandle_t, use SYCL queue",
+            "to": "oneMath BLAS"
+          },
+          {
+            "from": "cuBLASLt",
+            "notes": "no direct equivalent: gemm plus a hand-written epilogue (bias, GELU); cublaslt_workspace and LtMatmulDesc map to oneMath gemm_batch plus separate SYCL epilogue kernel",
+            "to": "oneMath BLAS"
+          }
+        ],
+        "risks": [
+          "WARP_SIZE 32u: SYCL sub-group size is not guaranteed to be 32; query sub_group::get_local_range or request reqd_sub_group_size and keep WarpSize as constant only for sizing",
+          "warp_shuffle __shfl_xor_sync/__shfl_down_sync in warpReduceSum: use sycl::shift_group_left / permute_group_by_xor / select_from_group plus joint_reduce, do not assume sub-group size 32",
+          "shared_memory __shared__ float shared_val[WARP_SIZE] in blockReduce: use sycl::local_accessor<float>",
+          "streaming loads __ldcs/__stcs/__stcg/__ldcg: no SYCL equivalent, use plain USM load/store",
+          "bf16 __nv_bfloat16 and ENABLE_BF16/ENABLE_FP16 floatX/floatN: use sycl::ext::oneapi::bfloat16 and sycl::half",
+          "streams_events cudaEvent/cudaStream in benchmark_kernel: use sycl::event and queue profiling, queue memset for L2 flush buffer",
+          "inline launch control __CUDA_ARCH__, MAX_1024_THREADS_BLOCKS, __launch_bounds__: query device max work-group size, no arch-specific code"
+        ],
+        "tier": 1,
+        "title": "SYCL common scaffolding",
+        "verification": "Compile SYCL common header and run host smoke checks for ceil_div, Packed128 load128/store128 round-trip, warpReduceSum/blockReduce vs CPU, memcpy_convert and validate_result paths; no GPU numerics yet, must pass before any kernel item."
+      },
+      {
+        "approach": "Replace <<<grid,block>>> with sycl::nd_range, blockIdx.x*blockDim.x+threadIdx.x with nd_item global id and B*T guard, cudaMemcpy with queue memcpy USM, keep -logf(probs[ix]) math in float; no cooperative or shuffle changes.",
+        "depends_on": [
+          "common"
+        ],
+        "files": [
+          "crossentropy_forward.cu"
+        ],
+        "id": "t1-crossentropy-forward",
+        "kernels": [
+          "crossentropy_forward_kernel1"
+        ],
+        "library_mappings": [],
+        "risks": [
+          "No direct cooperative_groups/warp_shuffle/warp_size_32/bf16/shared_memory/atomics in scan; plain data-parallel indexing maps to sycl::nd_item; inherited warp/bf16/stream helpers handled in common, do not assume sub-group size 32"
+        ],
+        "tier": 1,
+        "title": "Tier1 crossentropy forward",
+        "verification": "Run ported crossentropy_forward main B=8 T=1024 V=50257 for kernel_num 1 across block sizes 32,64,128,256,512,1024 and validate_result d_out vs crossentropy_forward_cpu tolerance 1e-5f, then benchmark_kernel timing."
+      },
+      {
+        "approach": "Replace 3D flatten b*T*V indexing with nd_range global id, keep (p-indicator)*dloss math, queue memset for zeroing dlogits before each check; no reduction or shuffle.",
+        "depends_on": [
+          "common"
+        ],
+        "files": [
+          "crossentropy_softmax_backward.cu"
+        ],
+        "id": "t1-crossentropy-softmax-backward",
+        "kernels": [
+          "crossentropy_softmax_backward_kernel1"
+        ],
+        "library_mappings": [],
+        "risks": [
+          "No direct cooperative_groups/warp_shuffle/warp_size_32/bf16/shared_memory/atomics in scan; elementwise maps to nd_item; inherited common helpers only"
+        ],
+        "tier": 1,
+        "title": "Tier1 crossentropy softmax backward",
+        "verification": "Run ported crossentropy_softmax_backward main B=8 T=1024 V=50257, memset device dlogits to zero per block size, validate_result vs crossentropy_softmax_backward_cpu tolerance 1e-5f across 32-1024."
+      },
+      {
+        "approach": "Port 4D permute index math unchanged to SYCL nd_range, use USM pointers for matrix/out_matrix, queue memcpy for host-device moves.",
+        "depends_on": [
+          "common"
+        ],
+        "files": [
+          "permute.cu"
+        ],
+        "id": "t1-permute",
+        "kernels": [
+          "permute_kernel"
+        ],
+        "library_mappings": [],
+        "risks": [
+          "No direct cooperative_groups/warp_shuffle/warp_size_32/bf16/shared_memory/atomics in scan; index arithmetic maps directly to SYCL; duplicate kernel name permute_kernel also exists in attention_backward.cu, attention_forward.cu and trimat_forward.cu but this item only ports permute.cu version"
+        ],
+        "tier": 1,
+        "title": "Tier1 permute",
+        "verification": "Run ported permute main dim1=24 dim2=42 dim3=20 dim4=32, compare vs permute_cpu via validate_result tolerance 1e-5f and benchmark_kernel on permute_kernel."
+      },
+      {
+        "approach": "Port residual_forward_kernel1 elementwise add and residual_forward_kernel2 x128::size-coarsened Packed128 add to SYCL with sycl::vec 128-bit loads via common helpers, grid size divided by x128::size for kernel2.",
+        "depends_on": [
+          "common"
+        ],
+        "files": [
+          "residual_forward.cu"
+        ],
+        "id": "t1-residual-forward",
+        "kernels": [
+          "residual_forward_kernel1",
+          "residual_forward_kernel2"
+        ],
+        "library_mappings": [],
+        "risks": [
+          "No direct cooperative_groups/warp_shuffle/warp_size_32/shared_memory/atomics in scan; vectorized x128 load128cs/store128 map to sycl::vec loads, keep alignment; floatX is sycl::ext::oneapi::bfloat16 when ENABLE_BF16, do not assume float only"
+        ],
+        "tier": 1,
+        "title": "Tier1 residual forward",
+        "verification": "Run ported residual_forward main B=8 T=1024 C=768 for kernel_num 1,2 across 32-1024, validate_result vs residual_forward_cpu tolerance 1e-5 fp32 else 1e-2f."
+      },
+      {
+        "approach": "Port tanh GELU forward elementwise and x128-coarsened version to SYCL, keep GELU_SCALING_FACTOR math, use common load128cs/store128.",
+        "depends_on": [
+          "common"
+        ],
+        "files": [
+          "gelu_forward.cu"
+        ],
+        "id": "t1-gelu-forward",
+        "kernels": [
+          "gelu_forward_kernel1",
+          "gelu_forward_kernel2"
+        ],
+        "library_mappings": [],
+        "risks": [
+          "No direct cooperative_groups/warp_shuffle/warp_size_32/shared_memory/atomics in scan; Packed128 128-bit path maps to sycl::vec; floatX maps to sycl::ext::oneapi::bfloat16, validate with wider tolerance under BF16"
+        ],
+        "tier": 1,
+        "title": "Tier1 GELU forward",
+        "verification": "Run ported gelu_forward main B=8 T=1024 C=768 for kernel_num 1,2 across 32-1024, validate_result vs gelu_forward_cpu tolerance 1e-5 fp32 else 1e-2f."
+      },
+      {
+        "approach": "Port tanh/sech GELU backward elementwise and x128 version to SYCL, same math and coarsening as forward.",
+        "depends_on": [
+          "common"
+        ],
+        "files": [
+          "gelu_backward.cu"
+        ],
+        "id": "t1-gelu-backward",
+        "kernels": [
+          "gelu_backward1",
+          "gelu_backward2"
+        ],
+        "library_mappings": [],
+        "risks": [
+          "No direct cooperative_groups/warp_shuffle/warp_size_32/shared_memory/atomics in scan; x128 handling as in gelu_forward via SYCL vec; floatX bfloat16 handling via common"
+        ],
+        "tier": 1,
+        "title": "Tier1 GELU backward",
+        "verification": "Run ported gelu_backward main B=8 T=1024 C=768 for kernel_num 1,2 across 32-1024, validate_result dinp vs gelu_backward_cpu tolerance 1e-5 fp32 else 1e-2f."
+      },
+      {
+        "approach": "Port encoder_forward_kernel1 BT-parallel plus loop-C, kernel2 BTC-parallel, kernel3 x128-coarsened BTC-parallel to SYCL nd_range with common floatX/x128 helpers and memcpy_convert for wte/wpe.",
+        "depends_on": [
+          "common"
+        ],
+        "files": [
+          "encoder_forward.cu"
+        ],
+        "id": "t1-encoder-forward",
+        "kernels": [
+          "encoder_forward_kernel1",
+          "encoder_forward_kernel2",
+          "encoder_forward_kernel3"
+        ],
+        "library_mappings": [],
+        "risks": [
+          "No direct cooperative_groups/warp_shuffle/warp_size_32/shared_memory/atomics in scan; x128 load128cs/store128 map to SYCL vec; floatX maps to sycl::ext::oneapi::bfloat16"
+        ],
+        "tier": 1,
+        "title": "Tier1 encoder forward",
+        "verification": "Run ported encoder_forward main B=8 T=1024 C=768 V=50257 for kernel_num 1,2,3 across 32-1024, validate_result vs encoder_forward_cpu tolerance 1e-5 fp32 else 1e-2f and bandwidth check."
+      },
+      {
+        "approach": "Port encoder_backward_kernel1 BTC-parallel with atomics to sycl::atomic_ref and kernel2 C-parallel loop-BT version to SYCL, keep inp indexing for dwte/dwpe.",
+        "depends_on": [
+          "common"
+        ],
+        "files": [
+          "encoder_backward.cu"
+        ],
+        "id": "t1-encoder-backward",
+        "kernels": [
+          "encoder_backward_kernel1",
+          "encoder_backward_kernel2"
+        ],
+        "library_mappings": [],
+        "risks": [
+          "atomics atomicAdd(dwte,dwpe): use sycl::atomic_ref<float, memory_order::relaxed, memory_scope::device>",
+          "No direct cooperative_groups/warp_shuffle/warp_size_32/bf16/shared_memory in scan; indexing maps to nd_item"
+        ],
+        "tier": 1,
+        "title": "Tier1 encoder backward",
+        "verification": "Run ported encoder_backward main B=8 T=1024 C=768 V=50257 for kernel_num 1,2, memset dwte/dwpe zero per block size, validate_result dwte/dwpe vs encoder_backward_cpu tolerance 1e-5f."
+      },
+      {
+        "approach": "Port adamw_kernel1 naive and adamw_kernel2 lerp/fma-optimized elementwise updates to SYCL nd_range with precomputed beta corrections on host.",
+        "depends_on": [
+          "common"
+        ],
+        "files": [
+          "adamw.cu"
+        ],
+        "id": "t1-adamw",
+        "kernels": [
+          "adamw_kernel1",
+          "adamw_kernel2"
+        ],
+        "library_mappings": [],
+        "risks": [
+          "No direct cooperative_groups/warp_shuffle/warp_size_32/bf16/shared_memory/atomics in scan; fma/lerp/sqrtf/powf map to sycl::fma/sqrt; inherited cuBLAS/cuBLASLt/warp/bf16 via common.h handled in common item"
+        ],
+        "tier": 1,
+        "title": "Tier1 AdamW",
+        "verification": "Run ported adamw main num_parameters=1048576 t=10 for kernel_num 1,2, validate_result params_memory/m_memory/v_memory vs adamw_cpu default tolerance 1e-4."
+      },
+      {
+        "approach": "Port residual_forward_kernel1 plus layernorm_forward_kernel1 and fused_residual_forward2 naive, fused_residual_forward3 warp-per-token, kernel4 vectorized single-pass, kernel5 shared-weights, kernel6 persistent multi-warp to SYCL with local_accessor for shared params and sub-group reductions.",
+        "depends_on": [
+          "common"
+        ],
+        "files": [
+          "fused_residual_forward.cu"
+        ],
+        "id": "t1-fused-residual-forward",
+        "kernels": [
+          "fused_residual_forward2",
+          "fused_residual_forward3",
+          "fused_residual_forward_kernel4",
+          "fused_residual_forward_kernel5",
+          "fused_residual_forward_kernel6",
+          "layernorm_forward_kernel1",
+          "residual_forward_kernel1"
+        ],
+        "library_mappings": [],
+        "risks": [
+          "shared_memory __shared__ params/s_weight/s_bias/s_res: use sycl::local_accessor with dynamic size and FuncSetAttribute fallback logic via queried local mem",
+          "warp shuffle warpReduceSum: use sub-group reduce, do not assume sub-group size 32; kernel3/4 assume WarpSize 32 and dim3(32,block_y) layout maps to 2D nd_range with sub-group"
+        ],
+        "tier": 1,
+        "title": "Tier1 fused residual forward",
+        "verification": "Run ported fused_residual_forward main B=8 T=1024 C=768 for kernel_num 1-6 across 32-1024, validate_result residual/mean/rstd/normed vs residual_forward_cpu plus layernorm_forward_cpu tolerance 1e-5 fp32 else 5e-2."
+      },
+      {
+        "approach": "Port norm_kernel1 block-reduce plus atomic, kernel2 warp-atomics, kernel3 blockReduce, kernel4 per-block output plus global_norm_aggregate_kernel second pass to SYCL with local_accessor and atomic_ref, grid sized to fill SMs via device props.",
+        "depends_on": [
+          "common"
+        ],
+        "files": [
+          "global_norm.cu"
+        ],
+        "id": "t2-global-norm",
+        "kernels": [
+          "global_norm_aggregate_kernel",
+          "norm_kernel1",
+          "norm_kernel2",
+          "norm_kernel3",
+          "norm_kernel4"
+        ],
+        "library_mappings": [],
+        "risks": [
+          "cooperative_groups tiled_partition<32>/this_thread_block/sync/reduce: use sycl::group/sub_group and joint_reduce plus group_barrier, do not assume sub-group size 32",
+          "shared_memory block_result/shared in blockReduce: use sycl::local_accessor",
+          "atomics atomicAdd(out,block_sum): use sycl::atomic_ref<float>"
+        ],
+        "tier": 2,
+        "title": "Tier2 global norm",
+        "verification": "Run ported global_norm main C=768 L=12 num_params with kernel_num 1-4 across 32,64,128,256,512,768,1024, validate_result vs global_norm_cpu tolerance 1e-2f."
+      },
+      {
+        "approach": "Port layernorm_forward_kernel1 row-loop, mean_kernel/rstd_kernel/normalization_kernel three-pass, kernel3/4 warp-per-row online variance, kernel5 block-per-row, kernel6 shared-weights x128 to SYCL with sub-group reduce and local_accessor.",
+        "depends_on": [
+          "common"
+        ],
+        "files": [
+          "layernorm_forward.cu"
+        ],
+        "id": "t2-layernorm-forward",
+        "kernels": [
+          "layernorm_forward_kernel1",
+          "layernorm_forward_kernel3",
+          "layernorm_forward_kernel4",
+          "layernorm_forward_kernel5",
+          "layernorm_forward_kernel6",
+          "mean_kernel",
+          "normalization_kernel",
+          "rstd_kernel"
+        ],
+        "library_mappings": [],
+        "risks": [
+          "cooperative_groups tiled_partition<32>/reduce: use sycl::sub_group and joint_reduce, do not assume 32",
+          "shared_memory shared_sum/shared_sum2/params x128 staging: use sycl::local_accessor",
+          "streaming hints __ldcs/__stcs: use plain loads/stores"
+        ],
+        "tier": 2,
+        "title": "Tier2 layernorm forward",
+        "verification": "Run ported layernorm_forward main B=8 T=1024 C=768 for kernel_num 1-6 across 32-1024, validate_result out/mean/rstd vs layernorm_forward_cpu tolerance 1e-5f."
+      },
+      {
+        "approach": "Port softmax_forward_kernel1/online_kernel1 row-loop, kernel2 block-reduce with shared, kernel3 warp-only, kernel4 warp plus shared, kernel7 unrolled large-C, online_kernel2 cooperative SumMax reduce, online_kernel8 shfl online update to SYCL sub-group plus local_accessor.",
+        "depends_on": [
+          "common"
+        ],
+        "files": [
+          "softmax_forward.cu"
+        ],
+        "id": "t2-softmax-forward",
+        "kernels": [
+          "softmax_forward_kernel1",
+          "softmax_forward_kernel2",
+          "softmax_forward_kernel3",
+          "softmax_forward_kernel4",
+          "softmax_forward_kernel7",
+          "softmax_forward_online_kernel1",
+          "softmax_forward_online_kernel2",
+          "softmax_forward_online_kernel8"
+        ],
+        "library_mappings": [],
+        "risks": [
+          "warp_size_32 blockDim 32 assumptions and warpSize uses: query sub-group size, provide reqd_sub_group_size 32 path plus portable fallback",
+          "warp_shuffle __shfl_down_sync/__shfl_sync/warpReduceMax/warpReduceSum: use sycl::shift_group_left/select_from_group/joint_reduce",
+          "cooperative_groups tiled_partition/reduce: use sycl::sub_group",
+          "shared_memory extern shared[] max_or_sum_storage: use sycl::local_accessor"
+        ],
+        "tier": 2,
+        "title": "Tier2 softmax forward",
+        "verification": "Run ported softmax_forward main B=8 T=1024 V=50257 with outlier scaling for kernel_num 1-8 across 32-1024, validate_result vs softmax_forward_cpu and softmax_forward_online_cpu tolerance 1e-4f and max output check."
+      },
+      {
+        "approach": "Port fused_classifier_kernel1 warp-per-row online softmax plus fused_classifier_kernel2/3 blockwide float4/scalar and kernel4/5 x128 low-precision paths to SYCL sub-group reduce plus local_accessor and bfloat16 vec, keep optional dlosses/probs/dlogits null logic and padded P handling.",
+        "depends_on": [
+          "common"
+        ],
+        "files": [
+          "classifier_fused.cu"
+        ],
+        "id": "t2-classifier-fused",
+        "kernels": [
+          "fused_classifier_kernel1",
+          "fused_classifier_kernel2",
+          "fused_classifier_kernel3",
+          "fused_classifier_kernel4",
+          "fused_classifier_kernel5"
+        ],
+        "library_mappings": [],
+        "risks": [
+          "cooperative_groups tiled_partition<32>/reduce: use sycl::sub_group, do not assume 32",
+          "warp_shuffle warpReduceMax/warpReduceSum: use sub-group shuffles/joint_reduce",
+          "shared_memory shared_maxval/shared_sumval: use sycl::local_accessor",
+          "bf16 floatX/x128 Packed128 and __ldcs/store128cs: use sycl::ext::oneapi::bfloat16 with sycl::vec and plain loads"
+        ],
+        "tier": 2,
+        "title": "Tier2 fused classifier",
+        "verification": "Run ported classifier_fused main B=8 T=1024 V=50257 P padded for kernel_num 1-5 across 32-1024 (skip correctness for BF16 kernel 4/5 per source guard), validate_result losses and depadded dlogits vs softmax_forward_cpu plus crossentropy_forward_cpu plus crossentropy_softmax_backward_cpu tolerance 1e-4f."
+      },
+      {
+        "approach": "Port layernorm_backward_kernel1 naive atomics through kernel10 vectorized persistent with FP32 scratch and flag-based last-block reduction to SYCL with local_accessor, sub-group reduce, atomic_ref, and bfloat16 vec; keep shared 2*C sizing and scratch memset logic.",
+        "depends_on": [
+          "common"
+        ],
+        "files": [
+          "layernorm_backward.cu"
+        ],
+        "id": "t2-layernorm-backward",
+        "kernels": [
+          "copy_to_dweight_dbias",
+          "layernorm_backward_kernel1",
+          "layernorm_backward_kernel10",
+          "layernorm_backward_kernel2",
+          "layernorm_backward_kernel3",
+          "layernorm_backward_kernel4",
+          "layernorm_backward_kernel5",
+          "layernorm_backward_kernel6",
+          "layernorm_backward_kernel7",
+          "layernorm_backward_kernel8",
+          "layernorm_backward_kernel9"
+        ],
+        "library_mappings": [],
+        "risks": [
+          "warp_size_32 warpSize/WARP_SIZE/32-thread tiling and x128::size multiples: query sub-group size, guard C divisibility, do not hard-code 32",
+          "warp_shuffle via warpReduceSum/Max and __shfl_down_sync: use SYCL sub-group ops",
+          "cooperative_groups tiled_partition/reduce/sync: use sycl::sub_group/group_barrier",
+          "shared_memory extern shared[] 2*C plus tmp: use sycl::local_accessor",
+          "atomics atomicAdd/atomicCAS/atomicInc on float/bf16 and scratchFlag: use sycl::atomic_ref with device scope, separate deterministic scratch path for kernel5-10",
+          "bf16 __nv_bfloat16/__nv_bfloat162/halves2bfloat162 plus __ldcs/__ldcg/store128cg: use sycl::ext::oneapi::bfloat16 vec and plain loads"
+        ],
+        "tier": 2,
+        "title": "Tier2 layernorm backward",
+        "verification": "Run ported layernorm_backward main B=8 T=1024 C=1600 layernorm_forward_cpu plus layernorm_backward_cpu reference for kernel_num 2-10 across 32,64,128,256,512,1024, validate_result dinp tolerance 1e-3f fp32 else 1e-1f and dweight/dbias 1e-3f else 5e-1f."
+      },
+      {
+        "approach": "Replace two cublasSgemm backward-to-input/weight calls with oneMath row-major gemm (accounting for CUBLAS_OP_N/T transposes), keep beta=1 accumulation semantics, port matmul_backward_bias_kernel_naive/faster bias reduction to SYCL nd_range plus local_accessor.",
+        "depends_on": [
+          "common"
+        ],
+        "files": [
+          "matmul_backward.cu"
+        ],
+        "id": "t3-matmul-backward",
+        "kernels": [
+          "matmul_backward_bias_kernel_faster",
+          "matmul_backward_bias_kernel_naive"
+        ],
+        "library_mappings": [
+          {
+            "from": "cuBLAS",
+            "notes": "cublasSgemm with CUBLAS_OP_N/N/T and beta=1 accumulation maps to oneMath gemm with transposes and beta=1; CUBLAS_DEFAULT_MATH maps to oneMath compute mode",
+            "to": "oneMath BLAS"
+          }
+        ],
+        "risks": [
+          "shared_memory extern shared[] block reduction: use sycl::local_accessor",
+          "cuBLAS column-major vs row-major transpose confusion documented in source: preserve math via oneMath layout/transpose args",
+          "No direct cooperative/warp/bf16 in scan for this file; inherited helpers via common"
+        ],
+        "tier": 3,
+        "title": "Tier3 matmul backward",
+        "verification": "Run ported matmul_backward main B=8 T=1024 C=768 OC=3072 kernel_num 1 with TF32 disabled, validate_result dinp/dweight/dbias vs matmul_backward_cpu tolerance 1e-3f."
+      },
+      {
+        "approach": "Port permute_kernel plus trimul_global/matmul_tri_naive/registers/tri3/tri4 128x128 triangular matmul with shared lhs_s/rhs_s staging and float4 coalescing to SYCL nd_range plus local_accessor, skip upper-triangular blocks; keep trimul_cublas path as oneMath baseline.",
+        "depends_on": [
+          "common"
+        ],
+        "files": [
+          "trimat_forward.cu"
+        ],
+        "id": "t3-trimat-forward",
+        "kernels": [
+          "permute_kernel",
+          "trimul_global"
+        ],
+        "library_mappings": [
+          {
+            "from": "cuBLAS",
+            "notes": "cublasSgemmStridedBatched QK with alpha/sqrt scale maps to oneMath gemm_batch_strided; row-major versus column-major transpose handling must be preserved",
+            "to": "oneMath BLAS"
+          }
+        ],
+        "risks": [
+          "cooperative_groups include/reduce: use sycl::group/sub_group, do not assume sub-group 32",
+          "shared_memory lhs_s[128][32]/rhs_s[128][32]: use sycl::local_accessor",
+          "vectorized float4 ld_vec/st_vec: use sycl::vec<float,4>"
+        ],
+        "tier": 3,
+        "title": "Tier3 triangular matmul forward",
+        "verification": "Run ported trimat_forward main B=8 T=1024 C=768 NH=12 for kernel_num 0-4, validate_result vs trimul_cpu tolerance 1e-4f ignoring NaN upper triangle, compare handwritten time vs oneMath baseline."
+      },
+      {
+        "approach": "Port bias kernels 1-4 shared/cooperative reductions, kernel5 grid-atomics, kernel7 FP32 buffer plus cast_and_add_kernel, kernel8/9 4x8 sub-warp x128 shuffle plus reduce_add_sum_kernel to SYCL with sub-group size 4 shuffles, local_accessor, atomic_ref, and separate FP32 accumulation then cast.",
+        "depends_on": [
+          "common"
+        ],
+        "files": [
+          "matmul_backward_bias.cu"
+        ],
+        "id": "t3-matmul-backward-bias",
+        "kernels": [
+          "cast_and_add_kernel",
+          "matmul_backward_bias_kernel1",
+          "matmul_backward_bias_kernel2",
+          "matmul_backward_bias_kernel3",
+          "matmul_backward_bias_kernel4",
+          "matmul_backward_bias_kernel5",
+          "matmul_backward_bias_kernel7",
+          "matmul_backward_bias_kernel8",
+          "matmul_backward_bias_kernel9",
+          "reduce_add_sum_kernel"
+        ],
+        "library_mappings": [
+          {
+            "from": "cuBLAS",
+            "notes": "Only one direct cuBLAS use in scan; main bias reduction is handwritten, oneMath only needed if fused variant added; preserve beta accumulation semantics",
+            "to": "oneMath BLAS"
+          }
+        ],
+        "risks": [
+          "warp_size_32 32-column and bdx=4/bdy=8 sub-warp assumptions plus WARP_SIZE: query sub-group size, keep 4-wide shuffle logic via sub-group ops with size guard",
+          "warp_shuffle __shfl_down_sync(...,1/2,4): use sycl::shift_group_left with sub-group size 4 logic",
+          "cooperative_groups tiled_partition/reduce: use sycl::sub_group",
+          "shared_memory extern smem/sub_results/scratch: use sycl::local_accessor",
+          "atomics atomicAdd/atomicInc including FP32 dbias_buffer: use sycl::atomic_ref",
+          "bf16 floatX/x128 load128: use sycl::ext::oneapi::bfloat16 vec"
+        ],
+        "tier": 3,
+        "title": "Tier3 matmul backward bias",
+        "verification": "Run ported matmul_backward_bias main B=8 T=1024 C=768 OC=3072 for kernel_num 1-5,7-9 across 32,64,128,256,512,768,1024 with zeroed dbias, validate_result vs matmul_backward_bias_cpu tolerance 5e-3f fp32 else 1.0f."
+      },
+      {
+        "approach": "Replace cublasSgemm plus add_bias with oneMath gemm plus SYCL bias kernel, replace cublasLtMatmul bias/GELU epilogue with oneMath gemm_batch plus separate SYCL epilogue (no direct Lt epilogue), keep matmul_forward_kernel1 naive and matmul_forward_kernel4 shared-tiled handwritten path with local_accessor.",
+        "depends_on": [
+          "common"
+        ],
+        "files": [
+          "matmul_forward.cu"
+        ],
+        "id": "t3-matmul-forward",
+        "kernels": [
+          "add_bias",
+          "matmul_forward_kernel1",
+          "matmul_forward_kernel4"
+        ],
+        "library_mappings": [
+          {
+            "from": "cuBLAS",
+            "notes": "cublasSgemm CUBLAS_OP_T/N maps to oneMath gemm with transpose/layout handling; TF32 mode maps to oneMath compute mode",
+            "to": "oneMath BLAS"
+          },
+          {
+            "from": "cuBLASLt",
+            "notes": "no direct equivalent: gemm plus a hand-written epilogue (bias, GELU); LtMatmulDesc/Heuristic/workspace map to oneMath gemm_batch plus SYCL bias/GELU kernel and USM workspace",
+            "to": "oneMath BLAS"
+          }
+        ],
+        "risks": [
+          "shared_memory lhs_s/rhs_s tiling in handwritten kernel4: use sycl::local_accessor",
+          "cuBLASLt 16-byte bias alignment requirement: enforce USM alignment and check in SYCL path",
+          "No direct cooperative/warp/bf16 in scan; row-major versus column-major transpose must be preserved"
+        ],
+        "tier": 3,
+        "title": "Tier3 matmul forward",
+        "verification": "Run ported matmul_forward main B=32 T=1024 C=768 OC=3072 for kernel_num 1-4 across sqrt 4,8,16,32, validate_result vs matmul_forward_cpu tolerance 1e-1f."
+      },
+      {
+        "approach": "Replace four cublasSgemmStridedBatched QKV backward steps with oneMath gemm_batch_strided preserving beta=1 accumulation, port permute/unpermute and softmax_forward_kernel5 plus 8 softmax_autoregressive_backward variants to SYCL sub-group plus local_accessor; keep launch Softmax dispatch for block sizes 32-1024.",
+        "depends_on": [
+          "common"
+        ],
+        "files": [
+          "attention_backward.cu"
+        ],
+        "id": "t3-attention-backward",
+        "kernels": [
+          "permute_kernel",
+          "permute_kernel_backward",
+          "softmax_autoregressive_backward_kernel1",
+          "softmax_autoregressive_backward_kernel2",
+          "softmax_autoregressive_backward_kernel3",
+          "softmax_autoregressive_backward_kernel4",
+          "softmax_autoregressive_backward_kernel5",
+          "softmax_autoregressive_backward_kernel6",
+          "softmax_autoregressive_backward_kernel7",
+          "softmax_autoregressive_backward_kernel8",
+          "softmax_forward_kernel5",
+          "unpermute_kernel",
+          "unpermute_kernel_backward"
+        ],
+        "library_mappings": [
+          {
+            "from": "cuBLAS",
+            "notes": "cublasSgemmStridedBatched datt/dv/dq/dk with beta=1 maps to oneMath gemm_batch_strided with accumulation; strided layouts preserved",
+            "to": "oneMath BLAS"
+          }
+        ],
+        "risks": [
+          "cooperative_groups tiled_partition<32>/reduce/sync/meta_group: use sycl::sub_group/group_barrier/joint_reduce, do not assume 32",
+          "shared_memory att_bth_s/block_acc: use sycl::local_accessor",
+          "streaming __ldcs/__stcs: use plain loads/stores",
+          "inherited warp_size_32/warp_shuffle/bf16/cuBLASLt via common.h handled in common item"
+        ],
+        "tier": 3,
+        "title": "Tier3 attention backward",
+        "verification": "Run ported attention_backward main B=4 T=1024 C=768 NH=12: first validate forward preatt 5e-3f att 1e-3f out 1e-3f, then for kernel_num 1-8 validate datt 5e-3f dpreatt 1e-3f dinp 1e-3f vs attention_backward_cpu across 32-1024."
+      },
+      {
+        "approach": "Replace QK and AttV cublasSgemm/GemmEx FP16/BF16 paths with oneMath gemm_batch_strided/ex, replace cuDNN SDPA graph with oneDNN attention or keep oneMath plus SYCL softmax fallback (no direct frontend graph cache equivalent), port permute/scale/softmax/fused/flash kernels to SYCL sub-group plus local_accessor and bfloat16.",
+        "depends_on": [
+          "common"
+        ],
+        "files": [
+          "attention_forward.cu"
+        ],
+        "id": "t3-attention-forward",
+        "kernels": [
+          "attention_forward_fused1",
+          "attention_forward_kernel2",
+          "attention_query_key_kernel1",
+          "attention_softmax_kernel1",
+          "attention_value_kernel1",
+          "fp32_to_lowp_kernel",
+          "lowp_to_fp32_kernel",
+          "permute_kernel",
+          "permute_kernel_lowp",
+          "scale_kernel",
+          "softmax_forward_kernel4",
+          "softmax_forward_kernel5",
+          "softmax_forward_kernel5_lowp",
+          "unpermute_kernel",
+          "unpermute_kernel_lowp"
+        ],
+        "library_mappings": [
+          {
+            "from": "cuBLAS",
+            "notes": "cublasSgemmStridedBatched and GemmEx with CUBLAS_LOWP/COMPUTE maps to oneMath gemm_batch with bfloat16/half and compute mode; alpha/beta FP32 vs lowp handling preserved",
+            "to": "oneMath BLAS"
+          },
+          {
+            "from": "cuDNN",
+            "notes": "cudnn_frontend SDPA graph with stride-mapped QKV, attn_scale pass-by-value, causal mask and stats has no single oneDNN graph-cache equivalent; use oneDNN attention primitives plus manual workspace and cache, fallback to oneMath plus SYCL softmax validated path",
+            "to": "oneDNN"
+          }
+        ],
+        "risks": [
+          "cooperative_groups tiled_partition/reduce: use sycl::sub_group, do not assume 32",
+          "warp_shuffle warpReduceMax/Sum/__shfl_down_sync: use SYCL sub-group shuffles",
+          "shared_memory sram/extern shared in flash kernel2/softmax_kernel4: use sycl::local_accessor with sram-size query",
+          "bf16 __nv_bfloat16/floatX/x128 and CUBLAS_LOWP: use sycl::ext::oneapi::bfloat16"
+        ],
+        "tier": 3,
+        "title": "Tier3 attention forward",
+        "verification": "Run ported attention_forward main B=8 T=1024 C=768 NH=12 for kernel_num 1-6,10 across 32,64,128,256,512, validate out tolerance 1e-3f fp32 else 1e-2f and att/preatt checks with documented kernel 2/4 exceptions vs attention_forward_cpu."
+      },
+      {
+        "approach": "Replace MPI plus ncclCommInitRank/ncclAllReduce/ncclFloat/ncclSum with MPI plus oneCCL communicator and allreduce on SYCL USM buffers, map cudaSetDevice local-device selection to SYCL device selection per rank, keep set_vector as SYCL nd_range fill.",
+        "depends_on": [
+          "common"
+        ],
+        "files": [
+          "nccl_all_reduce.cu"
+        ],
+        "id": "t3-nccl-all-reduce",
+        "kernels": [
+          "set_vector"
+        ],
+        "library_mappings": [
+          {
+            "from": "NCCL",
+            "notes": "ncclAllReduce/ncclCommInitRank/ncclUniqueId map to oneCCL allreduce with KVS/MPI bootstrap; stream argument 0 maps to SYCL queue dependency, ncclFloat/ncclSum map to oneCCL dtype/reduction",
+            "to": "oneCCL"
+          }
+        ],
+        "risks": [
+          "multi-GPU collectives and MPI_Allgather hostname hash local-device logic: use oneCCL plus MPI with SYCL device selector, no CUDA device assumption",
+          "No direct cooperative/warp/bf16/shared/atomics in scan; USM buffers replace cudaMalloc, queue memcpy replaces cudaMemcpy"
+        ],
+        "tier": 3,
+        "title": "Tier3 NCCL all-reduce",
+        "verification": "Run ported nccl test with mpirun -np 2 buffer 32M floats, set_vector rank+1 fill then allreduce sum, check mean equals 1+2 expected within 1e-5 as in original get_mean check."
+      }
+    ],
+    "out_of_scope": [],
+    "summary": "Migrate 22 CUDA files via SYCL 2020 in dependency order: common scaffolding first, then 10 Tier1 plain kernels, then 5 Tier2 sub-group/cooperative/bf16 designs, then 7 Tier3 oneMath/oneDNN/oneCCL replacements with NCCL last; each item verified by its existing CPU reference and validate_result tolerances."
+  },
+  "grounding": {
+    "grounded": true,
+    "coverage": {
+      "files": 22,
+      "covered": 22,
+      "planned": 22
+    },
+    "items": 23,
+    "unknown_files": [],
+    "unknown_kernels": [],
+    "uncovered_files": [],
+    "duplicate_files": [],
+    "missing_library_mappings": [],
+    "unmentioned_constructs": [],
+    "tier_mismatches": [],
+    "bad_dependencies": [],
+    "duplicate_ids": [],
+    "issues": 0
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "command": "/usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.rVHhKs79t7/task /tmp/tmp.rVHhKs79t7/task/layernorm_forward_harness.cu -o build/native",
+  "returncode": 0,
+  "duration_s": 2.750031,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.rVHhKs79t7/out/work"
+}

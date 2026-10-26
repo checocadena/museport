@@ -1,0 +1,1 @@
+[gpu_test] fail: FAIL on NVIDIA RTX A4000 (cuda:0, nvidia): sycl_verify_vs_reference: PASS: 1/1 case(s) match (worst max abs err 0, atol 0.0001); sycl_verify_vs_native: FAIL: 0/1 case(s) match; first failure: 49484 of 1966080 element(s) outside tolerance

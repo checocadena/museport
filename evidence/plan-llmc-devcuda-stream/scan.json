@@ -1,0 +1,1039 @@
+{
+  "root": "/home/user/ext/llm.c/dev/cuda",
+  "totals": {
+    "files": 22,
+    "lines": 11153,
+    "kernels": 106,
+    "by_tier": {
+      "1": 10,
+      "2": 5,
+      "3": 7
+    }
+  },
+  "libraries": [
+    {
+      "name": "cuBLAS",
+      "uses": 130,
+      "oneapi": "oneMath BLAS",
+      "note": "",
+      "files": [
+        "attention_backward.cu",
+        "attention_forward.cu",
+        "matmul_backward.cu",
+        "matmul_backward_bias.cu",
+        "matmul_forward.cu",
+        "trimat_forward.cu"
+      ]
+    },
+    {
+      "name": "cuBLASLt",
+      "uses": 30,
+      "oneapi": "oneMath BLAS",
+      "note": "no direct equivalent: gemm plus a hand-written epilogue (bias, GELU)",
+      "files": [
+        "matmul_forward.cu"
+      ]
+    },
+    {
+      "name": "cuDNN",
+      "uses": 23,
+      "oneapi": "oneDNN",
+      "note": "",
+      "files": [
+        "attention_forward.cu"
+      ]
+    },
+    {
+      "name": "NCCL",
+      "uses": 16,
+      "oneapi": "oneCCL",
+      "note": "",
+      "files": [
+        "nccl_all_reduce.cu"
+      ]
+    }
+  ],
+  "constructs": [
+    {
+      "name": "cooperative_groups",
+      "uses": 250,
+      "severity": "design",
+      "sycl": "sycl::group / sub_group and group algorithms",
+      "files": [
+        "attention_backward.cu",
+        "attention_forward.cu",
+        "classifier_fused.cu",
+        "global_norm.cu",
+        "layernorm_backward.cu",
+        "layernorm_forward.cu",
+        "matmul_backward_bias.cu",
+        "softmax_forward.cu",
+        "trimat_forward.cu"
+      ]
+    },
+    {
+      "name": "shared_memory",
+      "uses": 43,
+      "severity": "mechanical",
+      "sycl": "sycl::local_accessor",
+      "files": [
+        "attention_backward.cu",
+        "attention_forward.cu",
+        "classifier_fused.cu",
+        "fused_residual_forward.cu",
+        "global_norm.cu",
+        "layernorm_backward.cu",
+        "layernorm_forward.cu",
+        "matmul_backward.cu",
+        "matmul_backward_bias.cu",
+        "matmul_forward.cu",
+        "softmax_forward.cu",
+        "trimat_forward.cu"
+      ]
+    },
+    {
+      "name": "atomics",
+      "uses": 43,
+      "severity": "mechanical",
+      "sycl": "sycl::atomic_ref",
+      "files": [
+        "encoder_backward.cu",
+        "global_norm.cu",
+        "layernorm_backward.cu",
+        "matmul_backward_bias.cu"
+      ]
+    },
+    {
+      "name": "warp_size_32",
+      "uses": 26,
+      "severity": "design",
+      "sycl": "SYCL sub-group size is not guaranteed to be 32; query it or request one",
+      "files": [
+        "layernorm_backward.cu",
+        "matmul_backward_bias.cu",
+        "softmax_forward.cu"
+      ]
+    },
+    {
+      "name": "bf16",
+      "uses": 23,
+      "severity": "design",
+      "sycl": "sycl::ext::oneapi::bfloat16",
+      "files": [
+        "attention_forward.cu",
+        "classifier_fused.cu",
+        "layernorm_backward.cu"
+      ]
+    },
+    {
+      "name": "warp_shuffle",
+      "uses": 16,
+      "severity": "design",
+      "sycl": "sycl::shift_group_left / permute_group_by_xor / select_from_group",
+      "files": [
+        "attention_forward.cu",
+        "classifier_fused.cu",
+        "matmul_backward_bias.cu",
+        "softmax_forward.cu"
+      ]
+    }
+  ],
+  "files": [
+    {
+      "path": "adamw.cu",
+      "lines": 226,
+      "kernels": [
+        "adamw_kernel1",
+        "adamw_kernel2"
+      ],
+      "libraries": {},
+      "constructs": {},
+      "includes": [
+        "common.h"
+      ],
+      "inherited_libraries": {
+        "cuBLASLt": [
+          "common.h"
+        ],
+        "cuBLAS": [
+          "common.h"
+        ]
+      },
+      "inherited_constructs": {
+        "warp_size_32": [
+          "common.h"
+        ],
+        "warp_shuffle": [
+          "common.h"
+        ],
+        "bf16": [
+          "common.h"
+        ],
+        "shared_memory": [
+          "common.h"
+        ],
+        "streams_events": [
+          "common.h"
+        ]
+      },
+      "tier": 1
+    },
+    {
+      "path": "attention_backward.cu",
+      "lines": 1155,
+      "kernels": [
+        "permute_kernel",
+        "permute_kernel_backward",
+        "softmax_autoregressive_backward_kernel1",
+        "softmax_autoregressive_backward_kernel2",
+        "softmax_autoregressive_backward_kernel3",
+        "softmax_autoregressive_backward_kernel4",
+        "softmax_autoregressive_backward_kernel5",
+        "softmax_autoregressive_backward_kernel6",
+        "softmax_autoregressive_backward_kernel7",
+        "softmax_autoregressive_backward_kernel8",
+        "softmax_forward_kernel5",
+        "unpermute_kernel",
+        "unpermute_kernel_backward"
+      ],
+      "libraries": {
+        "cuBLAS": 21
+      },
+      "constructs": {
+        "cooperative_groups": 54,
+        "shared_memory": 3
+      },
+      "includes": [
+        "common.h"
+      ],
+      "inherited_libraries": {
+        "cuBLASLt": [
+          "common.h"
+        ]
+      },
+      "inherited_constructs": {
+        "warp_size_32": [
+          "common.h"
+        ],
+        "warp_shuffle": [
+          "common.h"
+        ],
+        "bf16": [
+          "common.h"
+        ],
+        "streams_events": [
+          "common.h"
+        ]
+      },
+      "tier": 3
+    },
+    {
+      "path": "attention_forward.cu",
+      "lines": 1391,
+      "kernels": [
+        "attention_forward_fused1",
+        "attention_forward_kernel2",
+        "attention_query_key_kernel1",
+        "attention_softmax_kernel1",
+        "attention_value_kernel1",
+        "fp32_to_lowp_kernel",
+        "lowp_to_fp32_kernel",
+        "permute_kernel",
+        "permute_kernel_lowp",
+        "scale_kernel",
+        "softmax_forward_kernel4",
+        "softmax_forward_kernel5",
+        "softmax_forward_kernel5_lowp",
+        "unpermute_kernel",
+        "unpermute_kernel_lowp"
+      ],
+      "libraries": {
+        "cuBLAS": 29,
+        "cuDNN": 23
+      },
+      "constructs": {
+        "warp_shuffle": 1,
+        "cooperative_groups": 29,
+        "bf16": 1,
+        "shared_memory": 2
+      },
+      "includes": [
+        "common.h"
+      ],
+      "inherited_libraries": {
+        "cuBLASLt": [
+          "common.h"
+        ]
+      },
+      "inherited_constructs": {
+        "warp_size_32": [
+          "common.h"
+        ],
+        "streams_events": [
+          "common.h"
+        ]
+      },
+      "tier": 3
+    },
+    {
+      "path": "classifier_fused.cu",
+      "lines": 772,
+      "kernels": [
+        "fused_classifier_kernel1",
+        "fused_classifier_kernel2",
+        "fused_classifier_kernel3",
+        "fused_classifier_kernel4",
+        "fused_classifier_kernel5"
+      ],
+      "libraries": {},
+      "constructs": {
+        "warp_shuffle": 1,
+        "cooperative_groups": 41,
+        "bf16": 1,
+        "shared_memory": 6
+      },
+      "includes": [
+        "common.h"
+      ],
+      "inherited_libraries": {
+        "cuBLASLt": [
+          "common.h"
+        ],
+        "cuBLAS": [
+          "common.h"
+        ]
+      },
+      "inherited_constructs": {
+        "warp_size_32": [
+          "common.h"
+        ],
+        "streams_events": [
+          "common.h"
+        ]
+      },
+      "tier": 2
+    },
+    {
+      "path": "crossentropy_forward.cu",
+      "lines": 148,
+      "kernels": [
+        "crossentropy_forward_kernel1"
+      ],
+      "libraries": {},
+      "constructs": {},
+      "includes": [
+        "common.h"
+      ],
+      "inherited_libraries": {
+        "cuBLASLt": [
+          "common.h"
+        ],
+        "cuBLAS": [
+          "common.h"
+        ]
+      },
+      "inherited_constructs": {
+        "warp_size_32": [
+          "common.h"
+        ],
+        "warp_shuffle": [
+          "common.h"
+        ],
+        "bf16": [
+          "common.h"
+        ],
+        "shared_memory": [
+          "common.h"
+        ],
+        "streams_events": [
+          "common.h"
+        ]
+      },
+      "tier": 1
+    },
+    {
+      "path": "crossentropy_softmax_backward.cu",
+      "lines": 165,
+      "kernels": [
+        "crossentropy_softmax_backward_kernel1"
+      ],
+      "libraries": {},
+      "constructs": {},
+      "includes": [
+        "common.h"
+      ],
+      "inherited_libraries": {
+        "cuBLASLt": [
+          "common.h"
+        ],
+        "cuBLAS": [
+          "common.h"
+        ]
+      },
+      "inherited_constructs": {
+        "warp_size_32": [
+          "common.h"
+        ],
+        "warp_shuffle": [
+          "common.h"
+        ],
+        "bf16": [
+          "common.h"
+        ],
+        "shared_memory": [
+          "common.h"
+        ],
+        "streams_events": [
+          "common.h"
+        ]
+      },
+      "tier": 1
+    },
+    {
+      "path": "encoder_backward.cu",
+      "lines": 202,
+      "kernels": [
+        "encoder_backward_kernel1",
+        "encoder_backward_kernel2"
+      ],
+      "libraries": {},
+      "constructs": {
+        "atomics": 2
+      },
+      "includes": [
+        "common.h"
+      ],
+      "inherited_libraries": {
+        "cuBLASLt": [
+          "common.h"
+        ],
+        "cuBLAS": [
+          "common.h"
+        ]
+      },
+      "inherited_constructs": {
+        "warp_size_32": [
+          "common.h"
+        ],
+        "warp_shuffle": [
+          "common.h"
+        ],
+        "bf16": [
+          "common.h"
+        ],
+        "shared_memory": [
+          "common.h"
+        ],
+        "streams_events": [
+          "common.h"
+        ]
+      },
+      "tier": 1
+    },
+    {
+      "path": "encoder_forward.cu",
+      "lines": 260,
+      "kernels": [
+        "encoder_forward_kernel1",
+        "encoder_forward_kernel2",
+        "encoder_forward_kernel3"
+      ],
+      "libraries": {},
+      "constructs": {},
+      "includes": [
+        "common.h"
+      ],
+      "inherited_libraries": {
+        "cuBLASLt": [
+          "common.h"
+        ],
+        "cuBLAS": [
+          "common.h"
+        ]
+      },
+      "inherited_constructs": {
+        "warp_size_32": [
+          "common.h"
+        ],
+        "warp_shuffle": [
+          "common.h"
+        ],
+        "bf16": [
+          "common.h"
+        ],
+        "shared_memory": [
+          "common.h"
+        ],
+        "streams_events": [
+          "common.h"
+        ]
+      },
+      "tier": 1
+    },
+    {
+      "path": "fused_residual_forward.cu",
+      "lines": 695,
+      "kernels": [
+        "fused_residual_forward2",
+        "fused_residual_forward3",
+        "fused_residual_forward_kernel4",
+        "fused_residual_forward_kernel5",
+        "fused_residual_forward_kernel6",
+        "layernorm_forward_kernel1",
+        "residual_forward_kernel1"
+      ],
+      "libraries": {},
+      "constructs": {
+        "shared_memory": 2
+      },
+      "includes": [
+        "common.h"
+      ],
+      "inherited_libraries": {
+        "cuBLASLt": [
+          "common.h"
+        ],
+        "cuBLAS": [
+          "common.h"
+        ]
+      },
+      "inherited_constructs": {
+        "warp_size_32": [
+          "common.h"
+        ],
+        "warp_shuffle": [
+          "common.h"
+        ],
+        "bf16": [
+          "common.h"
+        ],
+        "streams_events": [
+          "common.h"
+        ]
+      },
+      "tier": 1
+    },
+    {
+      "path": "gelu_backward.cu",
+      "lines": 195,
+      "kernels": [
+        "gelu_backward1",
+        "gelu_backward2"
+      ],
+      "libraries": {},
+      "constructs": {},
+      "includes": [
+        "common.h"
+      ],
+      "inherited_libraries": {
+        "cuBLASLt": [
+          "common.h"
+        ],
+        "cuBLAS": [
+          "common.h"
+        ]
+      },
+      "inherited_constructs": {
+        "warp_size_32": [
+          "common.h"
+        ],
+        "warp_shuffle": [
+          "common.h"
+        ],
+        "bf16": [
+          "common.h"
+        ],
+        "shared_memory": [
+          "common.h"
+        ],
+        "streams_events": [
+          "common.h"
+        ]
+      },
+      "tier": 1
+    },
+    {
+      "path": "gelu_forward.cu",
+      "lines": 174,
+      "kernels": [
+        "gelu_forward_kernel1",
+        "gelu_forward_kernel2"
+      ],
+      "libraries": {},
+      "constructs": {},
+      "includes": [
+        "common.h"
+      ],
+      "inherited_libraries": {
+        "cuBLASLt": [
+          "common.h"
+        ],
+        "cuBLAS": [
+          "common.h"
+        ]
+      },
+      "inherited_constructs": {
+        "warp_size_32": [
+          "common.h"
+        ],
+        "warp_shuffle": [
+          "common.h"
+        ],
+        "bf16": [
+          "common.h"
+        ],
+        "shared_memory": [
+          "common.h"
+        ],
+        "streams_events": [
+          "common.h"
+        ]
+      },
+      "tier": 1
+    },
+    {
+      "path": "global_norm.cu",
+      "lines": 270,
+      "kernels": [
+        "global_norm_aggregate_kernel",
+        "norm_kernel1",
+        "norm_kernel2",
+        "norm_kernel3",
+        "norm_kernel4"
+      ],
+      "libraries": {},
+      "constructs": {
+        "cooperative_groups": 18,
+        "atomics": 3,
+        "shared_memory": 1
+      },
+      "includes": [
+        "common.h"
+      ],
+      "inherited_libraries": {
+        "cuBLASLt": [
+          "common.h"
+        ],
+        "cuBLAS": [
+          "common.h"
+        ]
+      },
+      "inherited_constructs": {
+        "warp_size_32": [
+          "common.h"
+        ],
+        "warp_shuffle": [
+          "common.h"
+        ],
+        "bf16": [
+          "common.h"
+        ],
+        "streams_events": [
+          "common.h"
+        ]
+      },
+      "tier": 2
+    },
+    {
+      "path": "layernorm_backward.cu",
+      "lines": 1550,
+      "kernels": [
+        "copy_to_dweight_dbias",
+        "layernorm_backward_kernel1",
+        "layernorm_backward_kernel10",
+        "layernorm_backward_kernel2",
+        "layernorm_backward_kernel3",
+        "layernorm_backward_kernel4",
+        "layernorm_backward_kernel5",
+        "layernorm_backward_kernel6",
+        "layernorm_backward_kernel7",
+        "layernorm_backward_kernel8",
+        "layernorm_backward_kernel9"
+      ],
+      "libraries": {},
+      "constructs": {
+        "warp_size_32": 14,
+        "cooperative_groups": 47,
+        "bf16": 21,
+        "atomics": 34,
+        "shared_memory": 9
+      },
+      "includes": [
+        "common.h"
+      ],
+      "inherited_libraries": {
+        "cuBLASLt": [
+          "common.h"
+        ],
+        "cuBLAS": [
+          "common.h"
+        ]
+      },
+      "inherited_constructs": {
+        "warp_shuffle": [
+          "common.h"
+        ],
+        "streams_events": [
+          "common.h"
+        ]
+      },
+      "tier": 2
+    },
+    {
+      "path": "layernorm_forward.cu",
+      "lines": 629,
+      "kernels": [
+        "layernorm_forward_kernel1",
+        "layernorm_forward_kernel3",
+        "layernorm_forward_kernel4",
+        "layernorm_forward_kernel5",
+        "layernorm_forward_kernel6",
+        "mean_kernel",
+        "normalization_kernel",
+        "rstd_kernel"
+      ],
+      "libraries": {},
+      "constructs": {
+        "cooperative_groups": 33,
+        "shared_memory": 5
+      },
+      "includes": [
+        "common.h"
+      ],
+      "inherited_libraries": {
+        "cuBLASLt": [
+          "common.h"
+        ],
+        "cuBLAS": [
+          "common.h"
+        ]
+      },
+      "inherited_constructs": {
+        "warp_size_32": [
+          "common.h"
+        ],
+        "warp_shuffle": [
+          "common.h"
+        ],
+        "bf16": [
+          "common.h"
+        ],
+        "streams_events": [
+          "common.h"
+        ]
+      },
+      "tier": 2
+    },
+    {
+      "path": "matmul_backward.cu",
+      "lines": 282,
+      "kernels": [
+        "matmul_backward_bias_kernel_faster",
+        "matmul_backward_bias_kernel_naive"
+      ],
+      "libraries": {
+        "cuBLAS": 19
+      },
+      "constructs": {
+        "shared_memory": 1
+      },
+      "includes": [
+        "common.h"
+      ],
+      "inherited_libraries": {
+        "cuBLASLt": [
+          "common.h"
+        ]
+      },
+      "inherited_constructs": {
+        "warp_size_32": [
+          "common.h"
+        ],
+        "warp_shuffle": [
+          "common.h"
+        ],
+        "bf16": [
+          "common.h"
+        ],
+        "streams_events": [
+          "common.h"
+        ]
+      },
+      "tier": 3
+    },
+    {
+      "path": "matmul_backward_bias.cu",
+      "lines": 670,
+      "kernels": [
+        "cast_and_add_kernel",
+        "matmul_backward_bias_kernel1",
+        "matmul_backward_bias_kernel2",
+        "matmul_backward_bias_kernel3",
+        "matmul_backward_bias_kernel4",
+        "matmul_backward_bias_kernel5",
+        "matmul_backward_bias_kernel7",
+        "matmul_backward_bias_kernel8",
+        "matmul_backward_bias_kernel9",
+        "reduce_add_sum_kernel"
+      ],
+      "libraries": {
+        "cuBLAS": 1
+      },
+      "constructs": {
+        "warp_size_32": 6,
+        "warp_shuffle": 8,
+        "cooperative_groups": 18,
+        "atomics": 4,
+        "shared_memory": 6
+      },
+      "includes": [
+        "common.h"
+      ],
+      "inherited_libraries": {
+        "cuBLASLt": [
+          "common.h"
+        ]
+      },
+      "inherited_constructs": {
+        "bf16": [
+          "common.h"
+        ],
+        "streams_events": [
+          "common.h"
+        ]
+      },
+      "tier": 3
+    },
+    {
+      "path": "matmul_forward.cu",
+      "lines": 440,
+      "kernels": [
+        "add_bias",
+        "matmul_forward_kernel1",
+        "matmul_forward_kernel4"
+      ],
+      "libraries": {
+        "cuBLASLt": 30,
+        "cuBLAS": 52
+      },
+      "constructs": {
+        "shared_memory": 2
+      },
+      "includes": [
+        "common.h"
+      ],
+      "inherited_libraries": {},
+      "inherited_constructs": {
+        "warp_size_32": [
+          "common.h"
+        ],
+        "warp_shuffle": [
+          "common.h"
+        ],
+        "bf16": [
+          "common.h"
+        ],
+        "streams_events": [
+          "common.h"
+        ]
+      },
+      "tier": 3
+    },
+    {
+      "path": "nccl_all_reduce.cu",
+      "lines": 198,
+      "kernels": [
+        "set_vector"
+      ],
+      "libraries": {
+        "NCCL": 16
+      },
+      "constructs": {},
+      "includes": [
+        "common.h"
+      ],
+      "inherited_libraries": {
+        "cuBLASLt": [
+          "common.h"
+        ],
+        "cuBLAS": [
+          "common.h"
+        ]
+      },
+      "inherited_constructs": {
+        "warp_size_32": [
+          "common.h"
+        ],
+        "warp_shuffle": [
+          "common.h"
+        ],
+        "bf16": [
+          "common.h"
+        ],
+        "shared_memory": [
+          "common.h"
+        ],
+        "streams_events": [
+          "common.h"
+        ]
+      },
+      "tier": 3
+    },
+    {
+      "path": "permute.cu",
+      "lines": 181,
+      "kernels": [
+        "permute_kernel"
+      ],
+      "libraries": {},
+      "constructs": {},
+      "includes": [
+        "common.h"
+      ],
+      "inherited_libraries": {
+        "cuBLASLt": [
+          "common.h"
+        ],
+        "cuBLAS": [
+          "common.h"
+        ]
+      },
+      "inherited_constructs": {
+        "warp_size_32": [
+          "common.h"
+        ],
+        "warp_shuffle": [
+          "common.h"
+        ],
+        "bf16": [
+          "common.h"
+        ],
+        "shared_memory": [
+          "common.h"
+        ],
+        "streams_events": [
+          "common.h"
+        ]
+      },
+      "tier": 1
+    },
+    {
+      "path": "residual_forward.cu",
+      "lines": 167,
+      "kernels": [
+        "residual_forward_kernel1",
+        "residual_forward_kernel2"
+      ],
+      "libraries": {},
+      "constructs": {},
+      "includes": [
+        "common.h"
+      ],
+      "inherited_libraries": {
+        "cuBLASLt": [
+          "common.h"
+        ],
+        "cuBLAS": [
+          "common.h"
+        ]
+      },
+      "inherited_constructs": {
+        "warp_size_32": [
+          "common.h"
+        ],
+        "warp_shuffle": [
+          "common.h"
+        ],
+        "bf16": [
+          "common.h"
+        ],
+        "shared_memory": [
+          "common.h"
+        ],
+        "streams_events": [
+          "common.h"
+        ]
+      },
+      "tier": 1
+    },
+    {
+      "path": "softmax_forward.cu",
+      "lines": 733,
+      "kernels": [
+        "softmax_forward_kernel1",
+        "softmax_forward_kernel2",
+        "softmax_forward_kernel3",
+        "softmax_forward_kernel4",
+        "softmax_forward_kernel7",
+        "softmax_forward_online_kernel1",
+        "softmax_forward_online_kernel2",
+        "softmax_forward_online_kernel8"
+      ],
+      "libraries": {},
+      "constructs": {
+        "warp_size_32": 6,
+        "warp_shuffle": 6,
+        "cooperative_groups": 8,
+        "shared_memory": 4
+      },
+      "includes": [
+        "common.h"
+      ],
+      "inherited_libraries": {
+        "cuBLASLt": [
+          "common.h"
+        ],
+        "cuBLAS": [
+          "common.h"
+        ]
+      },
+      "inherited_constructs": {
+        "bf16": [
+          "common.h"
+        ],
+        "streams_events": [
+          "common.h"
+        ]
+      },
+      "tier": 2
+    },
+    {
+      "path": "trimat_forward.cu",
+      "lines": 650,
+      "kernels": [
+        "permute_kernel",
+        "trimul_global"
+      ],
+      "libraries": {
+        "cuBLAS": 8
+      },
+      "constructs": {
+        "cooperative_groups": 2,
+        "shared_memory": 2
+      },
+      "includes": [
+        "common.h"
+      ],
+      "inherited_libraries": {
+        "cuBLASLt": [
+          "common.h"
+        ]
+      },
+      "inherited_constructs": {
+        "warp_size_32": [
+          "common.h"
+        ],
+        "warp_shuffle": [
+          "common.h"
+        ],
+        "bf16": [
+          "common.h"
+        ],
+        "streams_events": [
+          "common.h"
+        ]
+      },
+      "tier": 3
+    }
+  ]
+}

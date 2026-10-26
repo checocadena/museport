@@ -1,0 +1,8 @@
+{
+  "command": "g++ -O2 -std=c++17 /tmp/tmp.aWxZTmwrat/task/matmul_backward_bias_ref.cpp -o build/reference",
+  "returncode": 0,
+  "duration_s": 0.224246,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.aWxZTmwrat/out/work"
+}

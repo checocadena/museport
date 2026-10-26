@@ -1,0 +1,8 @@
+{
+  "command": "g++ -O2 -std=c++17 /tmp/tmp.26IjeXxwlB/task/trimat_forward_ref.cpp -o build/reference",
+  "returncode": 0,
+  "duration_s": 0.164923,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.26IjeXxwlB/out/work"
+}

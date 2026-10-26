@@ -1,0 +1,44 @@
+{
+  "t3-matmul-backward": {
+    "status": "task_written",
+    "steps": {
+      "reference_build": {
+        "returncode": 0,
+        "stderr": ""
+      },
+      "migrate": {
+        "status": "ok",
+        "summary": "migrated 1 CUDA file(s) -> 2 file(s); 19 DPCT warning(s) (DPCT1005x2, DPCT1009x1, DPCT1010x1, DPCT1024x2, DPCT1049x1, DPCT1051x2, DPCT1065x2, DPCT1083x1, DPCT1093x2, DPCT1098x3, DPCT1118x2)"
+      },
+      "compile": {
+        "status": "ok",
+        "summary": "compiled 1 source(s) -> <scratch>/t3runs/t3-matmul-backward/check/build/candidate (718 warning(s))"
+      },
+      "verify": {
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 0.00021, atol 0.001)"
+      }
+    }
+  },
+  "t3-matmul-backward-bias": {
+    "status": "harness_check_failed",
+    "steps": {
+      "reference_build": {
+        "returncode": 0,
+        "stderr": ""
+      },
+      "migrate": {
+        "status": "ok",
+        "summary": "migrated 1 CUDA file(s) -> 2 file(s); 67 DPCT warning(s) (DPCT1005x2, DPCT1009x1, DPCT1010x14, DPCT1024x2, DPCT1049x10, DPCT1051x2, DPCT1064x2, DPCT1065x8, DPCT1083x3, DPCT1093x2, DPCT1096x8, DPCT1098x3, DPCT1101x8, DPCT1118x2)"
+      },
+      "compile": {
+        "status": "ok",
+        "summary": "compiled 1 source(s) -> <scratch>/t3runs/t3-matmul-backward-bias/check/build/candidate (586 warning(s))"
+      },
+      "verify": {
+        "status": "fail",
+        "summary": "FAIL: 0/1 case(s) match; first failure: 4606 of 24576 element(s) outside tolerance"
+      }
+    }
+  }
+}

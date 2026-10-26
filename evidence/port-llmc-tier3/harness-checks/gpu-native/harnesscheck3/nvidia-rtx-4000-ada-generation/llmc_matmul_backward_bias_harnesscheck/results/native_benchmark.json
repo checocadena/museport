@@ -1,0 +1,44 @@
+{
+  "tool": "benchmark",
+  "status": "ok",
+  "summary": "10 run(s) each; none: median 364.09 ms, p95 395.22 ms",
+  "evidence": {
+    "command": "build/native /tmp/tmp.SWOvTRk2dd/task/input.bin /tmp/tmp.SWOvTRk2dd/out/work/bench_out.wav 4 64 3072",
+    "runs": 10,
+    "warmup": 1,
+    "results": [
+      {
+        "selector": "none",
+        "status": "ok",
+        "wall_time_s": {
+          "n": 10,
+          "min": 0.29125145997386426,
+          "median": 0.3640913275303319,
+          "p95": 0.3952238298312295,
+          "max": 0.4113292470574379,
+          "mean": 0.3482752005220391,
+          "stdev": 0.039900227909425164
+        },
+        "samples_s": [
+          0.363168,
+          0.291251,
+          0.365015,
+          0.296107,
+          0.411329,
+          0.366153,
+          0.299512,
+          0.375539,
+          0.369004,
+          0.345673
+        ],
+        "reported": null,
+        "reported_samples": [],
+        "reported_note": "regex matched 0/10 runs"
+      }
+    ]
+  },
+  "limitations": [
+    "Wall-clock time of the whole process (includes start-up, JIT compilation of SYCL kernels on first use, I/O). Use report_regex for in-program kernel timings.",
+    "Device selection uses ONEAPI_DEVICE_SELECTOR; it only takes effect if the program uses a default/selector-based sycl::queue."
+  ]
+}

@@ -1,0 +1,37 @@
+created digitalocean machine 612921929 (gpu-mi350x1-288gb-spot, $3.5/h)
+waiting for the agent (HTTP no answer)
+digitalocean machine 612921929 is stuck (its agent did not answer within 15 min); deleting it and trying another
+deleted digitalocean machine 612921929: confirmed
+created digitalocean machine 612927055 (gpu-mi350x1-288gb-spot, $3.5/h)
+waiting for the agent (HTTP no answer)
+digitalocean machine 612927055 is stuck (its agent did not answer before the overall time limit); deleting it and trying another
+deleted digitalocean machine 612927055: confirmed
+{
+  "tool": "remote_test",
+  "status": "error",
+  "summary": "no digitalocean machine became ready (3 GPU type(s) tried, 2 stuck machine(s) replaced)",
+  "evidence": {
+    "provider": "digitalocean",
+    "create_attempts": [
+      {
+        "gpu": "gpu-mi350x1-288gb-spot",
+        "machine_id": "612921929",
+        "error": "stuck: its agent did not answer within 15 min"
+      },
+      {
+        "gpu": "gpu-mi350x1-288gb-spot",
+        "machine_id": "612927055",
+        "error": "stuck: its agent did not answer before the overall time limit"
+      }
+    ],
+    "sycl_url": "https://github.com/checocadena/oneapi-agent-toolkit/releases/download/sycl-hip-nightly-2026-10-14-rocm7.0-r3/sycl-hip-linux-x86_64.tar.gz",
+    "sycl_sha256": "e9bf82ee3d7bd18d8d86ad5e0ea918aab3d4a30578934af510ddbc50c43c8fc3"
+  },
+  "limitations": [
+    "Usually means no stock or unhealthy hosts right now; retry later or pass --gpu."
+  ]
+}
+
+real	17m42.911s
+user	0m1.322s
+sys	0m0.159s

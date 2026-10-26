@@ -1,0 +1,62 @@
+[port] t1-residual-forward: loop with muse-spark-1.3 (max 12 turns, cap $1.00); spent so far $0.0000
+[port] t1-residual-forward: max_iterations in 12 turns, $0.1747
+[port] t1-gelu-forward: loop with muse-spark-1.3 (max 12 turns, cap $1.00); spent so far $0.1747
+[port] t1-gelu-forward: success in 9 turns, $0.1559
+{
+  "model": "muse-spark-1.3",
+  "spent_usd": 0.3306,
+  "items": [
+    {
+      "item": "t1-residual-forward",
+      "file": "residual_forward.cu",
+      "task": "t1-residual-forward/task/task.json",
+      "status": "max_iterations",
+      "detail": "reached 12 iterations without meeting success conditions",
+      "iterations": 12,
+      "usage": {
+        "input_tokens": 95117,
+        "output_tokens": 8027,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 144392
+      },
+      "cost_usd": 0.1746698,
+      "best": null,
+      "sources": [
+        "migrated/common.h",
+        "migrated/residual_forward_harness.dp.cpp",
+        "residual_forward.cpp"
+      ]
+    },
+    {
+      "item": "t1-gelu-forward",
+      "file": "gelu_forward.cu",
+      "task": "t1-gelu-forward/task/task.json",
+      "status": "success",
+      "detail": "verify passed and zero dpct helpers on the current compiled sources",
+      "iterations": 9,
+      "usage": {
+        "input_tokens": 95406,
+        "output_tokens": 6186,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 69173
+      },
+      "cost_usd": 0.15592395,
+      "best": {
+        "iteration": 9,
+        "source_hash": "8873818fb820298e",
+        "helpers": 0,
+        "path": "/home/user/museport/runs/port/t1-gelu-forward/20261026T203458741357Z/best",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.19e-07, atol 1e-05)"
+      },
+      "sources": [
+        "gelu_forward.cpp",
+        "migrated/common.h",
+        "migrated/gelu_forward_harness.dp.cpp"
+      ]
+    }
+  ]
+}
+
+real	2m7.215s
+user	0m27.777s
+sys	0m4.082s

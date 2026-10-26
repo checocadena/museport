@@ -1,0 +1,70 @@
+{
+  "tool": "verify",
+  "status": "ok",
+  "summary": "PASS: 1/1 case(s) match (worst max abs err 1.55e-06, atol 0.01)",
+  "evidence": {
+    "mode": "array",
+    "cases": [
+      {
+        "input": "/tmp/tmp.lbyN18z6tB/task/input.bin",
+        "reference": {
+          "command": "build/native /tmp/tmp.lbyN18z6tB/task/input.bin /tmp/tmp.lbyN18z6tB/out/work/v_sycl_native/case0_reference.out 5898240",
+          "returncode": 0,
+          "duration_s": 0.366639,
+          "stdout": "",
+          "stderr": "",
+          "cwd": "/tmp/tmp.lbyN18z6tB/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "cuda:0"
+          },
+          "output_file": "/tmp/tmp.lbyN18z6tB/out/work/v_sycl_native/case0_reference.out"
+        },
+        "candidate": {
+          "command": "build/sycl /tmp/tmp.lbyN18z6tB/task/input.bin /tmp/tmp.lbyN18z6tB/out/work/v_sycl_native/case0_candidate.out 5898240",
+          "returncode": 0,
+          "duration_s": 0.307373,
+          "stdout": "",
+          "stderr": "",
+          "cwd": "/tmp/tmp.lbyN18z6tB/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "cuda:0"
+          },
+          "output_file": "/tmp/tmp.lbyN18z6tB/out/work/v_sycl_native/case0_candidate.out"
+        },
+        "reference_format": "f32",
+        "candidate_format": "f32",
+        "mode": "array",
+        "stats": {
+          "n_reference": 4,
+          "n_candidate": 4,
+          "atol": 0.01,
+          "rtol": 1.1920929e-07,
+          "max_ulp_allowed": null,
+          "passed": true,
+          "max_abs_err": 1.5497207641601562e-06,
+          "rms_err": 9.461944023601737e-07,
+          "mean_abs_err": 7.152557373046875e-07,
+          "max_rel_err": 7.880748991233818e-07,
+          "max_ulp_f32": 13,
+          "median_ulp_f32": 5.0,
+          "exact_matches": 0,
+          "mismatches": 0,
+          "nan_mismatches": 0,
+          "reference_range": [
+            1.9664638042449951,
+            1.9664664268493652
+          ],
+          "first_mismatches": []
+        },
+        "passed": true
+      }
+    ],
+    "work_dir": "/tmp/tmp.lbyN18z6tB/out/work/v_sycl_native",
+    "passed_cases": 1,
+    "total_cases": 1,
+    "worst_max_abs_err": 1.5497207641601562e-06
+  },
+  "limitations": [
+    "Equivalence is shown only for the inputs tested; other inputs/sizes may behave differently."
+  ]
+}

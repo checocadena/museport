@@ -1,0 +1,8 @@
+{
+  "command": "/usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.26IjeXxwlB/task /tmp/tmp.26IjeXxwlB/task/trimat_forward_harness.cu -o build/native",
+  "returncode": 1,
+  "duration_s": 3.231338,
+  "stdout": "",
+  "stderr": "/usr/bin/ld: /tmp/tmpxft_000000fe_00000000-12_trimat_forward_harness.o: in function `setup_main()':\ntmpxft_000000fe_00000000-7_trimat_forward_harness.cudafe1.cpp:(.text+0x80a): undefined reference to `cublasCreate_v2'\n/usr/bin/ld: tmpxft_000000fe_00000000-7_trimat_forward_harness.cudafe1.cpp:(.text+0x830): undefined reference to `cublasSetMathMode'\n/usr/bin/ld: /tmp/tmpxft_000000fe_00000000-12_trimat_forward_harness.o: in function `trimul_cublas(float*, float const*, int, int, int, int)':\ntmpxft_000000fe_00000000-7_trimat_forward_harness.cudafe1.cpp:(.text+0xc02): undefined reference to `cublasSgemmStridedBatched'\ncollect2: error: ld returned 1 exit status\n",
+  "cwd": "/tmp/tmp.26IjeXxwlB/out/work"
+}

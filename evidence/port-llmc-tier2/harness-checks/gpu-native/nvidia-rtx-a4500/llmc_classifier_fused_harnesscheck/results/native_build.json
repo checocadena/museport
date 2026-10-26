@@ -1,0 +1,8 @@
+{
+  "command": "/usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.dFvo3G3bqQ/task /tmp/tmp.dFvo3G3bqQ/task/classifier_fused_harness.cu -o build/native",
+  "returncode": 0,
+  "duration_s": 3.431471,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.dFvo3G3bqQ/out/work"
+}

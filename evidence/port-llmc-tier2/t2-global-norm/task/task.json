@@ -1,0 +1,38 @@
+{
+  "name": "llmc_global_norm",
+  "goal": "Port global_norm_harness.cu (llm.c dev/cuda/global_norm.cu, fp32 build) to idiomatic SYCL 2020 with zero dpct helpers. Keep every kernel variant k in [1, 2, 3, 4] as its own SYCL kernel, computed on the SYCL device, and keep the program's contract: `build/candidate <input> <output> N` reads the inputs and writes each variant's outputs in order as raw float32, exactly as the CUDA main does. A hidden reference checks the output (atol 0.01 + rtol FLT_EPSILON*|ref|, llm.c's own fp32 rule). Success requires compile, verify and a zero-helper scan_helpers of the whole work directory (path '.') on the same sources: migrate's output under migrated/ counts, so replace or empty those files once your own port is done.",
+  "cuda_path": "global_norm_harness.cu",
+  "include_dirs": [
+    "."
+  ],
+  "reference_build": [
+    "g++",
+    "-O2",
+    "-std=c++17",
+    "{task_dir}/global_norm_ref.cpp",
+    "-o",
+    "build/reference"
+  ],
+  "reference_cmd": "build/reference {input} {output} 5898240",
+  "candidate_cmd": "build/candidate {input} {output} 5898240",
+  "inputs": [
+    "input.bin"
+  ],
+  "mode": "array",
+  "output_format": "f32",
+  "tolerance": 0.01,
+  "rtol": 1.1920929e-07,
+  "museport": {
+    "source": "karpathy/llm.c dev/cuda/global_norm.cu",
+    "variants": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "sizes": {
+      "N": 5898240
+    },
+    "note": "N = 5898240 parameters (llm.c: L=12 layers, 70.8M); inputs scaled by 1e-3 as in llm.c; kernel 4 uses 1024 output slots for block sums, only out[0] is compared."
+  }
+}

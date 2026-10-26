@@ -1,0 +1,45 @@
+{
+  "name": "llmc_layernorm_backward",
+  "goal": "Port layernorm_backward_harness.cu (llm.c dev/cuda/layernorm_backward.cu, fp32 build) to idiomatic SYCL 2020 with zero dpct helpers. Keep every kernel variant k in [1, 2, 3, 5, 6, 7, 8, 9, 10] as its own SYCL kernel, computed on the SYCL device, and keep the program's contract: `build/candidate <input> <output> B T C` reads the inputs and writes each variant's outputs in order as raw float32, exactly as the CUDA main does. A hidden reference checks the output (atol 0.001 + rtol FLT_EPSILON*|ref|, llm.c's own fp32 rule). Success requires compile, verify and a zero-helper scan_helpers of the whole work directory (path '.') on the same sources: migrate's output under migrated/ counts, so replace or empty those files once your own port is done.",
+  "cuda_path": "layernorm_backward_harness.cu",
+  "include_dirs": [
+    "."
+  ],
+  "reference_build": [
+    "g++",
+    "-O2",
+    "-std=c++17",
+    "{task_dir}/layernorm_backward_ref.cpp",
+    "-o",
+    "build/reference"
+  ],
+  "reference_cmd": "build/reference {input} {output} 4 64 768",
+  "candidate_cmd": "build/candidate {input} {output} 4 64 768",
+  "inputs": [
+    "input.bin"
+  ],
+  "mode": "array",
+  "output_format": "f32",
+  "tolerance": 0.001,
+  "rtol": 1.1920929e-07,
+  "museport": {
+    "source": "karpathy/llm.c dev/cuda/layernorm_backward.cu",
+    "variants": [
+      1,
+      2,
+      3,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "sizes": {
+      "B": 4,
+      "T": 64,
+      "C": 768
+    },
+    "note": "fp32 variants only (1, 2, 3, 5-10; 4 is bf16-only in llm.c). B=4, T=64, C=768 (llm.c: B=8, T=1024, C=1600; C=1600 fails variant 9's C % (32 * x128::size) assert in fp32). mean and rstd come from the forward pass on the host, as in llm.c; layernorm_forward_cpu stays in the harness for that. The fp32 build adds #include <cuda_bf16.h>: llm.c's file only builds in bf16, and its bf16-only kernel 4 uses __nv_bfloat162 unguarded (variant 4 is not run)."
+  }
+}

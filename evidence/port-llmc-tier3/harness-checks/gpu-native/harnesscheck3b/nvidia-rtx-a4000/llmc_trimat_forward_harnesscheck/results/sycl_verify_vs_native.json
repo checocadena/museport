@@ -1,0 +1,133 @@
+{
+  "tool": "verify",
+  "status": "fail",
+  "summary": "FAIL: 0/1 case(s) match; first failure: 49484 of 1966080 element(s) outside tolerance",
+  "evidence": {
+    "mode": "array",
+    "cases": [
+      {
+        "input": "/tmp/tmp.Ra8IKpon7h/task/input.bin",
+        "reference": {
+          "command": "build/native /tmp/tmp.Ra8IKpon7h/task/input.bin /tmp/tmp.Ra8IKpon7h/out/work/v_sycl_native/case0_reference.out 2 128 768 12",
+          "returncode": 0,
+          "duration_s": 0.634946,
+          "stdout": "",
+          "stderr": "",
+          "cwd": "/tmp/tmp.Ra8IKpon7h/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "cuda:0"
+          },
+          "output_file": "/tmp/tmp.Ra8IKpon7h/out/work/v_sycl_native/case0_reference.out"
+        },
+        "candidate": {
+          "command": "build/sycl /tmp/tmp.Ra8IKpon7h/task/input.bin /tmp/tmp.Ra8IKpon7h/out/work/v_sycl_native/case0_candidate.out 2 128 768 12",
+          "returncode": 0,
+          "duration_s": 0.021375,
+          "stdout": "",
+          "stderr": "",
+          "cwd": "/tmp/tmp.Ra8IKpon7h/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "cuda:0"
+          },
+          "output_file": "/tmp/tmp.Ra8IKpon7h/out/work/v_sycl_native/case0_candidate.out"
+        },
+        "reference_format": "f32",
+        "candidate_format": "f32",
+        "mode": "array",
+        "stats": {
+          "n_reference": 1966080,
+          "n_candidate": 1966080,
+          "atol": 0.0001,
+          "rtol": 1.1920929e-07,
+          "max_ulp_allowed": null,
+          "passed": false,
+          "max_abs_err": 0.00040161609649658203,
+          "rms_err": 2.7694880422986743e-05,
+          "mean_abs_err": 7.009927989606261e-06,
+          "max_rel_err": 42.017182130584196,
+          "max_ulp_f32": 1905859072,
+          "median_ulp_f32": 0.0,
+          "exact_matches": 1170391,
+          "mismatches": 49484,
+          "nan_mismatches": 0,
+          "reference_range": [
+            -1.5939369201660156,
+            1.6516941785812378
+          ],
+          "first_mismatches": [
+            {
+              "index": 128,
+              "reference": -0.6189160943031311,
+              "candidate": -0.6190373301506042,
+              "abs_err": 0.00012123584747314453
+            },
+            {
+              "index": 129,
+              "reference": 0.563510000705719,
+              "candidate": 0.5633988380432129,
+              "abs_err": 0.00011116266250610352
+            },
+            {
+              "index": 257,
+              "reference": 0.08816857635974884,
+              "candidate": 0.08802832663059235,
+              "abs_err": 0.00014024972915649414
+            },
+            {
+              "index": 385,
+              "reference": -0.4624852240085602,
+              "candidate": -0.46259522438049316,
+              "abs_err": 0.0001100003719329834
+            },
+            {
+              "index": 512,
+              "reference": 0.3135949671268463,
+              "candidate": 0.3138030171394348,
+              "abs_err": 0.00020805001258850098
+            },
+            {
+              "index": 513,
+              "reference": 0.12583346664905548,
+              "candidate": 0.1260288655757904,
+              "abs_err": 0.00019539892673492432
+            },
+            {
+              "index": 514,
+              "reference": 0.06555191427469254,
+              "candidate": 0.06575911492109299,
+              "abs_err": 0.00020720064640045166
+            },
+            {
+              "index": 641,
+              "reference": 0.26013123989105225,
+              "candidate": 0.2599674463272095,
+              "abs_err": 0.00016379356384277344
+            },
+            {
+              "index": 769,
+              "reference": 0.23138077557086945,
+              "candidate": 0.23150980472564697,
+              "abs_err": 0.00012902915477752686
+            },
+            {
+              "index": 774,
+              "reference": 0.4453001320362091,
+              "candidate": 0.44519224762916565,
+              "abs_err": 0.00010788440704345703
+            }
+          ],
+          "reason": "49484 of 1966080 element(s) outside tolerance"
+        },
+        "passed": false,
+        "reason": "49484 of 1966080 element(s) outside tolerance"
+      }
+    ],
+    "work_dir": "/tmp/tmp.Ra8IKpon7h/out/work/v_sycl_native",
+    "passed_cases": 0,
+    "total_cases": 1,
+    "worst_max_abs_err": 0.00040161609649658203
+  },
+  "limitations": [
+    "Equivalence is shown only for the inputs tested; other inputs/sizes may behave differently."
+  ]
+}

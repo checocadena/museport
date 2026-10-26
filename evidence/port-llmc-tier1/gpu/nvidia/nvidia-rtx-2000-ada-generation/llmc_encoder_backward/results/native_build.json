@@ -1,0 +1,8 @@
+{
+  "command": "/usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.QzBX9x7TGX/task /tmp/tmp.QzBX9x7TGX/task/encoder_backward_harness.cu -o build/native",
+  "returncode": 0,
+  "duration_s": 1.34767,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.QzBX9x7TGX/out/work"
+}

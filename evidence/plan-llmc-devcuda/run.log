@@ -1,0 +1,27 @@
+Traceback (most recent call last):
+  File "/usr/local/bin/museport", line 8, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/user/museport/src/museport/cli.py", line 49, in main
+    return _plan(args)
+  File "/home/user/museport/src/museport/cli.py", line 65, in _plan
+    result = make_plan(report, model=args.model, provider=args.provider,
+                       max_output_tokens=args.max_output, max_cost_usd=args.max_cost,
+                       transport=transport)
+  File "/home/user/museport/src/museport/plan.py", line 367, in make_plan
+    plan, usage = call_model(messages, model=model, provider=provider,
+                  ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             max_output_tokens=max_output_tokens, transport=transport,
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             environ=environ)
+                             ^^^^^^^^^^^^^^^^
+  File "/home/user/museport/src/museport/plan.py", line 181, in call_model
+    resp = (transport or http_transport())(f"{base.rstrip('/')}/chat/completions", headers, body)
+  File "/usr/local/lib/python3.13/dist-packages/oneapi_agent/models.py", line 213, in post
+    raise RuntimeError(f"{url}: HTTP {e.code}: {detail}") from None
+RuntimeError: https://api.meta.ai/v1/chat/completions: HTTP 502: upstream request failed
+
+real	2m10.935s
+user	0m0.727s
+sys	0m0.046s
+exit=1

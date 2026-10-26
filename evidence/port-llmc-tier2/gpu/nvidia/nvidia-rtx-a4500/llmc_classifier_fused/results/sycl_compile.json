@@ -1,0 +1,890 @@
+{
+  "tool": "compile",
+  "status": "ok",
+  "summary": "compiled 1 source(s) -> /tmp/tmp.oECKP30I6M/out/work/build/sycl (24 warning(s))",
+  "evidence": {
+    "run": {
+      "command": "/opt/sycl/bin/clang++ -fsycl -O2 -fsycl-targets=nvidia_gpu_sm_86 -I/tmp/tmp.oECKP30I6M/task /tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp -o /tmp/tmp.oECKP30I6M/out/work/build/sycl",
+      "returncode": 0,
+      "duration_s": 9.39006,
+      "stdout": "",
+      "stderr": "/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp:133:32: warning: 'barrier' is deprecated: use sycl::group_barrier() free function instead [-Wdeprecated-declarations]\n  133 |                             it.barrier(sycl::access::fence_space::local_space);\n      |                                ^\n/opt/sycl/bin/../include/sycl/nd_item.hpp:206:3: note: 'barrier' has been explicitly marked deprecated here\n  206 |   __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")\n      |   ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'\n   75 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)\n      |                                        ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:66:38: note: expanded from macro '__SYCL_DEPRECATED'\n   66 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]\n      |                                      ^\n/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp:133:65: warning: 'fence_space' is deprecated: Removed in SYCL 2020 [-Wdeprecated-declarations]\n  133 |                             it.barrier(sycl::access::fence_space::local_space);\n      |                                                                 ^\n/opt/sycl/bin/../include/sycl/access/access.hpp:56:12: note: 'fence_space' has been explicitly marked deprecated here\n   56 | enum class __SYCL2020_DEPRECATED(\"Removed in SYCL 2020\") fence_space {\n      |            ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'\n   75 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)\n      |                                        ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:66:38: note: expanded from macro '__SYCL_DEPRECATED'\n   66 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]\n      |                                      ^\n/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp:133:67: warning: 'local_space' is deprecated: Removed in SYCL 2020 [-Wdeprecated-declarations]\n  133 |                             it.barrier(sycl::access::fence_space::local_space);\n      |                                                                   ^\n/opt/sycl/bin/../include/sycl/access/access.hpp:56:12: note: 'fence_space' has been explicitly marked deprecated here\n   56 | enum class __SYCL2020_DEPRECATED(\"Removed in SYCL 2020\") fence_space {\n      |            ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'\n   75 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)\n      |                                        ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:66:38: note: expanded from macro '__SYCL_DEPRECATED'\n   66 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]\n      |                                      ^\n/tmp/tmp.oE\n...[11958 chars truncated]...\n        ^\n/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp:192:32: warning: 'barrier' is deprecated: use sycl::group_barrier() free function instead [-Wdeprecated-declarations]\n  192 |                             it.barrier(sycl::access::fence_space::local_space);\n      |                                ^\n/opt/sycl/bin/../include/sycl/nd_item.hpp:206:3: note: 'barrier' has been explicitly marked deprecated here\n  206 |   __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")\n      |   ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'\n   75 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)\n      |                                        ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:66:38: note: expanded from macro '__SYCL_DEPRECATED'\n   66 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]\n      |                                      ^\n/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp:192:65: warning: 'fence_space' is deprecated: Removed in SYCL 2020 [-Wdeprecated-declarations]\n  192 |                             it.barrier(sycl::access::fence_space::local_space);\n      |                                                                 ^\n/opt/sycl/bin/../include/sycl/access/access.hpp:56:12: note: 'fence_space' has been explicitly marked deprecated here\n   56 | enum class __SYCL2020_DEPRECATED(\"Removed in SYCL 2020\") fence_space {\n      |            ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'\n   75 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)\n      |                                        ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:66:38: note: expanded from macro '__SYCL_DEPRECATED'\n   66 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]\n      |                                      ^\n/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp:192:67: warning: 'local_space' is deprecated: Removed in SYCL 2020 [-Wdeprecated-declarations]\n  192 |                             it.barrier(sycl::access::fence_space::local_space);\n      |                                                                   ^\n/opt/sycl/bin/../include/sycl/access/access.hpp:56:12: note: 'fence_space' has been explicitly marked deprecated here\n   56 | enum class __SYCL2020_DEPRECATED(\"Removed in SYCL 2020\") fence_space {\n      |            ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'\n   75 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)\n      |                                        ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:66:38: note: expanded from macro '__SYCL_DEPRECATED'\n   66 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]\n      |                                      ^\n/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp:256:32: warning: 'barrier' is deprecated: use sycl::group_barrier() free function instead [-Wdeprecated-declarations]\n  256 |                             it.barrier(sycl::access::fence_space::local_space);\n      |                                ^\n/opt/sycl/bin/../include/sycl/nd_item.hpp:206:3: note: 'barrier' has been explicitly marked deprecated here\n  206 |   __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")\n      |   ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'\n   75 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)\n      |                                        ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:66:38: note: expanded from macro '__SYCL_DEPRECATED'\n   66 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]\n      |                                      ^\n/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp:256:65: warning: 'fence_space' is deprecated: Removed in SYCL 2020 [-Wdeprecated-declarations]\n  256 |                             it.barrier(sycl::access::fence_space::local_space);\n      |                                                                 ^\n/opt/sycl/bin/../include/sycl/access/access.hpp:56:12: note: 'fence_space' has been explicitly marked deprecated here\n   56 | enum class __SYCL2020_DEPRECATED(\"Removed in SYCL 2020\") fence_space {\n      |            ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'\n   75 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)\n      |                                        ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:66:38: note: expanded from macro '__SYCL_DEPRECATED'\n   66 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]\n      |                                      ^\n/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp:256:67: warning: 'local_space' is deprecated: Removed in SYCL 2020 [-Wdeprecated-declarations]\n  256 |                             it.barrier(sycl::access::fence_space::local_space);\n      |                                                                   ^\n/opt/sycl/bin/../include/sycl/access/access.hpp:56:12: note: 'fence_space' has been explicitly marked deprecated here\n   56 | enum class __SYCL2020_DEPRECATED(\"Removed in SYCL 2020\") fence_space {\n      |            ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'\n   75 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)\n      |                                        ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:66:38: note: expanded from macro '__SYCL_DEPRECATED'\n   66 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]\n      |                                      ^\n/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp:355:32: warning: 'barrier' is deprecated: use sycl::group_barrier() free function instead [-Wdeprecated-declarations]\n  355 |                             it.barrier(sycl::access::fence_space::local_space);\n      |                                ^\n/opt/sycl/bin/../include/sycl/nd_item.hpp:206:3: note: 'barrier' has been explicitly marked deprecated here\n  206 |   __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")\n      |   ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'\n   75 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)\n      |                                        ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:66:38: note: expanded from macro '__SYCL_DEPRECATED'\n   66 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]\n      |                                      ^\n/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp:355:65: warning: 'fence_space' is deprecated: Removed in SYCL 2020 [-Wdeprecated-declarations]\n  355 |                             it.barrier(sycl::access::fence_space::local_space);\n      |                                                                 ^\n/opt/sycl/bin/../include/sycl/access/access.hpp:56:12: note: 'fence_space' has been explicitly marked deprecated here\n   56 | enum class __SYCL2020_DEPRECATED(\"Removed in SYCL 2020\") fence_space {\n      |            ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'\n   75 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)\n      |                                        ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:66:38: note: expanded from macro '__SYCL_DEPRECATED'\n   66 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]\n      |                                      ^\n/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp:355:67: warning: 'local_space' is deprecated: Removed in SYCL 2020 [-Wdeprecated-declarations]\n  355 |                             it.barrier(sycl::access::fence_space::local_space);\n      |                                                                   ^\n/opt/sycl/bin/../include/sycl/access/access.hpp:56:12: note: 'fence_space' has been explicitly marked deprecated here\n   56 | enum class __SYCL2020_DEPRECATED(\"Removed in SYCL 2020\") fence_space {\n      |            ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'\n   75 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)\n      |                                        ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:66:38: note: expanded from macro '__SYCL_DEPRECATED'\n   66 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]\n      |                                      ^\n12 warnings generated.\n"
+    },
+    "output": "/tmp/tmp.oECKP30I6M/out/work/build/sycl",
+    "dpct_include_added": null,
+    "diagnostics": [
+      {
+        "file": "/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp",
+        "line": 133,
+        "column": 32,
+        "severity": "warning",
+        "message": "'barrier' is deprecated: use sycl::group_barrier() free function instead",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "                            it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/nd_item.hpp",
+        "line": 206,
+        "column": 3,
+        "severity": "note",
+        "message": "'barrier' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "  __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp",
+        "line": 133,
+        "column": 65,
+        "severity": "warning",
+        "message": "'fence_space' is deprecated: Removed in SYCL 2020",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "                            it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/access/access.hpp",
+        "line": 56,
+        "column": 12,
+        "severity": "note",
+        "message": "'fence_space' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "enum class __SYCL2020_DEPRECATED(\"Removed in SYCL 2020\") fence_space {"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp",
+        "line": 133,
+        "column": 67,
+        "severity": "warning",
+        "message": "'local_space' is deprecated: Removed in SYCL 2020",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "                            it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/access/access.hpp",
+        "line": 56,
+        "column": 12,
+        "severity": "note",
+        "message": "'fence_space' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "enum class __SYCL2020_DEPRECATED(\"Removed in SYCL 2020\") fence_space {"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp",
+        "line": 192,
+        "column": 32,
+        "severity": "warning",
+        "message": "'barrier' is deprecated: use sycl::group_barrier() free function instead",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "                            it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/nd_item.hpp",
+        "line": 206,
+        "column": 3,
+        "severity": "note",
+        "message": "'barrier' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "  __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp",
+        "line": 192,
+        "column": 65,
+        "severity": "warning",
+        "message": "'fence_space' is deprecated: Removed in SYCL 2020",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "                            it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/access/access.hpp",
+        "line": 56,
+        "column": 12,
+        "severity": "note",
+        "message": "'fence_space' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "enum class __SYCL2020_DEPRECATED(\"Removed in SYCL 2020\") fence_space {"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp",
+        "line": 192,
+        "column": 67,
+        "severity": "warning",
+        "message": "'local_space' is deprecated: Removed in SYCL 2020",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "                            it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/access/access.hpp",
+        "line": 56,
+        "column": 12,
+        "severity": "note",
+        "message": "'fence_space' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "enum class __SYCL2020_DEPRECATED(\"Removed in SYCL 2020\") fence_space {"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp",
+        "line": 256,
+        "column": 32,
+        "severity": "warning",
+        "message": "'barrier' is deprecated: use sycl::group_barrier() free function instead",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "                            it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/nd_item.hpp",
+        "line": 206,
+        "column": 3,
+        "severity": "note",
+        "message": "'barrier' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "  __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp",
+        "line": 256,
+        "column": 65,
+        "severity": "warning",
+        "message": "'fence_space' is deprecated: Removed in SYCL 2020",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "                            it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/access/access.hpp",
+        "line": 56,
+        "column": 12,
+        "severity": "note",
+        "message": "'fence_space' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "enum class __SYCL2020_DEPRECATED(\"Removed in SYCL 2020\") fence_space {"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp",
+        "line": 256,
+        "column": 67,
+        "severity": "warning",
+        "message": "'local_space' is deprecated: Removed in SYCL 2020",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "                            it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/access/access.hpp",
+        "line": 56,
+        "column": 12,
+        "severity": "note",
+        "message": "'fence_space' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "enum class __SYCL2020_DEPRECATED(\"Removed in SYCL 2020\") fence_space {"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp",
+        "line": 355,
+        "column": 32,
+        "severity": "warning",
+        "message": "'barrier' is deprecated: use sycl::group_barrier() free function instead",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "                            it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/nd_item.hpp",
+        "line": 206,
+        "column": 3,
+        "severity": "note",
+        "message": "'barrier' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "  __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp",
+        "line": 355,
+        "column": 65,
+        "severity": "warning",
+        "message": "'fence_space' is deprecated: Removed in SYCL 2020",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "                            it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/access/access.hpp",
+        "line": 56,
+        "column": 12,
+        "severity": "note",
+        "message": "'fence_space' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "enum class __SYCL2020_DEPRECATED(\"Removed in SYCL 2020\") fence_space {"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp",
+        "line": 355,
+        "column": 67,
+        "severity": "warning",
+        "message": "'local_space' is deprecated: Removed in SYCL 2020",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "                            it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/access/access.hpp",
+        "line": 56,
+        "column": 12,
+        "severity": "note",
+        "message": "'fence_space' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "enum class __SYCL2020_DEPRECATED(\"Removed in SYCL 2020\") fence_space {"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp",
+        "line": 133,
+        "column": 32,
+        "severity": "warning",
+        "message": "'barrier' is deprecated: use sycl::group_barrier() free function instead",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "                            it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/nd_item.hpp",
+        "line": 206,
+        "column": 3,
+        "severity": "note",
+        "message": "'barrier' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "  __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp",
+        "line": 133,
+        "column": 65,
+        "severity": "warning",
+        "message": "'fence_space' is deprecated: Removed in SYCL 2020",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "                            it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/access/access.hpp",
+        "line": 56,
+        "column": 12,
+        "severity": "note",
+        "message": "'fence_space' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "enum class __SYCL2020_DEPRECATED(\"Removed in SYCL 2020\") fence_space {"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp",
+        "line": 133,
+        "column": 67,
+        "severity": "warning",
+        "message": "'local_space' is deprecated: Removed in SYCL 2020",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "                            it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/access/access.hpp",
+        "line": 56,
+        "column": 12,
+        "severity": "note",
+        "message": "'fence_space' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "enum class __SYCL2020_DEPRECATED(\"Removed in SYCL 2020\") fence_space {"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp",
+        "line": 192,
+        "column": 32,
+        "severity": "warning",
+        "message": "'barrier' is deprecated: use sycl::group_barrier() free function instead",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "                            it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/nd_item.hpp",
+        "line": 206,
+        "column": 3,
+        "severity": "note",
+        "message": "'barrier' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "  __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp",
+        "line": 192,
+        "column": 65,
+        "severity": "warning",
+        "message": "'fence_space' is deprecated: Removed in SYCL 2020",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "                            it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/access/access.hpp",
+        "line": 56,
+        "column": 12,
+        "severity": "note",
+        "message": "'fence_space' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "enum class __SYCL2020_DEPRECATED(\"Removed in SYCL 2020\") fence_space {"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp",
+        "line": 192,
+        "column": 67,
+        "severity": "warning",
+        "message": "'local_space' is deprecated: Removed in SYCL 2020",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "                            it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/access/access.hpp",
+        "line": 56,
+        "column": 12,
+        "severity": "note",
+        "message": "'fence_space' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "enum class __SYCL2020_DEPRECATED(\"Removed in SYCL 2020\") fence_space {"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp",
+        "line": 256,
+        "column": 32,
+        "severity": "warning",
+        "message": "'barrier' is deprecated: use sycl::group_barrier() free function instead",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "                            it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/nd_item.hpp",
+        "line": 206,
+        "column": 3,
+        "severity": "note",
+        "message": "'barrier' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "  __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp",
+        "line": 256,
+        "column": 65,
+        "severity": "warning",
+        "message": "'fence_space' is deprecated: Removed in SYCL 2020",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "                            it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/access/access.hpp",
+        "line": 56,
+        "column": 12,
+        "severity": "note",
+        "message": "'fence_space' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "enum class __SYCL2020_DEPRECATED(\"Removed in SYCL 2020\") fence_space {"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp",
+        "line": 256,
+        "column": 67,
+        "severity": "warning",
+        "message": "'local_space' is deprecated: Removed in SYCL 2020",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "                            it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/access/access.hpp",
+        "line": 56,
+        "column": 12,
+        "severity": "note",
+        "message": "'fence_space' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "enum class __SYCL2020_DEPRECATED(\"Removed in SYCL 2020\") fence_space {"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp",
+        "line": 355,
+        "column": 32,
+        "severity": "warning",
+        "message": "'barrier' is deprecated: use sycl::group_barrier() free function instead",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "                            it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/nd_item.hpp",
+        "line": 206,
+        "column": 3,
+        "severity": "note",
+        "message": "'barrier' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "  __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp",
+        "line": 355,
+        "column": 65,
+        "severity": "warning",
+        "message": "'fence_space' is deprecated: Removed in SYCL 2020",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "                            it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/access/access.hpp",
+        "line": 56,
+        "column": 12,
+        "severity": "note",
+        "message": "'fence_space' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "enum class __SYCL2020_DEPRECATED(\"Removed in SYCL 2020\") fence_space {"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.oECKP30I6M/task/agent_port/classifier_fused_sycl.cpp",
+        "line": 355,
+        "column": 67,
+        "severity": "warning",
+        "message": "'local_space' is deprecated: Removed in SYCL 2020",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "                            it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/access/access.hpp",
+        "line": 56,
+        "column": 12,
+        "severity": "note",
+        "message": "'fence_space' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "enum class __SYCL2020_DEPRECATED(\"Removed in SYCL 2020\") fence_space {"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      }
+    ],
+    "counts": {
+      "error": 0,
+      "warning": 24,
+      "note": 72
+    }
+  },
+  "limitations": [
+    "A successful compile says nothing about numerical correctness; run verify."
+  ]
+}

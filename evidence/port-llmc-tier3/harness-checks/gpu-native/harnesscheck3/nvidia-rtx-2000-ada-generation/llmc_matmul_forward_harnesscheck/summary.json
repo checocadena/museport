@@ -1,0 +1,55 @@
+{
+  "tool": "gpu_test",
+  "status": "ok",
+  "summary": "PASS on NVIDIA RTX 2000 Ada Generation (cuda:0, nvidia): sycl_verify_vs_reference: PASS: 1/1 case(s) match (worst max abs err 0, atol 0.1)",
+  "evidence": {
+    "task": "llmc_matmul_forward_harnesscheck",
+    "device": {
+      "backend": "cuda",
+      "device_type": "gpu",
+      "index": 0,
+      "platform": "NVIDIA CUDA BACKEND",
+      "name": "NVIDIA RTX 2000 Ada Generation",
+      "description": "NVIDIA CUDA BACKEND, NVIDIA RTX 2000 Ada Generation 8.9 [CUDA 13.2]",
+      "selector": "cuda:0"
+    },
+    "vendor": "nvidia",
+    "amd_arch": null,
+    "cuda_arch": "89",
+    "target_flags": [
+      "-fsycl-targets=nvidia_gpu_sm_89"
+    ],
+    "selector": "cuda:0",
+    "steps": [
+      {
+        "step": "reference_build",
+        "status": "ok",
+        "summary": "exit 0: g++ -O2 -std=c++17 /tmp/tmp.EApzIu2PtR/task/matmul_forward_ref.cpp -o build/reference"
+      },
+      {
+        "step": "native_build",
+        "status": "fail",
+        "summary": "exit 1: /usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.EApzIu2PtR/task /tmp/tmp.EApzIu2PtR/task/matmul_forward_harness.cu -o build/native"
+      },
+      {
+        "step": "sycl_compile",
+        "status": "ok",
+        "summary": "compiled 1 source(s) -> /tmp/tmp.EApzIu2PtR/out/work/build/sycl (0 warning(s))"
+      },
+      {
+        "step": "sycl_verify_vs_reference",
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 0.1)"
+      },
+      {
+        "step": "sycl_benchmark",
+        "status": "ok",
+        "summary": "10 run(s) each; cuda:0: median 460.55 ms, p95 464.67 ms"
+      }
+    ],
+    "results_dir": "/tmp/tmp.EApzIu2PtR/out/results"
+  },
+  "limitations": [
+    "Benchmarks are single-process wall times plus program-reported kernel times; treat them as rough."
+  ]
+}

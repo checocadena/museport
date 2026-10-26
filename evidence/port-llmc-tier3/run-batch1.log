@@ -1,0 +1,183 @@
+[port] t3-matmul-backward: loop with muse-spark-1.3 (max 16 turns, cap $1.00); spent so far $0.0000
+[port] t3-matmul-backward: max_iterations in 16 turns, $0.2795
+[port] t3-trimat-forward: loop with muse-spark-1.3 (max 16 turns, cap $1.00); spent so far $0.2795
+[port] t3-trimat-forward: success in 9 turns, $0.2112
+[port] t3-matmul-backward-bias: loop with muse-spark-1.3 (max 16 turns, cap $1.00); spent so far $0.4907
+museport: the API reported no usage for this turn; charging the worst case (52046 tokens)
+[port] t3-matmul-backward-bias: budget in 14 turns, $0.5007
+[port] t3-matmul-forward: loop with muse-spark-1.3 (max 16 turns, cap $1.00); spent so far $0.9914
+[port] t3-matmul-forward: success in 15 turns, $0.4046
+{
+  "model": "muse-spark-1.3",
+  "spent_usd": 1.396,
+  "items": [
+    {
+      "item": "t3-matmul-backward",
+      "file": "matmul_backward.cu",
+      "task": "t3-matmul-backward/task/task.json",
+      "status": "max_iterations",
+      "detail": "reached 16 iterations without meeting success conditions",
+      "iterations": 16,
+      "usage": {
+        "input_tokens": 101735,
+        "output_tokens": 21581,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 404270
+      },
+      "cost_usd": 0.2795285,
+      "best": {
+        "iteration": 11,
+        "source_hash": "d5e1a93147bcd76f",
+        "helpers": 105,
+        "path": "/home/user/museport/runs/port/t3-matmul-backward/20261026T225802384113Z/best",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0.00021, atol 0.001)"
+      },
+      "evaluation": {
+        "source_hash": "642a8ccca187b543",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0.00021, atol 0.001)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "matmul_backward_sycl.cpp",
+        "migrated/common.h",
+        "migrated/matmul_backward_harness.dp.cpp"
+      ],
+      "variant_check": {
+        "variants": 1,
+        "kernels": 2,
+        "distinct_kernel_bodies": 2,
+        "duplicated_variants": false
+      }
+    },
+    {
+      "item": "t3-trimat-forward",
+      "file": "trimat_forward.cu",
+      "task": "t3-trimat-forward/task/task.json",
+      "status": "success",
+      "detail": "verify passed and zero dpct helpers on the current compiled sources",
+      "iterations": 9,
+      "usage": {
+        "input_tokens": 107209,
+        "output_tokens": 13367,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 135605
+      },
+      "cost_usd": 0.21116175,
+      "best": {
+        "iteration": 9,
+        "source_hash": "00d66c232fc2c843",
+        "helpers": 0,
+        "path": "/home/user/museport/runs/port/t3-trimat-forward/20261026T230026145975Z/best",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 7.15e-07, atol 0.0001)"
+      },
+      "evaluation": {
+        "source_hash": "00d66c232fc2c843",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 7.15e-07, atol 0.0001)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "migrated/common.h",
+        "migrated/trimat_forward_harness.dp.cpp",
+        "trimat_forward.cpp"
+      ],
+      "variant_check": {
+        "variants": 5,
+        "kernels": 5,
+        "distinct_kernel_bodies": 5,
+        "duplicated_variants": false
+      }
+    },
+    {
+      "item": "t3-matmul-backward-bias",
+      "file": "matmul_backward_bias.cu",
+      "task": "t3-matmul-backward-bias/task/task.json",
+      "status": "budget",
+      "detail": "token budget exceeded: 631470 > 600000",
+      "iterations": 14,
+      "usage": {
+        "input_tokens": 220916,
+        "output_tokens": 39745,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 370809
+      },
+      "cost_usd": 0.5006826,
+      "best": {
+        "iteration": 9,
+        "source_hash": "643f475e215ece30",
+        "helpers": 95,
+        "path": "/home/user/museport/runs/port/t3-matmul-backward-bias/20261026T230139410165Z/best",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.53e-05, atol 0.005)"
+      },
+      "evaluation": {
+        "source_hash": "19c53162cc33359c",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.53e-05, atol 0.005)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "candidate.cpp",
+        "migrated/common.h",
+        "migrated/matmul_backward_bias_harness.dp.cpp"
+      ],
+      "variant_check": {
+        "variants": 8,
+        "kernels": 13,
+        "distinct_kernel_bodies": 12,
+        "duplicated_variants": false
+      }
+    },
+    {
+      "item": "t3-matmul-forward",
+      "file": "matmul_forward.cu",
+      "task": "t3-matmul-forward/task/task.json",
+      "status": "success",
+      "detail": "verify passed and zero dpct helpers on the current compiled sources",
+      "iterations": 15,
+      "usage": {
+        "input_tokens": 204856,
+        "output_tokens": 20631,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 405595
+      },
+      "cost_usd": 0.404591,
+      "best": {
+        "iteration": 15,
+        "source_hash": "541db3cf9accaf2b",
+        "helpers": 0,
+        "path": "/home/user/museport/runs/port/t3-matmul-forward/20261026T230436415944Z/best",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 5.72e-05, atol 0.1)"
+      },
+      "evaluation": {
+        "source_hash": "541db3cf9accaf2b",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 5.72e-05, atol 0.1)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "matmul_forward_sycl.cpp",
+        "migrated/common.h",
+        "migrated/matmul_forward_harness.dp.cpp"
+      ],
+      "variant_check": {
+        "variants": 4,
+        "kernels": 4,
+        "distinct_kernel_bodies": 3,
+        "duplicated_variants": true
+      }
+    }
+  ]
+}
+
+real	8m32.125s
+user	1m53.440s
+sys	0m14.589s

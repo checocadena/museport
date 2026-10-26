@@ -1,0 +1,8 @@
+{
+  "command": "/usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.F65q5JGa30/task /tmp/tmp.F65q5JGa30/task/softmax_forward_harness.cu -o build/native",
+  "returncode": 0,
+  "duration_s": 3.680143,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.F65q5JGa30/out/work"
+}

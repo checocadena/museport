@@ -1,0 +1,10 @@
+{
+  "name": "loop_fixture",
+  "goal": "Synthetic task for museport's tests: only LoopConfig.from_task_file reads it; nothing is built or run.",
+  "cuda_path": "kernel.cu",
+  "reference_cmd": "build/reference {output}",
+  "candidate_cmd": "build/candidate {output}",
+  "inputs": [],
+  "mode": "array",
+  "tolerance": 1e-6
+}

@@ -1,0 +1,8 @@
+{
+  "command": "/usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.zSg9iOmwhl/task /tmp/tmp.zSg9iOmwhl/task/trimat_forward_harness.cu -lcublas -o build/native",
+  "returncode": 0,
+  "duration_s": 4.271757,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.zSg9iOmwhl/out/work"
+}
