@@ -60,7 +60,7 @@
   push it here: it carries early toolkit-derived files in its history.
 - The toolkit's `native_flags` (toolkit #20) and the loop's `delete_file` and ranged
   `read_file` (toolkit #21) and the AMD native build's header hipify (toolkit #22) are
-  merged; museport pins #22's merge commit `23fdcff`.
+  merged, and so is `read_file` for the source's included headers (toolkit #23); museport pins #23's merge commit `f1420fc`.
 
 ## Spend (known; caps: $5 development, $20 comparison runs, $1 per run)
 

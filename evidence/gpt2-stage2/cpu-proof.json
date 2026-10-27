@@ -1,0 +1,17 @@
+{
+  "ok": true,
+  "steps": {
+    "reference_build": {
+      "returncode": 0,
+      "stderr": ""
+    },
+    "cpu_proof_build": {
+      "returncode": 0,
+      "stderr": ""
+    },
+    "verify_cpu_proof": {
+      "status": "ok",
+      "summary": "PASS: 1/1 case(s) match (worst max abs err 0.0115, atol 0.02)"
+    }
+  }
+}
