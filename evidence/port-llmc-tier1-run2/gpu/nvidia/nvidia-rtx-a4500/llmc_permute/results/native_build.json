@@ -1,0 +1,8 @@
+{
+  "command": "/usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.zvHbJ7jzIA/task /tmp/tmp.zvHbJ7jzIA/task/permute_harness.cu -o build/native",
+  "returncode": 0,
+  "duration_s": 1.393038,
+  "stdout": "",
+  "stderr": "/tmp/tmp.zvHbJ7jzIA/task/permute_harness.cu(133): warning #177-D: variable \"k\" was declared but never referenced\n          const int k = variants[vi];\n                    ^\n\nRemark: The warnings can be suppressed with \"-diag-suppress <warning-number>\"\n\n",
+  "cwd": "/tmp/tmp.zvHbJ7jzIA/out/work"
+}

@@ -1,0 +1,8 @@
+{
+  "command": "g++ -O2 -std=c++17 /tmp/tmp.S3dwLawX3l/task/encoder_forward_ref.cpp -o build/reference",
+  "returncode": 0,
+  "duration_s": 0.274313,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.S3dwLawX3l/out/work"
+}

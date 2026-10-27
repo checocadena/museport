@@ -1,0 +1,7 @@
+created runpod machine o43kiap1wu29vm (NVIDIA RTX A4500, $0.25/h)
+waiting for the agent (HTTP 404)
+bundle uploaded; waiting for the run
+agent phase: running
+agent phase: done
+deleted runpod machine o43kiap1wu29vm: confirmed
+[remote_test] ok: NVIDIA RTX A4500: ok: PASS on NVIDIA RTX A4500 (cuda:0, nvidia): sycl_verify_vs_reference: PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05); sycl_verify_vs_native: PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)

@@ -1,0 +1,44 @@
+{
+  "tool": "benchmark",
+  "status": "ok",
+  "summary": "10 run(s) each; cuda:0: median 316.12 ms, p95 376.74 ms",
+  "evidence": {
+    "command": "build/sycl /tmp/tmp.JRoQE1ZsMO/task/input.bin /tmp/tmp.JRoQE1ZsMO/out/work/bench_out.wav 4 64 768",
+    "runs": 10,
+    "warmup": 1,
+    "results": [
+      {
+        "selector": "cuda:0",
+        "status": "ok",
+        "wall_time_s": {
+          "n": 10,
+          "min": 0.28443530201911926,
+          "median": 0.316121055977419,
+          "p95": 0.3767354486393742,
+          "max": 0.3878559179138392,
+          "mean": 0.3218149240827188,
+          "stdev": 0.03555880368238285
+        },
+        "samples_s": [
+          0.300765,
+          0.331477,
+          0.284435,
+          0.387856,
+          0.296474,
+          0.340437,
+          0.363144,
+          0.293012,
+          0.335689,
+          0.28486
+        ],
+        "reported": null,
+        "reported_samples": [],
+        "reported_note": "regex matched 0/10 runs"
+      }
+    ]
+  },
+  "limitations": [
+    "Wall-clock time of the whole process (includes start-up, JIT compilation of SYCL kernels on first use, I/O). Use report_regex for in-program kernel timings.",
+    "Device selection uses ONEAPI_DEVICE_SELECTOR; it only takes effect if the program uses a default/selector-based sycl::queue."
+  ]
+}

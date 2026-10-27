@@ -1,0 +1,8 @@
+{
+  "command": "g++ -O2 -std=c++17 /tmp/tmp.zvHbJ7jzIA/task/permute_ref.cpp -o build/reference",
+  "returncode": 0,
+  "duration_s": 0.22329,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.zvHbJ7jzIA/out/work"
+}

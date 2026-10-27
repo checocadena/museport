@@ -1,0 +1,8 @@
+{
+  "command": "g++ -O2 -std=c++17 /tmp/tmp.Jm327sx8s2/task/encoder_backward_ref.cpp -o build/reference",
+  "returncode": 0,
+  "duration_s": 0.165711,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.Jm327sx8s2/out/work"
+}
