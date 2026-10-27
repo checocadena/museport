@@ -62,6 +62,8 @@ left anywhere in the tree. Per-item costs and the variant check are in [`SUMMARY
 - **One sample per item.** The differences from the first runs are not measured success
   rates.
 - **Several changes at once**, as for Tier 1 run 2.
-- **GPUs:** results are in [`gpu/`](gpu/) when present. Ports that call oneMath
-  (`matmul_forward`, `matmul_backward`, `trimat_forward`) are verified on the CPU device only,
-  because oneMath is not built for the GPU hosts yet (plan item D2).
+- **GPUs:** the 5 correct ports that make no oneMath call pass on NVIDIA GPUs against both
+  the reference and llm.c's own CUDA, for about $0.04 ([NVIDIA](gpu/NVIDIA.md)). Ports that
+  call oneMath (`matmul_forward`, `matmul_backward`, `trimat_forward`) are verified on the CPU
+  device only, because oneMath is not built for the GPU hosts yet (plan item D2). AMD was not
+  run for these.

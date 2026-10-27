@@ -44,7 +44,7 @@ graded by a hidden check built from llm.c's own CPU code and tolerance.
 | Items ported | 10 | 5 | 4 (of 7) | 19 |
 | Correct with 0 helpers (hidden grade) | 10 | 4 | 4 | **18** |
 | Also met the loop's strict success rule | 9 | 3 | 3 | 15 |
-| Pass on an NVIDIA GPU (vs reference and llm.c's CUDA) | 10 | NV2 | NV3 (3 call oneMath: CPU-verified) | **NVA** |
+| Pass on an NVIDIA GPU (vs reference and llm.c's CUDA) | 10 | 4 | 1 (3 call oneMath: CPU-verified) | **15** |
 | Pass on an AMD GPU (vs reference) | 10 | 0 (not run) | 0 (not run) | **10** |
 | Muse cost | $1.01 | $1.69 | $1.06 | **$3.75** |
 

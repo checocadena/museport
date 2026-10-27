@@ -70,7 +70,7 @@
 |---|---|
 | Development and smoke tests | about $0.55: plan $0.2648, mini-fixture plan $0.0502, saxpy loop $0.0592, smoke test $0.0072, probes about $0.17. The first, failed plan is unknown: at most $1.15 if all 4 attempts were billed |
 | Port runs (comparison) | $8.3585: Tier 1 $1.6698, Tier 2 $2.4454 (incl. one crashed run), Tier 3 $1.3960, reruns round 1 $1.3971, round 2 $1.4502, Tier 1 run 2 $1.0064, GPT-2 stage 1 $0.7441, stage 2 $1.2134, stage 3 $1.1489, Tier 1 without SYCLomatic $0.5820 (incl. an aborted attempt, $0.1061, plus at most $0.15 unreported) Tiers 2-3 run 2 $2.7433 (total $15.7966 of the $30 cap; GPT-2 cap $7, $3.1064 used) |
-| GPUs | NVIDIA about $0.13 (all pods deleted and confirmed); DigitalOcean AMD: about $1.0 for the first attempt (two droplets, deleted, no SSH key left), then $1.42 for the Tier 1 run-2 ports from the laptop (tool estimate, 11 droplets, all deleted); NVIDIA for the Tier 1 run-2 ports about $0.05 (10 pods, all deleted) |
+| GPUs | NVIDIA about $0.13 (all pods deleted and confirmed); DigitalOcean AMD: about $1.0 for the first attempt (two droplets, deleted, no SSH key left), then $1.42 for the Tier 1 run-2 ports from the laptop (tool estimate, 11 droplets, all deleted); NVIDIA for the Tier 1 run-2 ports about $0.05 (10 pods, all deleted); NVIDIA for the Tiers 2-3 run-2 ports about $0.04 (5 pods, all deleted) |
 
 ## Known toolkit behaviour (handled in museport, toolkit unchanged)
 - The OpenAI-compatible client does not stream; museport passes its own streaming transport.

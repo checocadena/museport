@@ -1,0 +1,1 @@
+[gpu_test] ok: PASS on NVIDIA L4 (cuda:0, nvidia): sycl_verify_vs_reference: PASS: 1/1 case(s) match (worst max abs err 2.48e-05, atol 0.001); sycl_verify_vs_native: PASS: 1/1 case(s) match (worst max abs err 2.1e-05, atol 0.001)
