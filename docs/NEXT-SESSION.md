@@ -5,7 +5,8 @@
   Submit by midday Nov 4 (deadline 9:00 pm ET). Plan: [`PLAN.md`](PLAN.md).
 - **Toolkit dependency.** It depends on
   [oneapi-agent-toolkit](https://github.com/checocadena/oneapi-agent-toolkit), pinned in
-  `pyproject.toml` at `f616ba4` (`pre_hackathon` = `0e8f41d`, plus #19). Organizers confirmed
+  `pyproject.toml` (`pre_hackathon` = `0e8f41d`, plus the changes in
+  [`CHANGES-TO-TOOLKIT.md`](CHANGES-TO-TOOLKIT.md)). Organizers confirmed
   an open-source dependency is fine if marked as pre-existing. Toolkit changes go in
   [`CHANGES-TO-TOOLKIT.md`](CHANGES-TO-TOOLKIT.md).
 - **Meta API key.** It is an environment **network secret**: the proxy adds the
@@ -55,7 +56,9 @@
   here, on branches with PRs.
 - The development repository was renamed `checocadena/museport-dev` and made private. Do not
   push it here: it carries early toolkit-derived files in its history.
-- The toolkit's `native_flags` change (toolkit #20) is merged and pinned (`7138b09`).
+- The toolkit's `native_flags` change (toolkit #20) is merged. The loop's `delete_file` and
+  ranged `read_file` (toolkit #21) are pinned at the branch commit `72d6104` until #21 merges;
+  then re-pin to its merge commit.
 
 ## Spend (known; caps: $5 development, $20 comparison runs, $1 per run)
 

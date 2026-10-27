@@ -84,19 +84,45 @@ def test_an_empty_answer_is_marked_for_the_loop(monkeypatch):
     assert r.content == [{"type": "text", "text": S.EMPTY_TURN}]
 
 
+def test_a_lost_connection_is_a_marked_turn_in_the_loop(monkeypatch):
+    # Seen 2026-10-27: ConnectionResetError while an answer streamed ended the whole run.
+    import pytest
+
+    from museport import stream as S
+
+    class Dropped:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+        def __iter__(self):
+            yield _sse({"choices": [{"delta": {"content": "half"}}]})[0]
+            raise ConnectionResetError(104, "Connection reset by peer")
+
+    monkeypatch.setattr(S.urllib.request, "urlopen", lambda req, timeout: Dropped())
+    body = {"model": "m", "max_completion_tokens": 32000,
+            "messages": [{"role": "user", "content": "a" * 400}]}
+    with pytest.raises(RuntimeError, match="connection lost"):  # plan: still an error
+        stream_transport()("https://x/v1/chat/completions", {}, body)
+    resp = stream_transport(fill_missing_usage=True, mark_empty=True)(
+        "https://x/v1/chat/completions", {}, body)
+    assert resp["connection_lost"] and resp["usage"]["completion_tokens"] == 32000
+    assert from_openai_response(resp).content == [{"type": "text", "text": S.LOST_TURN}]
+
+
 def test_build_sets_the_cap_and_the_streaming_client():
     sentinel = object()
     cfg, client = build(TASK, model="muse-spark-1.3", max_iterations=3, max_cost_usd=0.75,
                         transport=sentinel)  # type: ignore[arg-type]
     assert (cfg.max_iterations, cfg.max_cost_usd, cfg.provider) == (3, 0.75, "meta")
-    assert client.transport is sentinel and client.max_tokens == 16_000
-    _, big = build(TASK, model="muse-spark-1.3", max_output_tokens=32_000,
-                   transport=sentinel)  # type: ignore[arg-type]
-    assert big.max_tokens == 32_000
-    assert cfg.max_total_tokens == 600_000  # the toolkit's default stays unless raised
-    raised, _ = build(TASK, model="muse-spark-1.3", max_total_tokens=2_000_000,
-                      transport=sentinel)  # type: ignore[arg-type]
-    assert raised.max_total_tokens == 2_000_000
+    # 32000 output tokens per turn, and the USD cap (not the toolkit's 600000) ends a run
+    assert client.transport is sentinel and client.max_tokens == 32_000
+    assert cfg.max_total_tokens == 2_000_000
+    small, little = build(TASK, model="muse-spark-1.3", max_output_tokens=16_000,
+                          max_total_tokens=600_000, transport=sentinel)  # type: ignore[arg-type]
+    assert (little.max_tokens, small.max_total_tokens) == (16_000, 600_000)
 
 
 def test_safe_toolbox_turns_a_cut_off_call_into_an_error_result(tmp_path):

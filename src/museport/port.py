@@ -259,11 +259,10 @@ def write_inputs(spec: KernelSpec, path: Path) -> int:
 # Added to the goal by `museport port --strict-goal` (reruns of ports that left c2s helpers or
 # copied one implementation into several variants).
 STRICT_GOAL = (
-    " Clear migrated/ (delete SYCLomatic's files or replace them with your own) as soon as your "
-    "own port compiles, and run scan_helpers on '.' before you finish: helpers left anywhere in "
-    "the tree fail the run. Every variant keeps its CUDA variant's own algorithm (its atomics, "
-    "shared memory, warp reductions and launch shape, in SYCL terms): never copy one "
-    "implementation into several variants."
+    " Delete migrated/ (delete_file) as soon as your own port compiles, and run scan_helpers "
+    "on '.' before you finish: helpers left anywhere in the tree fail the run. Every variant "
+    "keeps its CUDA variant's own algorithm (its atomics, shared memory, warp reductions and "
+    "launch shape, in SYCL terms): never copy one implementation into several variants."
 )
 
 
@@ -278,7 +277,8 @@ def goal(spec: KernelSpec, harness: str, *, strict: bool = False) -> str:
         f"checks the output (atol {spec.tol:g} + rtol FLT_EPSILON*|ref|, llm.c's own fp32 "
         "rule). Success requires compile, verify and a zero-helper scan_helpers of the whole "
         "work directory (path '.') on the same sources: migrate's output under migrated/ "
-        "counts, so replace or empty those files once your own port is done."
+        "counts, so delete it (delete_file) once your own port is done. migrate's output can "
+        "be long: read it in parts (read_file offset/limit) or work from the CUDA harness."
         + (" cuBLAS calls go to oneMath (oneapi::math::blas, #include <oneapi/math.hpp>; the "
            "compile flags already link -lonemath), not to oneapi::mkl product APIs."
            if spec.keep_cublas else "")
@@ -445,7 +445,7 @@ def run_items(plan: dict[str, Any], cuda_dir: Path, out: Path, *, model: str,
               log: Any = print) -> dict[str, Any]:
     """Port each selected item (``items`` of any tier, else all of ``tier``) with Muse. A run
     starts only if the spend so far plus its own cap stays within ``total_cap_usd``."""
-    from .loop import MAX_OUTPUT_TOKENS
+    from .loop import MAX_OUTPUT_TOKENS, MAX_TOTAL_TOKENS
     from .loop import run as run_loop
 
     results: list[dict[str, Any]] = []
@@ -482,7 +482,7 @@ def run_items(plan: dict[str, Any], cuda_dir: Path, out: Path, *, model: str,
             outcome = run_loop(task, model=model, max_iterations=max_iterations,
                                max_cost_usd=max_cost_usd, runs_dir=runs_dir / iid,
                                max_output_tokens=max_output_tokens or MAX_OUTPUT_TOKENS,
-                               max_total_tokens=max_total_tokens)
+                               max_total_tokens=max_total_tokens or MAX_TOTAL_TOKENS)
         except Exception as e:  # noqa: BLE001 - one item must not end the batch
             partial = trace_spend(runs_dir / iid, model)
             known = partial["cost_usd"] is not None

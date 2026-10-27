@@ -69,11 +69,11 @@ def build_parser() -> argparse.ArgumentParser:
                     help="prove each task first: SYCLomatic's raw output must pass the hidden "
                          "reference (needs c2s and icpx)")
 
-    po.add_argument("--max-output", type=int, default=16_000,
-                    help="max output tokens per turn, reasoning included (default 16000)")
-    po.add_argument("--max-total-tokens", type=int,
-                    help="raise the toolkit's per-run token limit (600000); the USD caps "
-                         "still apply")
+    po.add_argument("--max-output", type=int, default=32_000,
+                    help="max output tokens per turn, reasoning included (default 32000)")
+    po.add_argument("--max-total-tokens", type=int, default=2_000_000,
+                    help="the toolkit's per-run token limit (default 2000000, so the USD caps "
+                         "decide; the toolkit's own default is 600000)")
     po.add_argument("--strict-goal", action="store_true",
                     help="tell Muse to clear SYCLomatic's output early and to keep each "
                          "variant's own algorithm (for reruns)")

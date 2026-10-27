@@ -8,6 +8,7 @@ the plan request and the agent loop's turns, therefore goes through ``stream_tra
 
 from __future__ import annotations
 
+import http.client
 import json
 import sys
 import time
@@ -20,6 +21,8 @@ from oneapi_agent.models import Transport
 
 CHARS_PER_TOKEN = 4
 EMPTY_TURN = "(no answer: this turn's output budget was used up before any text or tool call)"
+LOST_TURN = ("(no answer: the connection was lost while this answer was streaming; it was "
+             "discarded)")
 
 
 def assemble_stream(lines: Iterable[bytes]) -> dict[str, Any]:
@@ -84,7 +87,9 @@ def stream_transport(timeout_s: float = 900.0, attempts: int = 3, *,
     usage against a USD cap, like the toolkit's agent loop, never counts a turn as free.
     With ``mark_empty`` an answer with neither text nor tool calls (reasoning used the whole
     output budget) gets ``EMPTY_TURN`` as its text: the API refuses such an assistant message
-    with HTTP 400 when a loop sends the history back, which would end the run.
+    with HTTP 400 when a loop sends the history back, which would end the run. A connection
+    lost mid-stream likewise becomes a ``LOST_TURN`` answer, charged at the worst case, instead
+    of ending the run (seen Oct 27: ConnectionResetError at turn 7); it is not resent.
     Headers (the key) are never logged."""
 
     def post(url: str, headers: dict[str, str], body: dict[str, Any]) -> dict[str, Any]:
@@ -97,6 +102,16 @@ def stream_transport(timeout_s: float = 900.0, attempts: int = 3, *,
             try:
                 with urllib.request.urlopen(req, timeout=timeout_s) as r:
                     resp = assemble_stream(r)
+            except (ConnectionError, TimeoutError, http.client.IncompleteRead) as e:
+                if not mark_empty:
+                    raise RuntimeError(f"{url}: connection lost: {type(e).__name__}: "
+                                       f"{e}") from None
+                print(f"museport: connection lost mid-answer ({type(e).__name__}); the turn "
+                      "is marked and charged at the worst case", file=sys.stderr)
+                return {"model": body.get("model"), "usage": worst_case_usage(body),
+                        "usage_estimated": True, "connection_lost": True,
+                        "choices": [{"index": 0, "finish_reason": "stop",
+                                     "message": {"role": "assistant", "content": LOST_TURN}}]}
             except urllib.error.HTTPError as e:
                 detail = e.read().decode(errors="replace")[:500]
                 if e.code == 429 and attempt + 1 < attempts:
