@@ -75,7 +75,10 @@ def main(evidence: Path) -> dict[str, object]:
                 "verify": g["evaluation"]["verify_summary"],
                 "verify_ok": g["evaluation"]["verify_status"] == "ok",
                 "helpers": g["evaluation"]["helpers"],
-                "replay": _replay(evidence / name / "run1/trace.jsonl")}
+                "replay": _replay(evidence / name / "run1/trace.jsonl"),
+                "gpu": [{"device": x["device"], "vendor": x["vendor"], "pass": x["status"] == "ok",
+                         "vs_native": x["vs_native"], "summary": x["summary"]}
+                        for st in data["gpt2"] if st.slug == name for x in st.gpu]}
 
     nomigrate = evidence / "port-llmc-tier1-nomigrate/summary.json"
     g1 = json.loads((evidence / "gpt2-stage1/run1/outcome.json").read_text())

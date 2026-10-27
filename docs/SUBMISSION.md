@@ -93,6 +93,9 @@ the CPU device.
   wrote the 907-line port in one turn; the first verify failed, and Muse found and fixed
   its own matmul transpose mistake. It took 29 turns and cost $1.15
   ([stage 3](../evidence/gpt2-stage3/README.md)).
+- **On an NVIDIA GPU:** the stage 3 port, unchanged, trains on an RTX 4000 Ada with oneMath
+  on cuBLAS. Its 10 losses match PyTorch's (worst error 0.000135) and llm.c's own CUDA build
+  (worst 0.0000059) ([GPU evidence](../evidence/gpt2-stage3/gpu/NVIDIA.md)).
 
 ## Technical depth
 
@@ -118,8 +121,8 @@ the CPU device.
 - fp32 only, at reduced sizes for most kernels; one run per item.
 - AMD is checked against the reference only: llm.c's CUDA doesn't convert to HIP
   automatically (errors quoted in the evidence).
-- The GPT-2 ports ran on the CPU device. NVIDIA needs oneMath built with its cuBLAS backend
-  (plan item D2).
+- GPT-2 stages 1 and 2 ran on the CPU device only; stage 3 also on one NVIDIA GPU. AMD was
+  not run for GPT-2.
 - Muse's GPT-2 ports are lean rewrites with simple kernels, not llm.c's tuned kernels.
   Performance was not compared.
 
