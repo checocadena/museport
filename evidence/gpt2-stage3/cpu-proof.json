@@ -1,0 +1,18 @@
+[gpt2-task] wrote evidence/gpt2-stage3/task/task.json
+{
+  "ok": true,
+  "steps": {
+    "reference_build": {
+      "returncode": 0,
+      "stderr": ""
+    },
+    "cpu_proof_build": {
+      "returncode": 0,
+      "stderr": ""
+    },
+    "verify_cpu_proof": {
+      "status": "ok",
+      "summary": "PASS: 1/1 case(s) match (worst max abs err 0.0015, atol 0.01)"
+    }
+  }
+}

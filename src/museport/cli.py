@@ -89,7 +89,7 @@ def build_parser() -> argparse.ArgumentParser:
     g2.add_argument("--data", help="where gpt2_124M.bin and gpt2_124M_debug_state.bin are "
                                    "(default: --llmc)")
     g2.add_argument("--out", default="gpt2-task", help="task directory to write")
-    g2.add_argument("--stage", choices=["forward", "backward"], default="forward")
+    g2.add_argument("--stage", choices=["forward", "backward", "train"], default="forward")
     g2.add_argument("--check", action="store_true",
                     help="prove the check: llm.c's CPU train_gpt2.c must pass it (no model)")
 

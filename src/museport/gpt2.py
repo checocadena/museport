@@ -217,6 +217,80 @@ CUDA_SETUP = r"""// set up the device and cuBLAS as llm.c's test_gpt2_fp32.cu do
     cublasCheck(cublasSetMathMode(cublas_handle, CUBLAS_DEFAULT_MATH));
 """
 
+# Stage 3 (training): llm.c's test_gpt2_fp32.cu and test_gpt2.c run 10 AdamW steps on the
+# debug batch and compare each step's loss with PyTorch's within 1e-2.
+STEPS = 10
+EXPECTED_LOSSES = (  # test_gpt2_fp32.cu, "expected losses are as follows, from Python"
+    5.270007133483887, 4.059706687927246, 3.3751230239868164, 2.8007826805114746,
+    2.315382242202759, 1.8490285873413086, 1.3946564197540283, 0.9991465210914612,
+    0.6240804195404053, 0.37651097774505615,
+)
+
+REFERENCE_TRAIN = r"""// Hidden reference for GPT-2 stage 3 (training): PyTorch's loss at each of
+// 10 AdamW steps on llm.c's debug batch, as llm.c's test_gpt2_fp32.cu lists
+// them, written as raw float32.
+// usage: reference <debug_state.bin> <output> <gpt2_124M.bin>
+#include <cstdio>
+#include <cstdlib>
+static void must(bool ok, const char* what) {
+    if (!ok) { std::fprintf(stderr, "%s\n", what); std::exit(1); }
+}
+int main(int argc, char** argv) {
+    must(argc == 4, "usage: reference <debug_state.bin> <output> <gpt2_124M.bin>");
+    int sh[256];
+    FILE* s = std::fopen(argv[1], "rb");
+    must(s && std::fread(sh, 4, 256, s) == 256, "state header");
+    must(sh[0] == 20240327 && sh[1] == 2, "bad state magic or version");
+    std::fclose(s);
+    const float losses[] = {""" + ", ".join(f"{v!r}f" for v in EXPECTED_LOSSES) + r"""};
+    FILE* o = std::fopen(argv[2], "wb");
+    const size_t n = sizeof(losses) / sizeof(losses[0]);
+    must(o && std::fwrite(losses, 4, n, o) == n, "write");
+    std::fclose(o);
+    return 0;
+}
+"""
+
+CONTRACT_MAIN_TRAIN = r"""// museport stage 3 (training): the contract main. Runs 10 training
+// steps on llm.c's debug batch as test_gpt2_fp32.cu does (forward with
+// targets, zero the gradients, backward, AdamW update) and writes each step's
+// mean loss as raw float32.
+// usage: <prog> <debug_state.bin> <output> <gpt2_124M.bin>
+int main(int argc, char** argv) {
+    if (argc != 4) {
+        fprintf(stderr, "usage: %s <debug_state.bin> <output> <gpt2_124M.bin>\n", argv[0]);
+        return 1;
+    }
+    MUSEPORT_SETUP
+    GPT2 model;
+    gpt2_build_from_checkpoint(&model, argv[3]);
+    int sh[256];
+    FILE* s = fopenCheck(argv[1], "rb");
+    freadCheck(sh, sizeof(int), 256, s);
+    int B = sh[2], T = sh[3];
+    int* x = (int*)mallocCheck(B * T * sizeof(int));
+    int* y = (int*)mallocCheck(B * T * sizeof(int));
+    freadCheck(x, sizeof(int), B * T, s);
+    freadCheck(y, sizeof(int), B * T, s);
+    fcloseCheck(s);
+    float losses[10];
+    for (int step = 0; step < 10; step++) {
+        gpt2_forward(&model, x, y, B, T);
+        gpt2_zero_grad(&model);
+        gpt2_backward(&model);
+        gpt2_update(&model, 1e-4f, 0.9f, 0.999f, 1e-8f, 0.01f, step + 1);
+        losses[step] = model.mean_loss;
+    }
+    FILE* o = fopenCheck(argv[2], "wb");
+    fwrite(losses, sizeof(float), 10, o);
+    fcloseCheck(o);
+    free(x);
+    free(y);
+    gpt2_free(&model);
+    return 0;
+}
+"""
+
 STAGES: dict[str, dict[str, Any]] = {
     "forward": {
         "harness": HARNESS, "name": "llmc_gpt2_forward",
@@ -248,6 +322,23 @@ STAGES: dict[str, dict[str, Any]] = {
         "tolerance": GRAD_TOLERANCE,
         "note": "gradients of all parameters and the loss checked against PyTorch within "
                 "2e-2 (llm.c's CPU test tolerance for gradients)"},
+    "train": {
+        "harness": "gpt2_train_harness.cu", "name": "llmc_gpt2_train",
+        "cuda": "// museport GPT-2 stage 3 harness: llm.c's train_gpt2_fp32.cu (fp32 GPT-2\n"
+                "// training, unchanged) with a contract main in place of its own: 10 AdamW\n"
+                "// training steps on llm.c's debug batch.\n"
+                "#define TESTING\n#include \"train_gpt2_fp32.cu\"\n" + CUDA_SETUP
+                + CONTRACT_MAIN_TRAIN,
+        "cpu": "// Proof of the GPT-2 stage-3 check: llm.c's CPU train_gpt2.c with the same\n"
+               "// contract main.\n#define TESTING\n#include \"train_gpt2.c\"\n"
+               "#define MUSEPORT_SETUP\n" + CONTRACT_MAIN_TRAIN,
+        "reference": REFERENCE_TRAIN,
+        "does": "runs 10 training steps on the debug batch (each: a forward pass with "
+                "targets, zero the gradients, the backward pass, then the AdamW update with "
+                "lr 1e-4, beta1 0.9, beta2 0.999, eps 1e-8, weight decay 0.01, t = step + 1), "
+                "and writes raw float32: the mean loss of each step's forward pass, 10 values",
+        "tolerance": TOLERANCE,
+        "note": "the loss of each of 10 AdamW steps checked against PyTorch's within 1e-2"},
 }
 
 
@@ -271,7 +362,8 @@ def goal(stage: str = "forward") -> str:
 
 
 def make_task(llmc_dir: Path, data_dir: Path, out: Path, stage: str = "forward") -> Path:
-    """Write the task directory of a stage ("forward" or "backward"); returns its task.json."""
+    """Write the task directory of a stage ("forward", "backward" or "train"); returns its
+    task.json."""
     st = STAGES[stage]
     for name in (WEIGHTS, STATE):
         if not (data_dir / name).is_file():
