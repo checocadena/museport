@@ -51,6 +51,11 @@ class Item:
         return ev.get("verify_status") == "ok" and ev.get("helpers") == 0
 
     @property
+    def amd_pass(self) -> bool:
+        """Passed on an AMD GPU against the reference (llm.c's CUDA does not build there)."""
+        return any(g["status"] == "ok" and g["vendor"] == "amd" for g in self.gpu)
+
+    @property
     def gpu_pass(self) -> bool:
         """Passed on an NVIDIA GPU against the reference and llm.c's own CUDA."""
         return any(g["status"] == "ok" and g["vendor"] == "nvidia" and g["vs_native"]
@@ -102,13 +107,26 @@ def _gpu_results(bdir: Path) -> dict[str, list[dict[str, Any]]]:
     return out
 
 
+# The runs with the fixed loop (delete_file, ranged read_file, 32k output per turn, no token
+# limit below the USD cap): one batch per item, the same tasks and hidden checks as the first
+# runs. They are the headline results; the first runs stay as history.
+CURRENT_BATCHES = ("port-llmc-tier1-run2", "port-llmc-tier23-run2")
+
+
 def tier_table(items: list[Item]) -> list[dict[str, Any]]:
     """First runs only (reruns are reported beside them, not counted in place of them)."""
-    rows = []
-    for t in (1, 2, 3):
-        its = [i for i in items if i.tier == t and not i.rerun]
-        rows.append(_counts(its, f"Tier {t}", TIER_NAMES[t]))
-    rows.append(_counts([i for i in items if not i.rerun], "All", ""))
+    return _table([i for i in items if not i.rerun])
+
+
+def current_table(items: list[Item]) -> list[dict[str, Any]]:
+    """The runs with the fixed loop (CURRENT_BATCHES), one per item."""
+    return _table([i for i in items if i.batch in CURRENT_BATCHES])
+
+
+def _table(its: list[Item]) -> list[dict[str, Any]]:
+    rows = [_counts([i for i in its if i.tier == t], f"Tier {t}", TIER_NAMES[t])
+            for t in (1, 2, 3)]
+    rows.append(_counts(its, "All", ""))
     return rows
 
 
@@ -117,6 +135,7 @@ def _counts(its: list[Item], label: str, name: str) -> dict[str, Any]:
             "correct": sum(i.correct for i in its),
             "success": sum(i.row.get("status") == "success" for i in its),
             "gpu": sum(i.gpu_pass for i in its),
+            "amd": sum(i.amd_pass for i in its),
             "cost": round(sum(_item_spend(i.row) for i in its), 4)}
 
 
@@ -287,16 +306,28 @@ def loop_pill(it: Item) -> str:
 # ----------------------------------------------------------------------------- pages
 
 
-def render_index(data: dict[str, Any]) -> str:
-    items: list[Item] = data["items"]
-    rows = "".join(
+def _tier_rows(table: list[dict[str, Any]], amd: bool) -> str:
+    return "".join(
         f'<tr{" class=total" if r["label"] == "All" else ""}><td>{esc(r["label"])}'
         f'{"<br><span class=note>" + esc(r["name"]) + "</span>" if r["name"] else ""}</td>'
         f'<td class=num>{r["items"]}</td><td class=num>{r["correct"]}</td>'
         f'<td class=num>{r["success"]}</td><td class=num>{r["gpu"]}</td>'
-        f'<td class=num>{money(r["cost"])}</td></tr>' for r in tier_table(items))
+        + (f'<td class=num>{r["amd"]}</td>' if amd else "")
+        + f'<td class=num>{money(r["cost"])}</td></tr>' for r in table)
+
+
+def _tier_head(amd: bool) -> str:
+    return ('<div class="scroll"><table><thead><tr><th>Tier</th><th class=num>Items</th>'
+            '<th class=num>Correct, 0 helpers</th><th class=num>Loop success</th>'
+            '<th class=num>NVIDIA pass</th>' + ("<th class=num>AMD pass</th>" if amd else "")
+            + '<th class=num>Muse cost</th></tr></thead><tbody>')
+
+
+def render_index(data: dict[str, Any]) -> str:
+    items: list[Item] = data["items"]
+    current = [i for i in items if i.batch in CURRENT_BATCHES]
     firsts = [i for i in items if not i.rerun]
-    reruns = [i for i in items if i.rerun]
+    others = [i for i in items if i.rerun and i.batch not in CURRENT_BATCHES]
     body = [
         '<header style="display:grid;gap:10px"><span class="eyebrow">Muse Port · evidence '
         'report</span><h1>Muse ports llm.c from CUDA to SYCL</h1>'
@@ -307,25 +338,30 @@ def render_index(data: dict[str, Any]) -> str:
         "run on NVIDIA GPUs against llm.c's own CUDA, and on an AMD GPU against the "
         "reference.</p>"
         '<nav class="crumb"><a href="plan.html">The plan</a><a href="#items">Every item</a>'
+        '<a href="#first-runs">The first runs</a>'
         f'<a href="{REPO}">Repository</a></nav></header>',
-        '<section><h2>Results by tier</h2><div class="scroll"><table><thead><tr><th>Tier</th>'
-        '<th class=num>Items</th><th class=num>Correct, 0 helpers</th>'
-        '<th class=num>Loop success</th><th class=num>NVIDIA pass</th>'
-        '<th class=num>Muse cost</th></tr></thead><tbody>' + rows + "</tbody></table></div>"
+        '<section><h2>Results with the fixed loop</h2>' + _tier_head(True)
+        + _tier_rows(current_table(items), True) + "</tbody></table></div>"
         '<p class="note"><b>Correct, 0 helpers</b>: the hidden grade. The final sources '
         "compile, match the reference within llm.c's fp32 tolerance, and no SYCLomatic "
         "(dpct) helper is left anywhere in the tree. <b>Loop success</b>: the loop's stricter "
         "rule, met inside the run on one source hash. <b>NVIDIA pass</b>: the port matched "
-        "both the reference and llm.c's CUDA on a real GPU. Cost includes earlier runs of the "
-        "same item.</p></section>",
-        '<section id="items"><h2>Every item</h2>' + _item_table(firsts) + "</section>",
+        "both the reference and llm.c's CUDA on a real GPU. <b>AMD pass</b>: the port matched "
+        "the reference on an AMD GPU. One run per item, after the loop fixes (delete_file, "
+        "ranged read_file, 32k output per turn); the first runs are below.</p></section>",
+        '<section id="items"><h2>Every item</h2>' + _item_table(current, compare=firsts)
+        + "</section>",
+        '<section id="first-runs"><h2>The first runs</h2><p class="note">The same tasks and '
+        "hidden checks, before the loop fixes. Most ports were already correct, but the runs "
+        "spent their turns clearing SYCLomatic's output file by file and hit the toolkit's "
+        "token limit.</p>" + _tier_head(False) + _tier_rows(tier_table(items), False)
+        + "</tbody></table></div>" + _item_table(firsts) + "</section>",
     ]
-    for batch in dict.fromkeys(i.batch for i in reruns):
-        its = [i for i in reruns if i.batch == batch]
+    for batch in dict.fromkeys(i.batch for i in others):
+        its = [i for i in others if i.batch == batch]
         body.append(
             f'<section><h2>{esc(data["batches"][batch]["title"])}</h2><p class="note">'
-            "A later run of these items, reported beside the first runs; it does not replace "
-            "them in the table above. What changed is in "
+            "Another run of these items, reported beside the others. What changed is in "
             f'<a href="{REPO}/tree/main/evidence/{esc(batch)}">evidence/{esc(batch)}</a>.</p>'
             + _item_table(its, compare=firsts) + "</section>")
     spent = sum(b["spent_usd"] for b in data["batches"].values())

@@ -1,8 +1,9 @@
 import json
 import re
 from pathlib import Path
+from typing import Any
 
-from museport.report import build, load, tier_table
+from museport.report import build, current_table, load, tier_table
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -69,19 +70,28 @@ def test_site_is_built_from_the_evidence(tmp_path):
     assert "pass: MI350X VF (vs reference)" in amd
 
 
-def test_readme_table_matches_the_evidence():
-    """The README's results table is checked against the committed evidence."""
-    rows = {r["label"]: r for r in tier_table(load(ROOT / "evidence")["items"])}
+def test_readme_tables_match_the_evidence():
+    """Both README results tables are checked against the committed evidence: the runs with
+    the fixed loop (headline), and the first runs (under "How we got here")."""
+    items = load(ROOT / "evidence")["items"]
     readme = (ROOT / "README.md").read_text()
+    head, history = readme.split("## How we got here", 1)
+    labels = ["Tier 1", "Tier 2", "Tier 3", "All"]
 
-    def cells(name: str) -> list[str]:
-        line = next(ln for ln in readme.splitlines() if ln.startswith(f"| {name}"))
+    def cells(text: str, name: str) -> list[str]:
+        line = next(ln for ln in text.splitlines() if ln.startswith(f"| {name}"))
         return [re.match(r"\**\$?([\d.]+)", c.strip()).group(1)
                 for c in line.strip("|").split("|")[1:]]
 
-    labels = ["Tier 1", "Tier 2", "Tier 3", "All"]
-    assert cells("Items ported") == [str(rows[k]["items"]) for k in labels]
-    assert cells("Correct with 0 helpers") == [str(rows[k]["correct"]) for k in labels]
-    assert cells("Also met the loop") == [str(rows[k]["success"]) for k in labels]
-    assert cells("Pass on an NVIDIA GPU") == [str(rows[k]["gpu"]) for k in labels]
-    assert cells("Muse cost") == [f"{rows[k]['cost']:.2f}" for k in labels]
+    def check(text: str, table: list[dict[str, Any]], amd: bool) -> None:
+        rows = {r["label"]: r for r in table}
+        assert cells(text, "Items ported") == [str(rows[k]["items"]) for k in labels]
+        assert cells(text, "Correct with 0 helpers") == [str(rows[k]["correct"]) for k in labels]
+        assert cells(text, "Also met the loop") == [str(rows[k]["success"]) for k in labels]
+        assert cells(text, "Pass on an NVIDIA GPU") == [str(rows[k]["gpu"]) for k in labels]
+        if amd:
+            assert cells(text, "Pass on an AMD GPU") == [str(rows[k]["amd"]) for k in labels]
+        assert cells(text, "Muse cost") == [f"{rows[k]['cost']:.2f}" for k in labels]
+
+    check(head, current_table(items), amd=True)
+    check(history, tier_table(items), amd=False)
