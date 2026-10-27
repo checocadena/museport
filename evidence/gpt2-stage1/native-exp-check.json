@@ -1,0 +1,29 @@
+{
+ "what": "SYCLomatic's raw migration of the GPT-2 stage-1 harness on the OpenCL CPU device, against the hidden reference (atol 0.01); a manual check, Oct 27",
+ "native_exp": {
+  "rows_outside_tolerance": [
+   29,
+   35,
+   46,
+   56,
+   58,
+   79,
+   147,
+   151,
+   152,
+   165,
+   178,
+   231,
+   240,
+   254
+  ],
+  "elements_outside": 610331,
+  "max_abs_err": 0.076019287109375,
+  "loss": 5.270002841949463
+ },
+ "precise_math": {
+  "max_abs_err": 0.0012969970703125
+ },
+ "reference_loss": 5.270008563995361,
+ "rows": 256
+}
