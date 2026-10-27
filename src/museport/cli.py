@@ -96,6 +96,12 @@ def build_parser() -> argparse.ArgumentParser:
     g2.add_argument("--check", action="store_true",
                     help="prove the check: llm.c's CPU train_gpt2.c must pass it (no model)")
 
+    g3 = sub.add_parser("gpt2-gpu-task", help="a remote-test task for a passing GPT-2 stage "
+                                              "(data fetched and oneMath built on the GPU)")
+    g3.add_argument("stage_dir", help="e.g. evidence/gpt2-stage3")
+    g3.add_argument("--out", required=True, help="task directory to write")
+    g3.add_argument("--model", default=DEFAULT_MODEL)
+
     rp = sub.add_parser("report", help="a static site built only from the committed evidence "
                                        "(overview, plan, one page per item with a replay)")
     rp.add_argument("evidence", nargs="?", default="evidence", help="the evidence directory")
@@ -125,6 +131,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _report(args)
     if args.cmd == "gpt2-task":
         return _gpt2_task(args)
+    if args.cmd == "gpt2-gpu-task":
+        from pathlib import Path
+
+        from .gpt2 import make_gpu_task
+
+        print(make_gpu_task(Path(args.stage_dir), Path(args.out), args.model))
+        return 0
     return 2
 
 
