@@ -20,7 +20,7 @@ Rules for every item:
 
 Budget so far:
 - **Development:** about $0.55 of $5, plus the first failed plan run (at most $1.15).
-- **Comparison runs:** $10.11 of $20 (after the C1-C3 reruns, Tier 1 run 2 and GPT-2 stage 1).
+- **Comparison runs:** $11.32 of $20 (after the C1-C3 reruns, Tier 1 run 2 and GPT-2 stages 1-2).
   The author set a $7 cap for GPT-2 (G3).
 - **GPUs:** about $1.13.
 
@@ -160,7 +160,8 @@ See the README's results table.
   with a PyTorch reference over 10 steps. Prove it passes for llm.c's CUDA on a GPU first.
   *About $0.10.*
 - [ ] **G3. Muse ports the fp32 training program to SYCL** *(Oct 27: stage 1, the forward pass,
-  passes on the CPU device for $0.74; see `evidence/gpt2-stage1`.)*, reusing its kernel ports, in
+  passes on the CPU device for $0.74; stage 2, the backward pass, for $1.21; see
+  `evidence/gpt2-stage1` and `evidence/gpt2-stage2`.)*, reusing its kernel ports, in
   stages (forward, backward, optimizer). It passes `test_gpt2` on the CPU device, then on
   NVIDIA, and on AMD if D1 works. *About $3-8 plus GPU minutes; needs a cap. Done when the SYCL
   build matches PyTorch within llm.c's tolerances, with the evidence committed.*

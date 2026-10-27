@@ -77,8 +77,14 @@ original CUDA, and on an AMD MI350X against the hidden reference.
   - **What Muse wrote:** a lean 463-line forward-only rewrite: simple SYCL kernels plus oneMath
     `gemm` and `gemm_batch`, not llm.c's tuned kernels.
   - **Where it ran:** the CPU device only so far
-    ([evidence](evidence/gpt2-stage1/README.md)). Stages 2 (backward) and 3 (training) are
-    next.
+    ([evidence](evidence/gpt2-stage1/README.md)).
+- **GPT-2, stage 2 (backward pass):** Muse ported the forward and backward passes.
+  - **Result:** loop success in 27 turns, for **$1.21**. All 124,475,904 parameter gradients
+    match PyTorch's within 2e-2 (worst error 0.0124), with 0 helpers.
+  - **Tolerance:** 2e-2 is llm.c's CPU-test tolerance for gradients. At the CUDA test's 1e-2,
+    llm.c's own CPU code fails one gradient.
+  - **What Muse wrote:** 764 lines (16 SYCL kernels plus oneMath), on the CPU device
+    ([evidence](evidence/gpt2-stage2/README.md)). Stage 3 (10 training steps) is next.
 - **Limits:** fp32 only, reduced sizes, one run per item. AMD has been tested for Tier 1 only.
 - **Evidence:** [plan](evidence/plan-llmc-devcuda-stream/README.md),
   [Tier 1](evidence/port-llmc-tier1/README.md), [Tier 2](evidence/port-llmc-tier2/README.md),
