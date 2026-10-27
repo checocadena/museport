@@ -266,7 +266,16 @@ STRICT_GOAL = (
 )
 
 
-def goal(spec: KernelSpec, harness: str, *, strict: bool = False) -> str:
+# Replaces the goal's migrate sentences in `museport port --no-migrate` (the ablation without
+# SYCLomatic).
+NO_MIGRATE_GOAL = (
+    ". The migrate tool (SYCLomatic) is not available in this run: write the SYCL port "
+    "yourself from the CUDA harness (read it in parts with read_file offset/limit)."
+)
+
+
+def goal(spec: KernelSpec, harness: str, *, strict: bool = False,
+         no_migrate: bool = False) -> str:
     sizes = " ".join(s for s, _ in spec.sizes)
     return (
         f"Port {harness} (llm.c dev/cuda/{spec.file}, fp32 build) to idiomatic SYCL 2020 with "
@@ -276,9 +285,11 @@ def goal(spec: KernelSpec, harness: str, *, strict: bool = False) -> str:
         "outputs in order as raw float32, exactly as the CUDA main does. A hidden reference "
         f"checks the output (atol {spec.tol:g} + rtol FLT_EPSILON*|ref|, llm.c's own fp32 "
         "rule). Success requires compile, verify and a zero-helper scan_helpers of the whole "
-        "work directory (path '.') on the same sources: migrate's output under migrated/ "
-        "counts, so delete it (delete_file) once your own port is done. migrate's output can "
-        "be long: read it in parts (read_file offset/limit) or work from the CUDA harness."
+        "work directory (path '.') on the same sources"
+        + (NO_MIGRATE_GOAL if no_migrate else
+           ": migrate's output under migrated/ counts, so delete it (delete_file) once your "
+           "own port is done. migrate's output can be long: read it in parts (read_file "
+           "offset/limit) or work from the CUDA harness.")
         + (" cuBLAS calls go to oneMath (oneapi::math::blas, #include <oneapi/math.hpp>; the "
            "compile flags already link -lonemath), not to oneapi::mkl product APIs."
            if spec.keep_cublas else "")
@@ -286,7 +297,8 @@ def goal(spec: KernelSpec, harness: str, *, strict: bool = False) -> str:
     )
 
 
-def make_task(spec: KernelSpec, cuda_dir: Path, out: Path, *, strict_goal: bool = False) -> Path:
+def make_task(spec: KernelSpec, cuda_dir: Path, out: Path, *, strict_goal: bool = False,
+              no_migrate: bool = False) -> Path:
     """Write the task directory for ``spec``; returns the task.json path."""
     original = (cuda_dir / spec.file).read_text()
     out.mkdir(parents=True, exist_ok=True)
@@ -303,7 +315,7 @@ def make_task(spec: KernelSpec, cuda_dir: Path, out: Path, *, strict_goal: bool 
     args = " ".join(str(v) for _, v in spec.sizes)
     task = {
         "name": f"llmc_{spec.stem}",
-        "goal": goal(spec, harness, strict=strict_goal),
+        "goal": goal(spec, harness, strict=strict_goal, no_migrate=no_migrate),
         "cuda_path": harness,
         "include_dirs": ["."],
         "reference_build": ["g++", "-O2", "-std=c++17", f"{{task_dir}}/{spec.stem}_ref.cpp",
@@ -442,9 +454,10 @@ def run_items(plan: dict[str, Any], cuda_dir: Path, out: Path, *, model: str,
               runs_dir: Path = Path("runs/port"), tasks_only: bool = False,
               check: bool = False, tier: int = 1, strict_goal: bool = False,
               max_output_tokens: int | None = None, max_total_tokens: int | None = None,
-              log: Any = print) -> dict[str, Any]:
+              no_migrate: bool = False, log: Any = print) -> dict[str, Any]:
     """Port each selected item (``items`` of any tier, else all of ``tier``) with Muse. A run
-    starts only if the spend so far plus its own cap stays within ``total_cap_usd``."""
+    starts only if the spend so far plus its own cap stays within ``total_cap_usd``.
+    ``no_migrate`` runs without SYCLomatic (no migrate tool, and a goal that says so)."""
     from .loop import MAX_OUTPUT_TOKENS, MAX_TOTAL_TOKENS
     from .loop import run as run_loop
 
@@ -454,13 +467,15 @@ def run_items(plan: dict[str, Any], cuda_dir: Path, out: Path, *, model: str,
         iid = it.get("id", "?")
         if items and iid not in items:
             continue
-        row: dict[str, Any] = {"item": iid, "file": (it.get("files") or ["?"])[0]}
+        row: dict[str, Any] = {"item": iid, "file": (it.get("files") or ["?"])[0],
+                               **({"no_migrate": True} if no_migrate else {})}
         results.append(row)
         if spec is None:
             row["status"] = "no_harness_spec"
             continue
         d = out / iid
-        task = make_task(spec, cuda_dir, d / "task", strict_goal=strict_goal)
+        task = make_task(spec, cuda_dir, d / "task", strict_goal=strict_goal,
+                         no_migrate=no_migrate)
         row["task"] = str(task.relative_to(out))
         if check:
             row["harness_check"] = check_harness(task, runs_dir / iid / "check")
@@ -482,7 +497,8 @@ def run_items(plan: dict[str, Any], cuda_dir: Path, out: Path, *, model: str,
             outcome = run_loop(task, model=model, max_iterations=max_iterations,
                                max_cost_usd=max_cost_usd, runs_dir=runs_dir / iid,
                                max_output_tokens=max_output_tokens or MAX_OUTPUT_TOKENS,
-                               max_total_tokens=max_total_tokens or MAX_TOTAL_TOKENS)
+                               max_total_tokens=max_total_tokens or MAX_TOTAL_TOKENS,
+                               no_migrate=no_migrate)
         except Exception as e:  # noqa: BLE001 - one item must not end the batch
             partial = trace_spend(runs_dir / iid, model)
             known = partial["cost_usd"] is not None
