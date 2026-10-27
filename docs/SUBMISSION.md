@@ -83,7 +83,11 @@ Instinct MI350X** against the reference ([AMD](../evidence/port-llmc-tier1-run2/
   oneMath calls. All 124,475,904 gradients match PyTorch's within llm.c's CPU-test tolerance of
   2e-2 (worst error 0.0124), with 0 helpers. It took 27 turns and cost $1.21
   ([stage 2](../evidence/gpt2-stage2/README.md)).
-- **Stage 3, training:** STAGE3_RESULT.
+- **Stage 3, training:** 10 steps of forward pass, backward pass and AdamW update, llm.c's
+  own test. Every step's loss matches PyTorch's within 1e-2 (worst error 0.00015). Muse
+  wrote the 907-line port in one turn; the first verify failed, and Muse found and fixed
+  its own matmul transpose mistake. It took 29 turns and cost $1.15
+  ([stage 3](../evidence/gpt2-stage3/README.md)).
 
 ## Technical depth
 
