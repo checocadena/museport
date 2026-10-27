@@ -19,6 +19,7 @@ from typing import Any
 from oneapi_agent.models import Transport
 
 CHARS_PER_TOKEN = 4
+EMPTY_TURN = "(no answer: this turn's output budget was used up before any text or tool call)"
 
 
 def assemble_stream(lines: Iterable[bytes]) -> dict[str, Any]:
@@ -74,13 +75,16 @@ def worst_case_usage(body: dict[str, Any]) -> dict[str, int]:
 
 
 def stream_transport(timeout_s: float = 900.0, attempts: int = 3, *,
-                     fill_missing_usage: bool = False) -> Transport:
+                     fill_missing_usage: bool = False, mark_empty: bool = False) -> Transport:
     """POST with ``stream: true`` and return the assembled response.
 
     Only HTTP 429 is retried: any other failure may come after the request was accepted and
     billed, so it is reported, never silently repeated. With ``fill_missing_usage`` a response
     without usage gets ``worst_case_usage`` (and ``usage_estimated``), so a caller that sums
     usage against a USD cap, like the toolkit's agent loop, never counts a turn as free.
+    With ``mark_empty`` an answer with neither text nor tool calls (reasoning used the whole
+    output budget) gets ``EMPTY_TURN`` as its text: the API refuses such an assistant message
+    with HTTP 400 when a loop sends the history back, which would end the run.
     Headers (the key) are never logged."""
 
     def post(url: str, headers: dict[str, str], body: dict[str, Any]) -> dict[str, Any]:
@@ -106,6 +110,11 @@ def stream_transport(timeout_s: float = 900.0, attempts: int = 3, *,
                 resp["usage_estimated"] = True
                 print("museport: the API reported no usage for this turn; charging the worst "
                       f"case ({resp['usage']['total_tokens']} tokens)", file=sys.stderr)
+            msg = resp["choices"][0]["message"]
+            if mark_empty and not msg.get("tool_calls") and not msg["content"].strip():
+                msg["content"] = EMPTY_TURN
+                print("museport: empty answer (output budget used up); marked and sent back",
+                      file=sys.stderr)
             return resp
         raise AssertionError("unreachable")
 

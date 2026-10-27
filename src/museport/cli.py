@@ -54,7 +54,8 @@ def build_parser() -> argparse.ArgumentParser:
     po.add_argument("plan", help="plan.json written by `museport plan`")
     po.add_argument("--cuda-dir", required=True, help="the directory the plan was made for")
     po.add_argument("--out", default="museport-port", help="tasks, reports and ports")
-    po.add_argument("--items", help="comma-separated plan item ids (default: all of --tier)")
+    po.add_argument("--items", help="comma-separated plan item ids, of any tier (default: all "
+                                    "of --tier)")
     po.add_argument("--tier", type=int, default=1, help="plan tier to port (default 1)")
     po.add_argument("--model", default=DEFAULT_MODEL)
     po.add_argument("--max-iterations", type=int, default=12)
@@ -67,6 +68,10 @@ def build_parser() -> argparse.ArgumentParser:
     po.add_argument("--check", action="store_true",
                     help="prove each task first: SYCLomatic's raw output must pass the hidden "
                          "reference (needs c2s and icpx)")
+
+    po.add_argument("--strict-goal", action="store_true",
+                    help="tell Muse to clear SYCLomatic's output early and to keep each "
+                         "variant's own algorithm (for reruns)")
 
     gp = sub.add_parser("gpu-tasks", help="remote-test tasks for the ports that pass the hidden "
                                           "grade (run them with `oneapi-agent remote-test`)")
@@ -147,6 +152,7 @@ def _port(args: argparse.Namespace) -> int:
                         max_iterations=args.max_iterations, max_cost_usd=args.max_cost,
                         total_cap_usd=args.total_cap, runs_dir=Path(args.runs_dir),
                         tasks_only=args.tasks_only, check=args.check, tier=args.tier,
+                        strict_goal=args.strict_goal,
                         log=lambda m: print(m, file=sys.stderr))
     print(json.dumps(summary, indent=2))
     bad = {"harness_check_failed", "error"}

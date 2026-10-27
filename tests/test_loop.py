@@ -61,6 +61,29 @@ def test_missing_usage_is_charged_as_worst_case(monkeypatch):
     assert resp["usage"]["prompt_tokens"] >= 1000
 
 
+def test_an_empty_answer_is_marked_for_the_loop(monkeypatch):
+    # Seen 2026-10-27: reasoning used all 16000 output tokens, the stream ended with no text and
+    # no tool call, and sending that turn back gave HTTP 400 ("must have content or tool_calls").
+    from museport import stream as S
+
+    class R(list):
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+    monkeypatch.setattr(S.urllib.request, "urlopen", lambda req, timeout: R(_sse(
+        {"choices": [{"delta": {}, "finish_reason": "stop"}]}, "[DONE]")))
+    body = {"model": "m", "messages": [{"role": "user", "content": "a"}]}
+    plain = stream_transport()("https://x/v1/chat/completions", {}, body)
+    assert plain["choices"][0]["message"]["content"] == ""  # the plan reports it as empty
+    marked = stream_transport(mark_empty=True)("https://x/v1/chat/completions", {}, body)
+    assert marked["choices"][0]["message"]["content"] == S.EMPTY_TURN
+    r = from_openai_response(marked)
+    assert r.content == [{"type": "text", "text": S.EMPTY_TURN}]
+
+
 def test_build_sets_the_cap_and_the_streaming_client():
     sentinel = object()
     cfg, client = build(TASK, model="muse-spark-1.3", max_iterations=3, max_cost_usd=0.75,
