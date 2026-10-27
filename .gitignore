@@ -9,3 +9,5 @@ __pycache__/
 .ruff_cache/
 input.bin
 /site/
+gpt2_124M*.bin
+/gpt2-task/
