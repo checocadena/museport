@@ -65,7 +65,13 @@ budget. The same 10 Tier 1 files then went from **4 to 9 loop successes** and fr
 **10 correct**, and cost fell from $1.67 to $1.01
 ([evidence](../evidence/port-llmc-tier1-run2/README.md)).
 
-**GPUs:** those 10 ports pass on **NVIDIA**, RTX 2000 Ada and A4500, against llm.c's CUDA
+**Without SYCLomatic:** the same 10 Tier 1 files with the migrate tool taken away. Muse
+wrote every port from the CUDA source: **10 of 10** loop successes and 10 correct, in 5.3
+turns per item, for $0.48. On these simple kernels the migration tool did not help. The one
+file with warp-level CUDA got correct but plain kernels
+([evidence](../evidence/port-llmc-tier1-nomigrate/README.md)).
+
+**GPUs:** the 10 Tier 1 ports of the loop-fix run pass on **NVIDIA**, RTX 2000 Ada and A4500, against llm.c's CUDA
 ([NVIDIA](../evidence/port-llmc-tier1-run2/gpu/NVIDIA.md)). They also pass on an **AMD
 Instinct MI350X** against the reference ([AMD](../evidence/port-llmc-tier1-run2/gpu/AMD.md)).
 
@@ -73,7 +79,11 @@ Instinct MI350X** against the reference ([AMD](../evidence/port-llmc-tier1-run2/
 - **Stage 1, the forward pass:** Muse wrote a 463-line SYCL port that matches PyTorch's logits
   and loss within llm.c's tolerance (worst error 0.0012). It took 28 turns and cost $0.74
   ([stage 1](../evidence/gpt2-stage1/README.md)).
-- **Stage 2, the backward pass:** STAGE2_RESULT.
+- **Stage 2, the backward pass:** Muse wrote a 764-line port, with 16 SYCL kernels and 17
+  oneMath calls. All 124,475,904 gradients match PyTorch's within llm.c's CPU-test tolerance of
+  2e-2 (worst error 0.0124), with 0 helpers. It took 27 turns and cost $1.21
+  ([stage 2](../evidence/gpt2-stage2/README.md)).
+- **Stage 3, training:** STAGE3_RESULT.
 
 ## Technical depth
 

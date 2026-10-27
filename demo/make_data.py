@@ -65,6 +65,18 @@ def main(evidence: Path) -> dict[str, object]:
                 "cost": round(sum(r["cost_usd"] for r in rows.values()), 4),
                 "items": len(rows)}
 
+    def stage(name: str) -> dict[str, object] | None:
+        """A GPT-2 stage's run, or None when its evidence is not in this checkout."""
+        f = evidence / name / "run1/outcome.json"
+        if not f.is_file():
+            return None
+        g = json.loads(f.read_text())
+        return {"status": g["stop_reason"], "turns": g["iterations"], "cost": g["cost_usd"],
+                "verify": g["evaluation"]["verify_summary"],
+                "verify_ok": g["evaluation"]["verify_status"] == "ok",
+                "helpers": g["evaluation"]["helpers"]}
+
+    nomigrate = evidence / "port-llmc-tier1-nomigrate/summary.json"
     g1 = json.loads((evidence / "gpt2-stage1/run1/outcome.json").read_text())
     proof1 = json.loads((evidence / "gpt2-stage1/cpu-proof.json").read_text())
     return {
@@ -81,6 +93,10 @@ def main(evidence: Path) -> dict[str, object]:
                         "helpers": g1["evaluation"]["helpers"],
                         "cpu_proof": proof1["steps"]["verify_cpu_proof"]["summary"],
                         "replay": _replay(evidence / "gpt2-stage1/run1/trace.jsonl")},
+        "gpt2_stage2": stage("gpt2-stage2"),
+        "gpt2_stage3": stage("gpt2-stage3"),
+        "tier1_nomigrate": tier1({r["item"]: r for r in json.loads(nomigrate.read_text())["items"]})
+        if nomigrate.is_file() else None,
         "native_exp_check": json.loads(
             (evidence / "gpt2-stage1/native-exp-check.json").read_text()),
     }
