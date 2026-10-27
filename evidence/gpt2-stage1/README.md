@@ -34,8 +34,53 @@ The second and third rows are a manual check made in this session, not stored as
 SYCLomatic's raw output fails only because of its fast-math mapping. That shows the check is
 strict enough to catch imprecise math, and why the goal asks for precise math.
 
+## Run 1: Muse passes stage 1 ([`run1/`](run1/))
+
+`museport loop task/task.json --max-iterations 30 --max-cost 3` with `muse-spark-1.3`, on
+Oct 27. The author approved $7 for the three stages, at most $3 each.
+
+| | |
+|---|---|
+| Loop result | **success** at turn 28 of 30: verify passed and zero dpct helpers on the same compiled sources |
+| Hidden grade of the final sources | **PASS**, worst max abs err 0.00121 (atol 0.01, llm.c's own test tolerance); 0 helpers |
+| Cost | **$0.7441** (from the API's reported usage) |
+| Device | OpenCL CPU device (Intel Xeon), oneMath with its MKL-CPU backend |
+| Benchmark | median 2,351 ms for the two forward passes (5 runs, CPU) |
+
+**What Muse wrote:** [`run1/port/gpt2_forward.cpp`](run1/port/gpt2_forward.cpp), 463 lines.
+It is a forward-only rewrite of llm.c's GPT-2, not a translation of the whole training file:
+
+- 9 SYCL kernels: encoder, layernorm, residual, GELU, attention softmax, the classifier and
+  the helpers they need;
+- oneMath `gemm` for the matmuls and `gemm_batch` for attention, in place of cuBLAS and of
+  llm.c's own `matmul_forward_kernel4`.
+
+The kernels are the simple forms, with one work-item per element or per row. llm.c's training
+file uses tuned warp-level kernels (for example `layernorm_forward_kernel3`). Muse kept the
+numbers, not those algorithms. Performance was not compared with llm.c.
+
+**The port does not read the answers.** The input file also holds PyTorch's expected logits.
+The port reads only its header and the input and target tokens (`main`, lines 432-439), and
+computes the logits on the device.
+
+**How the run went** (replay in [`run1/trace.jsonl`](run1/trace.jsonl)):
+
+1. **Turns 1-15: reading.** Muse ran `migrate`, then read SYCLomatic's 2,404-line output in
+   parts with `read_file` line ranges. It could not read llm.c's original
+   `train_gpt2_fp32.cu`: the toolkit allows only the task's main CUDA file, not the files it
+   includes. It worked from the migrated copy instead.
+2. **Turn 16:** it wrote the port.
+3. **Turn 17:** one compile error, the oneMath `transpose` enum's namespace.
+4. **Turns 18-23:** the fix took six turns.
+5. **Turn 24:** the port compiled.
+6. **Turn 25:** Muse deleted `migrated/` with `delete_file`.
+7. **Turns 26-28:** it recompiled, verify passed, the helper scan found 0 helpers, and it ran
+   the benchmark.
+
 ## Next
 
-Stage 1 runs with Muse once the author approves the cap. The proposed cap is $7 for the three
-stages, at most $3 per stage. The run is on the CPU device. NVIDIA needs plan item D2 (oneMath
-built with its cuBLAS backend).
+- **Stage 2 (backward):** step-0 gradients for all 124M parameters, against PyTorch's.
+- **Stage 3 (training):** 10 AdamW steps, against llm.c's expected losses.
+
+Both stages stay on the CPU device. The NVIDIA GPU needs plan item D2 (oneMath built with its
+cuBLAS backend). Spent so far on GPT-2: $0.7441 of the $7 cap.

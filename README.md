@@ -69,6 +69,16 @@ original CUDA, and on an AMD MI350X against the hidden reference.
   - On AMD they are checked against the reference only. AMD's automatic CUDA-to-HIP
     conversion can't build llm.c's own CUDA (`__ldcs`, a host `memset`, 32-bit warp masks),
     so the comparison with llm.c's CUDA was done on NVIDIA.
+- **GPT-2, stage 1 (forward pass):** Muse ported the forward pass of llm.c's fp32 GPT-2
+  training program, with the real GPT-2 124M weights.
+  - **Result:** loop success in 28 turns, for **$0.74**. The final port matches PyTorch's logits
+    and loss on llm.c's debug batch within llm.c's own 1e-2 (worst error 0.0012), with 0
+    helpers.
+  - **What Muse wrote:** a lean 463-line forward-only rewrite: simple SYCL kernels plus oneMath
+    `gemm` and `gemm_batch`, not llm.c's tuned kernels.
+  - **Where it ran:** the CPU device only so far
+    ([evidence](evidence/gpt2-stage1/README.md)). Stages 2 (backward) and 3 (training) are
+    next.
 - **Limits:** fp32 only, reduced sizes, one run per item. AMD has been tested for Tier 1 only.
 - **Evidence:** [plan](evidence/plan-llmc-devcuda-stream/README.md),
   [Tier 1](evidence/port-llmc-tier1/README.md), [Tier 2](evidence/port-llmc-tier2/README.md),
