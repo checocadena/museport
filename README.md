@@ -57,7 +57,9 @@ graded by a hidden check built from llm.c's own CPU code and tolerance.
   sources inside the run.
 - **Open issues, measured and reported:**
   - `softmax_forward` fails the hidden check (36,435 of 25.7 million values outside
-    tolerance). Muse found the failing variant but ran out of turns without a fix.
+    tolerance). Muse found the failing variant but ran out of turns without a fix. A rerun
+    with the stricter goal and 20 turns fixed the copied variants but still fails the check
+    ([evidence](evidence/port-llmc-softmax-rerun/README.md), $0.75).
   - `softmax_forward` and `layernorm_backward` copy one implementation into several kernel
     variants; the variant check reports it. A stricter goal fixed `layernorm_backward` in an
     earlier rerun ([round 2](evidence/port-llmc-reruns-2/README.md)).

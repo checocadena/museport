@@ -1,0 +1,41 @@
+{
+  "model": "muse-spark-1.3",
+  "spent_usd": 0.747,
+  "items": [
+    {
+      "item": "t2-softmax-forward",
+      "file": "softmax_forward.cu",
+      "task": "t2-softmax-forward/task/task.json",
+      "run_id": "20261027T160144138080Z",
+      "status": "budget",
+      "detail": "cost budget exceeded: $0.7470 > $0.70",
+      "iterations": 19,
+      "usage": {
+        "input_tokens": 234270,
+        "output_tokens": 87761,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 541087
+      },
+      "cost_usd": 0.7469848,
+      "best": null,
+      "evaluation": {
+        "source_hash": "8163d46303eae925",
+        "compiled": true,
+        "verify_status": "fail",
+        "verify_summary": "FAIL: 0/1 case(s) match; first failure: 41906 of 25731584 element(s) outside tolerance",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "softmax_forward.cpp"
+      ],
+      "variant_check": {
+        "variants": 8,
+        "kernels": 8,
+        "distinct_kernel_bodies": 8,
+        "onemath_calls": 0,
+        "duplicated_variants": false
+      }
+    }
+  ]
+}
