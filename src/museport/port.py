@@ -540,7 +540,12 @@ def write_summary(out: Path, plan: dict[str, Any], model: str,
                 continue
             if "cost_usd" not in r:  # tasks only / check only: keep the paid row's results
                 results[i] = {**o, **{k: v for k, v in r.items() if k == "harness_check"}}
-            elif o.get("run_id") != r.get("run_id"):
+            elif o.get("run_id") == r.get("run_id"):
+                # the same run written again (after each item and at the end): keep the
+                # earlier runs an earlier write recorded
+                if o.get("earlier_runs") and not r.get("earlier_runs"):
+                    r["earlier_runs"] = o["earlier_runs"]
+            else:
                 # a rerun: the earlier paid run stays on record and in the spend
                 earlier = [*o.get("earlier_runs", []),
                            {k: o.get(k) for k in ("status", "iterations", "cost_usd", "error")

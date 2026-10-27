@@ -207,6 +207,12 @@ def test_summary_merge_keeps_paid_rows_and_earlier_runs(tmp_path):
     a = s["items"][0]
     assert a["run_id"] == "r2" and a["earlier_runs"][0]["cost_usd"] == 0.10
     assert s["spent_usd"] == pytest.approx(0.30)
+    # run_items writes the same rerun again at the end: its earlier run must stay
+    s = write_summary(tmp_path, plan, "m", [{"item": "a", "file": "gelu_forward.cu",
+                                             "status": "max_iterations", "run_id": "r2",
+                                             "iterations": 12, "cost_usd": 0.20}])
+    assert s["items"][0]["earlier_runs"][0]["cost_usd"] == 0.10
+    assert s["spent_usd"] == pytest.approx(0.30)
     s = write_summary(tmp_path, plan, "m", [{"item": "b", "file": "permute.cu",
                                              "status": "success", "run_id": "r3",
                                              "cost_usd": 0.05}])
