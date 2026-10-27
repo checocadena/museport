@@ -16,7 +16,7 @@ original CUDA. AMD runs are planned but have not been done yet.
 ## What is new, and what it builds on
 
 - **Built during the hackathon (this repository):**
-  - `museport scan`, `plan`, `loop`, `port` and `gpu-tasks`;
+  - `museport scan`, `plan`, `loop`, `port`, `gpu-tasks` and `report`;
   - the hidden-check harness for llm.c's kernels, the variant check, and the streaming Muse
     client;
   - every result under `evidence/`.
@@ -121,6 +121,16 @@ Muse ported 4 of llm.c's Tier 3 files for $1.40; all 4 are correct and helper-fr
 hidden grade, and each cuBLAS call became a oneMath call. Verified on the CPU device;
 the one port with no library calls also passes on NVIDIA. The attention files and NCCL
 were not attempted.
+
+```bash
+museport report evidence --out site      # a static site built only from the committed evidence
+```
+
+`museport report` turns `evidence/` into a browsable site: the results by tier, every item, the
+plan with its grounding checks, and one page per port. Each port page has the hidden grade,
+the variant check, the GPU steps, the CUDA harness beside Muse's SYCL port with a diff, and a
+turn-by-turn replay of the loop (what Muse wrote, each tool call and its result). No number is
+typed in by hand, and a test checks this README's results table against the same evidence.
 
 ## Plan
 

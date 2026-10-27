@@ -51,7 +51,7 @@ See the README's results table.
 
 ## B. Live product (the submission requires one)
 
-- [ ] **B1. `museport report`:** generate one static site from `evidence/`:
+- [x] **B1. `museport report`:** generate one static site from `evidence/`:
   - **Overview:** the results table, costs, limits.
   - **One page per item:**
     - Muse's port with a diff view against the CUDA harness;

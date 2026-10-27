@@ -2,7 +2,8 @@
 
 Commands: scan (CUDA inventory, no model), plan (Muse writes a grounded porting plan), loop (the
 toolkit's agent loop on one task, driven by Muse), port (Muse ports a plan's items against
-hidden references), gpu-tasks (remote-test tasks for the ports that pass)."""
+hidden references), gpu-tasks (remote-test tasks for the ports that pass), report (a static
+site built from the committed evidence)."""
 
 from __future__ import annotations
 
@@ -71,6 +72,10 @@ def build_parser() -> argparse.ArgumentParser:
                                           "grade (run them with `oneapi-agent remote-test`)")
     gp.add_argument("port_dir", help="the --out directory of `museport port`")
     gp.add_argument("--out", help="where to write the tasks (default: <port_dir>/gpu-tasks)")
+    rp = sub.add_parser("report", help="a static site built only from the committed evidence "
+                                       "(overview, plan, one page per item with a replay)")
+    rp.add_argument("evidence", nargs="?", default="evidence", help="the evidence directory")
+    rp.add_argument("--out", default="site", help="where to write the site (default: site)")
     return p
 
 
@@ -92,7 +97,19 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _port(args)
     if args.cmd == "gpu-tasks":
         return _gpu_tasks(args)
+    if args.cmd == "report":
+        return _report(args)
     return 2
+
+
+def _report(args: argparse.Namespace) -> int:
+    from pathlib import Path
+
+    from .report import build
+
+    result = build(Path(args.evidence), Path(args.out))
+    print(f"[report] wrote {len(result['pages'])} page(s) to {args.out}/", file=sys.stderr)
+    return 0
 
 
 def _gpu_tasks(args: argparse.Namespace) -> int:
