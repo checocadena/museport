@@ -1,0 +1,104 @@
+{
+  "model": "muse-spark-1.3",
+  "spent_usd": 1.4502,
+  "items": [
+    {
+      "item": "t1-fused-residual-forward",
+      "file": "fused_residual_forward.cu",
+      "task": "t1-fused-residual-forward/task/task.json",
+      "run_id": "20261027T005632095570Z",
+      "status": "budget",
+      "detail": "token budget exceeded: 634997 > 600000",
+      "iterations": 12,
+      "usage": {
+        "input_tokens": 272564,
+        "output_tokens": 35129,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 327304
+      },
+      "cost_usd": 0.53909885,
+      "best": {
+        "iteration": 10,
+        "source_hash": "43887734c91aebe0",
+        "helpers": 98,
+        "path": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/runs-reruns-2/t1-fused-residual-forward/20261027T005632095570Z/best",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.43e-06, atol 1e-05)"
+      },
+      "evaluation": {
+        "source_hash": "7e38a7f83d3726fd",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.43e-06, atol 1e-05)",
+        "helpers": 45,
+        "advisories": [
+          "free_function_item_query"
+        ]
+      },
+      "sources": [
+        "fused_residual_forward.cpp",
+        "migrated/common.h",
+        "migrated/fused_residual_forward_harness.dp.cpp"
+      ],
+      "variant_check": {
+        "variants": 6,
+        "kernels": 7,
+        "distinct_kernel_bodies": 7,
+        "onemath_calls": 0,
+        "duplicated_variants": false
+      }
+    },
+    {
+      "item": "t2-layernorm-backward",
+      "file": "layernorm_backward.cu",
+      "task": "t2-layernorm-backward/task/task.json",
+      "run_id": "20261027T010132664386Z",
+      "status": "budget",
+      "detail": "cost budget exceeded: $0.7144 > $0.66",
+      "iterations": 14,
+      "usage": {
+        "input_tokens": 367356,
+        "output_tokens": 40729,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 547562
+      },
+      "cost_usd": 0.71442755,
+      "best": {
+        "iteration": 14,
+        "source_hash": "9fa24dc729d07728",
+        "helpers": 0,
+        "path": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/runs-reruns-2/t2-layernorm-backward/20261027T010132664386Z/best",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.53e-05, atol 0.001)"
+      },
+      "evaluation": {
+        "source_hash": "9fa24dc729d07728",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.53e-05, atol 0.001)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "candidate.cpp",
+        "migrated/common.h",
+        "migrated/layernorm_backward_harness.dp.cpp"
+      ],
+      "variant_check": {
+        "variants": 9,
+        "kernels": 10,
+        "distinct_kernel_bodies": 10,
+        "onemath_calls": 0,
+        "duplicated_variants": false
+      },
+      "earlier_runs": [
+        {
+          "status": "error",
+          "iterations": 6,
+          "cost_usd": 0.196675,
+          "error": "ConnectionResetError: [Errno 104] Connection reset by peer",
+          "run_id": "20261027T005923497463Z",
+          "files": "t2-layernorm-backward/run1-crashed/"
+        }
+      ]
+    }
+  ]
+}

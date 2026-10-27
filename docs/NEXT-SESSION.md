@@ -42,8 +42,10 @@
 | AMD | not run: DigitalOcean's bare-IP agent is unreachable from this cloud session; Runpod had no AMD stock | tier 1 `gpu/logs/` |
 
 **Open issues in the ports:**
-- `t1-fused-residual-forward` and `t2-softmax-forward`: correct, but c2s helpers remain.
-- `t2-layernorm-backward`: copies one implementation into 8 of its 9 variants.
+- `t1-fused-residual-forward` and `t2-softmax-forward`: correct, but c2s helpers remain (reruns:
+  45 helpers left; fails verify).
+- `t2-layernorm-backward`: copies one implementation into 8 of its 9 variants (fixed by the
+  round-2 rerun: correct, 0 helpers, a distinct kernel per variant).
 
 **Not attempted:** `attention_forward`, `attention_backward`, `nccl_all_reduce`.
 
@@ -60,7 +62,7 @@
 | Bucket | Spent |
 |---|---|
 | Development and smoke tests | about $0.55: plan $0.2648, mini-fixture plan $0.0502, saxpy loop $0.0592, smoke test $0.0072, probes about $0.17. The first, failed plan is unknown: at most $1.15 if all 4 attempts were billed |
-| Port runs (comparison) | $5.5112: Tier 1 $1.6698, Tier 2 $2.4454 (incl. one crashed run), Tier 3 $1.3960 |
+| Port runs (comparison) | $8.3585: Tier 1 $1.6698, Tier 2 $2.4454 (incl. one crashed run), Tier 3 $1.3960, reruns round 1 $1.3971, round 2 $1.4502 |
 | GPUs | NVIDIA about $0.13 (all pods deleted and confirmed); DigitalOcean AMD attempt about $1.0 (two droplets, deleted, no SSH key left) |
 
 ## Known toolkit behaviour (handled in museport, toolkit unchanged)
