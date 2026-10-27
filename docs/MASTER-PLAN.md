@@ -151,9 +151,10 @@ See the README's results table.
 
 ## G. Headline: port a real program, not just kernel tests (Impact, Technical depth)
 
-- [ ] **G1. Survey `train_gpt2_fp32.cu` and `test_gpt2_fp32.cu`.** Map which of the 19 ported
+- [x] **G1. Survey `train_gpt2_fp32.cu` and `test_gpt2_fp32.cu`.** Map which of the 19 ported
   kernels it uses, its cuBLAS calls, and its data files: the GPT-2 124M weights and debug
-  state from llm.c's download script, about 500 MB. *$0.*
+  state from llm.c's download script, about 500 MB. *$0.* *Done Oct 27:
+  [`GPT2-PLAN.md`](GPT2-PLAN.md).*
 - [ ] **G2. Hidden check: llm.c's own `test_gpt2`.** It compares logits, loss and gradients
   with a PyTorch reference over 10 steps. Prove it passes for llm.c's CUDA on a GPU first.
   *About $0.10.*
