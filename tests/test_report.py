@@ -95,3 +95,13 @@ def test_readme_tables_match_the_evidence():
 
     check(head, current_table(items), amd=True)
     check(history, tier_table(items), amd=False)
+
+
+def test_gpt2_stages_get_pages_and_an_overview_row(tmp_path):
+    out = build(ROOT / "evidence", tmp_path / "site")
+    stages = sorted(p for p in out["pages"] if p.startswith("gpt2/"))
+    assert stages == ["gpt2/gpt2-stage1.html", "gpt2/gpt2-stage2.html", "gpt2/gpt2-stage3.html"]
+    index = (tmp_path / "site" / "index.html").read_text()
+    assert 'href="gpt2/gpt2-stage3.html"' in index and "RTX 4000 Ada" in index
+    stage3 = (tmp_path / "site" / "gpt2" / "gpt2-stage3.html").read_text()
+    assert "TURN 16" in stage3 and "gpt2_train.cpp" in stage3 and "sycl_verify_vs_native" in stage3
