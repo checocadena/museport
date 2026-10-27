@@ -47,7 +47,7 @@ See the README's results table.
   renamed `museport-dev` and made private, and this repository took the name `museport`. Its history
   holds two removed items derived from the toolkit's example.
 - [ ] **A3. Rebuild the environment** in any new session from `docs/NEXT-SESSION.md`:
-  toolchain, oneMath, llm.c clone, toolkit pinned at `7138b09`.
+  toolchain, oneMath, llm.c clone, toolkit at the commit pinned in `pyproject.toml`.
 
 ## B. Live product (the submission requires one)
 
