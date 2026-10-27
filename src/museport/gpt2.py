@@ -17,6 +17,7 @@ from __future__ import annotations
 import json
 import shutil
 from pathlib import Path
+from typing import Any
 
 from .llmc import ONEMATH_FLAGS
 
@@ -216,7 +217,7 @@ CUDA_SETUP = r"""// set up the device and cuBLAS as llm.c's test_gpt2_fp32.cu do
     cublasCheck(cublasSetMathMode(cublas_handle, CUBLAS_DEFAULT_MATH));
 """
 
-STAGES = {
+STAGES: dict[str, dict[str, Any]] = {
     "forward": {
         "harness": HARNESS, "name": "llmc_gpt2_forward",
         "cuda": CUDA_HARNESS, "cpu": CPU_PROOF, "reference": REFERENCE,
