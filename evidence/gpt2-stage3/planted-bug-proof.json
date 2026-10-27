@@ -1,0 +1,153 @@
+{
+ "what": "stage-3 check proof, run by hand: llm.c's CPU train_gpt2.c with the contract main (correct) and the same with the AdamW learning rate changed from 1e-4 to 1.1e-4 (planted bug); losses against PyTorch's within 1e-2",
+ "correct": {
+  "fails": 0,
+  "steps": [
+   {
+    "step": 0,
+    "pytorch": 5.270007,
+    "got": 5.269889,
+    "abs_err": 0.000118,
+    "ok": true
+   },
+   {
+    "step": 1,
+    "pytorch": 4.059707,
+    "got": 4.059388,
+    "abs_err": 0.000319,
+    "ok": true
+   },
+   {
+    "step": 2,
+    "pytorch": 3.375123,
+    "got": 3.374211,
+    "abs_err": 0.000912,
+    "ok": true
+   },
+   {
+    "step": 3,
+    "pytorch": 2.800783,
+    "got": 2.800126,
+    "abs_err": 0.000657,
+    "ok": true
+   },
+   {
+    "step": 4,
+    "pytorch": 2.315382,
+    "got": 2.315311,
+    "abs_err": 7.1e-05,
+    "ok": true
+   },
+   {
+    "step": 5,
+    "pytorch": 1.849029,
+    "got": 1.849347,
+    "abs_err": 0.000318,
+    "ok": true
+   },
+   {
+    "step": 6,
+    "pytorch": 1.394656,
+    "got": 1.395217,
+    "abs_err": 0.000561,
+    "ok": true
+   },
+   {
+    "step": 7,
+    "pytorch": 0.999147,
+    "got": 0.998615,
+    "abs_err": 0.000531,
+    "ok": true
+   },
+   {
+    "step": 8,
+    "pytorch": 0.62408,
+    "got": 0.62554,
+    "abs_err": 0.00146,
+    "ok": true
+   },
+   {
+    "step": 9,
+    "pytorch": 0.376511,
+    "got": 0.378012,
+    "abs_err": 0.001502,
+    "ok": true
+   }
+  ]
+ },
+ "planted_bug_lr_1.1e-4": {
+  "fails": 9,
+  "steps": [
+   {
+    "step": 0,
+    "pytorch": 5.270007,
+    "got": 5.269889,
+    "abs_err": 0.000118,
+    "ok": true
+   },
+   {
+    "step": 1,
+    "pytorch": 4.059707,
+    "got": 4.018152,
+    "abs_err": 0.041554,
+    "ok": false
+   },
+   {
+    "step": 2,
+    "pytorch": 3.375123,
+    "got": 3.282778,
+    "abs_err": 0.092345,
+    "ok": false
+   },
+   {
+    "step": 3,
+    "pytorch": 2.800783,
+    "got": 2.690207,
+    "abs_err": 0.110575,
+    "ok": false
+   },
+   {
+    "step": 4,
+    "pytorch": 2.315382,
+    "got": 2.17577,
+    "abs_err": 0.139612,
+    "ok": false
+   },
+   {
+    "step": 5,
+    "pytorch": 1.849029,
+    "got": 1.688394,
+    "abs_err": 0.160635,
+    "ok": false
+   },
+   {
+    "step": 6,
+    "pytorch": 1.394656,
+    "got": 1.212867,
+    "abs_err": 0.181789,
+    "ok": false
+   },
+   {
+    "step": 7,
+    "pytorch": 0.999147,
+    "got": 0.813934,
+    "abs_err": 0.185212,
+    "ok": false
+   },
+   {
+    "step": 8,
+    "pytorch": 0.62408,
+    "got": 0.465731,
+    "abs_err": 0.158349,
+    "ok": false
+   },
+   {
+    "step": 9,
+    "pytorch": 0.376511,
+    "got": 0.270574,
+    "abs_err": 0.105937,
+    "ok": false
+   }
+  ]
+ }
+}

@@ -43,6 +43,7 @@
 | Tier 3 (4 of 7) | 4 correct with 0 helpers, 2 loop success, 1 pass on NVIDIA (3 call oneMath: CPU only), $1.40 | [tier 3](../evidence/port-llmc-tier3/README.md) |
 | GPT-2 stage 1 (forward) | Hidden check from PyTorch's debug state, proven with llm.c's CPU code. Muse: success in 28 turns, $0.7441, worst error 0.00121 (atol 0.01), 0 helpers; a lean forward-only rewrite (simple kernels plus oneMath); CPU device only | [gpt2 stage 1](../evidence/gpt2-stage1/README.md) |
 | GPT-2 stage 2 (backward) | Check: all 124,475,904 gradients vs PyTorch at 2e-2 (llm.c's CPU test; llm.c's own CPU code fails 1e-2 on one gradient), proven with llm.c's CPU code. Muse: success in 27 turns, $1.2134, worst error 0.0124, 0 helpers; 764 lines; CPU device only | [gpt2 stage 2](../evidence/gpt2-stage2/README.md) |
+| GPT-2 stage 3 (training) | Check: the loss of each of 10 AdamW steps vs PyTorch's at 1e-2 (llm.c's test), proven with llm.c's CPU code (0.0015) and failing a 10% learning-rate bug on 9 of 10 steps. Muse: success in 29 turns, $1.1489, worst error 0.000154, 0 helpers; 907 lines; CPU device only | [gpt2 stage 3](../evidence/gpt2-stage3/README.md) |
 | AMD | Tier 1 run-2 ports: 10/10 pass on an AMD Instinct MI350X (DigitalOcean, run from the author's laptop) against the reference, $1.42. llm.c's CUDA does not hipify into something that builds, so there is no native comparison on AMD. This cloud session can't reach a droplet: its proxy only connects to hostnames with valid certificates. Runpod had no AMD stock | [AMD](../evidence/port-llmc-tier1-run2/gpu/AMD.md) |
 
 **Open issues in the ports:**
@@ -68,7 +69,7 @@
 | Bucket | Spent |
 |---|---|
 | Development and smoke tests | about $0.55: plan $0.2648, mini-fixture plan $0.0502, saxpy loop $0.0592, smoke test $0.0072, probes about $0.17. The first, failed plan is unknown: at most $1.15 if all 4 attempts were billed |
-| Port runs (comparison) | $8.3585: Tier 1 $1.6698, Tier 2 $2.4454 (incl. one crashed run), Tier 3 $1.3960, reruns round 1 $1.3971, round 2 $1.4502, Tier 1 run 2 $1.0064, GPT-2 stage 1 $0.7441, stage 2 $1.2134, Tier 1 without SYCLomatic $0.5820 (incl. an aborted attempt, $0.1061, plus at most $0.15 unreported) (total $11.9044; GPT-2 cap $7, $1.9575 used) |
+| Port runs (comparison) | $8.3585: Tier 1 $1.6698, Tier 2 $2.4454 (incl. one crashed run), Tier 3 $1.3960, reruns round 1 $1.3971, round 2 $1.4502, Tier 1 run 2 $1.0064, GPT-2 stage 1 $0.7441, stage 2 $1.2134, stage 3 $1.1489, Tier 1 without SYCLomatic $0.5820 (incl. an aborted attempt, $0.1061, plus at most $0.15 unreported) (total $13.0533 of the $30 cap; GPT-2 cap $7, $3.1064 used) |
 | GPUs | NVIDIA about $0.13 (all pods deleted and confirmed); DigitalOcean AMD: about $1.0 for the first attempt (two droplets, deleted, no SSH key left), then $1.42 for the Tier 1 run-2 ports from the laptop (tool estimate, 11 droplets, all deleted); NVIDIA for the Tier 1 run-2 ports about $0.05 (10 pods, all deleted) |
 
 ## Known toolkit behaviour (handled in museport, toolkit unchanged)
