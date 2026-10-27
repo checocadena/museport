@@ -1,0 +1,109 @@
+{
+ "fps": 30,
+ "resolution": [
+  1920,
+  1080
+ ],
+ "clips_dir": "demo/out",
+ "clips": [
+  {
+   "name": "disclosure",
+   "kind": "render",
+   "file": "disclosure.mp4",
+   "start_s": 0,
+   "duration_s": 8
+  },
+  {
+   "name": "open",
+   "kind": "render",
+   "file": "open.mp4",
+   "start_s": 8,
+   "duration_s": 6
+  },
+  {
+   "name": "term_scan",
+   "kind": "render",
+   "file": "term_scan.mp4",
+   "start_s": 14,
+   "duration_s": 9
+  },
+  {
+   "name": "pipeline",
+   "kind": "render",
+   "file": "pipeline.mp4",
+   "start_s": 23,
+   "duration_s": 8
+  },
+  {
+   "name": "term_bug",
+   "kind": "render",
+   "file": "term_bug.mp4",
+   "start_s": 31,
+   "duration_s": 9
+  },
+  {
+   "name": "replay",
+   "kind": "render",
+   "file": "replay.mp4",
+   "start_s": 40,
+   "duration_s": 19
+  },
+  {
+   "name": "check",
+   "kind": "render",
+   "file": "check.mp4",
+   "start_s": 59,
+   "duration_s": 12
+  },
+  {
+   "name": "fixes",
+   "kind": "render",
+   "file": "fixes.mp4",
+   "start_s": 71,
+   "duration_s": 8
+  },
+  {
+   "name": "gpus",
+   "kind": "render",
+   "file": "gpus.mp4",
+   "start_s": 79,
+   "duration_s": 8
+  },
+  {
+   "name": "report site",
+   "kind": "record",
+   "file": null,
+   "start_s": 87,
+   "duration_s": 25
+  },
+  {
+   "name": "numbers",
+   "kind": "render",
+   "file": "numbers.mp4",
+   "start_s": 112,
+   "duration_s": 6
+  },
+  {
+   "name": "live loop (optional)",
+   "kind": "record",
+   "file": null,
+   "start_s": 118,
+   "duration_s": 41
+  },
+  {
+   "name": "limits card",
+   "kind": "title",
+   "file": null,
+   "start_s": 159,
+   "duration_s": 15
+  },
+  {
+   "name": "end",
+   "kind": "render",
+   "file": "end.mp4",
+   "start_s": 174,
+   "duration_s": 6
+  }
+ ],
+ "total_s": 180
+}

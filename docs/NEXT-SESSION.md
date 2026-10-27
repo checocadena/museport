@@ -62,14 +62,14 @@
   push it here: it carries early toolkit-derived files in its history.
 - The toolkit's `native_flags` (toolkit #20) and the loop's `delete_file` and ranged
   `read_file` (toolkit #21) and the AMD native build's header hipify (toolkit #22) are
-  merged, and so is `read_file` for the source's included headers (toolkit #23); museport pins #23's merge commit `f1420fc`.
+  merged, and so are `read_file` for the source's included headers (toolkit #23) and the task `fetch` and `gpu_setup` fields (toolkit #24); museport pins #24's merge commit `c9c2904`.
 
 ## Spend (known; caps: $5 development, $20 comparison runs, $1 per run)
 
 | Bucket | Spent |
 |---|---|
 | Development and smoke tests | about $0.55: plan $0.2648, mini-fixture plan $0.0502, saxpy loop $0.0592, smoke test $0.0072, probes about $0.17. The first, failed plan is unknown: at most $1.15 if all 4 attempts were billed |
-| Port runs (comparison) | $8.3585: Tier 1 $1.6698, Tier 2 $2.4454 (incl. one crashed run), Tier 3 $1.3960, reruns round 1 $1.3971, round 2 $1.4502, Tier 1 run 2 $1.0064, GPT-2 stage 1 $0.7441, stage 2 $1.2134, stage 3 $1.1489, Tier 1 without SYCLomatic $0.5820 (incl. an aborted attempt, $0.1061, plus at most $0.15 unreported) Tiers 2-3 run 2 $2.7433, softmax_forward strict rerun $0.7470 (total $16.5436 of the $30 cap; GPT-2 cap $7, $3.1064 used) |
+| Port runs (comparison) | $8.3585: Tier 1 $1.6698, Tier 2 $2.4454 (incl. one crashed run), Tier 3 $1.3960, reruns round 1 $1.3971, round 2 $1.4502, Tier 1 run 2 $1.0064, GPT-2 stage 1 $0.7441, stage 2 $1.2134, stage 3 $1.1489, Tier 1 without SYCLomatic $0.5820 (incl. an aborted attempt, $0.1061, plus at most $0.15 unreported) Tiers 2-3 run 2 $2.7433, softmax_forward strict rerun $0.7470, second strict rerun ($3 cap) $0.9063 (total $17.4499 of the $30 cap; GPT-2 cap $7, $3.1064 used) |
 | GPUs | NVIDIA about $0.13 (all pods deleted and confirmed); DigitalOcean AMD: about $1.0 for the first attempt (two droplets, deleted, no SSH key left), then $1.42 for the Tier 1 run-2 ports from the laptop (tool estimate, 11 droplets, all deleted); NVIDIA for the Tier 1 run-2 ports about $0.05 (10 pods, all deleted); NVIDIA for the Tiers 2-3 run-2 ports about $0.04 (5 pods, all deleted) |
 
 ## Known toolkit behaviour (handled in museport, toolkit unchanged)
