@@ -1,0 +1,20 @@
+[port] t1-crossentropy-forward: loop with muse-spark-1.3 (max 12 turns, cap $0.70); spent so far $0.0000
+[port] t1-crossentropy-forward: success in 4 turns, $0.0191
+[port] t1-crossentropy-softmax-backward: loop with muse-spark-1.3 (max 12 turns, cap $0.70); spent so far $0.0191
+[port] t1-crossentropy-softmax-backward: success in 4 turns, $0.0234
+[port] t1-permute: loop with muse-spark-1.3 (max 12 turns, cap $0.70); spent so far $0.0425
+[port] t1-permute: success in 5 turns, $0.0207
+[port] t1-residual-forward: loop with muse-spark-1.3 (max 12 turns, cap $0.70); spent so far $0.0631
+[port] t1-residual-forward: success in 5 turns, $0.0284
+[port] t1-gelu-forward: loop with muse-spark-1.3 (max 12 turns, cap $0.70); spent so far $0.0916
+[port] t1-gelu-forward: success in 6 turns, $0.0498
+[port] t1-gelu-backward: loop with muse-spark-1.3 (max 12 turns, cap $0.70); spent so far $0.1414
+[port] t1-gelu-backward: success in 4 turns, $0.0382
+[port] t1-encoder-forward: loop with muse-spark-1.3 (max 12 turns, cap $0.70); spent so far $0.1795
+[port] t1-encoder-forward: success in 6 turns, $0.0654
+[port] t1-encoder-backward: loop with muse-spark-1.3 (max 12 turns, cap $0.70); spent so far $0.2450
+[port] t1-encoder-backward: success in 8 turns, $0.0689
+[port] t1-adamw: loop with muse-spark-1.3 (max 12 turns, cap $0.70); spent so far $0.3139
+[port] t1-adamw: success in 7 turns, $0.0732
+[port] t1-fused-residual-forward: loop with muse-spark-1.3 (max 12 turns, cap $0.70); spent so far $0.3871
+[port] t1-fused-residual-forward: success in 4 turns, $0.0888

@@ -20,11 +20,11 @@ Rules for every item:
 
 Budget so far:
 - **Development:** about $0.55 of $5, plus the first failed plan run (at most $1.15).
-- **Comparison runs:** $11.32 of $20 (after the C1-C3 reruns, Tier 1 run 2 and GPT-2 stages 1-2).
-  The author set a $7 cap for GPT-2 (G3).
-- **GPUs:** about $1.13.
-
-Items 1, 2 and 3 below would go past the remaining $20 comparison budget together.
+- **Comparison runs:** $13.05 of $30 (after the C1-C3 reruns, Tier 1 run 2, the run without SYCLomatic
+  and GPT-2 stages 1-3). The author raised this cap from $20 to $30 on Oct 27.
+  The author set a $7 cap for GPT-2 (G3); $3.11 used.
+- **GPUs:** about $2.55 (Runpod NVIDIA about $0.18, DigitalOcean AMD about $2.42), of a $10 cap
+  the author set on Oct 27.
 **The author sets their caps before they start.**
 
 ## Status at the start (Oct 26)

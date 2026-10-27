@@ -78,6 +78,9 @@ def build_parser() -> argparse.ArgumentParser:
     po.add_argument("--strict-goal", action="store_true",
                     help="tell Muse to clear SYCLomatic's output early and to keep each "
                          "variant's own algorithm (for reruns)")
+    po.add_argument("--no-migrate", action="store_true",
+                    help="ablation: run without SYCLomatic (no migrate tool; Muse writes the "
+                         "port from the CUDA harness)")
 
     gp = sub.add_parser("gpu-tasks", help="remote-test tasks for the ports that pass the hidden "
                                           "grade (run them with `oneapi-agent remote-test`)")
@@ -193,7 +196,7 @@ def _port(args: argparse.Namespace) -> int:
                         total_cap_usd=args.total_cap, runs_dir=Path(args.runs_dir),
                         tasks_only=args.tasks_only, check=args.check, tier=args.tier,
                         strict_goal=args.strict_goal, max_output_tokens=args.max_output,
-                        max_total_tokens=args.max_total_tokens,
+                        max_total_tokens=args.max_total_tokens, no_migrate=args.no_migrate,
                         log=lambda m: print(m, file=sys.stderr))
     print(json.dumps(summary, indent=2))
     bad = {"harness_check_failed", "error"}

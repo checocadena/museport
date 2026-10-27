@@ -69,6 +69,14 @@ original CUDA, and on an AMD MI350X against the hidden reference.
   - On AMD they are checked against the reference only. AMD's automatic CUDA-to-HIP
     conversion can't build llm.c's own CUDA (`__ldcs`, a host `memset`, 32-bit warp masks),
     so the comparison with llm.c's CUDA was done on NVIDIA.
+- **Without SYCLomatic:** the same 10 Tier 1 files, with the `migrate` tool taken away
+  (`museport port --no-migrate`), so Muse writes each port from the CUDA source
+  ([evidence](evidence/port-llmc-tier1-nomigrate/README.md)).
+  - **10 of 10** met the loop's success rule and are correct with 0 helpers, in 5.3 turns per
+    item on average, for **$0.48** (run 2, with SYCLomatic: 9 of 10, 8.2 turns, $1.01).
+  - On these simple kernels SYCLomatic did not help. The one file with warp-level CUDA
+    (`fused_residual_forward`) got correct but plain kernels, without its shared-memory and
+    warp structure. One run per item.
 - **GPT-2, stage 1 (forward pass):** Muse ported the forward pass of llm.c's fp32 GPT-2
   training program, with the real GPT-2 124M weights.
   - **Result:** loop success in 28 turns, for **$0.74**. The final port matches PyTorch's logits
