@@ -12,7 +12,8 @@
 }
 html, body { margin: 0; background: var(--bg); color: var(--fg); }
 #stage { width: 1920px; height: 1080px; position: relative; overflow: hidden;
-  font-family: var(--f-body); box-sizing: border-box; padding: 110px 140px; }
+  font-family: var(--f-body); box-sizing: border-box; padding: 90px 140px 120px;
+  display: flex; flex-direction: column; justify-content: center; }
 .eyebrow { font: 600 26px var(--f-mono); letter-spacing: .14em; text-transform: uppercase;
   color: var(--accent); }
 h1 { font: 700 104px/1.04 var(--f-display); letter-spacing: -0.02em; margin: 18px 0 0; }
@@ -73,7 +74,7 @@ async function type(el, text, cps = 38) {
 const SESSIONS = window.SESSIONS;
 async function terminal(title, session) {
   h(`<div class="eyebrow">${title}</div>
-     <div class="card mono" id="term" style="margin-top:40px;height:760px;overflow:hidden;font-size:25px;line-height:1.55;white-space:pre-wrap"></div>`);
+     <div class="card mono" id="term" style="margin-top:40px;min-height:420px;max-height:760px;overflow:hidden;font-size:27px;line-height:1.6;white-space:pre-wrap"></div>`);
   const term = document.getElementById('term');
   for (const s of session) {
     const c = document.createElement('div'); c.innerHTML = '<span class="acc">$ </span>'; term.appendChild(c);
