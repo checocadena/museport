@@ -44,7 +44,14 @@ def test_site_is_built_from_the_evidence(tmp_path):
     g = ev / "port-x-tier1" / "gpu" / "nvidia" / "rtx" / "llmc_t1-a"
     g.mkdir(parents=True)
     (g / "summary.json").write_text(json.dumps({"status": "ok", "summary": "PASS on GPU",
-        "evidence": {"vendor": "nvidia", "device": {"name": "NVIDIA RTX"}, "steps": []}}))
+        "evidence": {"vendor": "nvidia", "device": {"name": "NVIDIA RTX"}, "steps": [
+            {"step": "sycl_verify_vs_native", "status": "ok"}]}}))
+    # the AMD layout (gpu/<device>/<task>/): checked against the reference only
+    a = ev / "port-x-reruns" / "gpu" / "amd-mi350x" / "llmc_t1-b"
+    a.mkdir(parents=True)
+    (a / "summary.json").write_text(json.dumps({"status": "ok", "summary": "PASS on AMD",
+        "evidence": {"vendor": "amd", "device": {"name": "AMD Instinct MI350X VF gfx950"},
+                     "steps": [{"step": "native_build", "status": "fail"}]}}))
 
     data = load(ev)
     t1, _, _, total = tier_table(data["items"])
@@ -58,6 +65,8 @@ def test_site_is_built_from_the_evidence(tmp_path):
     item = (tmp_path / "site" / "items" / "port-x-tier1--t1-a.html").read_text()
     assert "Writing &lt;the&gt; port." in item and "<the>" not in item
     assert "TURN 1" in item and "pass: RTX" in item and "Port &lt;k&gt;." in item
+    amd = (tmp_path / "site" / "items" / "port-x-reruns--t1-b.html").read_text()
+    assert "pass: MI350X VF (vs reference)" in amd
 
 
 def test_readme_table_matches_the_evidence():

@@ -7,7 +7,7 @@ Muse Port reads a whole CUDA repository, plans its migration off NVIDIA (kernels
 library calls and their oneAPI equivalents, CUDA-only assumptions), then drives an agent that
 ports it piece by piece. Nothing counts as done until a check the model never sees confirms
 the output matches the original. The ports are then run on real NVIDIA GPUs against the
-original CUDA. AMD runs are planned but have not been done yet.
+original CUDA, and on an AMD MI350X against the hidden reference.
 
 > **Status: built during the Meta Global AI Developer Hackathon (submissions due Nov 4, 2026).**
 > This repository was created on Oct 26, 2026, after the event's kickoff. Every commit in it
@@ -60,7 +60,13 @@ original CUDA. AMD runs are planned but have not been done yet.
   - **10 of 10** are correct with 0 helpers.
   - Cost fell from $1.67 to **$1.01**, and turns per item from 11.5 to 8.2.
   - This is one run per item, with several changes made at once.
-- **Limits:** fp32 only, reduced sizes, one run per item; AMD not run.
+- **AMD:** all 10 of those Tier 1 ports **pass on an AMD Instinct MI350X** against the hidden
+  reference, for $1.42 of GPU time ([evidence](evidence/port-llmc-tier1-run2/gpu/AMD.md)).
+  - They ran on DigitalOcean droplets started from the author's laptop.
+  - On AMD they are checked against the reference only. AMD's automatic CUDA-to-HIP
+    conversion can't build llm.c's own CUDA (`__ldcs`, a host `memset`, 32-bit warp masks),
+    so the comparison with llm.c's CUDA was done on NVIDIA.
+- **Limits:** fp32 only, reduced sizes, one run per item. AMD has been tested for Tier 1 only.
 - **Evidence:** [plan](evidence/plan-llmc-devcuda-stream/README.md),
   [Tier 1](evidence/port-llmc-tier1/README.md), [Tier 2](evidence/port-llmc-tier2/README.md),
   [Tier 3](evidence/port-llmc-tier3/README.md); every number above comes from a committed
@@ -120,7 +126,8 @@ check reports any port that copies one implementation into several variants.
 ported llm.c's 10 Tier 1 kernel files for $1.67 in total. 9 final ports are correct and
 helper-free by the hidden grade (4 also met the loop's strict success rule within 12 turns).
 All 9 pass on NVIDIA GPUs against both the reference and llm.c's original CUDA. fp32 only,
-reduced sizes, one run each; AMD not run yet.
+reduced sizes, one run each. The Tier 1 rerun's ports also pass on an AMD MI350X against the
+reference (see above).
 
 **Tier 2** ([evidence](evidence/port-llmc-tier2/README.md)): warp shuffles, cooperative groups,
 shared memory. Muse ported llm.c's 5 Tier 2 files for $2.45 in total. 4 final ports are

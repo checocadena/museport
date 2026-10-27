@@ -41,7 +41,7 @@
 | Tier 1 again, with the loop fixes (`delete_file`, ranged `read_file`, 32k output) | 10 correct with 0 helpers, 9 loop success, $1.01; not run on a GPU yet | [tier 1 run 2](../evidence/port-llmc-tier1-run2/README.md) |
 | Tier 2 (5 items) | 4 correct with 0 helpers, 2 loop success, 4 pass on NVIDIA, $2.45 | [tier 2](../evidence/port-llmc-tier2/README.md) |
 | Tier 3 (4 of 7) | 4 correct with 0 helpers, 2 loop success, 1 pass on NVIDIA (3 call oneMath: CPU only), $1.40 | [tier 3](../evidence/port-llmc-tier3/README.md) |
-| AMD | not run: DigitalOcean's bare-IP agent is unreachable from this cloud session; Runpod had no AMD stock | tier 1 `gpu/logs/` |
+| AMD | Tier 1 run-2 ports: 10/10 pass on an AMD Instinct MI350X (DigitalOcean, run from the author's laptop) against the reference, $1.42. llm.c's CUDA does not hipify into something that builds, so there is no native comparison on AMD. This cloud session can't reach a droplet: its proxy only connects to hostnames with valid certificates. Runpod had no AMD stock | [AMD](../evidence/port-llmc-tier1-run2/gpu/AMD.md) |
 
 **Open issues in the ports:**
 - `t1-fused-residual-forward` and `t2-softmax-forward`: correct, but c2s helpers remain (reruns:
@@ -67,7 +67,7 @@
 |---|---|
 | Development and smoke tests | about $0.55: plan $0.2648, mini-fixture plan $0.0502, saxpy loop $0.0592, smoke test $0.0072, probes about $0.17. The first, failed plan is unknown: at most $1.15 if all 4 attempts were billed |
 | Port runs (comparison) | $8.3585: Tier 1 $1.6698, Tier 2 $2.4454 (incl. one crashed run), Tier 3 $1.3960, reruns round 1 $1.3971, round 2 $1.4502, Tier 1 run 2 $1.0064 (total $9.3649) |
-| GPUs | NVIDIA about $0.13 (all pods deleted and confirmed); DigitalOcean AMD attempt about $1.0 (two droplets, deleted, no SSH key left) |
+| GPUs | NVIDIA about $0.13 (all pods deleted and confirmed); DigitalOcean AMD: about $1.0 for the first attempt (two droplets, deleted, no SSH key left), then $1.42 for the Tier 1 run-2 ports from the laptop (tool estimate, 11 droplets, all deleted) |
 
 ## Known toolkit behaviour (handled in museport, toolkit unchanged)
 - The OpenAI-compatible client does not stream; museport passes its own streaming transport.
