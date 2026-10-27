@@ -65,7 +65,11 @@ def load(evidence: Path) -> dict[str, Any]:
     for summary in sorted(evidence.glob("port-*/summary.json")):
         bdir = summary.parent
         data = json.loads(summary.read_text())
-        batches[bdir.name] = {"model": data["model"], "spent_usd": data["spent_usd"]}
+        readme = bdir / "README.md"
+        title = next((ln[2:].strip() for ln in readme.read_text().splitlines()
+                      if ln.startswith("# ")), bdir.name) if readme.exists() else bdir.name
+        batches[bdir.name] = {"model": data["model"], "spent_usd": data["spent_usd"],
+                              "title": title}
         gpu = _gpu_results(bdir)
         for row in data["items"]:
             task_file = bdir / row["item"] / "task" / "task.json"
@@ -303,14 +307,14 @@ def render_index(data: dict[str, Any]) -> str:
         "same item.</p></section>",
         '<section id="items"><h2>Every item</h2>' + _item_table(firsts) + "</section>",
     ]
-    if reruns:
+    for batch in dict.fromkeys(i.batch for i in reruns):
+        its = [i for i in reruns if i.batch == batch]
         body.append(
-            '<section><h2>Reruns with a stricter goal</h2><p class="note">Ports that were '
-            "correct but left helpers, or copied one implementation into several variants, "
-            "were run again with a goal that says to clear SYCLomatic's output early and to "
-            "keep each variant's own algorithm. They are reported beside the first runs and "
-            "do not replace them in the table above.</p>"
-            + _item_table(reruns, compare=firsts) + "</section>")
+            f'<section><h2>{esc(data["batches"][batch]["title"])}</h2><p class="note">'
+            "A later run of these items, reported beside the first runs; it does not replace "
+            "them in the table above. What changed is in "
+            f'<a href="{REPO}/tree/main/evidence/{esc(batch)}">evidence/{esc(batch)}</a>.</p>'
+            + _item_table(its, compare=firsts) + "</section>")
     spent = sum(b["spent_usd"] for b in data["batches"].values())
     plan = data["plan"]
     plan_cost = plan.get("cost_usd") if plan else None

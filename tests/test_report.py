@@ -40,6 +40,7 @@ def test_site_is_built_from_the_evidence(tmp_path):
     ev = tmp_path / "evidence"
     _batch(ev, "port-x-tier1", [_row("t1-a", 0), _row("t1-b", 4, "max_iterations")])
     _batch(ev, "port-x-reruns", [_row("t1-b", 0, cost=0.2)])
+    (ev / "port-x-reruns" / "README.md").write_text("# Tier 1 again, with <fixes>\n\nText.\n")
     g = ev / "port-x-tier1" / "gpu" / "nvidia" / "rtx" / "llmc_t1-a"
     g.mkdir(parents=True)
     (g / "summary.json").write_text(json.dumps({"status": "ok", "summary": "PASS on GPU",
@@ -53,7 +54,7 @@ def test_site_is_built_from_the_evidence(tmp_path):
     out = build(ev, tmp_path / "site")
     assert "items/port-x-reruns--t1-b.html" in out["pages"]
     index = (tmp_path / "site" / "index.html").read_text()
-    assert "Reruns with a stricter goal" in index and "correct, 4 helpers" in index
+    assert "Tier 1 again, with &lt;fixes&gt;" in index and "correct, 4 helpers" in index
     item = (tmp_path / "site" / "items" / "port-x-tier1--t1-a.html").read_text()
     assert "Writing &lt;the&gt; port." in item and "<the>" not in item
     assert "TURN 1" in item and "pass: RTX" in item and "Port &lt;k&gt;." in item

@@ -52,6 +52,14 @@ original CUDA. AMD runs are planned but have not been done yet.
   and keeps a distinct kernel for every variant. The other two still have issues: one rerun
   left 45 helpers and the other fails verify. Two rounds of reruns cost $2.85 in total
   ([round 1](evidence/port-llmc-reruns/README.md), [round 2](evidence/port-llmc-reruns-2/README.md)).
+- **Loop fixes, then Tier 1 again:** two changes went in after the reruns. Muse can now delete
+  SYCLomatic's output in one call and read long files in parts, and each turn can write up to
+  32,000 tokens. With them, all 10 Tier 1 files ran again with the same tasks and turn limit
+  ([evidence](evidence/port-llmc-tier1-run2/README.md)).
+  - Loop success rose from 4 to **9 of 10**.
+  - **10 of 10** are correct with 0 helpers.
+  - Cost fell from $1.67 to **$1.01**, and turns per item from 11.5 to 8.2.
+  - This is one run per item, with several changes made at once.
 - **Limits:** fp32 only, reduced sizes, one run per item; AMD not run.
 - **Evidence:** [plan](evidence/plan-llmc-devcuda-stream/README.md),
   [Tier 1](evidence/port-llmc-tier1/README.md), [Tier 2](evidence/port-llmc-tier2/README.md),

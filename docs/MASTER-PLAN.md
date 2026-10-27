@@ -20,7 +20,7 @@ Rules for every item:
 
 Budget so far:
 - **Development:** about $0.55 of $5, plus the first failed plan run (at most $1.15).
-- **Comparison runs:** $8.36 of $20 (after the C1-C3 reruns).
+- **Comparison runs:** $9.36 of $20 (after the C1-C3 reruns and Tier 1 run 2).
 - **GPUs:** about $1.13.
 
 Items 1, 2 and 3 below would go past the remaining $20 comparison budget together.
@@ -93,6 +93,8 @@ See the README's results table.
   native CUDA on a GPU).*
 - [ ] **C6. More runs for robustness:** 2 more runs of each Tier 1 item, so each result has a
   success rate, not one sample. *About $3.*
+  *Oct 27: one more run done, with the loop fixes (`evidence/port-llmc-tier1-run2`, $1.01);
+  repeats with the same setup are still needed for a success rate.*
 
 ## D. Vendors and performance
 
