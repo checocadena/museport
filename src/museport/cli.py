@@ -3,7 +3,8 @@
 Commands: scan (CUDA inventory, no model), plan (Muse writes a grounded porting plan), loop (the
 toolkit's agent loop on one task, driven by Muse), port (Muse ports a plan's items against
 hidden references), gpu-tasks (remote-test tasks for the ports that pass), report (a static
-site built from the committed evidence)."""
+site built from the committed evidence), gpt2-task (the GPT-2 training port's stage-1
+task)."""
 
 from __future__ import annotations
 
@@ -82,6 +83,15 @@ def build_parser() -> argparse.ArgumentParser:
                                           "grade (run them with `oneapi-agent remote-test`)")
     gp.add_argument("port_dir", help="the --out directory of `museport port`")
     gp.add_argument("--out", help="where to write the tasks (default: <port_dir>/gpu-tasks)")
+    g2 = sub.add_parser("gpt2-task", help="write the GPT-2 training port's stage-1 task (forward "
+                                          "pass) and prove its hidden check on the CPU")
+    g2.add_argument("--llmc", required=True, help="the llm.c checkout")
+    g2.add_argument("--data", help="where gpt2_124M.bin and gpt2_124M_debug_state.bin are "
+                                   "(default: --llmc)")
+    g2.add_argument("--out", default="gpt2-task", help="task directory to write")
+    g2.add_argument("--check", action="store_true",
+                    help="prove the check: llm.c's CPU train_gpt2.c must pass it (no model)")
+
     rp = sub.add_parser("report", help="a static site built only from the committed evidence "
                                        "(overview, plan, one page per item with a replay)")
     rp.add_argument("evidence", nargs="?", default="evidence", help="the evidence directory")
@@ -109,7 +119,30 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _gpu_tasks(args)
     if args.cmd == "report":
         return _report(args)
+    if args.cmd == "gpt2-task":
+        return _gpt2_task(args)
     return 2
+
+
+def _gpt2_task(args: argparse.Namespace) -> int:
+    from pathlib import Path
+
+    from .gpt2 import check_task, make_task
+
+    llmc = Path(args.llmc)
+    try:
+        task = make_task(llmc, Path(args.data) if args.data else llmc, Path(args.out))
+    except FileNotFoundError as e:
+        print(f"museport: {e}", file=sys.stderr)
+        return 2
+    print(f"[gpt2-task] wrote {task}", file=sys.stderr)
+    if not args.check:
+        return 0
+    import tempfile
+
+    result = check_task(task, llmc, Path(tempfile.mkdtemp(prefix="museport-gpt2-check-")))
+    print(json.dumps(result, indent=2))
+    return 0 if result["ok"] else 1
 
 
 def _report(args: argparse.Namespace) -> int:
