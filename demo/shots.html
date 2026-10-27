@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Muse Port demo shots</title>
+<style>
+/* Layout: one 1920x1080 stage per shot; type and colour tokens below. */
+:root {
+  --bg: #0a0c11; --panel: #12161f; --line: #232a38; --fg: #e8ecf4; --muted: #8a94a8;
+  --accent: #5b8cff; --ok: #3ccf8e; --bad: #ff6b5e; --warn: #f2b84b;
+  --f-display: "Inter Display", "Inter", system-ui, sans-serif;
+  --f-body: "Inter", system-ui, sans-serif;
+  --f-mono: "DejaVu Sans Mono", ui-monospace, monospace;
+}
+html, body { margin: 0; background: var(--bg); color: var(--fg); }
+#stage { width: 1920px; height: 1080px; position: relative; overflow: hidden;
+  font-family: var(--f-body); box-sizing: border-box; padding: 110px 140px; }
+.eyebrow { font: 600 26px var(--f-mono); letter-spacing: .14em; text-transform: uppercase;
+  color: var(--accent); }
+h1 { font: 700 104px/1.04 var(--f-display); letter-spacing: -0.02em; margin: 18px 0 0; }
+h2 { font: 700 64px/1.1 var(--f-display); letter-spacing: -0.01em; margin: 14px 0 0; }
+.sub { font: 400 38px/1.4 var(--f-body); color: var(--muted); max-width: 1400px; margin-top: 28px; }
+.mono { font-family: var(--f-mono); }
+.ok { color: var(--ok); } .bad { color: var(--bad); } .acc { color: var(--accent); }
+.in { opacity: 0; transform: translateY(24px); animation: rise .7s cubic-bezier(.2,.8,.2,1) forwards; }
+@keyframes rise { to { opacity: 1; transform: none; } }
+.row { display: flex; gap: 28px; align-items: stretch; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 30px 34px; }
+.big { font: 700 120px/1 var(--f-display); font-variant-numeric: tabular-nums; }
+.label { font: 500 28px var(--f-body); color: var(--muted); margin-top: 12px; }
+.foot { position: absolute; left: 140px; right: 140px; bottom: 70px; font: 400 24px var(--f-mono);
+  color: var(--muted); display: flex; justify-content: space-between; }
+/* pipeline */
+.node { width: 300px; min-height: 250px; }
+.node .t { font: 700 34px var(--f-display); margin-bottom: 14px; }
+.node .d { font: 400 25px/1.4 var(--f-body); color: var(--muted); }
+.arrow { align-self: center; font: 400 48px var(--f-mono); color: var(--accent); }
+/* check grid */
+.grid { display: grid; grid-template-columns: repeat(32, 1fr); gap: 6px; width: 1000px; }
+.cell { height: 38px; border-radius: 4px; background: #1d2330; transition: background .25s; }
+/* replay */
+.turns { font: 400 25px/1.55 var(--f-mono); height: 640px; overflow: hidden; position: relative; }
+.turn { display: flex; gap: 22px; white-space: nowrap; }
+.turn .n { color: var(--muted); width: 120px; flex: none; }
+.chip { display: inline-block; padding: 0 14px; border-radius: 999px; font-size: 22px; line-height: 38px; }
+.chip.ok { background: rgba(60,207,142,.15); } .chip.fail, .chip.error { background: rgba(255,107,94,.15); color: var(--bad); }
+.say { color: var(--fg); overflow: hidden; text-overflow: ellipsis; }
+/* bars */
+.bar { height: 64px; border-radius: 8px; background: var(--accent); width: 0; transition: width 1.4s cubic-bezier(.2,.8,.2,1); }
+.bar.dim { background: #3a4357; }
+/* matrix */
+table { border-collapse: collapse; font: 400 30px var(--f-body); }
+td, th { padding: 12px 34px; border-bottom: 1px solid var(--line); text-align: left; }
+th { font: 600 22px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.tick { opacity: 0; transform: scale(.4); transition: all .35s cubic-bezier(.2,.8,.2,1); display: inline-block; }
+.tick.on { opacity: 1; transform: none; }
+.type::after { content: "▌"; color: var(--accent); animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+</style></head>
+<body><div id="stage"></div>
+<script>
+// DATA is injected by render.mjs from demo/data.json (numbers from the committed evidence).
+const D = window.DATA;
+const S = document.getElementById('stage');
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const fmt$ = x => '$' + x.toFixed(2);
+const h = (html) => { S.innerHTML = html; };
+
+async function type(el, text, cps = 38) {
+  el.classList.add('type');
+  for (let i = 0; i <= text.length; i++) { el.textContent = text.slice(0, i); await sleep(1000 / cps); }
+  await sleep(600); el.classList.remove('type');
+}
+
+const SESSIONS = window.SESSIONS;
+async function terminal(title, session) {
+  h(`<div class="eyebrow">${title}</div>
+     <div class="card mono" id="term" style="margin-top:40px;height:760px;overflow:hidden;font-size:25px;line-height:1.55;white-space:pre-wrap"></div>`);
+  const term = document.getElementById('term');
+  for (const s of session) {
+    const c = document.createElement('div'); c.innerHTML = '<span class="acc">$ </span>'; term.appendChild(c);
+    const cmd = document.createElement('span'); c.appendChild(cmd);
+    await type(cmd, s.cmd, 30);
+    for (const line of s.lines) {
+      const d = document.createElement('div');
+      d.textContent = line;
+      if (/\bok\b|PASS/.test(line)) d.className = 'ok';
+      if (/fail|FAIL/.test(line)) d.className = 'bad';
+      if (line.startsWith('$ ')) { d.className = 'acc'; await sleep(500); }
+      term.appendChild(d); await sleep(140);
+    }
+  }
+}
+
+const SHOTS = {
+  // 6 s: cold open
+  async open() {
+    h(`<div class="eyebrow">Meta Muse Spark · CUDA → SYCL</div><h1 id="t"></h1>
+       <div class="sub in" style="animation-delay:3.2s">Meta's Muse plans and ports real CUDA code to the open SYCL standard. A check the model never sees decides when a port is done.</div>`);
+    await type(document.getElementById('t'), 'Port CUDA off NVIDIA.\nProve every step.', 22);
+  },
+  // 8 s: the required opening disclosure
+  async disclosure() {
+    h(`<div class="eyebrow in">What this video shows</div>
+       <div class="row" style="margin-top:50px">
+         <div class="card in" style="flex:1;animation-delay:.3s"><div class="t mono acc" style="font-size:26px">PRE-EXISTING</div>
+           <h2 style="font-size:48px">oneapi-agent-toolkit</h2><div class="sub" style="font-size:30px">My open-source tools that return evidence (migrate, compile, scan, verify, benchmark), an agent loop, GPU test runner.</div></div>
+         <div class="card in" style="flex:1;animation-delay:.9s;border-color:var(--accent)"><div class="t mono ok" style="font-size:26px">BUILT THIS WEEK</div>
+           <h2 style="font-size:48px">Muse Port</h2><div class="sub" style="font-size:30px">Muse plans and ports llm.c, hidden checks from llm.c's own references, the evidence report, AMD and NVIDIA runs, and GPT-2's forward pass.</div></div>
+       </div>`);
+  },
+  // 10 s: the pipeline
+  async pipeline() {
+    const p = D.plan;
+    const nodes = [
+      ['llm.c dev/cuda', `${p.files.files} CUDA files of Karpathy's llm.c kernels`],
+      ['Muse plans', `${p.items} items, ${p.files.covered}/${p.files.files} files placed, ${p.issues} issues · ${fmt$(p.cost)}`],
+      ['Muse ports', 'in the toolkit\'s agent loop: migrate, rewrite, compile, verify'],
+      ['Hidden check', 'llm.c\'s own CPU reference and tolerance; the model never sees it'],
+      ['Real GPUs', 'NVIDIA vs llm.c\'s CUDA · AMD MI350X vs the reference'],
+    ];
+    h(`<div class="eyebrow">How it works</div><h2>Plan, port, check, then real GPUs</h2>
+       <div class="row" style="margin-top:80px;gap:14px">${nodes.map((n, i) =>
+         `${i ? `<div class="arrow in" style="animation-delay:${i * 1.2 - .3}s">→</div>` : ''}
+          <div class="card node in" style="animation-delay:${i * 1.2}s"><div class="t">${n[0]}</div><div class="d">${n[1]}</div></div>`).join('')}</div>`);
+  },
+  // 12 s: the hidden check catching imprecise math (GPT-2 stage 1 proof; evidence/gpt2-stage1/README.md)
+  async check() {
+    h(`<div class="eyebrow">The hidden check</div><h2 id="hd">GPT-2 forward pass vs PyTorch, 256 rows of logits</h2>
+       <div class="row" style="margin-top:60px;gap:80px">
+         <div class="grid" id="g">${'<div class="cell"></div>'.repeat(256)}</div>
+         <div style="flex:1"><div class="mono" style="font-size:30px;color:var(--muted)" id="who">SYCLomatic's raw port</div>
+           <div class="big" id="res" style="margin-top:24px">…</div><div class="label" id="why"></div></div></div>
+       <div class="foot"><span>tolerance 1e-2 absolute: llm.c's own test</span><span>evidence/gpt2-stage1</span></div>`);
+    const cells = [...document.querySelectorAll('.cell')];
+    // the rows SYCLomatic's native::exp put outside tolerance (evidence/gpt2-stage1/native-exp-check.json)
+    const nx = D.native_exp_check, bad = new Set(nx.native_exp.rows_outside_tolerance);
+    for (let i = 0; i < 256; i++) { cells[i].style.background = bad.has(i) ? 'var(--bad)' : '#2b6e55'; if (i % 16 == 0) await sleep(70); }
+    document.getElementById('res').innerHTML = '<span class="bad">FAIL</span>';
+    document.getElementById('why').textContent = `${bad.size} rows off by up to ${nx.native_exp.max_abs_err.toFixed(3)}: sycl::native::exp is too imprecise`;
+    await sleep(3500);
+    document.getElementById('who').textContent = 'Same port, precise math';
+    for (let i = 0; i < 256; i++) { cells[i].style.background = 'var(--ok)'; if (i % 32 == 0) await sleep(40); }
+    document.getElementById('res').innerHTML = '<span class="ok">PASS</span>';
+    document.getElementById('why').textContent = `worst error ${nx.precise_math.max_abs_err.toFixed(4)} against 0.01`;
+  },
+  // 18 s: Muse's GPT-2 stage-1 run, turn by turn (from trace.jsonl)
+  async replay() {
+    const g = D.gpt2_stage1;
+    h(`<div class="eyebrow">Muse ports GPT-2 · stage 1, the forward pass</div>
+       <div class="row" style="margin-top:40px;gap:60px">
+         <div class="turns" id="tl" style="flex:1"></div>
+         <div style="width:420px"><div class="label">turn</div><div class="big" id="tn">0</div>
+           <div class="label" style="margin-top:40px">model</div><div class="mono" style="font-size:30px">muse-spark-1.3</div>
+           <div class="card" id="fin" style="margin-top:44px;opacity:0;transition:opacity .6s"></div></div></div>`);
+    const tl = document.getElementById('tl'), tn = document.getElementById('tn');
+    for (const t of g.replay) {
+      tn.textContent = t.turn;
+      const row = document.createElement('div'); row.className = 'turn in';
+      const chips = t.tools.map(x => `<span class="chip ${x.status}">${x.name} ${x.status}</span>`).join(' ');
+      row.innerHTML = `<span class="n">turn ${String(t.turn).padStart(2)}</span>${chips}<span class="say">${t.say.replace(/</g, '&lt;')}</span>`;
+      tl.appendChild(row);
+      while (tl.scrollHeight > tl.clientHeight) tl.removeChild(tl.firstChild);
+      await sleep(t.tools.length ? 520 : 300);
+    }
+    const fin = document.getElementById('fin');
+    fin.innerHTML = `<div class="mono ok" style="font-size:28px">LOOP SUCCESS</div>
+      <div style="font:600 30px/1.5 var(--f-body);margin-top:10px">${g.verify.replace('PASS: 1/1 case(s) match ', 'PASS ')}<br>${g.helpers} helpers · ${fmt$(g.cost)}</div>`;
+    fin.style.opacity = 1;
+  },
+  // 9 s: what the loop fixes did (Tier 1, same tasks)
+  async fixes() {
+    const a = D.tier1_first, b = D.tier1_fixed;
+    const rows = [['Loop success', `${a.loop_success}/10`, `${b.loop_success}/10`, a.loop_success / 10, b.loop_success / 10],
+                  ['Correct, 0 helpers', `${a.correct}/10`, `${b.correct}/10`, a.correct / 10, b.correct / 10],
+                  ['Muse cost', fmt$(a.cost), fmt$(b.cost), a.cost / 2, b.cost / 2]];
+    h(`<div class="eyebrow">Same 10 kernels, after fixing the loop</div><h2>delete_file, ranged reads, 32k output</h2>
+       <div style="margin-top:70px;display:grid;gap:44px">${rows.map(r => `
+         <div><div class="row" style="justify-content:space-between;font-size:32px"><span>${r[0]}</span><span class="mono"><span style="color:var(--muted)">${r[1]}</span> → <b>${r[2]}</b></span></div>
+         <div class="bar dim" data-w="${r[3]}" style="margin-top:12px;height:22px"></div><div class="bar" data-w="${r[4]}" style="margin-top:8px;height:22px"></div></div>`).join('')}</div>`);
+    await sleep(400);
+    document.querySelectorAll('.bar').forEach(b => b.style.width = (b.dataset.w * 1640) + 'px');
+  },
+  // 9 s: GPUs, both vendors
+  async gpus() {
+    const names = Object.keys(D.nvidia);
+    h(`<div class="eyebrow">Same SYCL source, two GPU vendors</div>
+       <table style="margin-top:40px"><tr><th>kernel (llm.c)</th><th>NVIDIA vs llm.c's CUDA</th><th>AMD MI350X vs reference</th></tr>
+       ${names.map(n => `<tr><td class="mono" style="font-size:28px">${n}</td>
+         <td><span class="tick ${D.nvidia[n].pass && D.nvidia[n].vs_native ? 'ok' : 'bad'}">${D.nvidia[n].pass && D.nvidia[n].vs_native ? '✔' : '✘'} ${D.nvidia[n].device.replace('NVIDIA ', '').replace(' Generation', '')}</span></td>
+         <td>${D.amd[n] && D.amd[n].pass ? '<span class="tick ok">✔ pass</span>' : '<span class="tick bad">✘ not run</span>'}</td></tr>`).join('')}</table>`);
+    const ticks = [...document.querySelectorAll('.tick')];
+    for (let i = 0; i < ticks.length; i += 2) { ticks[i].classList.add('on'); ticks[i + 1].classList.add('on'); await sleep(260); }
+  },
+  // 7 s: the numbers so far
+  async numbers() {
+    const all = D.tiers.find(r => r.label === 'All');
+    const stats = [[`${all.correct}/${all.items}`, 'llm.c kernel files ported correctly, 0 helpers'],
+                   [`${all.gpu}`, 'pass on NVIDIA against llm.c\'s own CUDA'],
+                   [`${Object.values(D.amd).filter(x => x.pass).length}/${Object.keys(D.amd).length}`, 'Tier 1 ports pass on an AMD MI350X'],
+                   [fmt$(D.gpt2_stage1.cost), 'GPT-2 forward pass, matching PyTorch']];
+    h(`<div class="eyebrow">Measured, with the evidence committed</div>
+       <div style="display:grid;grid-template-columns:1fr 1fr;gap:34px;margin-top:70px">${stats.map((s, i) =>
+         `<div class="card in" style="animation-delay:${i * .5}s"><div class="big">${s[0]}</div><div class="label">${s[1]}</div></div>`).join('')}</div>`);
+  },
+  // terminal replays of real command output (demo/sessions.json, written by demo/capture.py)
+  async term_scan() { await terminal('museport scan: the inventory a plan is checked against', SESSIONS.scan); },
+  async term_bug() { await terminal('The hidden check, with no model in the loop', SESSIONS.bug); },
+  // 6 s: end card
+  async end() {
+    h(`<div class="eyebrow">Muse Port</div><h1 class="in">github.com/checocadena/museport</h1>
+       <div class="sub in" style="animation-delay:.6s">Every number in this video links to a file in the repository.<br>Built with Meta's muse-spark-1.3 · oneAPI · SYCL 2020</div>`);
+  },
+};
+window.SHOT_DURATIONS = { term_scan: 9, term_bug: 9, open: 6, disclosure: 8, pipeline: 8, check: 12, replay: 19, fixes: 8, gpus: 8, numbers: 6, end: 6 };
+window.play = name => SHOTS[name]();
+</script></body></html>

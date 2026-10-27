@@ -1,0 +1,43 @@
+{
+ "scan": [
+  {
+   "cmd": "museport scan llm.c/dev/cuda | sed -n '1,16p'",
+   "lines": [
+    "# CUDA inventory: `llm.c/dev/cuda`",
+    "22 CUDA file(s), 11153 lines, 106 kernel(s) (tier 1: 10, tier 2: 5, tier 3: 7).",
+    "Tier 1: plain kernels. Tier 2: CUDA-only constructs that need a SYCL design. Tier 3: NVIDIA libraries.",
+    "## NVIDIA libraries",
+    "| Library | Uses | Files | oneAPI | Note |",
+    "|---|---|---|---|---|",
+    "| cuBLAS | 130 | 6 | oneMath BLAS |  |",
+    "| cuBLASLt | 30 | 1 | oneMath BLAS | no direct equivalent: gemm plus a hand-written epilogue (bias, GELU) |",
+    "| cuDNN | 23 | 1 | oneDNN |  |",
+    "| NCCL | 16 | 1 | oneCCL |  |",
+    "## CUDA-only constructs"
+   ],
+   "exit": 0
+  }
+ ],
+ "bug": [
+  {
+   "cmd": "demo/planted_bug.sh",
+   "lines": [
+    "$ verify Muse's port against the hidden reference",
+    "[verify] ok: PASS: 1/1 case(s) match (worst max abs err 1.19e-07, atol 1e-05)",
+    "$ plant a bug: x^3 -> x^2 in GELU",
+    "15:  float cube = 0.044715f * xi * xi;",
+    "[verify] fail: FAIL: 0/1 case(s) match; first failure: 1441130 of 1572864 element(s) outside tolerance"
+   ],
+   "exit": 0
+  }
+ ],
+ "report": [
+  {
+   "cmd": "museport report evidence --out site",
+   "lines": [
+    "[report] wrote 36 page(s) to site/"
+   ],
+   "exit": 0
+  }
+ ]
+}
