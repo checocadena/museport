@@ -30,7 +30,8 @@ def build(task_file: str | Path, *, model: str, provider: str = "meta",
                                     max_cost_usd=max_cost_usd, model=model, evaluate=True)
     cfg.provider = provider
     client = OpenAICompatModel(model, provider=provider, max_tokens=MAX_OUTPUT_TOKENS,
-                               transport=transport or stream_transport(fill_missing_usage=True))
+                               transport=transport or stream_transport(fill_missing_usage=True,
+                                                                       mark_empty=True))
     return cfg, client
 
 

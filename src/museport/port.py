@@ -256,7 +256,18 @@ def write_inputs(spec: KernelSpec, path: Path) -> int:
     return total
 
 
-def goal(spec: KernelSpec, harness: str) -> str:
+# Added to the goal by `museport port --strict-goal` (reruns of ports that left c2s helpers or
+# copied one implementation into several variants).
+STRICT_GOAL = (
+    " Clear migrated/ (delete SYCLomatic's files or replace them with your own) as soon as your "
+    "own port compiles, and run scan_helpers on '.' before you finish: helpers left anywhere in "
+    "the tree fail the run. Every variant keeps its CUDA variant's own algorithm (its atomics, "
+    "shared memory, warp reductions and launch shape, in SYCL terms): never copy one "
+    "implementation into several variants."
+)
+
+
+def goal(spec: KernelSpec, harness: str, *, strict: bool = False) -> str:
     sizes = " ".join(s for s, _ in spec.sizes)
     return (
         f"Port {harness} (llm.c dev/cuda/{spec.file}, fp32 build) to idiomatic SYCL 2020 with "
@@ -271,10 +282,11 @@ def goal(spec: KernelSpec, harness: str) -> str:
         + (" cuBLAS calls go to oneMath (oneapi::math::blas, #include <oneapi/math.hpp>; the "
            "compile flags already link -lonemath), not to oneapi::mkl product APIs."
            if spec.keep_cublas else "")
+        + (STRICT_GOAL if strict else "")
     )
 
 
-def make_task(spec: KernelSpec, cuda_dir: Path, out: Path) -> Path:
+def make_task(spec: KernelSpec, cuda_dir: Path, out: Path, *, strict_goal: bool = False) -> Path:
     """Write the task directory for ``spec``; returns the task.json path."""
     original = (cuda_dir / spec.file).read_text()
     out.mkdir(parents=True, exist_ok=True)
@@ -291,7 +303,7 @@ def make_task(spec: KernelSpec, cuda_dir: Path, out: Path) -> Path:
     args = " ".join(str(v) for _, v in spec.sizes)
     task = {
         "name": f"llmc_{spec.stem}",
-        "goal": goal(spec, harness),
+        "goal": goal(spec, harness, strict=strict_goal),
         "cuda_path": harness,
         "include_dirs": ["."],
         "reference_build": ["g++", "-O2", "-std=c++17", f"{{task_dir}}/{spec.stem}_ref.cpp",
@@ -428,14 +440,15 @@ def run_items(plan: dict[str, Any], cuda_dir: Path, out: Path, *, model: str,
               items: list[str] | None = None, max_iterations: int = 12,
               max_cost_usd: float = 1.0, total_cap_usd: float = 20.0,
               runs_dir: Path = Path("runs/port"), tasks_only: bool = False,
-              check: bool = False, tier: int = 1, log: Any = print) -> dict[str, Any]:
-    """Port each selected item of ``tier`` with Muse. A run starts only if the spend so far plus
-    its own cap stays within ``total_cap_usd``."""
+              check: bool = False, tier: int = 1, strict_goal: bool = False,
+              log: Any = print) -> dict[str, Any]:
+    """Port each selected item (``items`` of any tier, else all of ``tier``) with Muse. A run
+    starts only if the spend so far plus its own cap stays within ``total_cap_usd``."""
     from .loop import run as run_loop
 
     results: list[dict[str, Any]] = []
     spent = 0.0
-    for it, spec in specs_for_plan(plan, tier):
+    for it, spec in specs_for_plan(plan, None if items else tier):
         iid = it.get("id", "?")
         if items and iid not in items:
             continue
@@ -445,7 +458,7 @@ def run_items(plan: dict[str, Any], cuda_dir: Path, out: Path, *, model: str,
             row["status"] = "no_harness_spec"
             continue
         d = out / iid
-        task = make_task(spec, cuda_dir, d / "task")
+        task = make_task(spec, cuda_dir, d / "task", strict_goal=strict_goal)
         row["task"] = str(task.relative_to(out))
         if check:
             row["harness_check"] = check_harness(task, runs_dir / iid / "check")

@@ -13,6 +13,7 @@ import pytest
 
 from museport.llmc import FLT_EPSILON, TIER1, Array, KernelSpec
 from museport.port import (
+    STRICT_GOAL,
     find_function,
     harness_source,
     make_task,
@@ -95,6 +96,9 @@ def test_make_task_writes_a_toolkit_task(tmp_path):
     assert (task["tolerance"], task["rtol"]) == (1e-5, FLT_EPSILON)
     assert "void scale_cpu(" not in (tmp_path / "task" / "scale_harness.cu").read_text()
     assert "#include <cublas" not in (tmp_path / "task" / "common.h").read_text()
+    assert STRICT_GOAL not in task["goal"]
+    strict = json.loads(make_task(SPEC, MINI, tmp_path / "s", strict_goal=True).read_text())
+    assert strict["goal"].endswith(STRICT_GOAL)
 
 
 def test_plan_items_map_to_specs():

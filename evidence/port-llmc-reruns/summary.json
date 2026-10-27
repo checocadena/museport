@@ -1,0 +1,65 @@
+{
+  "model": "muse-spark-1.3",
+  "spent_usd": 1.3971,
+  "items": [
+    {
+      "item": "t1-fused-residual-forward",
+      "file": "fused_residual_forward.cu",
+      "task": "t1-fused-residual-forward/task/task.json",
+      "status": "error",
+      "error": "RuntimeError: https://api.meta.ai/v1/chat/completions: HTTP 400: {\"error\":{\"code\":null,\"message\":\"assistant message must have `content` or `tool_calls`\",\"param\":\"assistant\",\"type\":\"invalid_request_error\"}}",
+      "iterations": 6,
+      "cost_usd": 0.187437,
+      "cost_note": "from the trace's reported usage up to the error",
+      "run_id": "20261027T000133746151Z"
+    },
+    {
+      "item": "t2-softmax-forward",
+      "file": "softmax_forward.cu",
+      "task": "t2-softmax-forward/task/task.json",
+      "run_id": "20261027T000304777642Z",
+      "status": "max_iterations",
+      "detail": "reached 14 iterations without meeting success conditions",
+      "iterations": 14,
+      "usage": {
+        "input_tokens": 254997,
+        "output_tokens": 44646,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 299144
+      },
+      "cost_usd": 0.55336335,
+      "best": null,
+      "evaluation": {
+        "source_hash": "0fab3c6db1dd8420",
+        "compiled": true,
+        "verify_status": "fail",
+        "verify_summary": "FAIL: 0/1 case(s) match; first failure: 41906 of 25731584 element(s) outside tolerance",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "migrated/common.h",
+        "migrated/softmax_forward_harness.dp.cpp",
+        "softmax_forward.cpp"
+      ],
+      "variant_check": {
+        "variants": 8,
+        "kernels": 8,
+        "distinct_kernel_bodies": 8,
+        "onemath_calls": 0,
+        "duplicated_variants": false
+      }
+    },
+    {
+      "item": "t2-layernorm-backward",
+      "file": "layernorm_backward.cu",
+      "task": "t2-layernorm-backward/task/task.json",
+      "status": "error",
+      "error": "RuntimeError: https://api.meta.ai/v1/chat/completions: HTTP 400: {\"error\":{\"code\":null,\"message\":\"assistant message must have `content` or `tool_calls`\",\"param\":\"assistant\",\"type\":\"invalid_request_error\"}}",
+      "iterations": 10,
+      "cost_usd": 0.656293,
+      "cost_note": "from the trace's reported usage up to the error",
+      "run_id": "20261027T000703762176Z"
+    }
+  ]
+}
