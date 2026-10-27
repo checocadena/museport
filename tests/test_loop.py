@@ -90,6 +90,9 @@ def test_build_sets_the_cap_and_the_streaming_client():
                         transport=sentinel)  # type: ignore[arg-type]
     assert (cfg.max_iterations, cfg.max_cost_usd, cfg.provider) == (3, 0.75, "meta")
     assert client.transport is sentinel and client.max_tokens == 16_000
+    _, big = build(TASK, model="muse-spark-1.3", max_output_tokens=32_000,
+                   transport=sentinel)  # type: ignore[arg-type]
+    assert big.max_tokens == 32_000
 
 
 def test_safe_toolbox_turns_a_cut_off_call_into_an_error_result(tmp_path):

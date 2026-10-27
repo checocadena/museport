@@ -69,6 +69,8 @@ def build_parser() -> argparse.ArgumentParser:
                     help="prove each task first: SYCLomatic's raw output must pass the hidden "
                          "reference (needs c2s and icpx)")
 
+    po.add_argument("--max-output", type=int, default=16_000,
+                    help="max output tokens per turn, reasoning included (default 16000)")
     po.add_argument("--strict-goal", action="store_true",
                     help="tell Muse to clear SYCLomatic's output early and to keep each "
                          "variant's own algorithm (for reruns)")
@@ -152,7 +154,7 @@ def _port(args: argparse.Namespace) -> int:
                         max_iterations=args.max_iterations, max_cost_usd=args.max_cost,
                         total_cap_usd=args.total_cap, runs_dir=Path(args.runs_dir),
                         tasks_only=args.tasks_only, check=args.check, tier=args.tier,
-                        strict_goal=args.strict_goal,
+                        strict_goal=args.strict_goal, max_output_tokens=args.max_output,
                         log=lambda m: print(m, file=sys.stderr))
     print(json.dumps(summary, indent=2))
     bad = {"harness_check_failed", "error"}

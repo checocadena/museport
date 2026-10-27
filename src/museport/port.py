@@ -441,9 +441,10 @@ def run_items(plan: dict[str, Any], cuda_dir: Path, out: Path, *, model: str,
               max_cost_usd: float = 1.0, total_cap_usd: float = 20.0,
               runs_dir: Path = Path("runs/port"), tasks_only: bool = False,
               check: bool = False, tier: int = 1, strict_goal: bool = False,
-              log: Any = print) -> dict[str, Any]:
+              max_output_tokens: int | None = None, log: Any = print) -> dict[str, Any]:
     """Port each selected item (``items`` of any tier, else all of ``tier``) with Muse. A run
     starts only if the spend so far plus its own cap stays within ``total_cap_usd``."""
+    from .loop import MAX_OUTPUT_TOKENS
     from .loop import run as run_loop
 
     results: list[dict[str, Any]] = []
@@ -478,7 +479,8 @@ def run_items(plan: dict[str, Any], cuda_dir: Path, out: Path, *, model: str,
             f"${max_cost_usd:.2f}); spent so far ${spent:.4f}")
         try:
             outcome = run_loop(task, model=model, max_iterations=max_iterations,
-                               max_cost_usd=max_cost_usd, runs_dir=runs_dir / iid)
+                               max_cost_usd=max_cost_usd, runs_dir=runs_dir / iid,
+                               max_output_tokens=max_output_tokens or MAX_OUTPUT_TOKENS)
         except Exception as e:  # noqa: BLE001 - one item must not end the batch
             partial = trace_spend(runs_dir / iid, model)
             known = partial["cost_usd"] is not None
