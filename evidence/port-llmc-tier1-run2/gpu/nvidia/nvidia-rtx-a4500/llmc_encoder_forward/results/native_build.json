@@ -1,0 +1,8 @@
+{
+  "command": "/usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.S3dwLawX3l/task /tmp/tmp.S3dwLawX3l/task/encoder_forward_harness.cu -o build/native",
+  "returncode": 0,
+  "duration_s": 1.564947,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.S3dwLawX3l/out/work"
+}

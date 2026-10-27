@@ -1,0 +1,70 @@
+{
+  "tool": "gpu_test",
+  "status": "ok",
+  "summary": "PASS on NVIDIA RTX A4500 (cuda:0, nvidia): sycl_verify_vs_reference: PASS: 1/1 case(s) match (worst max abs err 2.38e-07, atol 1e-05); sycl_verify_vs_native: PASS: 1/1 case(s) match (worst max abs err 1.79e-07, atol 1e-05)",
+  "evidence": {
+    "task": "llmc_gelu_backward",
+    "device": {
+      "backend": "cuda",
+      "device_type": "gpu",
+      "index": 0,
+      "platform": "NVIDIA CUDA BACKEND",
+      "name": "NVIDIA RTX A4500",
+      "description": "NVIDIA CUDA BACKEND, NVIDIA RTX A4500 8.6 [CUDA 13.2]",
+      "selector": "cuda:0"
+    },
+    "vendor": "nvidia",
+    "amd_arch": null,
+    "cuda_arch": "86",
+    "target_flags": [
+      "-fsycl-targets=nvidia_gpu_sm_86"
+    ],
+    "selector": "cuda:0",
+    "steps": [
+      {
+        "step": "reference_build",
+        "status": "ok",
+        "summary": "exit 0: g++ -O2 -std=c++17 /tmp/tmp.LfpyhzEEkq/task/gelu_backward_ref.cpp -o build/reference"
+      },
+      {
+        "step": "native_build",
+        "status": "ok",
+        "summary": "exit 0: /usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.LfpyhzEEkq/task /tmp/tmp.LfpyhzEEkq/task/gelu_backward_harness.cu -o build/native"
+      },
+      {
+        "step": "native_verify_vs_reference",
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 2.38e-07, atol 1e-05)"
+      },
+      {
+        "step": "sycl_compile",
+        "status": "ok",
+        "summary": "compiled 1 source(s) -> /tmp/tmp.LfpyhzEEkq/out/work/build/sycl (0 warning(s))"
+      },
+      {
+        "step": "sycl_verify_vs_reference",
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 2.38e-07, atol 1e-05)"
+      },
+      {
+        "step": "sycl_verify_vs_native",
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 1.79e-07, atol 1e-05)"
+      },
+      {
+        "step": "sycl_benchmark",
+        "status": "ok",
+        "summary": "10 run(s) each; cuda:0: median 360.17 ms, p95 418.65 ms"
+      },
+      {
+        "step": "native_benchmark",
+        "status": "ok",
+        "summary": "10 run(s) each; none: median 359.32 ms, p95 411.83 ms"
+      }
+    ],
+    "results_dir": "/tmp/tmp.LfpyhzEEkq/out/results"
+  },
+  "limitations": [
+    "Benchmarks are single-process wall times plus program-reported kernel times; treat them as rough."
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "command": "g++ -O2 -std=c++17 /tmp/tmp.1A6GTJlnog/task/crossentropy_softmax_backward_ref.cpp -o build/reference",
+  "returncode": 0,
+  "duration_s": 0.168821,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.1A6GTJlnog/out/work"
+}

@@ -1,0 +1,8 @@
+{
+  "command": "g++ -O2 -std=c++17 /tmp/tmp.8IEodpFZW0/task/adamw_ref.cpp -o build/reference",
+  "returncode": 0,
+  "duration_s": 0.252983,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.8IEodpFZW0/out/work"
+}

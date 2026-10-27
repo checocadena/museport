@@ -60,6 +60,9 @@ original CUDA, and on an AMD MI350X against the hidden reference.
   - **10 of 10** are correct with 0 helpers.
   - Cost fell from $1.67 to **$1.01**, and turns per item from 11.5 to 8.2.
   - This is one run per item, with several changes made at once.
+- **NVIDIA:** all 10 of those Tier 1 ports **pass on NVIDIA GPUs** (RTX 2000 Ada and RTX
+  A4500), against both the hidden reference and llm.c's own CUDA. This cost about $0.05 of GPU time
+  ([evidence](evidence/port-llmc-tier1-run2/gpu/NVIDIA.md)).
 - **AMD:** all 10 of those Tier 1 ports **pass on an AMD Instinct MI350X** against the hidden
   reference, for $1.42 of GPU time ([evidence](evidence/port-llmc-tier1-run2/gpu/AMD.md)).
   - They ran on DigitalOcean droplets started from the author's laptop.

@@ -1,0 +1,8 @@
+{
+  "command": "g++ -O2 -std=c++17 /tmp/tmp.LfpyhzEEkq/task/gelu_backward_ref.cpp -o build/reference",
+  "returncode": 0,
+  "duration_s": 0.240986,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.LfpyhzEEkq/out/work"
+}

@@ -1,0 +1,8 @@
+{
+  "command": "/usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.pMUjO4dxya/task /tmp/tmp.pMUjO4dxya/task/residual_forward_harness.cu -o build/native",
+  "returncode": 0,
+  "duration_s": 1.305677,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.pMUjO4dxya/out/work"
+}
