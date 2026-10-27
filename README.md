@@ -44,9 +44,14 @@ original CUDA. AMD runs are planned but have not been done yet.
 | Pass on an NVIDIA GPU (vs reference and llm.c's CUDA) | 9 | 4 | 1 (3 call oneMath: CPU-verified) | **14** |
 | Muse cost | $1.67 | $2.45 | $1.40 | **$5.51** |
 
-- **Three ports have open issues.** In Tier 1, `fused_residual_forward` is correct but left
+- **Three first runs had open issues.** In Tier 1, `fused_residual_forward` is correct but left
   c2s helpers. In Tier 2, `softmax_forward` is also correct with helpers left, and
   `layernorm_backward` copies one implementation into 8 of its 9 variants.
+- **Reruns** of these three, with a stricter goal, are reported beside the first runs; the table
+  above counts first runs only. `layernorm_backward` was fixed: a rerun is correct, has 0 helpers
+  and keeps a distinct kernel for every variant. The other two still have issues: one rerun
+  left 45 helpers and the other fails verify. Two rounds of reruns cost $2.85 in total
+  ([round 1](evidence/port-llmc-reruns/README.md), [round 2](evidence/port-llmc-reruns-2/README.md)).
 - **Limits:** fp32 only, reduced sizes, one run per item; AMD not run.
 - **Evidence:** [plan](evidence/plan-llmc-devcuda-stream/README.md),
   [Tier 1](evidence/port-llmc-tier1/README.md), [Tier 2](evidence/port-llmc-tier2/README.md),

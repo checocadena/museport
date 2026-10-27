@@ -20,7 +20,7 @@ Rules for every item:
 
 Budget so far:
 - **Development:** about $0.55 of $5, plus the first failed plan run (at most $1.15).
-- **Comparison runs:** $5.51 of $20.
+- **Comparison runs:** $8.36 of $20 (after the C1-C3 reruns).
 - **GPUs:** about $1.13.
 
 Items 1, 2 and 3 below would go past the remaining $20 comparison budget together.
@@ -67,14 +67,17 @@ See the README's results table.
 
 ## C. Finish and harden the current results (cheap; removes caveats)
 
-- [ ] **C1. Rerun `t2-softmax-forward`.** It is correct but left 45 helpers. Give a goal that
+- [x] **C1. Rerun `t2-softmax-forward`.** It is correct but left 45 helpers. Give a goal that
   says to clear c2s output as soon as the port compiles. Report it beside the first run, not
   replacing it. *About $0.60.*
-- [ ] **C2. Rerun `t2-layernorm-backward`.** It copied one implementation into 8 of its 9
+  *Done Oct 27: rerun fails verify (0 helpers); see `evidence/port-llmc-reruns`.*
+- [x] **C2. Rerun `t2-layernorm-backward`.** It copied one implementation into 8 of its 9
   variants. The goal should require each variant to keep llm.c's algorithm (atomics, shared
   memory, warp reductions); the variant check must pass. *About $0.60.*
-- [ ] **C3. Rerun `t1-fused-residual-forward`.** It is correct but left helpers. *About
+  *Done Oct 27: round 2 is correct, 0 helpers, a distinct kernel per variant; see `evidence/port-llmc-reruns-2`.*
+- [x] **C3. Rerun `t1-fused-residual-forward`.** It is correct but left helpers. *About
   $0.40.*
+  *Done Oct 27: round 2 is correct, 45 helpers left; see `evidence/port-llmc-reruns-2`.*
 - [ ] **C4. Attention kernels:**
   - write specs for `attention_forward` and `attention_backward` (fp32 variants; batched
     gemms to oneMath; the cuDNN variant noted as out of scope);
