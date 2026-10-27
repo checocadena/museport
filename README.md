@@ -97,8 +97,11 @@ llm.c's CPU code and to fail a planted bug.
   non-batched oneMath transpose mapping is wrong") and fixed it.
 - **Stage 2's tolerance:** 2e-2 is llm.c's CPU-test tolerance for gradients. At the CUDA
   test's 1e-2, llm.c's own CPU code fails one gradient.
-- **Limits:** the ports are lean rewrites with simple kernels, not llm.c's tuned kernels. They
-  ran on the CPU device only so far, and performance was not compared.
+- **On an NVIDIA GPU:** stage 3's port, unchanged, trains on an RTX 4000 Ada with oneMath on
+  cuBLAS. Its 10 losses match PyTorch's (worst error 0.000135) and llm.c's own CUDA build
+  (worst 0.0000059), for $0.01 of GPU time ([evidence](evidence/gpt2-stage3/gpu/NVIDIA.md)).
+- **Limits:** the ports are lean rewrites with simple kernels, not llm.c's tuned kernels.
+  Stages 1 and 2 ran on the CPU device only, and kernel performance was not compared.
 
 ### How much SYCLomatic helps
 

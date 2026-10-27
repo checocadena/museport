@@ -90,7 +90,8 @@ Stage 1 cost $0.7441, stage 2 $1.2134 and stage 3 $1.1489: **$3.1064 of the $7 c
 
 ## Limits
 
-- **CPU device only.** The NVIDIA GPU needs oneMath built with its cuBLAS backend (plan item
-  D2).
+- **GPU:** the port, unchanged, also passes on an NVIDIA RTX 4000 Ada against PyTorch and
+  llm.c's own CUDA, with oneMath built on the machine with its cuBLAS backend
+  ([`gpu/NVIDIA.md`](gpu/NVIDIA.md)). AMD was not run.
 - **One run, 10 steps, one batch.** It is llm.c's own test, not a longer training run.
 - **Performance was not compared** with llm.c's CUDA.

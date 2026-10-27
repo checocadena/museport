@@ -109,7 +109,7 @@ See the README's results table.
 
   *About $0.12-0.20 per port, about $2 for all. Done when the README and video can say
   NVIDIA and AMD.*
-- [ ] **D2. oneMath on the GPU** for the 3 Tier 3 ports that call it: build oneMath with its
+- [ ] **D2. oneMath on the GPU** *(Oct 27: done for GPT-2 stage 3 through the toolkit's new task `gpu_setup`, which builds oneMath with cuBLAS on the NVIDIA machine; the 3 Tier 3 ports still to run)* for the 3 Tier 3 ports that call it: build oneMath with its
   cuBLAS backend on the NVIDIA host. This means a GPU-bundle option in the toolkit or a
   prebuilt tarball, logged as a toolkit change. *GPU minutes, about $0.50, plus build time.*
 - [ ] **D3. Performance pass (optional).**
@@ -162,7 +162,8 @@ See the README's results table.
 - [ ] **G3. Muse ports the fp32 training program to SYCL** *(Oct 27: stage 1, the forward pass,
   passes on the CPU device for $0.74; stage 2, the backward pass, for $1.21; stage 3, 10
   AdamW training steps against llm.c's expected losses, for $1.15; see `evidence/gpt2-stage1`
-  to `evidence/gpt2-stage3`. CPU device only; NVIDIA waits on D2.)*, reusing its kernel ports, in
+  to `evidence/gpt2-stage3`. Stage 3 also passes on an NVIDIA RTX 4000 Ada against PyTorch and
+  llm.c's CUDA, with oneMath built on the machine with cuBLAS: `evidence/gpt2-stage3/gpu`.)*, reusing its kernel ports, in
   stages (forward, backward, optimizer). It passes `test_gpt2` on the CPU device, then on
   NVIDIA, and on AMD if D1 works. *About $3-8 plus GPU minutes; needs a cap. Done when the SYCL
   build matches PyTorch within llm.c's tolerances, with the evidence committed.*

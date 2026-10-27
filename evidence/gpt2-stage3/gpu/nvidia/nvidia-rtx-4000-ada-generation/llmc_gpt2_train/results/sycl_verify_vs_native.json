@@ -1,0 +1,70 @@
+{
+  "tool": "verify",
+  "status": "ok",
+  "summary": "PASS: 1/1 case(s) match (worst max abs err 5.9e-06, atol 0.01)",
+  "evidence": {
+    "mode": "array",
+    "cases": [
+      {
+        "input": "/tmp/tmp.cTJZTHqvF8/task/gpt2_124M_debug_state.bin",
+        "reference": {
+          "command": "build/native /tmp/tmp.cTJZTHqvF8/task/gpt2_124M_debug_state.bin /tmp/tmp.cTJZTHqvF8/out/work/v_sycl_native/case0_reference.out build/gpt2_124M.bin",
+          "returncode": 0,
+          "duration_s": 1.307856,
+          "stdout": "allocated 221 MiB for activations\nallocated 474 MiB for parameter gradients\nallocated 4 MiB for activation gradients\nallocated 474 MiB for AdamW optimizer state m\nallocated 474 MiB for AdamW optimizer state v\n",
+          "stderr": "",
+          "cwd": "/tmp/tmp.cTJZTHqvF8/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "cuda:0"
+          },
+          "output_file": "/tmp/tmp.cTJZTHqvF8/out/work/v_sycl_native/case0_reference.out"
+        },
+        "candidate": {
+          "command": "build/sycl /tmp/tmp.cTJZTHqvF8/task/gpt2_124M_debug_state.bin /tmp/tmp.cTJZTHqvF8/out/work/v_sycl_native/case0_candidate.out build/gpt2_124M.bin",
+          "returncode": 0,
+          "duration_s": 1.411339,
+          "stdout": "device: NVIDIA RTX 4000 Ada Generation\nstep 1 loss 5.270008\nstep 2 loss 4.059667\nstep 3 loss 3.375048\nstep 4 loss 2.800679\nstep 5 loss 2.315304\nstep 6 loss 1.848938\nstep 7 loss 1.394557\nstep 8 loss 0.999013\nstep 9 loss 0.624046\nstep 10 loss 0.376499\n",
+          "stderr": "",
+          "cwd": "/tmp/tmp.cTJZTHqvF8/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "cuda:0"
+          },
+          "output_file": "/tmp/tmp.cTJZTHqvF8/out/work/v_sycl_native/case0_candidate.out"
+        },
+        "reference_format": "f32",
+        "candidate_format": "f32",
+        "mode": "array",
+        "stats": {
+          "n_reference": 10,
+          "n_candidate": 10,
+          "atol": 0.01,
+          "rtol": 0.0,
+          "max_ulp_allowed": null,
+          "passed": true,
+          "max_abs_err": 5.900859832763672e-06,
+          "rms_err": 3.023665553765034e-06,
+          "mean_abs_err": 2.312660217285156e-06,
+          "max_rel_err": 7.545597616584498e-06,
+          "max_ulp_f32": 99,
+          "median_ulp_f32": 9.5,
+          "exact_matches": 0,
+          "mismatches": 0,
+          "nan_mismatches": 0,
+          "reference_range": [
+            0.37649765610694885,
+            5.270008563995361
+          ],
+          "first_mismatches": []
+        },
+        "passed": true
+      }
+    ],
+    "work_dir": "/tmp/tmp.cTJZTHqvF8/out/work/v_sycl_native",
+    "passed_cases": 1,
+    "total_cases": 1,
+    "worst_max_abs_err": 5.900859832763672e-06
+  },
+  "limitations": [
+    "Equivalence is shown only for the inputs tested; other inputs/sizes may behave differently."
+  ]
+}
