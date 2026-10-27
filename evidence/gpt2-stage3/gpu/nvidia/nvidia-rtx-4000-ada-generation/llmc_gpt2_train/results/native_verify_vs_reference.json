@@ -1,0 +1,64 @@
+{
+  "tool": "verify",
+  "status": "ok",
+  "summary": "PASS: 1/1 case(s) match (worst max abs err 0.000128, atol 0.01)",
+  "evidence": {
+    "mode": "array",
+    "cases": [
+      {
+        "input": "/tmp/tmp.cTJZTHqvF8/task/gpt2_124M_debug_state.bin",
+        "reference": {
+          "command": "build/reference /tmp/tmp.cTJZTHqvF8/task/gpt2_124M_debug_state.bin /tmp/tmp.cTJZTHqvF8/out/work/v_native/case0_reference.out build/gpt2_124M.bin",
+          "returncode": 0,
+          "duration_s": 0.002794,
+          "stdout": "",
+          "stderr": "",
+          "cwd": "/tmp/tmp.cTJZTHqvF8/out/work",
+          "output_file": "/tmp/tmp.cTJZTHqvF8/out/work/v_native/case0_reference.out"
+        },
+        "candidate": {
+          "command": "build/native /tmp/tmp.cTJZTHqvF8/task/gpt2_124M_debug_state.bin /tmp/tmp.cTJZTHqvF8/out/work/v_native/case0_candidate.out build/gpt2_124M.bin",
+          "returncode": 0,
+          "duration_s": 1.476481,
+          "stdout": "allocated 221 MiB for activations\nallocated 474 MiB for parameter gradients\nallocated 4 MiB for activation gradients\nallocated 474 MiB for AdamW optimizer state m\nallocated 474 MiB for AdamW optimizer state v\n",
+          "stderr": "",
+          "cwd": "/tmp/tmp.cTJZTHqvF8/out/work",
+          "output_file": "/tmp/tmp.cTJZTHqvF8/out/work/v_native/case0_candidate.out"
+        },
+        "reference_format": "f32",
+        "candidate_format": "f32",
+        "mode": "array",
+        "stats": {
+          "n_reference": 10,
+          "n_candidate": 10,
+          "atol": 0.01,
+          "rtol": 0.0,
+          "max_ulp_allowed": null,
+          "passed": true,
+          "max_abs_err": 0.00012791156768798828,
+          "rms_err": 7.667305982246896e-05,
+          "mean_abs_err": 6.590485572814942e-05,
+          "max_rel_err": 0.00012802083076690144,
+          "max_ulp_f32": 2146,
+          "median_ulp_f32": 431.5,
+          "exact_matches": 0,
+          "mismatches": 0,
+          "nan_mismatches": 0,
+          "reference_range": [
+            0.37651097774505615,
+            5.270007133483887
+          ],
+          "first_mismatches": []
+        },
+        "passed": true
+      }
+    ],
+    "work_dir": "/tmp/tmp.cTJZTHqvF8/out/work/v_native",
+    "passed_cases": 1,
+    "total_cases": 1,
+    "worst_max_abs_err": 0.00012791156768798828
+  },
+  "limitations": [
+    "Equivalence is shown only for the inputs tested; other inputs/sizes may behave differently."
+  ]
+}

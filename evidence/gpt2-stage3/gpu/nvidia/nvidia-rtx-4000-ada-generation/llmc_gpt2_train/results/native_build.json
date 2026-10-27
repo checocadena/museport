@@ -1,0 +1,8 @@
+{
+  "command": "/usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.cTJZTHqvF8/task /tmp/tmp.cTJZTHqvF8/task/gpt2_train_harness.cu -lcublas -o build/native",
+  "returncode": 0,
+  "duration_s": 5.049557,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.cTJZTHqvF8/out/work"
+}

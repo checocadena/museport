@@ -1,0 +1,25 @@
+{
+  "tool": "compile",
+  "status": "ok",
+  "summary": "compiled 1 source(s) -> /tmp/tmp.cTJZTHqvF8/out/work/build/sycl (0 warning(s))",
+  "evidence": {
+    "run": {
+      "command": "/opt/sycl/bin/clang++ -fsycl -O2 -I/root/onemath-cublas/include -Wl,--no-as-needed -L/root/onemath-cublas/lib -Wl,-rpath,/root/onemath-cublas/lib -lonemath -fsycl-targets=nvidia_gpu_sm_89 -I/tmp/tmp.cTJZTHqvF8/task /tmp/tmp.cTJZTHqvF8/task/agent_port/gpt2_train.cpp -o /tmp/tmp.cTJZTHqvF8/out/work/build/sycl",
+      "returncode": 0,
+      "duration_s": 16.607837,
+      "stdout": "",
+      "stderr": ""
+    },
+    "output": "/tmp/tmp.cTJZTHqvF8/out/work/build/sycl",
+    "dpct_include_added": null,
+    "diagnostics": [],
+    "counts": {
+      "error": 0,
+      "warning": 0,
+      "note": 0
+    }
+  },
+  "limitations": [
+    "A successful compile says nothing about numerical correctness; run verify."
+  ]
+}

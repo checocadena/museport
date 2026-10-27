@@ -434,3 +434,71 @@ def check_task(task_file: Path, llmc_dir: Path, work: Path) -> dict[str, object]
                  rtol=task["rtol"], mode="array", cwd=str(work), work_dir=str(work / "verify"))
     steps["verify_cpu_proof"] = {"status": res.status, "summary": res.summary}
     return {"ok": res.status == "ok", "steps": steps}
+
+
+# ----------------------------------------------------------------------------- GPU runs
+
+# llm.c's dev/download_starter_pack.sh fetches the data from here; the GPU machine does the
+# same (the files are 1 GB, far over a remote-test bundle's 50 MB), checked against these.
+STARTER_PACK = "https://huggingface.co/datasets/karpathy/llmc-starter-pack/resolve/main/"
+DATA_SHA256 = {
+    WEIGHTS: "3da8b207584030bcdcd207cf7a99952e3421dce92da218b351071857511bf162",
+    STATE: "a80c4448eed47c561314a2189e62c49b2c7477c265fc2f15c8470d18401693d9",
+}
+# The same oneMath commit as the toolkit's CPU build (scripts/install-toolchain.sh).
+ONEMATH_REF = "1308c5e979daf0c80e3d6ae61c1e2de5ad0f2e4a"
+
+# Sourced on the GPU machine before gpu-test (the task's gpu_setup): builds oneMath's BLAS
+# domain with its cuBLAS backend, with the machine's SYCL compiler, and exports the
+# ONEMATH_PREFIX that the task's base_flags use. NVIDIA only.
+ONEMATH_GPU_SETUP = r"""# museport: oneMath (BLAS, cuBLAS backend) for an NVIDIA machine.
+ONEMATH_PREFIX="$HOME/onemath-cublas"
+if [ ! -f "$ONEMATH_PREFIX/lib/libonemath.so" ]; then
+  CXX_BIN="${SYCL_CXX:-$(command -v icpx || command -v clang++)}"
+  C_BIN="$(dirname "$CXX_BIN")/clang"
+  [ -x "$C_BIN" ] || C_BIN="$(command -v icx || command -v clang || command -v gcc)"
+  echo "oneMath __REF__ with $CXX_BIN"
+  python3 -m pip install -q cmake ninja 2>/dev/null \
+    || python3 -m pip install -q --break-system-packages cmake ninja
+  export PATH="$HOME/.local/bin:$PATH"
+  SRC="$(mktemp -d)/oneMath"
+  git init -q "$SRC" \
+    && git -C "$SRC" fetch -q --depth 1 https://github.com/uxlfoundation/oneMath.git __REF__ \
+    && git -C "$SRC" checkout -q FETCH_HEAD
+  cmake -S "$SRC" -B "$SRC/build" -G Ninja -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_CXX_COMPILER="$CXX_BIN" -DCMAKE_C_COMPILER="$C_BIN" \
+    -DENABLE_MKLCPU_BACKEND=OFF -DENABLE_MKLGPU_BACKEND=OFF -DENABLE_CUBLAS_BACKEND=ON \
+    -DTARGET_DOMAINS=blas -DBUILD_FUNCTIONAL_TESTS=OFF -DBUILD_EXAMPLES=OFF \
+    -DCMAKE_INSTALL_PREFIX="$ONEMATH_PREFIX" -DCMAKE_INSTALL_RPATH="$ONEMATH_PREFIX/lib" \
+    && cmake --build "$SRC/build" -j"$(nproc)" && cmake --install "$SRC/build"
+fi
+export ONEMATH_PREFIX
+export LD_LIBRARY_PATH="$ONEMATH_PREFIX/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+ls -l "$ONEMATH_PREFIX/lib"
+""".replace("__REF__", ONEMATH_REF)
+
+
+def make_gpu_task(stage_dir: Path, dest: Path, model: str) -> Path:
+    """A ``remote-test`` task for a passing GPT-2 stage: its task (harness, hidden reference),
+    Muse's port as last compiled, the data fetched on the machine, and oneMath built there with
+    its cuBLAS backend. The native build is llm.c's CUDA with cuBLAS."""
+    from .port import last_compiled_sources
+
+    srcs = last_compiled_sources(stage_dir / "run1" / "trace.jsonl")
+    if not srcs:
+        raise ValueError(f"{stage_dir}: the model never compiled")
+    if dest.exists():
+        shutil.rmtree(dest)
+    shutil.copytree(stage_dir / "task", dest, ignore=shutil.ignore_patterns(WEIGHTS, STATE))
+    shutil.copytree(stage_dir / "run1" / "port", dest / "agent_port")
+    (dest / "onemath_cublas_setup.sh").write_text(ONEMATH_GPU_SETUP)
+    task = json.loads((dest / "task.json").read_text())
+    task["sycl_sources"] = [f"agent_port/{s}" for s in srcs]
+    task["native_flags"] = ["-lcublas"]
+    task["gpu_setup"] = "onemath_cublas_setup.sh"
+    task["fetch"] = [{"path": f, "url": f"{STARTER_PACK}{f}?download=true",
+                      "sha256": DATA_SHA256[f]} for f in (WEIGHTS, STATE)]
+    task["port_origin"] = (f"agent-made: {model} via museport loop, {stage_dir.name}; "
+                           "sources as last compiled by the agent, unchanged")
+    (dest / "task.json").write_text(json.dumps(task, indent=2) + "\n")
+    return dest / "task.json"

@@ -73,3 +73,28 @@ def test_stage3_writes_the_training_task_with_llmc_expected_losses(tmp_path):
     ref = (out / "gpt2_ref.cpp").read_text()
     assert len(EXPECTED_LOSSES) == 10 and all(f"{v!r}f" in ref for v in EXPECTED_LOSSES)
     assert "gpt2_update" in (out / "cpu_proof.c").read_text()
+
+
+def test_gpu_task_fetches_the_data_and_builds_onemath_on_the_machine(tmp_path):
+    from museport.gpt2 import DATA_SHA256, make_gpu_task
+
+    llmc = _llmc(tmp_path)
+    data = tmp_path / "data"
+    data.mkdir()
+    for name in (WEIGHTS, STATE):
+        (data / name).write_bytes(b"x")
+    stage = tmp_path / "stage"
+    make_task(llmc, data, stage / "task", "train")
+    (stage / "run1" / "port").mkdir(parents=True)
+    (stage / "run1" / "port" / "gpt2_train.cpp").write_text("// sycl")
+    (stage / "run1" / "trace.jsonl").write_text(json.dumps(
+        {"type": "tool_call", "name": "compile", "input": {"sources": ["gpt2_train.cpp"]}}) + "\n")
+    task = json.loads(make_gpu_task(stage, tmp_path / "gpu", "m").read_text())
+    gpu = tmp_path / "gpu"
+    assert not (gpu / WEIGHTS).exists() and not (gpu / STATE).exists()  # fetched, not shipped
+    assert {f["path"]: f["sha256"] for f in task["fetch"]} == DATA_SHA256
+    assert all(f["url"].startswith("https://huggingface.co/") for f in task["fetch"])
+    assert task["sycl_sources"] == ["agent_port/gpt2_train.cpp"]
+    assert task["native_flags"] == ["-lcublas"]
+    setup = (gpu / task["gpu_setup"]).read_text()
+    assert "-DENABLE_CUBLAS_BACKEND=ON" in setup and "export ONEMATH_PREFIX" in setup

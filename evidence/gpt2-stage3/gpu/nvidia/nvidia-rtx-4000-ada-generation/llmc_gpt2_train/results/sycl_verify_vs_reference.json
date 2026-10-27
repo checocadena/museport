@@ -1,0 +1,70 @@
+{
+  "tool": "verify",
+  "status": "ok",
+  "summary": "PASS: 1/1 case(s) match (worst max abs err 0.000135, atol 0.01)",
+  "evidence": {
+    "mode": "array",
+    "cases": [
+      {
+        "input": "/tmp/tmp.cTJZTHqvF8/task/gpt2_124M_debug_state.bin",
+        "reference": {
+          "command": "build/reference /tmp/tmp.cTJZTHqvF8/task/gpt2_124M_debug_state.bin /tmp/tmp.cTJZTHqvF8/out/work/v_sycl/case0_reference.out build/gpt2_124M.bin",
+          "returncode": 0,
+          "duration_s": 0.003162,
+          "stdout": "",
+          "stderr": "",
+          "cwd": "/tmp/tmp.cTJZTHqvF8/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "cuda:0"
+          },
+          "output_file": "/tmp/tmp.cTJZTHqvF8/out/work/v_sycl/case0_reference.out"
+        },
+        "candidate": {
+          "command": "build/sycl /tmp/tmp.cTJZTHqvF8/task/gpt2_124M_debug_state.bin /tmp/tmp.cTJZTHqvF8/out/work/v_sycl/case0_candidate.out build/gpt2_124M.bin",
+          "returncode": 0,
+          "duration_s": 1.350965,
+          "stdout": "device: NVIDIA RTX 4000 Ada Generation\nstep 1 loss 5.270008\nstep 2 loss 4.059667\nstep 3 loss 3.375049\nstep 4 loss 2.800679\nstep 5 loss 2.315305\nstep 6 loss 1.848938\nstep 7 loss 1.394556\nstep 8 loss 0.999012\nstep 9 loss 0.624046\nstep 10 loss 0.376499\n",
+          "stderr": "",
+          "cwd": "/tmp/tmp.cTJZTHqvF8/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "cuda:0"
+          },
+          "output_file": "/tmp/tmp.cTJZTHqvF8/out/work/v_sycl/case0_candidate.out"
+        },
+        "reference_format": "f32",
+        "candidate_format": "f32",
+        "mode": "array",
+        "stats": {
+          "n_reference": 10,
+          "n_candidate": 10,
+          "atol": 0.01,
+          "rtol": 0.0,
+          "max_ulp_allowed": null,
+          "passed": true,
+          "max_abs_err": 0.00013500452041625977,
+          "rms_err": 7.854521109698022e-05,
+          "mean_abs_err": 6.685853004455567e-05,
+          "max_rel_err": 0.00013511984235183214,
+          "max_ulp_f32": 2265,
+          "median_ulp_f32": 415.0,
+          "exact_matches": 0,
+          "mismatches": 0,
+          "nan_mismatches": 0,
+          "reference_range": [
+            0.37651097774505615,
+            5.270007133483887
+          ],
+          "first_mismatches": []
+        },
+        "passed": true
+      }
+    ],
+    "work_dir": "/tmp/tmp.cTJZTHqvF8/out/work/v_sycl",
+    "passed_cases": 1,
+    "total_cases": 1,
+    "worst_max_abs_err": 0.00013500452041625977
+  },
+  "limitations": [
+    "Equivalence is shown only for the inputs tested; other inputs/sizes may behave differently."
+  ]
+}
