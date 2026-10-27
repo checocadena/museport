@@ -1,0 +1,8 @@
+{
+  "command": "g++ -O2 -std=c++17 /tmp/tmp.ZDAEDL8DCr/task/layernorm_forward_ref.cpp -o build/reference",
+  "returncode": 0,
+  "duration_s": 0.319891,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.ZDAEDL8DCr/out/work"
+}

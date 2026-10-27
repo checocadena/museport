@@ -1,0 +1,8 @@
+{
+  "command": "/usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.DTR7FcXqfS/task /tmp/tmp.DTR7FcXqfS/task/matmul_backward_bias_harness.cu -o build/native",
+  "returncode": 0,
+  "duration_s": 3.303038,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.DTR7FcXqfS/out/work"
+}

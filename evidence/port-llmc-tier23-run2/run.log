@@ -1,0 +1,18 @@
+[port] t2-global-norm: loop with muse-spark-1.3 (max 16 turns, cap $0.70); spent so far $0.0000
+[port] t2-global-norm: max_iterations in 16 turns, $0.3230
+[port] t2-layernorm-forward: loop with muse-spark-1.3 (max 16 turns, cap $0.70); spent so far $0.3230
+[port] t2-layernorm-forward: success in 7 turns, $0.1524
+[port] t2-softmax-forward: loop with muse-spark-1.3 (max 16 turns, cap $0.70); spent so far $0.4755
+[port] t2-softmax-forward: max_iterations in 16 turns, $0.5857
+[port] t2-classifier-fused: loop with muse-spark-1.3 (max 16 turns, cap $0.70); spent so far $1.0612
+[port] t2-classifier-fused: success in 7 turns, $0.1397
+[port] t2-layernorm-backward: loop with muse-spark-1.3 (max 16 turns, cap $0.70); spent so far $1.2009
+[port] t2-layernorm-backward: success in 14 turns, $0.4848
+[port] t3-matmul-backward: loop with muse-spark-1.3 (max 16 turns, cap $0.70); spent so far $1.6857
+[port] t3-matmul-backward: success in 8 turns, $0.1108
+[port] t3-trimat-forward: loop with muse-spark-1.3 (max 16 turns, cap $0.70); spent so far $1.7965
+[port] t3-trimat-forward: max_iterations in 16 turns, $0.3740
+[port] t3-matmul-backward-bias: loop with muse-spark-1.3 (max 16 turns, cap $0.70); spent so far $2.1706
+[port] t3-matmul-backward-bias: success in 13 turns, $0.3278
+[port] t3-matmul-forward: loop with muse-spark-1.3 (max 16 turns, cap $0.70); spent so far $2.4984
+[port] t3-matmul-forward: success in 12 turns, $0.2449

@@ -1,0 +1,64 @@
+{
+  "tool": "verify",
+  "status": "ok",
+  "summary": "PASS: 1/1 case(s) match (worst max abs err 1.72e-05, atol 0.001)",
+  "evidence": {
+    "mode": "array",
+    "cases": [
+      {
+        "input": "/tmp/tmp.wZmlkuELk4/task/input.bin",
+        "reference": {
+          "command": "build/reference /tmp/tmp.wZmlkuELk4/task/input.bin /tmp/tmp.wZmlkuELk4/out/work/v_native/case0_reference.out 4 64 768",
+          "returncode": 0,
+          "duration_s": 0.00625,
+          "stdout": "",
+          "stderr": "",
+          "cwd": "/tmp/tmp.wZmlkuELk4/out/work",
+          "output_file": "/tmp/tmp.wZmlkuELk4/out/work/v_native/case0_reference.out"
+        },
+        "candidate": {
+          "command": "build/native /tmp/tmp.wZmlkuELk4/task/input.bin /tmp/tmp.wZmlkuELk4/out/work/v_native/case0_candidate.out 4 64 768",
+          "returncode": 0,
+          "duration_s": 0.413531,
+          "stdout": "",
+          "stderr": "",
+          "cwd": "/tmp/tmp.wZmlkuELk4/out/work",
+          "output_file": "/tmp/tmp.wZmlkuELk4/out/work/v_native/case0_candidate.out"
+        },
+        "reference_format": "f32",
+        "candidate_format": "f32",
+        "mode": "array",
+        "stats": {
+          "n_reference": 1783296,
+          "n_candidate": 1783296,
+          "atol": 0.001,
+          "rtol": 1.1920929e-07,
+          "max_ulp_allowed": null,
+          "passed": true,
+          "max_abs_err": 1.71661376953125e-05,
+          "rms_err": 2.545026108649775e-07,
+          "mean_abs_err": 2.714269965745951e-08,
+          "max_rel_err": 0.003976770191593932,
+          "max_ulp_f32": 51378,
+          "median_ulp_f32": 0.0,
+          "exact_matches": 1047421,
+          "mismatches": 0,
+          "nan_mismatches": 0,
+          "reference_range": [
+            -32.703277587890625,
+            30.501056671142578
+          ],
+          "first_mismatches": []
+        },
+        "passed": true
+      }
+    ],
+    "work_dir": "/tmp/tmp.wZmlkuELk4/out/work/v_native",
+    "passed_cases": 1,
+    "total_cases": 1,
+    "worst_max_abs_err": 1.71661376953125e-05
+  },
+  "limitations": [
+    "Equivalence is shown only for the inputs tested; other inputs/sizes may behave differently."
+  ]
+}
