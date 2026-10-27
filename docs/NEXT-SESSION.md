@@ -56,9 +56,8 @@
   here, on branches with PRs.
 - The development repository was renamed `checocadena/museport-dev` and made private. Do not
   push it here: it carries early toolkit-derived files in its history.
-- The toolkit's `native_flags` change (toolkit #20) is merged. The loop's `delete_file` and
-  ranged `read_file` (toolkit #21) are pinned at the branch commit `72d6104` until #21 merges;
-  then re-pin to its merge commit.
+- The toolkit's `native_flags` (toolkit #20) and the loop's `delete_file` and ranged
+  `read_file` (toolkit #21) are merged; museport pins #21's merge commit `e693601`.
 
 ## Spend (known; caps: $5 development, $20 comparison runs, $1 per run)
 
