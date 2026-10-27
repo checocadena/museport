@@ -1,0 +1,42 @@
+{
+  "name": "llmc_fused_residual_forward",
+  "goal": "Port fused_residual_forward_harness.cu (llm.c dev/cuda/fused_residual_forward.cu, fp32 build) to idiomatic SYCL 2020 with zero dpct helpers. Keep every kernel variant k in [1, 2, 3, 4, 5, 6] as its own SYCL kernel, computed on the SYCL device, and keep the program's contract: `build/candidate <input> <output> B T C` reads the inputs and writes each variant's outputs in order as raw float32, exactly as the CUDA main does. A hidden reference checks the output (atol 1e-05 + rtol FLT_EPSILON*|ref|, llm.c's own fp32 rule). Success requires compile, verify and a zero-helper scan_helpers of the whole work directory (path '.') on the same sources. The migrate tool (SYCLomatic) is not available in this run: write the SYCL port yourself from the CUDA harness (read it in parts with read_file offset/limit).",
+  "cuda_path": "fused_residual_forward_harness.cu",
+  "include_dirs": [
+    "."
+  ],
+  "reference_build": [
+    "g++",
+    "-O2",
+    "-std=c++17",
+    "{task_dir}/fused_residual_forward_ref.cpp",
+    "-o",
+    "build/reference"
+  ],
+  "reference_cmd": "build/reference {input} {output} 4 64 768",
+  "candidate_cmd": "build/candidate {input} {output} 4 64 768",
+  "inputs": [
+    "input.bin"
+  ],
+  "mode": "array",
+  "output_format": "f32",
+  "tolerance": 1e-05,
+  "rtol": 1.1920929e-07,
+  "museport": {
+    "source": "karpathy/llm.c dev/cuda/fused_residual_forward.cu",
+    "variants": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "sizes": {
+      "B": 4,
+      "T": 64,
+      "C": 768
+    },
+    "note": "B=4, T=64 (llm.c: B=8, T=1024); C=768 as in llm.c."
+  }
+}

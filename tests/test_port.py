@@ -99,6 +99,8 @@ def test_make_task_writes_a_toolkit_task(tmp_path):
     assert STRICT_GOAL not in task["goal"]
     strict = json.loads(make_task(SPEC, MINI, tmp_path / "s", strict_goal=True).read_text())
     assert strict["goal"].endswith(STRICT_GOAL)
+    bare = json.loads(make_task(SPEC, MINI, tmp_path / "n", no_migrate=True).read_text())
+    assert "migrate's output" not in bare["goal"] and "not available in this run" in bare["goal"]
 
 
 def test_plan_items_map_to_specs():
