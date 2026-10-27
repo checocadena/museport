@@ -23,13 +23,15 @@ MAX_OUTPUT_TOKENS = 16_000  # per turn, reasoning included (the toolkit's defaul
 
 def build(task_file: str | Path, *, model: str, provider: str = "meta",
           max_iterations: int = 8, max_cost_usd: float = 1.0,
-          max_output_tokens: int = MAX_OUTPUT_TOKENS,
+          max_output_tokens: int = MAX_OUTPUT_TOKENS, max_total_tokens: int | None = None,
           transport: Transport | None = None) -> tuple[LoopConfig, OpenAICompatModel]:
     # evaluate: after the run, the toolkit grades the final sources with a hidden compile,
     # verify and whole-tree helper scan (harness-side; the model never sees it).
     cfg = LoopConfig.from_task_file(task_file, max_iterations=max_iterations,
                                     max_cost_usd=max_cost_usd, model=model, evaluate=True)
     cfg.provider = provider
+    if max_total_tokens:  # the toolkit stops a run at 600000 tokens; the USD cap still applies
+        cfg.max_total_tokens = max_total_tokens
     client = OpenAICompatModel(model, provider=provider, max_tokens=max_output_tokens,
                                transport=transport or stream_transport(fill_missing_usage=True,
                                                                        mark_empty=True))
@@ -61,9 +63,11 @@ def turn_overshoot_usd(model: str, input_tokens: int = 50_000,
 
 def run(task_file: str | Path, *, model: str, provider: str = "meta", max_iterations: int = 8,
         max_cost_usd: float = 1.0, runs_dir: str | Path = "runs",
-        max_output_tokens: int = MAX_OUTPUT_TOKENS) -> dict[str, Any]:
+        max_output_tokens: int = MAX_OUTPUT_TOKENS,
+        max_total_tokens: int | None = None) -> dict[str, Any]:
     preflight_real_model(model, provider=provider)
     cfg, client = build(task_file, model=model, provider=provider,
                         max_iterations=max_iterations, max_cost_usd=max_cost_usd,
-                        max_output_tokens=max_output_tokens)
+                        max_output_tokens=max_output_tokens,
+                        max_total_tokens=max_total_tokens)
     return AgentLoop(cfg, client, runs_dir=runs_dir, toolbox_factory=SafeToolbox).run()

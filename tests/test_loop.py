@@ -93,6 +93,10 @@ def test_build_sets_the_cap_and_the_streaming_client():
     _, big = build(TASK, model="muse-spark-1.3", max_output_tokens=32_000,
                    transport=sentinel)  # type: ignore[arg-type]
     assert big.max_tokens == 32_000
+    assert cfg.max_total_tokens == 600_000  # the toolkit's default stays unless raised
+    raised, _ = build(TASK, model="muse-spark-1.3", max_total_tokens=2_000_000,
+                      transport=sentinel)  # type: ignore[arg-type]
+    assert raised.max_total_tokens == 2_000_000
 
 
 def test_safe_toolbox_turns_a_cut_off_call_into_an_error_result(tmp_path):
