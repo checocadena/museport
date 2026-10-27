@@ -56,7 +56,7 @@ original CUDA. AMD runs are planned but have not been done yet.
 ## Try it
 
 ```bash
-git clone https://github.com/checocadena/museport-hackathon && cd museport-hackathon
+git clone https://github.com/checocadena/museport && cd museport
 pip install -e .
 museport scan path/to/cuda/repo          # Markdown inventory; --json for machine-readable
 ```

@@ -40,10 +40,11 @@ See the README's results table.
 
 ## A. Repository and submission basics (do first)
 
-- [ ] **A1. Push this extract to the fresh public repo** as one initial commit; check that
+- [x] **A1. Push this extract to the fresh public repo** as one initial commit; check that
   its CI is green; fill in the repo URL in the README clone command and `docs/SUBMISSION.md`.
   *Cost: $0. Needs: the empty repo, attached to the session.*
-- [ ] **A2. Old `museport` repository: make it private or archive it** (author). Its history
+- [x] **A2. Old `museport` repository: make it private or archive it** (author). Done: it was
+  renamed `museport-dev` and made private, and this repository took the name `museport`. Its history
   holds two removed items derived from the toolkit's example.
 - [ ] **A3. Rebuild the environment** in any new session from `docs/NEXT-SESSION.md`:
   toolchain, oneMath, llm.c clone, toolkit pinned at `7138b09`.
