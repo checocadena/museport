@@ -1,0 +1,8 @@
+{
+  "command": "g++ -O2 -std=c++17 /tmp/tmp.pVKWptTjeF/task/crossentropy_forward_ref.cpp -o build/reference",
+  "returncode": 0,
+  "duration_s": 0.126801,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.pVKWptTjeF/out/work"
+}

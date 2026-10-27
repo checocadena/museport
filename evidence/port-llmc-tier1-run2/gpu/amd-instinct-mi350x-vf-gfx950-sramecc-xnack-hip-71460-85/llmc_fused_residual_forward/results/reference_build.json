@@ -1,0 +1,8 @@
+{
+  "command": "g++ -O2 -std=c++17 /tmp/tmp.idMwaDY5KX/task/fused_residual_forward_ref.cpp -o build/reference",
+  "returncode": 0,
+  "duration_s": 0.143237,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.idMwaDY5KX/out/work"
+}
