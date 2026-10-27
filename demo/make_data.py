@@ -10,7 +10,7 @@ import re
 import sys
 from pathlib import Path
 
-from museport.report import load, tier_table
+from museport.report import current_table, load, tier_table
 
 
 def _gpu(evidence: Path, vendor_dir: str) -> dict[str, dict[str, object]]:
@@ -74,7 +74,8 @@ def main(evidence: Path) -> dict[str, object]:
         return {"status": g["stop_reason"], "turns": g["iterations"], "cost": g["cost_usd"],
                 "verify": g["evaluation"]["verify_summary"],
                 "verify_ok": g["evaluation"]["verify_status"] == "ok",
-                "helpers": g["evaluation"]["helpers"]}
+                "helpers": g["evaluation"]["helpers"],
+                "replay": _replay(evidence / name / "run1/trace.jsonl")}
 
     nomigrate = evidence / "port-llmc-tier1-nomigrate/summary.json"
     g1 = json.loads((evidence / "gpt2-stage1/run1/outcome.json").read_text())
@@ -83,7 +84,8 @@ def main(evidence: Path) -> dict[str, object]:
         "plan": {"items": plan["grounding"]["items"], "files": plan["grounding"]["coverage"],
                  "issues": plan["grounding"]["issues"], "cost": plan["cost_usd"],
                  "model": plan["model"]},
-        "tiers": tier_table(data["items"]),
+        "tiers": tier_table(data["items"]),  # the first runs
+        "current": current_table(data["items"]),  # the runs with the fixed loop
         "tier1_first": tier1(run1),
         "tier1_fixed": tier1(run2),
         "nvidia": _gpu(evidence, "nvidia/*/*/"),

@@ -105,7 +105,7 @@ const SHOTS = {
          <div class="card in" style="flex:1;animation-delay:.3s"><div class="t mono acc" style="font-size:26px">PRE-EXISTING</div>
            <h2 style="font-size:48px">oneapi-agent-toolkit</h2><div class="sub" style="font-size:30px">My open-source tools that return evidence (migrate, compile, scan, verify, benchmark), an agent loop, GPU test runner.</div></div>
          <div class="card in" style="flex:1;animation-delay:.9s;border-color:var(--accent)"><div class="t mono ok" style="font-size:26px">BUILT THIS WEEK</div>
-           <h2 style="font-size:48px">Muse Port</h2><div class="sub" style="font-size:30px">Muse plans and ports llm.c, hidden checks from llm.c's own references, the evidence report, AMD and NVIDIA runs, and GPT-2's forward pass.</div></div>
+           <h2 style="font-size:48px">Muse Port</h2><div class="sub" style="font-size:30px">Muse plans and ports llm.c, hidden checks from llm.c's own references, the evidence report, AMD and NVIDIA runs, and GPT-2 training.</div></div>
        </div>`);
   },
   // 10 s: the pipeline
@@ -143,10 +143,10 @@ const SHOTS = {
     document.getElementById('res').innerHTML = '<span class="ok">PASS</span>';
     document.getElementById('why').textContent = `worst error ${nx.precise_math.max_abs_err.toFixed(4)} against 0.01`;
   },
-  // 18 s: Muse's GPT-2 stage-1 run, turn by turn (from trace.jsonl)
+  // 18 s: Muse's GPT-2 stage-3 run (training), turn by turn (from trace.jsonl)
   async replay() {
-    const g = D.gpt2_stage1;
-    h(`<div class="eyebrow">Muse ports GPT-2 · stage 1, the forward pass</div>
+    const g = D.gpt2_stage3;
+    h(`<div class="eyebrow">Muse ports GPT-2 training · 10 AdamW steps vs PyTorch</div>
        <div class="row" style="margin-top:40px;gap:60px">
          <div class="turns" id="tl" style="flex:1"></div>
          <div style="width:420px"><div class="label">turn</div><div class="big" id="tn">0</div>
@@ -167,13 +167,14 @@ const SHOTS = {
       <div style="font:600 30px/1.5 var(--f-body);margin-top:10px">${g.verify.replace('PASS: 1/1 case(s) match ', 'PASS ')}<br>${g.helpers} helpers · ${fmt$(g.cost)}</div>`;
     fin.style.opacity = 1;
   },
-  // 9 s: what the loop fixes did (Tier 1, same tasks)
+  // 9 s: what the loop fixes did (all 19 kernels, same tasks and hidden checks)
   async fixes() {
-    const a = D.tier1_first, b = D.tier1_fixed;
-    const rows = [['Loop success', `${a.loop_success}/10`, `${b.loop_success}/10`, a.loop_success / 10, b.loop_success / 10],
-                  ['Correct, 0 helpers', `${a.correct}/10`, `${b.correct}/10`, a.correct / 10, b.correct / 10],
-                  ['Muse cost', fmt$(a.cost), fmt$(b.cost), a.cost / 2, b.cost / 2]];
-    h(`<div class="eyebrow">Same 10 kernels, after fixing the loop</div><h2>delete_file, ranged reads, 32k output</h2>
+    const a = D.tiers.find(r => r.label === 'All'), b = D.current.find(r => r.label === 'All');
+    const n = a.items;
+    const rows = [['Loop success', `${a.success}/${n}`, `${b.success}/${n}`, a.success / n, b.success / n],
+                  ['Correct, 0 helpers', `${a.correct}/${n}`, `${b.correct}/${n}`, a.correct / n, b.correct / n],
+                  ['Muse cost', fmt$(a.cost), fmt$(b.cost), a.cost / 6, b.cost / 6]];
+    h(`<div class="eyebrow">Same ${n} kernels, after fixing the loop</div><h2>delete_file, ranged reads, 32k output</h2>
        <div style="margin-top:70px;display:grid;gap:44px">${rows.map(r => `
          <div><div class="row" style="justify-content:space-between;font-size:32px"><span>${r[0]}</span><span class="mono"><span style="color:var(--muted)">${r[1]}</span> → <b>${r[2]}</b></span></div>
          <div class="bar dim" data-w="${r[3]}" style="margin-top:12px;height:22px"></div><div class="bar" data-w="${r[4]}" style="margin-top:8px;height:22px"></div></div>`).join('')}</div>`);
@@ -193,11 +194,11 @@ const SHOTS = {
   },
   // 7 s: the numbers so far
   async numbers() {
-    const all = D.tiers.find(r => r.label === 'All');
+    const all = D.current.find(r => r.label === 'All');
     const stats = [[`${all.correct}/${all.items}`, 'llm.c kernel files ported correctly, 0 helpers'],
                    [`${all.gpu}`, 'pass on NVIDIA against llm.c\'s own CUDA'],
                    [`${Object.values(D.amd).filter(x => x.pass).length}/${Object.keys(D.amd).length}`, 'Tier 1 ports pass on an AMD MI350X'],
-                   [fmt$(D.gpt2_stage1.cost), 'GPT-2 forward pass, matching PyTorch']];
+                   [fmt$(D.gpt2_stage1.cost + D.gpt2_stage2.cost + D.gpt2_stage3.cost), 'GPT-2 training ported: forward, backward, AdamW, matching PyTorch']];
     h(`<div class="eyebrow">Measured, with the evidence committed</div>
        <div style="display:grid;grid-template-columns:1fr 1fr;gap:34px;margin-top:70px">${stats.map((s, i) =>
          `<div class="card in" style="animation-delay:${i * .5}s"><div class="big">${s[0]}</div><div class="label">${s[1]}</div></div>`).join('')}</div>`);

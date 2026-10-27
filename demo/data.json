@@ -18,6 +18,7 @@
    "correct": 9,
    "success": 4,
    "gpu": 9,
+   "amd": 0,
    "cost": 1.6698
   },
   {
@@ -27,6 +28,7 @@
    "correct": 4,
    "success": 2,
    "gpu": 4,
+   "amd": 0,
    "cost": 2.4454
   },
   {
@@ -36,6 +38,7 @@
    "correct": 4,
    "success": 2,
    "gpu": 1,
+   "amd": 0,
    "cost": 1.396
   },
   {
@@ -45,7 +48,50 @@
    "correct": 17,
    "success": 8,
    "gpu": 14,
+   "amd": 0,
    "cost": 5.5112
+  }
+ ],
+ "current": [
+  {
+   "label": "Tier 1",
+   "name": "Plain kernels",
+   "items": 10,
+   "correct": 10,
+   "success": 9,
+   "gpu": 10,
+   "amd": 10,
+   "cost": 1.0064
+  },
+  {
+   "label": "Tier 2",
+   "name": "Warp/sub-group, shared memory",
+   "items": 5,
+   "correct": 4,
+   "success": 3,
+   "gpu": 4,
+   "amd": 0,
+   "cost": 1.6857
+  },
+  {
+   "label": "Tier 3",
+   "name": "cuBLAS to oneMath",
+   "items": 4,
+   "correct": 4,
+   "success": 3,
+   "gpu": 1,
+   "amd": 0,
+   "cost": 1.0576
+  },
+  {
+   "label": "All",
+   "name": "",
+   "items": 19,
+   "correct": 18,
+   "success": 15,
+   "gpu": 15,
+   "amd": 10,
+   "cost": 3.7497
   }
  ],
  "tier1_first": {
@@ -508,6 +554,653 @@
     ]
    }
   ]
+ },
+ "gpt2_stage2": {
+  "status": "success",
+  "turns": 27,
+  "cost": 1.21338595,
+  "verify": "PASS: 1/1 case(s) match (worst max abs err 0.0124, atol 0.02)",
+  "verify_ok": true,
+  "helpers": 0,
+  "replay": [
+   {
+    "turn": 1,
+    "say": "Porting GPT-2 backward pass to SYCL \u2014 starting with automatic migration.",
+    "tools": [
+     {
+      "name": "migrate",
+      "status": "ok",
+      "summary": "migrated 1 CUDA file(s) -> 6 file(s); 53 DPCT warning(s) (DPCT1009x1, DPCT1010x17, DPCT104"
+     }
+    ]
+   },
+   {
+    "turn": 2,
+    "say": "Migration mapped \u2014 now inspecting the sources for a clean SYCL rewrite.",
+    "tools": [
+     {
+      "name": "list_files",
+      "status": "ok",
+      "summary": "9 file(s)"
+     }
+    ]
+   },
+   {
+    "turn": 3,
+    "say": "",
+    "tools": [
+     {
+      "name": "read_file",
+      "status": "ok",
+      "summary": "train_gpt2_fp32.cu: lines 1-50 of 1755 (1750 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 4,
+    "say": "",
+    "tools": [
+     {
+      "name": "read_file",
+      "status": "ok",
+      "summary": "train_gpt2_fp32.cu: lines 50-299 of 1755 (9520 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 5,
+    "say": "The full source is long \u2014 reading it through to plan the rewrite.",
+    "tools": [
+     {
+      "name": "read_file",
+      "status": "ok",
+      "summary": "train_gpt2_fp32.cu: lines 300-549 of 1755 (10226 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 6,
+    "say": "Continuing the code survey to map every kernel and memory operation.",
+    "tools": [
+     {
+      "name": "read_file",
+      "status": "ok",
+      "summary": "train_gpt2_fp32.cu: lines 550-849 of 1755 (13071 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 7,
+    "say": "Mapping the remaining forward/backward structure before drafting the port.",
+    "tools": [
+     {
+      "name": "read_file",
+      "status": "ok",
+      "summary": "train_gpt2_fp32.cu: lines 850-1199 of 1755 (13935 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 8,
+    "say": "",
+    "tools": [
+     {
+      "name": "read_file",
+      "status": "ok",
+      "summary": "train_gpt2_fp32.cu: lines 1200-1549 of 1755 (17320 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 9,
+    "say": "(no answer: the connection was lost while this answer was streaming; it was discarded)",
+    "tools": []
+   },
+   {
+    "turn": 10,
+    "say": "Connection dropped mid-survey \u2014 resuming the port and pushing toward a compiling SYCL version.",
+    "tools": [
+     {
+      "name": "read_file",
+      "status": "ok",
+      "summary": "train_gpt2_fp32.cu: lines 1550-1755 of 1755 (11372 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 11,
+    "say": "",
+    "tools": [
+     {
+      "name": "list_files",
+      "status": "ok",
+      "summary": "7 file(s)"
+     }
+    ]
+   },
+   {
+    "turn": 12,
+    "say": "",
+    "tools": [
+     {
+      "name": "read_file",
+      "status": "ok",
+      "summary": "utils.h: lines 1-100 of 223 (3993 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 13,
+    "say": "",
+    "tools": [
+     {
+      "name": "write_file",
+      "status": "ok",
+      "summary": "wrote gpt2_sycl.cpp (32858 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 14,
+    "say": "Draft port complete \u2014 compiling to catch errors.",
+    "tools": [
+     {
+      "name": "compile",
+      "status": "fail",
+      "summary": "compile failed with 20 error(s) at gpt2_sycl.cpp:293: redefinition of 'tm' as different ki"
+     }
+    ]
+   },
+   {
+    "turn": 15,
+    "say": "Name clash with the system `tm` type \u2014 fixing the oneMKL alias.",
+    "tools": [
+     {
+      "name": "read_file",
+      "status": "ok",
+      "summary": "gpt2_sycl.cpp: lines 290-389 of 766 (5120 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 16,
+    "say": "",
+    "tools": [
+     {
+      "name": "read_file",
+      "status": "ok",
+      "summary": "train_gpt2_fp32.cu: lines 836-895 of 1755 (3044 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 17,
+    "say": "",
+    "tools": [
+     {
+      "name": "read_file",
+      "status": "ok",
+      "summary": "gpt2_sycl.cpp: lines 1-30 of 766 (1096 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 18,
+    "say": "",
+    "tools": [
+     {
+      "name": "read_file",
+      "status": "ok",
+      "summary": "gpt2_sycl.cpp: lines 255-324 of 766 (3387 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 19,
+    "say": "",
+    "tools": [
+     {
+      "name": "read_file",
+      "status": "ok",
+      "summary": "gpt2_sycl.cpp: lines 330-409 of 766 (3538 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 20,
+    "say": "",
+    "tools": [
+     {
+      "name": "write_file",
+      "status": "ok",
+      "summary": "wrote gpt2_sycl.cpp (33069 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 21,
+    "say": "Rewrite applied \u2014 recompiling to verify the fix.",
+    "tools": [
+     {
+      "name": "compile",
+      "status": "ok",
+      "summary": "compiled 1 source(s) -> candidate (2 warning(s))"
+     }
+    ]
+   },
+   {
+    "turn": 22,
+    "say": "Build succeeded \u2014 now checking numerical correctness and helper usage.",
+    "tools": [
+     {
+      "name": "verify",
+      "status": "ok",
+      "summary": "PASS: 1/1 case(s) match (worst max abs err 0.0124, atol 0.02)"
+     }
+    ]
+   },
+   {
+    "turn": 23,
+    "say": "",
+    "tools": [
+     {
+      "name": "scan_helpers",
+      "status": "fail",
+      "summary": "106 dpct helper use(s) remain in 2 file(s) (device_queue_management=43, macro=35, memory_m"
+     }
+    ]
+   },
+   {
+    "turn": 24,
+    "say": "Verification passed \u2014 clearing migration leftovers to meet the zero-helper bar.",
+    "tools": [
+     {
+      "name": "delete_file",
+      "status": "ok",
+      "summary": "deleted migrated/ (7 file(s))"
+     }
+    ]
+   },
+   {
+    "turn": 25,
+    "say": "Cleanup done \u2014 confirming the workspace scans clean.",
+    "tools": [
+     {
+      "name": "scan_helpers",
+      "status": "ok",
+      "summary": "no dpct helpers in 1 file(s)"
+     }
+    ]
+   },
+   {
+    "turn": 26,
+    "say": "Workspace is clean \u2014 rebuilding the final source to lock in compile evidence.",
+    "tools": [
+     {
+      "name": "compile",
+      "status": "ok",
+      "summary": "compiled 1 source(s) -> candidate (2 warning(s))"
+     }
+    ]
+   },
+   {
+    "turn": 27,
+    "say": "Rebuilt cleanly \u2014 re-verifying numerics on the final tree.",
+    "tools": [
+     {
+      "name": "verify",
+      "status": "ok",
+      "summary": "PASS: 1/1 case(s) match (worst max abs err 0.0124, atol 0.02)"
+     },
+     {
+      "name": "benchmark",
+      "status": "ok",
+      "summary": "5 run(s) each; Intel(R) Xeon(R) Processor @ 2.10GHz: median 4396.66 ms, p95 4841.51 ms"
+     }
+    ]
+   }
+  ]
+ },
+ "gpt2_stage3": {
+  "status": "success",
+  "turns": 29,
+  "cost": 1.1489405,
+  "verify": "PASS: 1/1 case(s) match (worst max abs err 0.000154, atol 0.01)",
+  "verify_ok": true,
+  "helpers": 0,
+  "replay": [
+   {
+    "turn": 1,
+    "say": "Porting GPT-2 training to idiomatic SYCL \u2014 starting with automated migration.",
+    "tools": [
+     {
+      "name": "migrate",
+      "status": "ok",
+      "summary": "migrated 1 CUDA file(s) -> 6 file(s); 53 DPCT warning(s) (DPCT1009x1, DPCT1010x17, DPCT104"
+     }
+    ]
+   },
+   {
+    "turn": 2,
+    "say": "",
+    "tools": [
+     {
+      "name": "list_files",
+      "status": "ok",
+      "summary": "9 file(s)"
+     }
+    ]
+   },
+   {
+    "turn": 3,
+    "say": "Migration produced a starting point \u2014 now inspecting the sources to craft the device-port.",
+    "tools": [
+     {
+      "name": "read_file",
+      "status": "ok",
+      "summary": "gpt2_train_harness.dp.cpp: lines 1-50 of 59 (2273 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 4,
+    "say": "This harness is large \u2014 sizing it up to plan an efficient idiomatic rewrite.",
+    "tools": [
+     {
+      "name": "read_file",
+      "status": "ok",
+      "summary": "train_gpt2_fp32.dp.cpp: lines 1-100 of 2404 (3572 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 5,
+    "say": "I need the full picture before rewriting \u2014 reading the migrated code section by section.",
+    "tools": [
+     {
+      "name": "read_file",
+      "status": "ok",
+      "summary": "train_gpt2_fp32.dp.cpp: lines 100-399 of 2404 (12878 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 6,
+    "say": "Let me get the full original CUDA source layout.",
+    "tools": [
+     {
+      "name": "read_file",
+      "status": "ok",
+      "summary": "train_gpt2_fp32.dp.cpp: lines 400-519 of 2404 (5744 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 7,
+    "say": "I need the complete training flow \u2014 pulling the original CUDA sources.",
+    "tools": [
+     {
+      "name": "read_file",
+      "status": "ok",
+      "summary": "train_gpt2_fp32.cu: lines 1-100 of 1755 (3467 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 8,
+    "say": "Reading the full source to plan the port.",
+    "tools": [
+     {
+      "name": "read_file",
+      "status": "ok",
+      "summary": "train_gpt2_fp32.cu: lines 100-499 of 1755 (16101 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 9,
+    "say": "Continuing through the original kernels to map every operation.",
+    "tools": [
+     {
+      "name": "read_file",
+      "status": "ok",
+      "summary": "train_gpt2_fp32.cu: lines 500-949 of 1755 (19188 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 10,
+    "say": "Mapping the model definition and memory management.",
+    "tools": [
+     {
+      "name": "read_file",
+      "status": "ok",
+      "summary": "train_gpt2_fp32.cu: lines 950-1399 of 1755 (20061 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 11,
+    "say": "Almost mapped \u2014 reading the final stretch plus support headers.",
+    "tools": [
+     {
+      "name": "read_file",
+      "status": "ok",
+      "summary": "train_gpt2_fp32.cu: lines 1400-1755 of 1755 (18343 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 12,
+    "say": "",
+    "tools": [
+     {
+      "name": "read_file",
+      "status": "ok",
+      "summary": "utils.h: lines 1-50 of 223 (2189 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 13,
+    "say": "",
+    "tools": [
+     {
+      "name": "read_file",
+      "status": "ok",
+      "summary": "utils.h: lines 1-80 of 223 (3361 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 14,
+    "say": "I have the full picture of the original CUDA source. Now I'll write an idiomatic SYCL 2020 port from scratch (",
+    "tools": [
+     {
+      "name": "write_file",
+      "status": "ok",
+      "summary": "wrote gpt2_train.cpp (39331 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 15,
+    "say": "Idiomatic SYCL port drafted \u2014 now compiling to catch errors.",
+    "tools": [
+     {
+      "name": "compile",
+      "status": "ok",
+      "summary": "compiled 1 source(s) -> candidate (2 warning(s))"
+     }
+    ]
+   },
+   {
+    "turn": 16,
+    "say": "It compiles on the first try \u2014 verifying numerical correctness.",
+    "tools": [
+     {
+      "name": "verify",
+      "status": "fail",
+      "summary": "FAIL: 0/1 case(s) match; first failure: 10 of 10 element(s) outside tolerance"
+     }
+    ]
+   },
+   {
+    "turn": 17,
+    "say": "Losses are far too high \u2014 my non-batched oneMath transpose mapping is wrong. Fixing the GEMM layouts.",
+    "tools": [
+     {
+      "name": "read_file",
+      "status": "ok",
+      "summary": "gpt2_train.cpp: lines 368-427 of 902 (2577 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 18,
+    "say": "",
+    "tools": [
+     {
+      "name": "read_file",
+      "status": "ok",
+      "summary": "gpt2_train.cpp: lines 382-411 of 902 (1462 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 19,
+    "say": "",
+    "tools": [
+     {
+      "name": "read_file",
+      "status": "ok",
+      "summary": "gpt2_train.cpp: lines 428-457 of 902 (1489 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 20,
+    "say": "Found it \u2014 my row-major\u2192column-major transpose mapping was wrong in two non-batched GEMMs. Rewriting with the ",
+    "tools": [
+     {
+      "name": "read_file",
+      "status": "ok",
+      "summary": "gpt2_train.cpp: lines 1-50 of 902 (1724 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 21,
+    "say": "",
+    "tools": [
+     {
+      "name": "read_file",
+      "status": "ok",
+      "summary": "gpt2_train.cpp: lines 300-419 of 902 (5216 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 22,
+    "say": "",
+    "tools": [
+     {
+      "name": "write_file",
+      "status": "ok",
+      "summary": "wrote gpt2_train.cpp (39567 chars)"
+     }
+    ]
+   },
+   {
+    "turn": 23,
+    "say": "Fix applied \u2014 recompiling and re-verifying.",
+    "tools": [
+     {
+      "name": "compile",
+      "status": "ok",
+      "summary": "compiled 1 source(s) -> candidate (0 warning(s))"
+     }
+    ]
+   },
+   {
+    "turn": 24,
+    "say": "",
+    "tools": [
+     {
+      "name": "verify",
+      "status": "ok",
+      "summary": "PASS: 1/1 case(s) match (worst max abs err 0.000154, atol 0.01)"
+     }
+    ]
+   },
+   {
+    "turn": 25,
+    "say": "Losses now match \u2014 cleaning up migrate leftovers and confirming zero helpers.",
+    "tools": [
+     {
+      "name": "delete_file",
+      "status": "ok",
+      "summary": "deleted migrated/ (7 file(s))"
+     }
+    ]
+   },
+   {
+    "turn": 26,
+    "say": "",
+    "tools": [
+     {
+      "name": "scan_helpers",
+      "status": "ok",
+      "summary": "no dpct helpers in 1 file(s)"
+     }
+    ]
+   },
+   {
+    "turn": 27,
+    "say": "Stale migration files deleted, helper scan clean \u2014 proving the port compiles standalone.",
+    "tools": [
+     {
+      "name": "compile",
+      "status": "ok",
+      "summary": "compiled 1 source(s) -> candidate (0 warning(s))"
+     }
+    ]
+   },
+   {
+    "turn": 28,
+    "say": "",
+    "tools": [
+     {
+      "name": "scan_helpers",
+      "status": "ok",
+      "summary": "no dpct helpers in 1 file(s)"
+     }
+    ]
+   },
+   {
+    "turn": 29,
+    "say": "",
+    "tools": [
+     {
+      "name": "verify",
+      "status": "ok",
+      "summary": "PASS: 1/1 case(s) match (worst max abs err 0.000154, atol 0.01)"
+     },
+     {
+      "name": "benchmark",
+      "status": "ok",
+      "summary": "5 run(s) each; Intel(R) Xeon(R) Processor @ 2.10GHz: median 22836.25 ms, p95 23271.67 ms"
+     }
+    ]
+   }
+  ]
+ },
+ "tier1_nomigrate": {
+  "loop_success": 10,
+  "correct": 10,
+  "turns_mean": 5.3,
+  "cost": 0.4759,
+  "items": 10
  },
  "native_exp_check": {
   "what": "SYCLomatic's raw migration of the GPT-2 stage-1 harness on the OpenCL CPU device, against the hidden reference (atol 0.01); a manual check, Oct 27",

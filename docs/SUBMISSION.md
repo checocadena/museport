@@ -54,16 +54,18 @@ ports then run on NVIDIA and AMD GPUs.
 
 ## Results (measured; evidence in the repository)
 
-**llm.c kernels, first runs:**
+**llm.c kernels, with the fixed agent loop** (one run per file):
 - 19 kernel files ported.
-- **17 correct with 0 helpers**, by the hidden check.
-- **14 pass on NVIDIA** against llm.c's own CUDA.
-- $5.51 in total ([README table](../README.md#results-so-far-llmc-devcuda-muse-spark-13)).
+- **18 correct with 0 helpers**, by the hidden check; 15 also met the loop's stricter rule.
+- **15 pass on NVIDIA** against llm.c's own CUDA; the 10 Tier 1 ports also pass on an
+  **AMD MI350X**.
+- $3.75 in total ([README table](../README.md#results-llmc-devcuda-muse-spark-13)).
+- Open issue, reported: `softmax_forward` fails the hidden check.
 
-**Loop fixes:** the toolkit gained `delete_file`, `read_file` line ranges and a 32k output
-budget. The same 10 Tier 1 files then went from **4 to 9 loop successes** and from 9 to
-**10 correct**, and cost fell from $1.67 to $1.01
-([evidence](../evidence/port-llmc-tier1-run2/README.md)).
+**The first runs** (same tasks and checks, before the loop fixes) got 17 correct, 8 loop
+successes and 14 on NVIDIA for $5.51. They spent their turns clearing SYCLomatic's output file
+by file. The fixes: `delete_file`, ranged `read_file`, a 32k output budget per turn, and no
+token limit below the USD cap ([how we got here](../README.md#how-we-got-here-the-first-runs)).
 
 **Without SYCLomatic:** the same 10 Tier 1 files with the migrate tool taken away. Muse
 wrote every port from the CUDA source: **10 of 10** loop successes and 10 correct, in 5.3
@@ -71,9 +73,12 @@ turns per item, for $0.48. On these simple kernels the migration tool did not he
 file with warp-level CUDA got correct but plain kernels
 ([evidence](../evidence/port-llmc-tier1-nomigrate/README.md)).
 
-**GPUs:** the 10 Tier 1 ports of the loop-fix run pass on **NVIDIA**, RTX 2000 Ada and A4500, against llm.c's CUDA
-([NVIDIA](../evidence/port-llmc-tier1-run2/gpu/NVIDIA.md)). They also pass on an **AMD
-Instinct MI350X** against the reference ([AMD](../evidence/port-llmc-tier1-run2/gpu/AMD.md)).
+**GPUs:** 15 ports pass on **NVIDIA** GPUs (RTX 2000 Ada, RTX A4500, L4, RTX 4090) against
+both the reference and llm.c's own CUDA ([Tier 1](../evidence/port-llmc-tier1-run2/gpu/NVIDIA.md),
+[Tiers 2-3](../evidence/port-llmc-tier23-run2/gpu/NVIDIA.md)). The 10 Tier 1 ports also pass
+on an **AMD Instinct MI350X** against the reference
+([AMD](../evidence/port-llmc-tier1-run2/gpu/AMD.md)). Ports that call oneMath are verified on
+the CPU device.
 
 **GPT-2, llm.c's real training code with the GPT-2 124M weights:**
 - **Stage 1, the forward pass:** Muse wrote a 463-line SYCL port that matches PyTorch's logits

@@ -27,12 +27,12 @@ capture on the laptop; every other shot is a rendered clip from `demo/out/`.
 | 3 | 0:14-0:23 | `term_scan` | "Muse Port starts by reading the repository: Karpathy's llm.c, 22 CUDA files, 106 kernels, cuBLAS and cuDNN calls." |
 | 4 | 0:23-0:31 | `pipeline` | "Muse Spark writes a migration plan, and every file and kernel it names is checked against the scan: 23 items, 22 of 22 files, 0 issues. Then Muse ports each item inside an agent loop." |
 | 5 | 0:31-0:40 | `term_bug` | "Nothing counts as done until a check the model never sees agrees. Here it passes Muse's port, then catches a one-term slip: x cubed written as x squared." |
-| 6 | 0:40-0:59 | `replay` | "This is Muse porting the forward pass of GPT-2, llm.c's real training code with the real 124-million-parameter weights. It reads the source, writes 463 lines of SYCL, fixes a compile error, deletes SYCLomatic's leftovers, and passes." |
+| 6 | 0:40-0:59 | `replay` | "This is Muse porting GPT-2's training, llm.c's real code with the real 124-million-parameter weights: forward, backward and the AdamW update. It reads the source and writes 907 lines of SYCL in one go. The hidden check fails: the losses are off. Muse finds its own matrix-transpose mistake, fixes it, and all 10 training steps match PyTorch." |
 | 7 | 0:59-1:11 | `check` | "The check compares against PyTorch's own numbers, at llm.c's tolerance. It is strict: SYCLomatic's fast-math output fails on 14 rows, and the precise version passes." |
-| 8 | 1:11-1:19 | `fixes` | "We improved the loop itself. Same 10 kernels: loop success from 4 to 9, every port correct, cost down 40%." |
+| 8 | 1:11-1:19 | `fixes` | "We improved the loop itself. Same 19 kernels: loop success from 8 to 15, correct from 17 to 18, and cost down a third." |
 | 9 | 1:19-1:27 | `gpus` | "And the same SYCL source runs on both vendors: NVIDIA, checked against llm.c's own CUDA, and an AMD MI350X." |
 | 10 | 1:27-1:52 | **(rec)** the report site | Scroll the overview, open one port page and its turn-by-turn replay. "Every result is in a report built only from committed evidence." |
-| 11 | 1:52-1:58 | `numbers` | "17 of 19 kernel files correct, 14 on NVIDIA against CUDA, 10 of 10 on AMD, and GPT-2's forward pass for 74 cents." |
+| 11 | 1:52-1:58 | `numbers` | "18 of 19 kernel files correct, 15 on NVIDIA against CUDA, 10 of 10 on AMD, and GPT-2 training ported for about three dollars." |
 | 12 | 1:58-2:40 | *(optional)* **(rec)** a live `museport loop` on one kernel, sped up | "And it runs live: about 10 cents per kernel." |
 | 13 | 2:40-2:55 | limits card (text on screen) | "Limits: fp32, reduced sizes, one run per item. GPT-2's backward pass is next." |
 | 14 | 2:55-3:00 | `end` | "github.com/checocadena/museport." |
