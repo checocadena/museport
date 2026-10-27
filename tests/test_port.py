@@ -218,3 +218,22 @@ def test_summary_merge_keeps_paid_rows_and_earlier_runs(tmp_path):
                                              "cost_usd": 0.05}])
     assert [r["item"] for r in s["items"]] == ["a", "b"] and s["spent_usd"] == pytest.approx(0.35)
     assert "Earlier runs" in (tmp_path / "SUMMARY.md").read_text()
+
+
+def test_gpu_task_regenerates_missing_inputs(tmp_path, monkeypatch):
+    # input.bin is not committed: a fresh clone must still build GPU tasks, with the same bytes
+    from museport import port as P
+
+    monkeypatch.setitem(P.SPECS, "scale.cu", SPEC)
+    item = tmp_path / "t1-scale"
+    make_task(SPEC, MINI, item / "task")
+    original = (item / "task" / "input.bin").read_bytes()
+    (item / "task" / "input.bin").unlink()
+    (item / "port").mkdir()
+    (item / "port" / "scale.cpp").write_text("int main() {}\n")
+    (item / "trace.jsonl").write_text(json.dumps(
+        {"type": "tool_call", "iteration": 1, "name": "compile",
+         "input": {"sources": ["scale.cpp"]}}) + "\n")
+    task = json.loads(P.make_gpu_task(item, tmp_path / "gpu", "m").read_text())
+    assert (tmp_path / "gpu" / "input.bin").read_bytes() == original
+    assert task["sycl_sources"] == ["agent_port/scale.cpp"]

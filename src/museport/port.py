@@ -699,7 +699,13 @@ def make_gpu_task(item_dir: Path, dest: Path, model: str) -> Path:
     shutil.copytree(item_dir / "port", dest / "agent_port")
     task = json.loads((dest / "task.json").read_text())
     if not (dest / "input.bin").exists():
-        raise ValueError(f"{item_dir.name}: task/input.bin missing; rerun make_task")
+        # inputs are not committed (up to 16 MB); they are deterministic, so a fresh clone
+        # writes the same bytes again from the spec
+        source = Path(task.get("museport", {}).get("source", "")).name
+        if source not in SPECS:
+            raise ValueError(f"{item_dir.name}: task/input.bin missing and no spec for "
+                             f"{source!r}")
+        write_inputs(SPECS[source], dest / "input.bin")
     task["sycl_sources"] = [f"agent_port/{s}" for s in srcs]
     task["port_origin"] = (f"agent-made: {model} via museport port, item {item_dir.name}; "
                            "sources as last compiled by the agent, unchanged")
