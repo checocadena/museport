@@ -84,7 +84,14 @@ original CUDA, and on an AMD MI350X against the hidden reference.
   - **Tolerance:** 2e-2 is llm.c's CPU-test tolerance for gradients. At the CUDA test's 1e-2,
     llm.c's own CPU code fails one gradient.
   - **What Muse wrote:** 764 lines (16 SYCL kernels plus oneMath), on the CPU device
-    ([evidence](evidence/gpt2-stage2/README.md)). Stage 3 (10 training steps) is next.
+    ([evidence](evidence/gpt2-stage2/README.md)).
+- **GPT-2, stage 3 (training):** Muse ported llm.c's training: 10 steps of forward pass,
+  backward pass and AdamW update, as llm.c's own `test_gpt2_fp32.cu` runs them.
+  - **Result:** loop success in 29 turns, for **$1.15**. Every step's loss matches PyTorch's
+    within llm.c's 1e-2 (worst error 0.00015), with 0 helpers.
+  - **How:** Muse wrote the 907-line port in one turn. The first verify failed on all 10
+    steps; Muse found its own matmul transpose mistake and fixed it.
+  - **Where it ran:** the CPU device only ([evidence](evidence/gpt2-stage3/README.md)).
 - **Limits:** fp32 only, reduced sizes, one run per item. AMD has been tested for Tier 1 only.
 - **Evidence:** [plan](evidence/plan-llmc-devcuda-stream/README.md),
   [Tier 1](evidence/port-llmc-tier1/README.md), [Tier 2](evidence/port-llmc-tier2/README.md),

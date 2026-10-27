@@ -160,8 +160,9 @@ See the README's results table.
   with a PyTorch reference over 10 steps. Prove it passes for llm.c's CUDA on a GPU first.
   *About $0.10.*
 - [ ] **G3. Muse ports the fp32 training program to SYCL** *(Oct 27: stage 1, the forward pass,
-  passes on the CPU device for $0.74; stage 2, the backward pass, for $1.21; see
-  `evidence/gpt2-stage1` and `evidence/gpt2-stage2`.)*, reusing its kernel ports, in
+  passes on the CPU device for $0.74; stage 2, the backward pass, for $1.21; stage 3, 10
+  AdamW training steps against llm.c's expected losses, for $1.15; see `evidence/gpt2-stage1`
+  to `evidence/gpt2-stage3`. CPU device only; NVIDIA waits on D2.)*, reusing its kernel ports, in
   stages (forward, backward, optimizer). It passes `test_gpt2` on the CPU device, then on
   NVIDIA, and on AMD if D1 works. *About $3-8 plus GPU minutes; needs a cap. Done when the SYCL
   build matches PyTorch within llm.c's tolerances, with the evidence committed.*

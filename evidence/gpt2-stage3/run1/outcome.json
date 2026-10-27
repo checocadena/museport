@@ -1,0 +1,33 @@
+{
+  "stop_reason": "success",
+  "stop_detail": "verify passed and zero dpct helpers on the current compiled sources",
+  "iterations": 29,
+  "usage": {
+    "input_tokens": 509378,
+    "output_tokens": 84551,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1019175
+  },
+  "cost_usd": 1.1489405,
+  "best": {
+    "iteration": 29,
+    "source_hash": "787af29a89d6e0df",
+    "helpers": 0,
+    "path": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/runs-gpt2-s3/20261027T080457794023Z/best",
+    "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0.000154, atol 0.01)"
+  },
+  "run_dir": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/runs-gpt2-s3/20261027T080457794023Z",
+  "trace": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/runs-gpt2-s3/20261027T080457794023Z/trace.jsonl",
+  "report": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/runs-gpt2-s3/20261027T080457794023Z/report.md",
+  "model": "muse-spark-1.3",
+  "baseline": false,
+  "shell": false,
+  "evaluation": {
+    "source_hash": "787af29a89d6e0df",
+    "compiled": true,
+    "verify_status": "ok",
+    "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0.000154, atol 0.01)",
+    "helpers": 0,
+    "advisories": []
+  }
+}
