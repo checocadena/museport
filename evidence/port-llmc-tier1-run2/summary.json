@@ -1,0 +1,88 @@
+{
+  "model": "muse-spark-1.3",
+  "spent_usd": 0.1558,
+  "items": [
+    {
+      "item": "t1-crossentropy-forward",
+      "file": "crossentropy_forward.cu",
+      "task": "t1-crossentropy-forward/task/task.json",
+      "run_id": "20261027T020944303964Z",
+      "status": "success",
+      "detail": "verify passed and zero dpct helpers on the current compiled sources",
+      "iterations": 9,
+      "usage": {
+        "input_tokens": 54737,
+        "output_tokens": 3181,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 56117
+      },
+      "cost_usd": 0.09035805000000001,
+      "best": {
+        "iteration": 9,
+        "source_hash": "fbd4a37e18566f03",
+        "helpers": 0,
+        "path": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/runs-tier1-run2/t1-crossentropy-forward/20261027T020944303964Z/best",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 5.96e-08, atol 1e-05)"
+      },
+      "evaluation": {
+        "source_hash": "fbd4a37e18566f03",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 5.96e-08, atol 1e-05)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "crossentropy_forward_sycl.cpp"
+      ],
+      "variant_check": {
+        "variants": 1,
+        "kernels": 1,
+        "distinct_kernel_bodies": 1,
+        "onemath_calls": 0,
+        "duplicated_variants": false
+      }
+    },
+    {
+      "item": "t1-crossentropy-softmax-backward",
+      "file": "crossentropy_softmax_backward.cu",
+      "task": "t1-crossentropy-softmax-backward/task/task.json",
+      "run_id": "20261027T021012451736Z",
+      "status": "success",
+      "detail": "verify passed and zero dpct helpers on the current compiled sources",
+      "iterations": 6,
+      "usage": {
+        "input_tokens": 36243,
+        "output_tokens": 3868,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 24659
+      },
+      "cost_usd": 0.0654416,
+      "best": {
+        "iteration": 6,
+        "source_hash": "6fe88ca0b2430f51",
+        "helpers": 0,
+        "path": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/runs-tier1-run2/t1-crossentropy-softmax-backward/20261027T021012451736Z/best",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)"
+      },
+      "evaluation": {
+        "source_hash": "6fe88ca0b2430f51",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "crossentropy_softmax_backward.cpp"
+      ],
+      "variant_check": {
+        "variants": 1,
+        "kernels": 1,
+        "distinct_kernel_bodies": 1,
+        "onemath_calls": 0,
+        "duplicated_variants": false
+      }
+    }
+  ]
+}
