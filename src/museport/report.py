@@ -52,7 +52,9 @@ class Item:
 
     @property
     def gpu_pass(self) -> bool:
-        return any(g["status"] == "ok" for g in self.gpu)
+        """Passed on an NVIDIA GPU against the reference and llm.c's own CUDA."""
+        return any(g["status"] == "ok" and g["vendor"] == "nvidia" and g["vs_native"]
+                   for g in self.gpu)
 
 
 # ----------------------------------------------------------------------------- loading
@@ -83,11 +85,16 @@ def load(evidence: Path) -> dict[str, Any]:
 
 def _gpu_results(bdir: Path) -> dict[str, list[dict[str, Any]]]:
     out: dict[str, list[dict[str, Any]]] = {}
-    for f in sorted(bdir.glob("gpu/*/*/*/summary.json")):
+    # gpu/<vendor>/<device>/<task>/ (the NVIDIA runs) or gpu/<device>/<task>/ (the AMD runs)
+    found = [*bdir.glob("gpu/*/*/*/summary.json"), *bdir.glob("gpu/*/*/summary.json")]
+    for f in sorted(found):
         data = json.loads(f.read_text())
         ev = data.get("evidence", {})
+        steps = {s.get("step"): s.get("status") for s in ev.get("steps", [])}
         out.setdefault(f.parent.name, []).append({
             "vendor": ev.get("vendor") or f.parent.parent.parent.name,
+            # the SYCL port was also compared with the original CUDA built for this GPU
+            "vs_native": steps.get("sycl_verify_vs_native") == "ok",
             "device": (ev.get("device") or {}).get("name") or f.parent.parent.name,
             "status": data.get("status"), "summary": data.get("summary", ""),
             "steps": ev.get("steps", []),
@@ -260,11 +267,16 @@ def gpu_pill(it: Item) -> str:
         if any("onemath" in f.lower() for f in it.task.get("base_flags", [])):
             return pill("CPU only (oneMath)", "none")
         return pill("not run", "none")
-    ok = [g for g in it.gpu if g["status"] == "ok"]
-    if ok:
-        name = ok[0]["device"].replace("NVIDIA ", "").replace(" Generation", "")
-        return pill(f"pass: {name}", "ok")
-    return pill("fail", "bad")
+    pills = []
+    for g in it.gpu:
+        name = g["device"].replace("NVIDIA ", "").replace(" Generation", "")
+        name = name.replace("AMD Instinct ", "").split(" gfx")[0]
+        if g["status"] != "ok":
+            pills.append(pill(f"fail: {name}", "bad"))
+        else:
+            pills.append(pill(f"pass: {name}" + ("" if g["vs_native"] else " (vs reference)"),
+                              "ok"))
+    return " ".join(pills)
 
 
 def loop_pill(it: Item) -> str:
@@ -292,7 +304,8 @@ def render_index(data: dict[str, Any]) -> str:
         "<a href=\"https://github.com/karpathy/llm.c\">karpathy/llm.c</a> "
         "<code>dev/cuda</code>, then ported its kernel files one by one in an agent loop. "
         "A hidden reference the model never sees grades every port; passing ports were then "
-        "run on NVIDIA GPUs against llm.c's own CUDA.</p>"
+        "run on NVIDIA GPUs against llm.c's own CUDA, and on an AMD GPU against the "
+        "reference.</p>"
         '<nav class="crumb"><a href="plan.html">The plan</a><a href="#items">Every item</a>'
         f'<a href="{REPO}">Repository</a></nav></header>',
         '<section><h2>Results by tier</h2><div class="scroll"><table><thead><tr><th>Tier</th>'
@@ -334,7 +347,7 @@ def render_index(data: dict[str, Any]) -> str:
 def _item_table(items: list[Item], compare: list[Item] | None = None) -> str:
     first = {i.id: i for i in compare or []}
     head = ("<tr><th>Item</th><th>Hidden grade</th><th>Variants</th><th>Loop</th>"
-            "<th class=num>Turns</th><th class=num>Cost</th><th>NVIDIA GPU</th>"
+            "<th class=num>Turns</th><th class=num>Cost</th><th>GPU</th>"
             + ("<th>First run</th>" if compare is not None else "") + "</tr>")
     rows = []
     for it in items:
@@ -368,7 +381,7 @@ def render_item(it: Item, evidence: Path) -> str:
          f'{money(it.row.get("cost_usd"))}</span>',
          esc(f"{usage.get('input_tokens', 0):,} in, {usage.get('output_tokens', 0):,} out, "
              f"{usage.get('cache_read_input_tokens', 0):,} cached") if usage else ""),
-        ("NVIDIA GPU", gpu_pill(it), esc(it.gpu[0]["summary"]) if it.gpu else ""),
+        ("GPU", gpu_pill(it), " ".join(esc(g["summary"]) for g in it.gpu)),
         ("Tolerance", f'<span class="v">atol {esc(it.task.get("tolerance", "-"))}</span>',
          "plus rtol FLT_EPSILON·|ref|, llm.c's fp32 rule"),
     ]

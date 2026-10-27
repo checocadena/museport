@@ -1,0 +1,8 @@
+{
+  "command": "g++ -O2 -std=c++17 /tmp/tmp.FaiUvhtfyc/task/gelu_forward_ref.cpp -o build/reference",
+  "returncode": 0,
+  "duration_s": 0.121059,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.FaiUvhtfyc/out/work"
+}

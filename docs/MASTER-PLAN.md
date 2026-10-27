@@ -98,7 +98,9 @@ See the README's results table.
 
 ## D. Vendors and performance
 
-- [ ] **D1. AMD GPUs.**
+- [x] **D1. AMD GPUs.** *Done Oct 27 for Tier 1: 10/10 pass on an MI350X against the
+  reference, $1.42 (`evidence/port-llmc-tier1-run2/gpu/AMD.md`). There is no native CUDA
+  comparison on AMD: llm.c's CUDA doesn't hipify into something that builds.*
   - The Runpod stock check is scheduled (`--provider runpod --vendor amd`).
   - Fallback: DigitalOcean MI300X/MI350X from the author's laptop, because this cloud
     session cannot reach a bare-IP machine. Run `oneapi-agent remote-test <task>
