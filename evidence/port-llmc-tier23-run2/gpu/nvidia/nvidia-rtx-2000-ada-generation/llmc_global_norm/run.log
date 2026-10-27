@@ -1,0 +1,1 @@
+[gpu_test] ok: PASS on NVIDIA RTX 2000 Ada Generation (cuda:0, nvidia): sycl_verify_vs_reference: PASS: 1/1 case(s) match (worst max abs err 2.86e-06, atol 0.01); sycl_verify_vs_native: PASS: 1/1 case(s) match (worst max abs err 2.5e-06, atol 0.01)

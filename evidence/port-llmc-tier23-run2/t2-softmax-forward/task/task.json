@@ -1,0 +1,44 @@
+{
+  "name": "llmc_softmax_forward",
+  "goal": "Port softmax_forward_harness.cu (llm.c dev/cuda/softmax_forward.cu, fp32 build) to idiomatic SYCL 2020 with zero dpct helpers. Keep every kernel variant k in [1, 2, 3, 4, 5, 6, 7, 8] as its own SYCL kernel, computed on the SYCL device, and keep the program's contract: `build/candidate <input> <output> B T V` reads the inputs and writes each variant's outputs in order as raw float32, exactly as the CUDA main does. A hidden reference checks the output (atol 0.0001 + rtol FLT_EPSILON*|ref|, llm.c's own fp32 rule). Success requires compile, verify and a zero-helper scan_helpers of the whole work directory (path '.') on the same sources: migrate's output under migrated/ counts, so delete it (delete_file) once your own port is done. migrate's output can be long: read it in parts (read_file offset/limit) or work from the CUDA harness.",
+  "cuda_path": "softmax_forward_harness.cu",
+  "include_dirs": [
+    "."
+  ],
+  "reference_build": [
+    "g++",
+    "-O2",
+    "-std=c++17",
+    "{task_dir}/softmax_forward_ref.cpp",
+    "-o",
+    "build/reference"
+  ],
+  "reference_cmd": "build/reference {input} {output} 2 32 50257",
+  "candidate_cmd": "build/candidate {input} {output} 2 32 50257",
+  "inputs": [
+    "input.bin"
+  ],
+  "mode": "array",
+  "output_format": "f32",
+  "tolerance": 0.0001,
+  "rtol": 1.1920929e-07,
+  "museport": {
+    "source": "karpathy/llm.c dev/cuda/softmax_forward.cu",
+    "variants": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "sizes": {
+      "B": 2,
+      "T": 32,
+      "V": 50257
+    },
+    "note": "B=2, T=32 (llm.c: B=8, T=1024); V=50257 and the x20 outliers as in llm.c."
+  }
+}

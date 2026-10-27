@@ -38,3 +38,38 @@ def test_stage1_task_links_the_data_and_hides_the_reference(tmp_path):
     assert '#include "train_gpt2.c"' in proof and proof.split("#define MUSEPORT_COPY")[1]
     make_task(llmc, data, out)  # rewriting replaces the links
     assert (out / WEIGHTS).is_symlink()
+
+
+def test_stage2_writes_the_backward_task_with_llmc_gradient_tolerance(tmp_path):
+    llmc = _llmc(tmp_path)
+    data = tmp_path / "data"
+    data.mkdir()
+    for name in (WEIGHTS, STATE):
+        (data / name).write_bytes(b"x")
+    task = json.loads(make_task(llmc, data, tmp_path / "b", "backward").read_text())
+    out = tmp_path / "b"
+    assert task["cuda_path"] == "gpt2_backward_harness.cu" and task["tolerance"] == 2e-2
+    harness = (out / task["cuda_path"]).read_text()
+    assert "gpt2_backward(&model);" in harness and "model.grads_memory" in harness
+    assert "the gradient of every parameter" in task["goal"] and "within 0.02" in task["goal"]
+    assert "grads_memory" in (out / "cpu_proof.c").read_text()
+    assert "gradients fill the rest of the file" in (out / "gpt2_ref.cpp").read_text()
+
+
+def test_stage3_writes_the_training_task_with_llmc_expected_losses(tmp_path):
+    from museport.gpt2 import EXPECTED_LOSSES
+
+    llmc = _llmc(tmp_path)
+    data = tmp_path / "data"
+    data.mkdir()
+    for name in (WEIGHTS, STATE):
+        (data / name).write_bytes(b"x")
+    task = json.loads(make_task(llmc, data, tmp_path / "s3", "train").read_text())
+    out = tmp_path / "s3"
+    assert task["cuda_path"] == "gpt2_train_harness.cu" and task["tolerance"] == 1e-2
+    harness = (out / task["cuda_path"]).read_text()
+    assert "gpt2_update(&model, 1e-4f, 0.9f, 0.999f, 1e-8f, 0.01f, step + 1);" in harness
+    assert "AdamW update" in task["goal"] and "10 values" in task["goal"]
+    ref = (out / "gpt2_ref.cpp").read_text()
+    assert len(EXPECTED_LOSSES) == 10 and all(f"{v!r}f" in ref for v in EXPECTED_LOSSES)
+    assert "gpt2_update" in (out / "cpu_proof.c").read_text()

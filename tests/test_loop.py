@@ -131,3 +131,21 @@ def test_safe_toolbox_turns_a_cut_off_call_into_an_error_result(tmp_path):
     cfg, _ = build(TASK, model="muse-spark-1.3", transport=object())  # type: ignore[arg-type]
     r = SafeToolbox(cfg, tmp_path)("write_file", {"_unparsed_arguments": '{"content": "x'})
     assert r.status == "error" and "missing argument" in r.summary
+
+
+def test_no_migrate_loop_hides_and_refuses_migrate(tmp_path):
+    import oneapi_agent.loop as tk
+
+    from museport.loop import NoMigrateToolbox, _without_migrate
+
+    prompt, schemas = tk.SYSTEM_PROMPT, tk.tool_schemas
+    with _without_migrate():
+        names = [t["name"] for t in tk.tool_schemas()]
+        assert "migrate" not in names and "compile" in names and "verify" in names
+        assert "Procedure: read the CUDA source" in tk.SYSTEM_PROMPT
+        assert "migrate -> compile" not in tk.SYSTEM_PROMPT
+        assert "Rules:" in tk.SYSTEM_PROMPT  # the rest of the prompt is kept
+    assert (tk.SYSTEM_PROMPT, tk.tool_schemas) == (prompt, schemas)  # restored
+    box = NoMigrateToolbox.__new__(NoMigrateToolbox)
+    r = box("migrate", {})
+    assert r.status == "error" and "not available" in r.summary

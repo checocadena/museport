@@ -78,17 +78,21 @@ def build_parser() -> argparse.ArgumentParser:
     po.add_argument("--strict-goal", action="store_true",
                     help="tell Muse to clear SYCLomatic's output early and to keep each "
                          "variant's own algorithm (for reruns)")
+    po.add_argument("--no-migrate", action="store_true",
+                    help="ablation: run without SYCLomatic (no migrate tool; Muse writes the "
+                         "port from the CUDA harness)")
 
     gp = sub.add_parser("gpu-tasks", help="remote-test tasks for the ports that pass the hidden "
                                           "grade (run them with `oneapi-agent remote-test`)")
     gp.add_argument("port_dir", help="the --out directory of `museport port`")
     gp.add_argument("--out", help="where to write the tasks (default: <port_dir>/gpu-tasks)")
-    g2 = sub.add_parser("gpt2-task", help="write the GPT-2 training port's stage-1 task (forward "
-                                          "pass) and prove its hidden check on the CPU")
+    g2 = sub.add_parser("gpt2-task", help="write a GPT-2 training port stage's task (forward or "
+                                          "backward pass) and prove its hidden check on the CPU")
     g2.add_argument("--llmc", required=True, help="the llm.c checkout")
     g2.add_argument("--data", help="where gpt2_124M.bin and gpt2_124M_debug_state.bin are "
                                    "(default: --llmc)")
     g2.add_argument("--out", default="gpt2-task", help="task directory to write")
+    g2.add_argument("--stage", choices=["forward", "backward", "train"], default="forward")
     g2.add_argument("--check", action="store_true",
                     help="prove the check: llm.c's CPU train_gpt2.c must pass it (no model)")
 
@@ -131,7 +135,8 @@ def _gpt2_task(args: argparse.Namespace) -> int:
 
     llmc = Path(args.llmc)
     try:
-        task = make_task(llmc, Path(args.data) if args.data else llmc, Path(args.out))
+        task = make_task(llmc, Path(args.data) if args.data else llmc, Path(args.out),
+                         args.stage)
     except FileNotFoundError as e:
         print(f"museport: {e}", file=sys.stderr)
         return 2
@@ -191,7 +196,7 @@ def _port(args: argparse.Namespace) -> int:
                         total_cap_usd=args.total_cap, runs_dir=Path(args.runs_dir),
                         tasks_only=args.tasks_only, check=args.check, tier=args.tier,
                         strict_goal=args.strict_goal, max_output_tokens=args.max_output,
-                        max_total_tokens=args.max_total_tokens,
+                        max_total_tokens=args.max_total_tokens, no_migrate=args.no_migrate,
                         log=lambda m: print(m, file=sys.stderr))
     print(json.dumps(summary, indent=2))
     bad = {"harness_check_failed", "error"}

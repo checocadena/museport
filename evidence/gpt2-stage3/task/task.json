@@ -1,0 +1,35 @@
+{
+  "name": "llmc_gpt2_train",
+  "goal": "Port gpt2_train_harness.cu (llm.c's train_gpt2_fp32.cu, the fp32 GPT-2 training program, which it includes) to idiomatic SYCL 2020 with zero dpct helpers, computed on the SYCL device. Keep the program's contract: `build/candidate <debug_state.bin> <output> build/gpt2_124M.bin` loads the GPT-2 124M weights, runs 10 training steps on the debug batch (each: a forward pass with targets, zero the gradients, the backward pass, then the AdamW update with lr 1e-4, beta1 0.9, beta2 0.999, eps 1e-8, weight decay 0.01, t = step + 1), and writes raw float32: the mean loss of each step's forward pass, 10 values, exactly as the CUDA main does. A hidden reference checks the output against PyTorch's within 0.01 absolute (llm.c's own test tolerance), so use precise math (sycl::exp, not native::exp). cuBLAS calls go to oneMath (oneapi::math::blas::column_major gemm and gemm_batch, #include <oneapi/math.hpp>; the compile flags already link -lonemath). Success requires compile, verify and a zero-helper scan_helpers of the whole work directory (path '.') on the same sources: delete migrate's output under migrated/ (delete_file) once your own port is done. The files are long: read them in parts (read_file offset/limit).",
+  "cuda_path": "gpt2_train_harness.cu",
+  "include_dirs": [
+    "."
+  ],
+  "reference_build": [
+    "bash",
+    "-c",
+    "mkdir -p build && ln -sf {task_dir}/gpt2_124M.bin build/gpt2_124M.bin && g++ -O2 -std=c++17 {task_dir}/gpt2_ref.cpp -o build/reference"
+  ],
+  "reference_cmd": "build/reference {input} {output} build/gpt2_124M.bin",
+  "candidate_cmd": "build/candidate {input} {output} build/gpt2_124M.bin",
+  "inputs": [
+    "gpt2_124M_debug_state.bin"
+  ],
+  "mode": "array",
+  "output_format": "f32",
+  "base_flags": [
+    "-O2",
+    "-I${ONEMATH_PREFIX}/include",
+    "-Wl,--no-as-needed",
+    "-L${ONEMATH_PREFIX}/lib",
+    "-Wl,-rpath,${ONEMATH_PREFIX}/lib",
+    "-lonemath"
+  ],
+  "tolerance": 0.01,
+  "rtol": 0.0,
+  "museport": {
+    "source": "karpathy/llm.c train_gpt2_fp32.cu",
+    "stage": "train",
+    "note": "B=4, T=64 debug batch from gpt2_124M_debug_state.bin; the loss of each of 10 AdamW steps checked against PyTorch's within 1e-2, as test_gpt2_fp32.cu does"
+  }
+}

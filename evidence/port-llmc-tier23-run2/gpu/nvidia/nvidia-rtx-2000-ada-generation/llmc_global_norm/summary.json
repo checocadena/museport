@@ -1,0 +1,70 @@
+{
+  "tool": "gpu_test",
+  "status": "ok",
+  "summary": "PASS on NVIDIA RTX 2000 Ada Generation (cuda:0, nvidia): sycl_verify_vs_reference: PASS: 1/1 case(s) match (worst max abs err 2.86e-06, atol 0.01); sycl_verify_vs_native: PASS: 1/1 case(s) match (worst max abs err 2.5e-06, atol 0.01)",
+  "evidence": {
+    "task": "llmc_global_norm",
+    "device": {
+      "backend": "cuda",
+      "device_type": "gpu",
+      "index": 0,
+      "platform": "NVIDIA CUDA BACKEND",
+      "name": "NVIDIA RTX 2000 Ada Generation",
+      "description": "NVIDIA CUDA BACKEND, NVIDIA RTX 2000 Ada Generation 8.9 [CUDA 13.2]",
+      "selector": "cuda:0"
+    },
+    "vendor": "nvidia",
+    "amd_arch": null,
+    "cuda_arch": "89",
+    "target_flags": [
+      "-fsycl-targets=nvidia_gpu_sm_89"
+    ],
+    "selector": "cuda:0",
+    "steps": [
+      {
+        "step": "reference_build",
+        "status": "ok",
+        "summary": "exit 0: g++ -O2 -std=c++17 /tmp/tmp.pVCdgFQeN3/task/global_norm_ref.cpp -o build/reference"
+      },
+      {
+        "step": "native_build",
+        "status": "ok",
+        "summary": "exit 0: /usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.pVCdgFQeN3/task /tmp/tmp.pVCdgFQeN3/task/global_norm_harness.cu -o build/native"
+      },
+      {
+        "step": "native_verify_vs_reference",
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 9.54e-07, atol 0.01)"
+      },
+      {
+        "step": "sycl_compile",
+        "status": "ok",
+        "summary": "compiled 1 source(s) -> /tmp/tmp.pVCdgFQeN3/out/work/build/sycl (0 warning(s))"
+      },
+      {
+        "step": "sycl_verify_vs_reference",
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 2.86e-06, atol 0.01)"
+      },
+      {
+        "step": "sycl_verify_vs_native",
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 2.5e-06, atol 0.01)"
+      },
+      {
+        "step": "sycl_benchmark",
+        "status": "ok",
+        "summary": "10 run(s) each; cuda:0: median 273.47 ms, p95 314.11 ms"
+      },
+      {
+        "step": "native_benchmark",
+        "status": "ok",
+        "summary": "10 run(s) each; none: median 297.87 ms, p95 322.30 ms"
+      }
+    ],
+    "results_dir": "/tmp/tmp.pVCdgFQeN3/out/results"
+  },
+  "limitations": [
+    "Benchmarks are single-process wall times plus program-reported kernel times; treat them as rough."
+  ]
+}

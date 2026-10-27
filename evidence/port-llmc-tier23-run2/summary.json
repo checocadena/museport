@@ -1,0 +1,363 @@
+{
+  "model": "muse-spark-1.3",
+  "spent_usd": 2.7433,
+  "items": [
+    {
+      "item": "t2-global-norm",
+      "file": "global_norm.cu",
+      "task": "t2-global-norm/task/task.json",
+      "run_id": "20261027T152921081001Z",
+      "status": "max_iterations",
+      "detail": "reached 16 iterations without meeting success conditions",
+      "iterations": 16,
+      "usage": {
+        "input_tokens": 145626,
+        "output_tokens": 21063,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 343229
+      },
+      "cost_usd": 0.32303459999999995,
+      "best": {
+        "iteration": 12,
+        "source_hash": "3a6fc8d8737985f1",
+        "helpers": 70,
+        "path": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/runs-tier23-run2/t2-global-norm/20261027T152921081001Z/best",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.67e-06, atol 0.01)"
+      },
+      "evaluation": {
+        "source_hash": "1ea54f30dfe25527",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.31e-06, atol 0.01)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "global_norm.cpp"
+      ],
+      "variant_check": {
+        "variants": 4,
+        "kernels": 5,
+        "distinct_kernel_bodies": 5,
+        "onemath_calls": 0,
+        "duplicated_variants": false
+      }
+    },
+    {
+      "item": "t2-layernorm-forward",
+      "file": "layernorm_forward.cu",
+      "task": "t2-layernorm-forward/task/task.json",
+      "run_id": "20261027T153148882985Z",
+      "status": "success",
+      "detail": "verify passed and zero dpct helpers on the current compiled sources",
+      "iterations": 7,
+      "usage": {
+        "input_tokens": 81734,
+        "output_tokens": 9705,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 60115
+      },
+      "cost_usd": 0.152431,
+      "best": {
+        "iteration": 7,
+        "source_hash": "b96af0a67c73850e",
+        "helpers": 0,
+        "path": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/runs-tier23-run2/t2-layernorm-forward/20261027T153148882985Z/best",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.07e-06, atol 1e-05)"
+      },
+      "evaluation": {
+        "source_hash": "b96af0a67c73850e",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.07e-06, atol 1e-05)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "layernorm.cpp"
+      ],
+      "variant_check": {
+        "variants": 6,
+        "kernels": 8,
+        "distinct_kernel_bodies": 8,
+        "onemath_calls": 0,
+        "duplicated_variants": false
+      }
+    },
+    {
+      "item": "t2-softmax-forward",
+      "file": "softmax_forward.cu",
+      "task": "t2-softmax-forward/task/task.json",
+      "run_id": "20261027T153241084877Z",
+      "status": "max_iterations",
+      "detail": "reached 16 iterations without meeting success conditions",
+      "iterations": 16,
+      "usage": {
+        "input_tokens": 199333,
+        "output_tokens": 65323,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 393036
+      },
+      "cost_usd": 0.5857444,
+      "best": null,
+      "evaluation": {
+        "source_hash": "d6fd116e988e3a51",
+        "compiled": true,
+        "verify_status": "fail",
+        "verify_summary": "FAIL: 0/1 case(s) match; first failure: 36435 of 25731584 element(s) outside tolerance",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "softmax_forward.cpp"
+      ],
+      "variant_check": {
+        "variants": 8,
+        "kernels": 8,
+        "distinct_kernel_bodies": 6,
+        "onemath_calls": 0,
+        "duplicated_variants": true
+      }
+    },
+    {
+      "item": "t2-classifier-fused",
+      "file": "classifier_fused.cu",
+      "task": "t2-classifier-fused/task/task.json",
+      "run_id": "20261027T153757797613Z",
+      "status": "success",
+      "detail": "verify passed and zero dpct helpers on the current compiled sources",
+      "iterations": 7,
+      "usage": {
+        "input_tokens": 60466,
+        "output_tokens": 11670,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 96821
+      },
+      "cost_usd": 0.13970315,
+      "best": {
+        "iteration": 7,
+        "source_hash": "7b53cdb1ebe31834",
+        "helpers": 0,
+        "path": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/runs-tier23-run2/t2-classifier-fused/20261027T153757797613Z/best",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 3.81e-06, atol 0.0001)"
+      },
+      "evaluation": {
+        "source_hash": "7b53cdb1ebe31834",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 3.81e-06, atol 0.0001)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "classifier_fused.cpp"
+      ],
+      "variant_check": {
+        "variants": 5,
+        "kernels": 5,
+        "distinct_kernel_bodies": 5,
+        "onemath_calls": 0,
+        "duplicated_variants": false
+      }
+    },
+    {
+      "item": "t2-layernorm-backward",
+      "file": "layernorm_backward.cu",
+      "task": "t2-layernorm-backward/task/task.json",
+      "run_id": "20261027T153916037838Z",
+      "status": "success",
+      "detail": "verify passed and zero dpct helpers on the current compiled sources",
+      "iterations": 14,
+      "usage": {
+        "input_tokens": 250858,
+        "output_tokens": 24666,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 442474
+      },
+      "cost_usd": 0.4847741,
+      "best": {
+        "iteration": 14,
+        "source_hash": "70bfe8fa870f27dd",
+        "helpers": 0,
+        "path": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/runs-tier23-run2/t2-layernorm-backward/20261027T153916037838Z/best",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 2.1e-05, atol 0.001)"
+      },
+      "evaluation": {
+        "source_hash": "70bfe8fa870f27dd",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.91e-05, atol 0.001)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "layernorm_backward_sycl.cpp"
+      ],
+      "variant_check": {
+        "variants": 9,
+        "kernels": 9,
+        "distinct_kernel_bodies": 8,
+        "onemath_calls": 0,
+        "duplicated_variants": true
+      }
+    },
+    {
+      "item": "t3-matmul-backward",
+      "file": "matmul_backward.cu",
+      "task": "t3-matmul-backward/task/task.json",
+      "run_id": "20261027T154110303563Z",
+      "status": "success",
+      "detail": "verify passed and zero dpct helpers on the current compiled sources",
+      "iterations": 8,
+      "usage": {
+        "input_tokens": 46399,
+        "output_tokens": 10371,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 58421
+      },
+      "cost_usd": 0.11083865,
+      "best": {
+        "iteration": 8,
+        "source_hash": "2e83a1c9f0ca9ea9",
+        "helpers": 0,
+        "path": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/runs-tier23-run2/t3-matmul-backward/20261027T154110303563Z/best",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0.00021, atol 0.001)"
+      },
+      "evaluation": {
+        "source_hash": "2e83a1c9f0ca9ea9",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0.00021, atol 0.001)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "matmul_backward.cpp"
+      ],
+      "variant_check": {
+        "variants": 1,
+        "kernels": 2,
+        "distinct_kernel_bodies": 2,
+        "onemath_calls": 2,
+        "duplicated_variants": false
+      }
+    },
+    {
+      "item": "t3-trimat-forward",
+      "file": "trimat_forward.cu",
+      "task": "t3-trimat-forward/task/task.json",
+      "run_id": "20261027T154213161086Z",
+      "status": "max_iterations",
+      "detail": "reached 16 iterations without meeting success conditions",
+      "iterations": 16,
+      "usage": {
+        "input_tokens": 174002,
+        "output_tokens": 24443,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 351052
+      },
+      "cost_usd": 0.37404305,
+      "best": null,
+      "evaluation": {
+        "source_hash": "cb74fa3e246cbcd6",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 7.15e-07, atol 0.0001)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "trimat_forward.cpp"
+      ],
+      "variant_check": {
+        "variants": 5,
+        "kernels": 5,
+        "distinct_kernel_bodies": 5,
+        "onemath_calls": 1,
+        "duplicated_variants": false
+      }
+    },
+    {
+      "item": "t3-matmul-backward-bias",
+      "file": "matmul_backward_bias.cu",
+      "task": "t3-matmul-backward-bias/task/task.json",
+      "run_id": "20261027T154416286235Z",
+      "status": "success",
+      "detail": "verify passed and zero dpct helpers on the current compiled sources",
+      "iterations": 13,
+      "usage": {
+        "input_tokens": 157846,
+        "output_tokens": 22020,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 246265
+      },
+      "cost_usd": 0.32783225,
+      "best": {
+        "iteration": 13,
+        "source_hash": "47dc8105e13b85a5",
+        "helpers": 0,
+        "path": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/runs-tier23-run2/t3-matmul-backward-bias/20261027T154416286235Z/best",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 7.63e-06, atol 0.005)"
+      },
+      "evaluation": {
+        "source_hash": "47dc8105e13b85a5",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 7.63e-06, atol 0.005)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "matmul_backward_bias.cpp"
+      ],
+      "variant_check": {
+        "variants": 8,
+        "kernels": 9,
+        "distinct_kernel_bodies": 9,
+        "onemath_calls": 0,
+        "duplicated_variants": false
+      }
+    },
+    {
+      "item": "t3-matmul-forward",
+      "file": "matmul_forward.cu",
+      "task": "t3-matmul-forward/task/task.json",
+      "run_id": "20261027T154558456581Z",
+      "status": "success",
+      "detail": "verify passed and zero dpct helpers on the current compiled sources",
+      "iterations": 12,
+      "usage": {
+        "input_tokens": 116058,
+        "output_tokens": 16993,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 184200
+      },
+      "cost_usd": 0.24492275,
+      "best": {
+        "iteration": 12,
+        "source_hash": "2b92c413ff9a3b80",
+        "helpers": 0,
+        "path": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/runs-tier23-run2/t3-matmul-forward/20261027T154558456581Z/best",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 5.72e-05, atol 0.1)"
+      },
+      "evaluation": {
+        "source_hash": "2b92c413ff9a3b80",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 5.72e-05, atol 0.1)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "matmul_forward.cpp"
+      ],
+      "variant_check": {
+        "variants": 4,
+        "kernels": 4,
+        "distinct_kernel_bodies": 3,
+        "onemath_calls": 2,
+        "duplicated_variants": false
+      }
+    }
+  ]
+}

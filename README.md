@@ -34,56 +34,117 @@ original CUDA, and on an AMD MI350X against the hidden reference.
   [karpathy/llm.c](https://github.com/karpathy/llm.c) (MIT); see
   [`THIRD_PARTY.md`](THIRD_PARTY.md).
 
-## Results so far (llm.c `dev/cuda`, `muse-spark-1.3`)
+## Results (llm.c `dev/cuda`, `muse-spark-1.3`)
+
+Muse ported 19 of llm.c's CUDA kernel files with the fixed agent loop: one run per file, each
+graded by a hidden check built from llm.c's own CPU code and tolerance.
 
 | | Tier 1: plain kernels | Tier 2: warp/sub-group, shared memory | Tier 3: cuBLAS to oneMath | All |
 |---|---|---|---|---|
 | Items ported | 10 | 5 | 4 (of 7) | 19 |
-| Correct with 0 helpers (hidden grade) | 9 | 4 | 4 | **17** |
-| Also met the loop's strict success rule | 4 | 2 | 2 | 8 |
-| Pass on an NVIDIA GPU (vs reference and llm.c's CUDA) | 9 | 4 | 1 (3 call oneMath: CPU-verified) | **14** |
-| Muse cost | $1.67 | $2.45 | $1.40 | **$5.51** |
+| Correct with 0 helpers (hidden grade) | 10 | 4 | 4 | **18** |
+| Also met the loop's strict success rule | 9 | 3 | 3 | 15 |
+| Pass on an NVIDIA GPU (vs reference and llm.c's CUDA) | 10 | 4 | 1 (3 call oneMath: CPU-verified) | **15** |
+| Pass on an AMD GPU (vs reference) | 10 | 0 (not run) | 0 (not run) | **10** |
+| Muse cost | $1.01 | $1.69 | $1.06 | **$3.75** |
 
-- **Three first runs had open issues.** In Tier 1, `fused_residual_forward` is correct but left
-  c2s helpers. In Tier 2, `softmax_forward` is also correct with helpers left, and
-  `layernorm_backward` copies one implementation into 8 of its 9 variants.
-- **Reruns** of these three, with a stricter goal, are reported beside the first runs; the table
-  above counts first runs only. `layernorm_backward` was fixed: a rerun is correct, has 0 helpers
-  and keeps a distinct kernel for every variant. The other two still have issues: one rerun
-  left 45 helpers and the other fails verify. Two rounds of reruns cost $2.85 in total
-  ([round 1](evidence/port-llmc-reruns/README.md), [round 2](evidence/port-llmc-reruns-2/README.md)).
-- **Loop fixes, then Tier 1 again:** two changes went in after the reruns. Muse can now delete
-  SYCLomatic's output in one call and read long files in parts, and each turn can write up to
-  32,000 tokens. With them, all 10 Tier 1 files ran again with the same tasks and turn limit
-  ([evidence](evidence/port-llmc-tier1-run2/README.md)).
-  - Loop success rose from 4 to **9 of 10**.
-  - **10 of 10** are correct with 0 helpers.
-  - Cost fell from $1.67 to **$1.01**, and turns per item from 11.5 to 8.2.
-  - This is one run per item, with several changes made at once.
-- **NVIDIA:** all 10 of those Tier 1 ports **pass on NVIDIA GPUs** (RTX 2000 Ada and RTX
-  A4500), against both the hidden reference and llm.c's own CUDA. This cost about $0.05 of GPU time
-  ([evidence](evidence/port-llmc-tier1-run2/gpu/NVIDIA.md)).
-- **AMD:** all 10 of those Tier 1 ports **pass on an AMD Instinct MI350X** against the hidden
-  reference, for $1.42 of GPU time ([evidence](evidence/port-llmc-tier1-run2/gpu/AMD.md)).
-  - They ran on DigitalOcean droplets started from the author's laptop.
-  - On AMD they are checked against the reference only. AMD's automatic CUDA-to-HIP
-    conversion can't build llm.c's own CUDA (`__ldcs`, a host `memset`, 32-bit warp masks),
-    so the comparison with llm.c's CUDA was done on NVIDIA.
-- **GPT-2, stage 1 (forward pass):** Muse ported the forward pass of llm.c's fp32 GPT-2
-  training program, with the real GPT-2 124M weights.
-  - **Result:** loop success in 28 turns, for **$0.74**. The final port matches PyTorch's logits
-    and loss on llm.c's debug batch within llm.c's own 1e-2 (worst error 0.0012), with 0
-    helpers.
-  - **What Muse wrote:** a lean 463-line forward-only rewrite: simple SYCL kernels plus oneMath
-    `gemm` and `gemm_batch`, not llm.c's tuned kernels.
-  - **Where it ran:** the CPU device only so far
-    ([evidence](evidence/gpt2-stage1/README.md)). Stages 2 (backward) and 3 (training) are
-    next.
-- **Limits:** fp32 only, reduced sizes, one run per item. AMD has been tested for Tier 1 only.
-- **Evidence:** [plan](evidence/plan-llmc-devcuda-stream/README.md),
-  [Tier 1](evidence/port-llmc-tier1/README.md), [Tier 2](evidence/port-llmc-tier2/README.md),
-  [Tier 3](evidence/port-llmc-tier3/README.md); every number above comes from a committed
-  file.
+- **Evidence:** [Tier 1](evidence/port-llmc-tier1-run2/README.md),
+  [Tiers 2 and 3](evidence/port-llmc-tier23-run2/README.md). Every number comes from a
+  committed file, and a test checks this table against them.
+- **What "correct" means:** the final sources compile, match the hidden reference within
+  llm.c's fp32 tolerance, and no SYCLomatic (dpct) helper is left anywhere in the tree. The
+  loop's own rule is stricter: verify and the helper scan must pass on the same compiled
+  sources inside the run.
+- **Open issues, measured and reported:**
+  - `softmax_forward` fails the hidden check (36,435 of 25.7 million values outside
+    tolerance). Muse found the failing variant but ran out of turns without a fix. A rerun
+    with the stricter goal and 20 turns fixed the copied variants but still fails the check
+    ([evidence](evidence/port-llmc-softmax-rerun/README.md), $0.75).
+  - `softmax_forward` and `layernorm_backward` copy one implementation into several kernel
+    variants; the variant check reports it. A stricter goal fixed `layernorm_backward` in an
+    earlier rerun ([round 2](evidence/port-llmc-reruns-2/README.md)).
+  - `global_norm` and `trimat_forward` are correct but ended one step short of the loop's
+    rule.
+- **GPUs:**
+  - **NVIDIA:** RTX 2000 Ada and RTX A4500 on Runpod, against both the hidden reference and
+    llm.c's own CUDA built with `nvcc`
+    ([Tier 1](evidence/port-llmc-tier1-run2/gpu/NVIDIA.md),
+    [Tiers 2 and 3](evidence/port-llmc-tier23-run2/gpu/NVIDIA.md)).
+  - **AMD:** the 10 Tier 1 ports pass on an AMD Instinct MI350X against the hidden reference
+    ([evidence](evidence/port-llmc-tier1-run2/gpu/AMD.md)). They ran on DigitalOcean droplets
+    started from the author's laptop. AMD's automatic CUDA-to-HIP conversion can't build
+    llm.c's own CUDA (`__ldcs`, a host `memset`, 32-bit warp masks), so the comparison with
+    llm.c's CUDA was done on NVIDIA.
+  - Ports that call oneMath are verified on the CPU device: oneMath is not built for the GPU
+    hosts yet.
+
+### GPT-2: llm.c's real training program
+
+Muse ported llm.c's fp32 GPT-2 training file (`train_gpt2_fp32.cu`) to SYCL in three stages,
+with the real GPT-2 124M weights and llm.c's debug batch. Each stage is checked against
+PyTorch's numbers at llm.c's own test tolerance, and each check was first proven to pass
+llm.c's CPU code and to fail a planted bug.
+
+| Stage | What is checked | Result | Turns | Muse cost |
+|---|---|---|---|---|
+| [1. Forward](evidence/gpt2-stage1/README.md) | logits and loss, 1e-2 | worst error 0.0012 | 28 | $0.74 |
+| [2. Backward](evidence/gpt2-stage2/README.md) | all 124,475,904 gradients, 2e-2 | worst error 0.0124 | 27 | $1.21 |
+| [3. Training](evidence/gpt2-stage3/README.md) | the loss of 10 AdamW steps, 1e-2 | worst error 0.00015 | 29 | $1.15 |
+
+- All three met the loop's success rule with 0 helpers.
+- **Stage 3:** Muse wrote the 907-line port in one turn. The first verify failed on all 10
+  steps; Muse found its own matmul transpose mistake ("Losses are far too high — my
+  non-batched oneMath transpose mapping is wrong") and fixed it.
+- **Stage 2's tolerance:** 2e-2 is llm.c's CPU-test tolerance for gradients. At the CUDA
+  test's 1e-2, llm.c's own CPU code fails one gradient.
+- **Limits:** the ports are lean rewrites with simple kernels, not llm.c's tuned kernels. They
+  ran on the CPU device only so far, and performance was not compared.
+
+### How much SYCLomatic helps
+
+The same 10 Tier 1 files, with the `migrate` tool (SYCLomatic) taken away
+(`museport port --no-migrate`), so Muse writes each port from the CUDA source
+([evidence](evidence/port-llmc-tier1-nomigrate/README.md)):
+
+- **10 of 10** met the loop's success rule and are correct with 0 helpers, in 5.3 turns per
+  item, for **$0.48** (with SYCLomatic: 9 of 10, 8.2 turns, $1.01).
+- On these simple kernels SYCLomatic did not help. The one file with warp-level CUDA
+  (`fused_residual_forward`) got correct but plain kernels, without its shared-memory and warp
+  structure.
+
+**Limits of all results:** fp32 only, reduced sizes for the kernels, one run per item.
+
+## How we got here: the first runs
+
+The first runs used the same tasks and hidden checks, before the loop fixes. Most ports were
+already correct, but the runs scored badly on the loop's own rule:
+
+| | Tier 1 | Tier 2 | Tier 3 | All |
+|---|---|---|---|---|
+| Items ported | 10 | 5 | 4 | 19 |
+| Correct with 0 helpers (hidden grade) | 9 | 4 | 4 | 17 |
+| Also met the loop's strict success rule | 4 | 2 | 2 | 8 |
+| Pass on an NVIDIA GPU (vs reference and llm.c's CUDA) | 9 | 4 | 1 | 14 |
+| Muse cost | $1.67 | $2.45 | $1.40 | $5.51 |
+
+Why:
+
+- **No way to delete files.** The success rule needs zero helpers anywhere in the tree,
+  including SYCLomatic's own output. Muse emptied those files by overwriting each with a stub,
+  one turn per file: 22 of Tier 1's 36 file writes.
+- **Reading long files whole,** which burned tokens and turns.
+- **Limits:** the toolkit stopped any run at 600,000 tokens (4 runs ended there, under their
+  USD cap), and a turn could write only 16,000 tokens, which cut off large ports.
+- **Connection problems** with Meta's API: empty answers and dropped connections could end a
+  run.
+
+The fixes: `delete_file` and ranged `read_file` in the toolkit, 32,000 output tokens per turn,
+no token limit below the USD cap, and lost turns marked instead of fatal. Two earlier rounds of
+reruns with a stricter goal cost $2.85 ([round 1](evidence/port-llmc-reruns/README.md),
+[round 2](evidence/port-llmc-reruns-2/README.md)).
+
+First-run evidence: [Tier 1](evidence/port-llmc-tier1/README.md),
+[Tier 2](evidence/port-llmc-tier2/README.md), [Tier 3](evidence/port-llmc-tier3/README.md).
 
 ## Try it
 
@@ -134,26 +195,6 @@ check reports any port that copies one implementation into several variants.
   SYCLomatic, CUDA headers), activated with `source scripts/oneapi-env.sh`.
 - **Tier 3:** oneMath as well (`WITH_ONEMATH=1`).
 - **GPU runs:** a Runpod, Vast, Vultr or DigitalOcean key for `oneapi-agent remote-test`.
-
-**Tier 1** ([evidence](evidence/port-llmc-tier1/README.md)): Muse (`muse-spark-1.3`)
-ported llm.c's 10 Tier 1 kernel files for $1.67 in total. 9 final ports are correct and
-helper-free by the hidden grade (4 also met the loop's strict success rule within 12 turns).
-All 9 pass on NVIDIA GPUs against both the reference and llm.c's original CUDA. fp32 only,
-reduced sizes, one run each. The Tier 1 rerun's ports also pass on an AMD MI350X against the
-reference (see above).
-
-**Tier 2** ([evidence](evidence/port-llmc-tier2/README.md)): warp shuffles, cooperative groups,
-shared memory. Muse ported llm.c's 5 Tier 2 files for $2.45 in total. 4 final ports are
-correct and helper-free by the hidden grade, and all 4 pass on NVIDIA GPUs.
-`classifier_fused` passes every variant, including the one SYCLomatic mistranslates. One
-caveat, measured and reported: Muse's `layernorm_backward` is correct but copies one
-implementation into 8 of its 9 variants.
-
-**Tier 3** ([evidence](evidence/port-llmc-tier3/README.md)): cuBLAS and cuBLASLt to oneMath.
-Muse ported 4 of llm.c's Tier 3 files for $1.40; all 4 are correct and helper-free by the
-hidden grade, and each cuBLAS call became a oneMath call. Verified on the CPU device;
-the one port with no library calls also passes on NVIDIA. The attention files and NCCL
-were not attempted.
 
 ```bash
 museport report evidence --out site      # a static site built only from the committed evidence
