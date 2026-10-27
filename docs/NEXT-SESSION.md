@@ -58,7 +58,8 @@
 - The development repository was renamed `checocadena/museport-dev` and made private. Do not
   push it here: it carries early toolkit-derived files in its history.
 - The toolkit's `native_flags` (toolkit #20) and the loop's `delete_file` and ranged
-  `read_file` (toolkit #21) are merged; museport pins #21's merge commit `e693601`.
+  `read_file` (toolkit #21) and the AMD native build's header hipify (toolkit #22) are
+  merged; museport pins #22's merge commit `23fdcff`.
 
 ## Spend (known; caps: $5 development, $20 comparison runs, $1 per run)
 
