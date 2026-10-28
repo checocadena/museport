@@ -106,6 +106,11 @@ llm.c's CPU code and to fail a planted bug.
 - **On an NVIDIA GPU:** stage 3's port, unchanged, trains on an RTX 4000 Ada with oneMath on
   cuBLAS. Its 10 losses match PyTorch's (worst error 0.000135) and llm.c's own CUDA build
   (worst 0.0000059), for $0.01 of GPU time ([evidence](evidence/gpt2-stage3/gpu/NVIDIA.md)).
+- **On an AMD GPU:** the same port, unchanged, trains on an AMD Instinct MI350X with oneMath on
+  rocBLAS. Its 10 losses match PyTorch's (worst error 0.0000246). It took five runs ($0.65)
+  to supply the development files the cloud image lacked
+  ([evidence](evidence/gpt2-stage3/gpu/AMD.md)). One source now trains GPT-2 on a CPU, an
+  NVIDIA GPU and an AMD GPU.
 - **Limits:** the ports are lean rewrites with simple kernels, not llm.c's tuned kernels.
   Stages 1 and 2 ran on the CPU device only, and kernel performance was not compared.
 

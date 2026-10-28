@@ -24,8 +24,9 @@ Budget so far:
   GPT-2 stages 1-3, Tiers 2-3 run 2, two softmax_forward reruns, E1 and E3). The author raised
   the per-run cap from $1 to $3 on Oct 27, and this cap from $20 to $30 on Oct 27.
   The author set a $7 cap for GPT-2 (G3); $4.45 used, including E1's GPT-2 run.
-- **GPUs:** about $2.66 (Runpod NVIDIA about $0.24, DigitalOcean AMD about $2.42), of a $10 cap
-  the author set on Oct 27.
+- **GPUs:** about $4.06 (Runpod NVIDIA about $0.27, DigitalOcean AMD about $3.79), of a $10 cap
+  the author set on Oct 27. Oct 28 added the J1 recordings ($0.034), Tiers 2-3 and softmax on
+  AMD ($0.72) and GPT-2 stage 3 on AMD (five runs, $0.65).
 **The author sets their caps before they start.**
 
 ## Status at the start (Oct 26)

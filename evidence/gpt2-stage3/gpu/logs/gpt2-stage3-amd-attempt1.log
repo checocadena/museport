@@ -1,0 +1,81 @@
+created digitalocean machine 613368299 (gpu-mi350x1-288gb-spot, $3.0/h)
+waiting for the agent (HTTP no answer)
+bundle uploaded; waiting for the run
+agent phase: setup
+agent phase: running
+agent phase: done
+deleted digitalocean machine 613368299: confirmed
+{
+  "tool": "remote_test",
+  "status": "fail",
+  "summary": "gpu-mi350x1-288gb-spot: fail: SYCL port did not compile for AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85] (hip:0, amd): compile failed with 1 error(s) at /tmp/tmp.oId2lcUjsX/task/agent_port/gpt2_train.cpp:7: 'oneapi/math.hpp' file not found",
+  "evidence": {
+    "provider": "digitalocean",
+    "create_attempts": [],
+    "sycl_url": "https://github.com/checocadena/oneapi-agent-toolkit/releases/download/sycl-hip-nightly-2026-10-14-rocm7.0-r3/sycl-hip-linux-x86_64.tar.gz",
+    "sycl_sha256": "e9bf82ee3d7bd18d8d86ad5e0ea918aab3d4a30578934af510ddbc50c43c8fc3",
+    "gpu": "gpu-mi350x1-288gb-spot",
+    "price_per_hour": 3.0,
+    "max_minutes": 30.0,
+    "machine_id": "613368299",
+    "agent_url": "https://165-245-172-54.sslip.io",
+    "setup_tail": "o.7 => /opt/rocm/lib/libamdhip64.so.7 (0x00007b851ea00000)\n++ command -v hipcc\n+ HIPCC_BIN=/opt/rocm/bin/hipcc\n++++ readlink -f /opt/rocm/bin/hipcc\n+++ dirname /opt/rocm/core-7.14/bin/hipcc\n++ dirname /opt/rocm/core-7.14/bin\n+ HIP_ROOT=/opt/rocm/core-7.14\n+ '[' -e /opt/rocm/core-7.14/include/hip/hip_runtime.h ']'\n+ echo 'HIP headers: hip/hip_runtime.h missing under /opt/rocm/core-7.14/include'\nHIP headers: hip/hip_runtime.h missing under /opt/rocm/core-7.14/include\n++ basename /opt/rocm/core-7.14\n++ sed -n 's/^core-\\([0-9]*\\.[0-9]*\\).*/\\1/p'\n+ RV=7.14\n+ PKG=amdrocm-runtime-dev7.14\n++ dpkg-query -W '-f=${Version}' amdrocm-runtime7.14\n+ WANT=7.14.0~pre3-29052710811\n+ '[' -n 7.14.0~pre3-29052710811 ']'\n+ '[' -z 7.14 ']'\n+ grep -rqs repo.amd.com/rocm/packages /etc/apt/sources.list /etc/apt/sources.list.d\n+ . /etc/os-release\n++ PRETTY_NAME='Ubuntu 24.04.4 LTS'\n++ NAME=Ubuntu\n++ VERSION_ID=24.04\n++ VERSION='24.04.4 LTS (Noble Numbat)'\n++ VERSION_CODENAME=noble\n++ ID=ubuntu\n++ ID_LIKE=debian\n++ HOME_URL=https://www.ubuntu.com/\n++ SUPPORT_URL=https://help.ubuntu.com/\n++ BUG_REPORT_URL=https://bugs.launchpad.net/ubuntu/\n++ PRIVACY_POLICY_URL=https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\n++ UBUNTU_CODENAME=noble\n++ LOGO=ubuntu-logo\n+ mkdir -p /etc/apt/keyrings\n+ AMD_REPO=https://repo.amd.com/rocm/packages-multi-arch\n+ curl -fsSL --retry 3 -o /etc/apt/keyrings/gt-amdrocm.asc https://repo.amd.com/rocm/packages-multi-arch/gpg/rocm.gpg\n+ echo 'deb [arch=amd64 signed-by=/etc/apt/keyrings/gt-amdrocm.asc]' 'https://repo.amd.com/rocm/packages-multi-arch/ubuntu2404 stable main'\n+ apt-get update -qq\n++ apt-cache madison amdrocm-runtime-dev7.14\n++ awk -v w=7.14.0~pre3-29052710811 'w != \"\" && index($3, w) == 1 {print $3; exit}'\n+ VER=7.14.0~pre3-29052710811\n+ '[' -z 7.14.0~pre3-29052710811 ']'\n++ mktemp -d\n+ D=/tmp/tmp.63MaGHtLAc\n+ cd /tmp/tmp.63MaGHtLAc\n+ apt-get download amdrocm-runtime-dev7.14=7.14.0~pre3-29052710811\nGet:1 https://repo.radeon.com/rocmradeon/apt/26.13 noble/main amd64 amdrocm-runtime-dev7.14 amd64 7.14.0~pre3-29052710811 [506 kB]\nFetched 506 kB in 0s (4736 kB/s)\nW: Download is performed unsandboxed as root as file '/tmp/tmp.63MaGHtLAc/amdrocm-runtime-dev7.14_7.14.0~pre3-29052710811_amd64.deb' couldn't be accessed by user '_apt'. - pkgAcquire::Run (13: Permission denied)\n+ dpkg-deb -x /tmp/tmp.63MaGHtLAc/amdrocm-runtime-dev7.14_7.14.0~pre3-29052710811_amd64.deb /tmp/tmp.63MaGHtLAc/x\n+ cp -rn /tmp/tmp.63MaGHtLAc/x/opt/rocm/core-7.14/. /opt/rocm/core-7.14/\ncp: warning: behavior of -n is non-portable and may change in future; use --update=none instead\n+ echo 'HIP headers: unpacked amdrocm-runtime-dev7.14=7.14.0~pre3-29052710811 into /opt/rocm/core-7.14'\nHIP headers: unpacked amdrocm-runtime-dev7.14=7.14.0~pre3-29052710811 into /opt/rocm/core-7.14\n+ rm -rf /tmp/tmp.63MaGHtLAc\n+ '[' -e /opt/rocm/core-7.14/include/hip/hip_runtime.h ']'\n+ sycl-ls\n[hip:gpu][hip:0] AMD HIP BACKEND, AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85]\n",
+    "ingest": {
+      "dest": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/gpuresults-amd/amd/amd-instinct-mi350x-vf-gfx950-sramecc-xnack-hip-71460-85/llmc_gpt2_train",
+      "remote_result": {
+        "tool": "gpu_test",
+        "status": "fail",
+        "summary": "SYCL port did not compile for AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85] (hip:0, amd): compile failed with 1 error(s) at /tmp/tmp.oId2lcUjsX/task/agent_port/gpt2_train.cpp:7: 'oneapi/math.hpp' file not found",
+        "evidence": {
+          "task": "llmc_gpt2_train",
+          "device": {
+            "backend": "hip",
+            "device_type": "gpu",
+            "index": 0,
+            "platform": "AMD HIP BACKEND",
+            "name": "AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85]",
+            "description": "AMD HIP BACKEND, AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85]",
+            "selector": "hip:0"
+          },
+          "vendor": "amd",
+          "amd_arch": "gfx950",
+          "cuda_arch": null,
+          "target_flags": [
+            "-fsycl-targets=amdgcn-amd-amdhsa",
+            "-Xsycl-target-backend=amdgcn-amd-amdhsa",
+            "--offload-arch=gfx950"
+          ],
+          "selector": "hip:0",
+          "steps": [
+            {
+              "step": "reference_build",
+              "status": "ok",
+              "summary": "exit 0: bash -c 'mkdir -p build && ln -sf /tmp/tmp.oId2lcUjsX/task/gpt2_124M.bin build/gpt2_124M.bin && g++ -O2 -std=c++17 /tmp/tmp.oId2lcUjsX/task/gpt2_ref.cpp -o build/reference'"
+            },
+            {
+              "step": "native_build",
+              "status": "fail",
+              "summary": "exit 1: /opt/rocm/bin/hipcc -O2 -std=c++17 --offload-arch=gfx950 -I/tmp/tmp.oId2lcUjsX/task /tmp/tmp.oId2lcUjsX/out/work/gpt2_train_harness.hip.cpp -o build/native"
+            },
+            {
+              "step": "sycl_compile",
+              "status": "fail",
+              "summary": "compile failed with 1 error(s) at /tmp/tmp.oId2lcUjsX/task/agent_port/gpt2_train.cpp:7: 'oneapi/math.hpp' file not found"
+            }
+          ],
+          "results_dir": "/tmp/tmp.oId2lcUjsX/out/results"
+        },
+        "limitations": [
+          "Benchmarks are single-process wall times plus program-reported kernel times; treat them as rough."
+        ]
+      }
+    },
+    "pod_deleted": true,
+    "minutes": 2.3,
+    "est_cost_usd": 0.117
+  },
+  "limitations": [
+    "This archive was produced on another machine; its evidence is as trustworthy as that machine and the bundle that ran there.",
+    "reached on a public hostname with a CA-issued certificate (sslip.io + Let's Encrypt), verified by the client's trust store"
+  ]
+}
