@@ -233,6 +233,9 @@ file. This section removes both limits.
     MI350X ($0.43 of the $1 J3 GPU cap; $0.63 with the Makefile runs).
   - Published, Oct 28: `llm.c-sycl/` in this repo (the author's choice), with a Quick start
     that works from a fresh clone (`evidence/j3-fresh-clone`), and a J3 section in the report.
+  - `museport llmc-sycl assemble` regenerates the whole folder except its README, byte for
+    byte (a test checks it). The Makefiles are hand-written templates, and the command is
+    llm.c-specific (generalizing it is J4).
   - The Makefile's GPU targets, Oct 28: `make TARGET=nvidia` and `TARGET=amd` build on an RTX
     2000 Ada and an MI350X, and the test passes on both (`evidence/j3-makefile-gpu`, $0.20).
 - [ ] **J4. A second, unseen CUDA repo, end to end** with J1-J3: scan, plan, port, check,

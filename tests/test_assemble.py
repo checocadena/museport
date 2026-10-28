@@ -35,3 +35,43 @@ def test_every_kernel_port_is_copied_with_a_make_rule(tmp_path):
     sm = next(k for k in prov if k["kernel"] == "softmax_forward")
     assert sm["evidence"] == "evidence/port-llmc-softmax-rerun-2/t2-softmax-forward"
     assert (out / "llmc" / "dataloader.h").exists() and (out / "LICENSE").exists()
+
+
+def test_assemble_reproduces_the_committed_repo(tmp_path):
+    # every committed llm.c-sycl file comes out of assemble(), byte for byte, except README.md
+    # (hand-written) and llm.c's own files (from an llm.c checkout; faked here)
+    import subprocess
+
+    out = tmp_path / "llm.c-sycl"
+    r = assemble(ROOT / "evidence", _fake_llmc(tmp_path / "llm.c"), out)
+    assert r["programs"] == ["test_gpt2_fp32.cpp", "train_gpt2_fp32.cpp"]
+    tracked = subprocess.run(["git", "ls-files", "llm.c-sycl"], cwd=ROOT, capture_output=True,
+                             text=True, check=True).stdout.split()
+    from_llmc = {"LICENSE", "dev/download_starter_pack.sh", *(f"llmc/{h}" for h in
+                                                              ("utils.h", "tokenizer.h",
+                                                               "dataloader.h", "rand.h"))}
+    ours = [f.removeprefix("llm.c-sycl/") for f in tracked]
+    ours = [f for f in ours if f != "README.md" and f not in from_llmc]
+    assert len(ours) == 27
+    for f in ours:
+        assert (out / f).read_bytes() == (ROOT / "llm.c-sycl" / f).read_bytes(), f
+    assert (out / "dev" / "download_starter_pack.sh").stat().st_mode & 0o111
+
+
+def test_assemble_refuses_a_trainer_that_is_not_the_graded_one(tmp_path):
+    import shutil
+
+    import pytest
+
+    ev = tmp_path / "evidence"
+    for d in ("j3-test/run3/port", "j3-trainer/run1/port"):
+        shutil.copytree(ROOT / "evidence" / d, ev / d)
+    from museport.assemble import _programs
+
+    out = tmp_path / "out"
+    out.mkdir()
+    assert _programs(ev, out) == ["test_gpt2_fp32.cpp", "train_gpt2_fp32.cpp"]
+    t = ev / "j3-test" / "run3" / "port" / "train_gpt2_fp32.cpp"
+    t.write_text(t.read_text().replace("0.044715f", "0.04715f", 1))
+    with pytest.raises(ValueError, match="not the graded trainer"):
+        _programs(ev, out)
