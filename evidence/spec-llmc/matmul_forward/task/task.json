@@ -1,0 +1,64 @@
+{
+  "name": "llmc_matmul_forward",
+  "goal": "Port matmul_forward_harness.cu (llm.c dev/cuda/matmul_forward.cu, fp32 build) to idiomatic SYCL 2020 with zero dpct helpers. Keep every kernel variant k in [1, 2, 3, 4] as its own SYCL kernel, computed on the SYCL device, and keep the program's contract: `build/candidate <input> <output> B T C OC` reads the inputs and writes each variant's outputs in order as raw float32, exactly as the CUDA main does. A hidden reference checks the output (atol 0.1 + rtol FLT_EPSILON*|ref|, llm.c's own fp32 rule). Success requires compile, verify and a zero-helper scan_helpers of the whole work directory (path '.') on the same sources: migrate's output under migrated/ counts, so delete it (delete_file) once your own port is done. migrate's output can be long: read it in parts (read_file offset/limit) or work from the CUDA harness. cuBLAS calls go to oneMath (oneapi::math::blas, #include <oneapi/math.hpp>; the compile flags already link -lonemath), not to oneapi::mkl product APIs.",
+  "cuda_path": "matmul_forward_harness.cu",
+  "include_dirs": [
+    "."
+  ],
+  "reference_build": [
+    "g++",
+    "-O2",
+    "-std=c++17",
+    "{task_dir}/matmul_forward_ref.cpp",
+    "-o",
+    "build/reference"
+  ],
+  "reference_cmd": "build/reference {input} {output} 2 64 64 256",
+  "candidate_cmd": "build/candidate {input} {output} 2 64 64 256",
+  "inputs": [
+    "input.bin"
+  ],
+  "mode": "array",
+  "output_format": "f32",
+  "base_flags": [
+    "-O2",
+    "-I${ONEMATH_PREFIX}/include",
+    "-Wl,--no-as-needed",
+    "-L${ONEMATH_PREFIX}/lib",
+    "-Wl,-rpath,${ONEMATH_PREFIX}/lib",
+    "-lonemath"
+  ],
+  "native_flags": [
+    "-lcublas",
+    "-lcublasLt"
+  ],
+  "tolerance": 0.1,
+  "rtol": 1.1920929e-07,
+  "museport": {
+    "source": "karpathy/llm.c dev/cuda/matmul_forward.cu",
+    "variants": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "sizes": {
+      "B": 2,
+      "T": 64,
+      "C": 64,
+      "OC": 256
+    },
+    "note": "B=2,T=64 (llm.c B=32,T=1024); C=64 (llm.c 768); OC=256 (llm.c 3072, preserves OC=4*C). B*T=128 multiple of 128, OC multiple of 128, C multiple of 32 for kernel4 128x128 tiling and float4 accesses; sqrt_block_size 16 for all variants.",
+    "check_flags": [
+      "-DMKL_ILP64",
+      "-I${ONEMKL_PREFIX}/include",
+      "-Wl,--no-as-needed",
+      "-L${ONEMKL_PREFIX}/lib",
+      "-Wl,-rpath,${ONEMKL_PREFIX}/lib",
+      "-lmkl_sycl_blas",
+      "-lmkl_intel_ilp64",
+      "-lmkl_sequential",
+      "-lmkl_core"
+    ]
+  }
+}

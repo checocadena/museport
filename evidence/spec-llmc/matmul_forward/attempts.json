@@ -1,0 +1,114 @@
+[
+  {
+    "attempt": 1,
+    "answer": {
+      "cpu_call": "matmul_forward_cpu(out, inp, weight, bias, B, T, C, OC)",
+      "cpu_functions": [
+        "matmul_forward_cpu"
+      ],
+      "dropped_variants": [],
+      "extra_includes": [],
+      "gpu_call": "matmul_forward(k, d_out, d_inp, d_weight, d_bias, B, T, C, OC, 16)",
+      "gpu_prelude": "",
+      "host_prep": "",
+      "inputs": [
+        {
+          "count": "B*T*C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "uniform",
+          "name": "inp"
+        },
+        {
+          "count": "OC*C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "uniform",
+          "name": "weight"
+        },
+        {
+          "count": "OC",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "uniform",
+          "name": "bias"
+        }
+      ],
+      "keep_cublas": true,
+      "keep_cublaslt": true,
+      "keep_in_harness": [],
+      "note": "B=2,T=64 (llm.c B=32,T=1024); C=64 (llm.c 768); OC=256 (llm.c 3072, preserves OC=4*C). B*T=128 multiple of 128, OC multiple of 128, C multiple of 32 for kernel4 128x128 tiling and float4 accesses; sqrt_block_size 16 for all variants.",
+      "output_post": "",
+      "outputs": [
+        {
+          "count": "B*T*OC",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "zeros",
+          "name": "out"
+        }
+      ],
+      "sizes": [
+        {
+          "name": "B",
+          "value": 2
+        },
+        {
+          "name": "T",
+          "value": 64
+        },
+        {
+          "name": "C",
+          "value": 64
+        },
+        {
+          "name": "OC",
+          "value": 256
+        }
+      ],
+      "tol": 0.1,
+      "variants": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    "usage": {
+      "input_tokens": 10561,
+      "output_tokens": 4416,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0
+    },
+    "cost_usd": 0.031969,
+    "static_errors": [],
+    "check": {
+      "ok": false,
+      "failed": "compile",
+      "steps": {
+        "reference_build": {
+          "returncode": 0,
+          "stderr": ""
+        },
+        "migrate": {
+          "status": "ok",
+          "summary": "migrated 1 CUDA file(s) -> 2 file(s); 28 DPCT warning(s) (DPCT1005x2, DPCT1009x1, DPCT1010x4, DPCT1024x2, DPCT1027x3, DPCT1049x3, DPCT1051x2, DPCT1065x2, DPCT1093x2, DPCT1098x3, DPCT1110x1, DPCT1118x3)"
+        },
+        "compile": {
+          "status": "fail",
+          "summary": "compile failed with 1 error(s) at /opt/syclomatic/include/dpct/dnnl_utils.hpp:15: 'oneapi/dnnl/dnnl.hpp' file not found"
+        }
+      },
+      "evidence": "{\"run\": {\"command\": \"/opt/dpcpp/bin/icpx -fsycl -O2 -I/opt/onemath/include -Wl,--no-as-needed -L/opt/onemath/lib -Wl,-rpath,/opt/onemath/lib -lonemath -I/home/user/museport-hackathon/evidence/spec-llmc/matmul_forward/task -DMKL_ILP64 -I/opt/onemkl/include -Wl,--no-as-needed -L/opt/onemkl/lib -Wl,-rpath,/opt/onemkl/lib -lmkl_sycl_blas -lmkl_intel_ilp64 -lmkl_sequential -lmkl_core -I/opt/syclomatic/include /home/user/museport-hackathon/evidence/spec-llmc/matmul_forward/.work/migrated/matmul_forward_harness.dp.cpp -o /home/user/museport-hackathon/evidence/spec-llmc/matmul_forward/.work/build/candidate\", \"returncode\": 1, \"duration_s\": 9.688057, \"stdout\": \"\", \"stderr\": \"In file included from /home/user/museport-hackathon/evidence/spec-llmc/matmul_forward/.work/migrated/matmul_forward_harness.dp.cpp:19:\\nIn file included from /opt/onemkl/include/sycl/sycl.hpp:60:\\nIn file included from /opt/onemkl/include/sycl/detail/core.hpp:21:\\nIn file included from /opt/onemkl/include/sycl/accessor.hpp:11:\\n/opt/onemkl/include/sycl/access/access.hpp:79:63: warning: 'constant_buffer' is deprecated: use 'target::device' instead [-Wdeprecated-declarations]\\n   79 | inline constexpr mode_target_tag_t<access_mode::read, target::constant_buffer>\\n      |                                                               ^\\n/opt/onemkl/include/sycl/access/access.hpp:24:19: note: 'constant_buffer' has been explicitly marked deprecated here\\n   24 |   constant_buffer __SYCL2020_DEPRECATED(\\\"use 'target::device' instead\\\") = 2015,\\n      |                   ^\\n/opt/onemkl/include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'\\n   75 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)\\n      |                                        ^\\n/opt/onemkl/include/sycl/detail/defines_elementary.hpp:66:38: note: expanded from macro '__SYCL_DEPRECATED'\\n   66 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]\\n      |                                      ^\\nIn file included from /home/user/museport-hackathon/evidence/spec-llmc/matmul_forward/.work/migrated/matmul_forward_harness.dp.cpp:19:\\nIn file included from /opt/onemkl/include/sycl/sycl.hpp:60:\\nIn file included from /opt/onemkl/include/sycl/detail/core.hpp:21:\\nIn file included from /opt/onemkl/include/sycl/accessor.hpp:11:\\n/opt/onemkl/include/sycl/access/access.hpp:91:31: warning: 'host_buffer' is deprecated: use 'host_accessor' instead [-Wdeprecated-declarations]\\n   91 |   return T == access::target::host_buffer || T == access::target::host_image;\\n      |                               ^\\n/opt/onemkl/include/sycl/access/access.hpp:27:15: note: 'host_buffer' has been explicitly marked deprecated here\\n   27 |   host_buffer __SYCL2020_DEPRECATED(\\\"use 'host_accessor' instead\\\") = 2018,\\n      |               ^\\n/opt/onemkl/include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'\\n   75 | #define __SYCL2020_DEPRECATED(messa"
+    },
+    "gpu_proof": {
+      "ok": true,
+      "cost_usd": 0.004,
+      "device": "NVIDIA RTX 2000 Ada Generation",
+      "deterministic": true,
+      "results": "/home/user/museport-hackathon/evidence/spec-llmc/matmul_forward/.gpu/res/nvidia-rtx-2000-ada-generation/llmc_matmul_forward",
+      "step": "compare",
+      "summary": "PASS: 1/1 case(s) match (worst max abs err 0.00293, atol 0.1)"
+    }
+  }
+]
