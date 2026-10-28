@@ -224,14 +224,16 @@ file. This section removes both limits.
   SYCLomatic fails). After the fp32 rerun (`evidence/spec-llmc-fp32`), all 16 are as strict as
   llm.c's own check. The first run's 3 loose specs had taken the bf16 tolerance from
   `#if ENABLE_BF16`. `trimat_forward` is not proven.
-- [ ] **J3. A reassembled repo: `llm.c-sycl`.** Every ported file, the build converted
+- [x] **J3. A reassembled repo: `llm.c-sycl`.** Every ported file, the build converted
   (`Makefile` to `icpx -fsycl`), one project that builds, passes llm.c's own `test_gpt2`
   and trains, on CPU, NVIDIA and AMD. *About $5-10 of Muse.*
   - Done on the CPU, Oct 28: the 19 `dev/sycl` ports (19/19 pass), llm.c's fp32 trainer
     (`evidence/j3-trainer`) and llm.c's own test, `overall okay: 1` (`evidence/j3-test`).
   - Done on GPUs, Oct 28: the test and the trainer pass on an NVIDIA RTX 2000 Ada and an AMD
     MI350X ($0.43 of the $1 J3 GPU cap).
-  - Left: publishing (step 5) and the report page.
+  - Published, Oct 28: `llm.c-sycl/` in this repo (the author's choice), with a Quick start
+    that works from a fresh clone (`evidence/j3-fresh-clone`), and a J3 section in the report.
+  - Not yet run: the Makefile's GPU targets on a GPU (the GPU results came from `gpu-test`).
 - [ ] **J4. A second, unseen CUDA repo, end to end** with J1-J3: scan, plan, port, check,
   reassemble. Replaces H1.
 

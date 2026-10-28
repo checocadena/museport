@@ -1,0 +1,6 @@
+icpx -fsycl -O2  -I. train_gpt2_fp32.cpp -o train_gpt2fp32sycl -I/opt/onemath/include -Wl,--no-as-needed -L/opt/onemath/lib -Wl,-rpath,/opt/onemath/lib -lonemath
+icpx -fsycl -O2  -I. test_gpt2_fp32.cpp -o test_gpt2fp32sycl -I/opt/onemath/include -Wl,--no-as-needed -L/opt/onemath/lib -Wl,-rpath,/opt/onemath/lib -lonemath
+
+real	0m26.441s
+user	0m22.650s
+sys	0m3.302s
