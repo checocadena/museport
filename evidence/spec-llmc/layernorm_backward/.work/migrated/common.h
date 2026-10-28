@@ -18,7 +18,7 @@ T ceil_div(T dividend, T divisor) {
 float warpReduceSum(float val) {
     for (int offset = 16; offset > 0; offset /= 2) {
         /*
-        DPCT1096:84: The right-most dimension of the work-group used in the SYCL
+        DPCT1096:88: The right-most dimension of the work-group used in the SYCL
         kernel that calls this function may be less than "32". The function
         "dpct::permute_sub_group_by_xor" may return an unexpected result on the
         CPU device. Modify the size of the work-group to ensure that the value
@@ -50,7 +50,7 @@ inline float blockReduce(float val, bool final_sync, float out_of_bounds,
     float warp_val = warp_reduction(val);
     if (lane_id == 0) { shared_val[warp_id] = warp_val; }
     /*
-    DPCT1065:35: Consider replacing sycl::nd_item::barrier() with
+    DPCT1065:37: Consider replacing sycl::nd_item::barrier() with
     sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better
     performance if there is no access to global memory.
     */
@@ -64,7 +64,7 @@ inline float blockReduce(float val, bool final_sync, float out_of_bounds,
         converged control flow. You may need to adjust the code.
         */
         /*
-        DPCT1065:36: Consider replacing sycl::nd_item::barrier() with
+        DPCT1065:38: Consider replacing sycl::nd_item::barrier() with
         sycl::nd_item::barrier(sycl::access::fence_space::local_space) for
         better performance if there is no access to global memory.
         */
@@ -173,7 +173,7 @@ Packed128<ElementType> load128(const ElementType* address) {
 template<class ElementType>
 Packed128<ElementType> load128cs(const ElementType* address) {
     /*
-    DPCT1098:38: The '*' expression is used instead of the __ldcs call. These
+    DPCT1098:40: The '*' expression is used instead of the __ldcs call. These
     two expressions do not provide the exact same functionality. Check the
     generated code for potential precision and/or performance issues.
     */
@@ -189,7 +189,7 @@ void store128(ElementType* target, Packed128<ElementType> value) {
 template<class ElementType>
 void store128cs(ElementType* target, Packed128<ElementType> value) {
     /*
-    DPCT1098:39: The '=' expression is used instead of the __stcs call. These
+    DPCT1098:41: The '=' expression is used instead of the __stcs call. These
     two expressions do not provide the exact same functionality. Check the
     generated code for potential precision and/or performance issues.
     */
@@ -199,7 +199,7 @@ void store128cs(ElementType* target, Packed128<ElementType> value) {
 template<class ElementType>
 void store128cg(ElementType* target, Packed128<ElementType> value) {
     /*
-    DPCT1098:40: The '=' expression is used instead of the __stcg call. These
+    DPCT1098:42: The '=' expression is used instead of the __stcg call. These
     two expressions do not provide the exact same functionality. Check the
     generated code for potential precision and/or performance issues.
     */
@@ -294,7 +294,7 @@ float* make_ones_float(size_t N) {
 
 template <class TargetType>
 [[nodiscard]] dpct::err0 memcpy_convert(TargetType *d_ptr, float *h_ptr,
-                                        size_t count) {
+                                        size_t count) try {
     // copy from host to device with data type conversion.
     TargetType* converted = (TargetType*)malloc(count * sizeof(TargetType));
     for (int i = 0; i < count; i++) {
@@ -312,6 +312,11 @@ template <class TargetType>
     // happened.
     return status;
 }
+catch (sycl::exception const &exc) {
+  std::cerr << exc.what() << "Exception caught at file:" << __FILE__
+            << ", line:" << __LINE__ << std::endl;
+  std::exit(1);
+}
 
 void setup_main() {
     srand(0);   // determinism
@@ -319,7 +324,7 @@ void setup_main() {
     // set up the device
     int deviceIdx = 0;
     /*
-    DPCT1093:41: The "deviceIdx" device may be not the one intended for use.
+    DPCT1093:43: The "deviceIdx" device may be not the one intended for use.
     Adjust the selected device if needed.
     */
     cudaCheck(DPCT_CHECK_ERROR(dpct::select_device(deviceIdx)));
@@ -328,12 +333,12 @@ void setup_main() {
     cuda_num_SMs = deviceProp.get_max_compute_units();
     cuda_threads_per_SM = deviceProp.get_max_work_items_per_compute_unit();
     /*
-    DPCT1005:42: The SYCL device version is different from CUDA Compute
+    DPCT1005:44: The SYCL device version is different from CUDA Compute
     Compatibility. You may need to rewrite this code.
     */
     cuda_arch_major = deviceProp.get_major_version();
     /*
-    DPCT1005:43: The SYCL device version is different from CUDA Compute
+    DPCT1005:45: The SYCL device version is different from CUDA Compute
     Compatibility. You may need to rewrite this code.
     */
     cuda_arch_minor = deviceProp.get_minor_version();
@@ -393,7 +398,7 @@ float benchmark_kernel(int repeats, Kernel kernel, KernelArgs&&... kernel_args) 
     // and apparently used in nvbench.
     int deviceIdx = 0;
     /*
-    DPCT1093:44: The "deviceIdx" device may be not the one intended for use.
+    DPCT1093:46: The "deviceIdx" device may be not the one intended for use.
     Adjust the selected device if needed.
     */
     cudaCheck(DPCT_CHECK_ERROR(dpct::select_device(deviceIdx)));
@@ -402,7 +407,7 @@ float benchmark_kernel(int repeats, Kernel kernel, KernelArgs&&... kernel_args) 
         dpct::get_device(deviceIdx).get_device_info(deviceProp)));
     void* flush_buffer;
     /*
-    DPCT1051:45: SYCL does not support a device property functionally compatible
+    DPCT1051:47: SYCL does not support a device property functionally compatible
     with l2CacheSize. It was migrated to global_mem_cache_size. You may need to
     adjust the value of global_mem_cache_size for the specific device.
     */
@@ -416,7 +421,7 @@ float benchmark_kernel(int repeats, Kernel kernel, KernelArgs&&... kernel_args) 
     for (int i = 0; i < repeats; i++) {
         // clear L2
         /*
-        DPCT1051:46: SYCL does not support a device property functionally
+        DPCT1051:48: SYCL does not support a device property functionally
         compatible with l2CacheSize. It was migrated to global_mem_cache_size.
         You may need to adjust the value of global_mem_cache_size for the
         specific device.
@@ -427,7 +432,7 @@ float benchmark_kernel(int repeats, Kernel kernel, KernelArgs&&... kernel_args) 
                 .wait()));
         // now we can start recording the timing of the kernel
         /*
-        DPCT1024:47: The original code returned the error code that was further
+        DPCT1024:49: The original code returned the error code that was further
         consumed by the program logic. This original code was replaced with 0.
         You may need to rewrite the program logic consuming the error code.
         */
@@ -435,7 +440,7 @@ float benchmark_kernel(int repeats, Kernel kernel, KernelArgs&&... kernel_args) 
             dpct::sync_barrier(start, &dpct::get_in_order_queue())));
         kernel(std::forward<KernelArgs>(kernel_args)...);
         /*
-        DPCT1024:48: The original code returned the error code that was further
+        DPCT1024:50: The original code returned the error code that was further
         consumed by the program logic. This original code was replaced with 0.
         You may need to rewrite the program logic consuming the error code.
         */

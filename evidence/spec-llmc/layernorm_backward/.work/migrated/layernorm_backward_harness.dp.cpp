@@ -19,6 +19,7 @@ version 2 moves a lot of reduction to shared memory over global memory
 #include <assert.h>
 
 // museport: fp32 build (#define ENABLE_BF16 removed)
+// museport: needed by the fp32 build
 #include "common.h"
 #include <cmath>
 
@@ -151,10 +152,19 @@ void layernorm_backward_kernel1(float* dinp, float* dweight, float* dbias,
 
 // uses shared memory instead for the reduces
 template <typename Tdinp, typename Tparams, typename Tdout, typename Trest>
-void layernorm_backward_kernel2(Tdinp* dinp, Tparams* dweight, Tparams* dbias,
-                        const Tdout* dout, const Trest* inp, const Tparams* weight, const Trest* mean, const Trest* rstd,
-                        int B, int T, int C, float* dweight_tmp, float* dbias_tmp,
-                        uint8_t *dpct_local) {
+/*
+DPCT1110:1: The total declared local variable size in device function
+layernorm_backward_kernel2 exceeds 128 bytes and may cause high register
+pressure. Consult with your hardware vendor to find the total register size
+available and adjust the code, or use smaller sub-group size to avoid high
+register pressure.
+*/
+void layernorm_backward_kernel2(Tdinp *dinp, Tparams *dweight, Tparams *dbias,
+                                const Tdout *dout, const Trest *inp,
+                                const Tparams *weight, const Trest *mean,
+                                const Trest *rstd, int B, int T, int C,
+                                float *dweight_tmp, float *dbias_tmp,
+                                uint8_t *dpct_local) {
     auto item_ct1 = sycl::ext::oneapi::this_work_item::get_nd_item<3>();
     auto shared = (float *)dpct_local; // size = 2 * C
 
@@ -190,7 +200,7 @@ void layernorm_backward_kernel2(Tdinp* dinp, Tparams* dweight, Tparams* dbias,
        dweight_shared[i] = 0.0f;
     }
     /*
-    DPCT1065:49: Consider replacing sycl::nd_item::barrier() with
+    DPCT1065:51: Consider replacing sycl::nd_item::barrier() with
     sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better
     performance if there is no access to global memory.
     */
@@ -239,7 +249,7 @@ void layernorm_backward_kernel2(Tdinp* dinp, Tparams* dweight, Tparams* dbias,
         dinp_bt[i] = (Tdinp)((float)dinp_bt[i] + dval);
     }
     /*
-    DPCT1065:50: Consider replacing sycl::nd_item::barrier() with
+    DPCT1065:52: Consider replacing sycl::nd_item::barrier() with
     sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better
     performance if there is no access to global memory.
     */
@@ -271,7 +281,7 @@ void copy_to_dweight_dbias(int C, Tparams* dbias, Tparams* dweight, float* dbias
 // To minimise the amount of atomicAdds, we will aim for 1 threadblock per SM, processing (total BTs / threadblocks) BTs
 template <typename Tdinp, typename Tparams, typename Tdout, typename Trest>
 /*
-DPCT1110:1: The total declared local variable size in device function
+DPCT1110:2: The total declared local variable size in device function
 layernorm_backward_kernel3 exceeds 128 bytes and may cause high register
 pressure. Consult with your hardware vendor to find the total register size
 available and adjust the code, or use smaller sub-group size to avoid high
@@ -306,7 +316,7 @@ void layernorm_backward_kernel3(Tdinp *dinp, Tparams *dweight, Tparams *dbias,
        dweight_shared[i] = 0.0f;
     }
     /*
-    DPCT1065:51: Consider replacing sycl::nd_item::barrier() with
+    DPCT1065:53: Consider replacing sycl::nd_item::barrier() with
     sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better
     performance if there is no access to global memory.
     */
@@ -352,14 +362,14 @@ void layernorm_backward_kernel3(Tdinp *dinp, Tparams *dweight, Tparams *dbias,
              i < C; i += sycl::ext::oneapi::this_work_item::get_sub_group()
                              .get_local_linear_range()) {
             /*
-            DPCT1098:53: The '*' expression is used instead of the __ldcs call.
+            DPCT1098:55: The '*' expression is used instead of the __ldcs call.
             These two expressions do not provide the exact same functionality.
             Check the generated code for potential precision and/or performance
             issues.
             */
             float dout_i = (float)dout_bt[i];
             /*
-            DPCT1098:54: The '*' expression is used instead of the __ldcs call.
+            DPCT1098:56: The '*' expression is used instead of the __ldcs call.
             These two expressions do not provide the exact same functionality.
             Check the generated code for potential precision and/or performance
             issues.
@@ -382,7 +392,7 @@ void layernorm_backward_kernel3(Tdinp *dinp, Tparams *dweight, Tparams *dbias,
         }
     }
     /*
-    DPCT1065:52: Consider replacing sycl::nd_item::barrier() with
+    DPCT1065:54: Consider replacing sycl::nd_item::barrier() with
     sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better
     performance if there is no access to global memory.
     */
@@ -398,7 +408,7 @@ void layernorm_backward_kernel3(Tdinp *dinp, Tparams *dweight, Tparams *dbias,
 // atomicCAS version of kernel3
 template <typename Tdinp, typename Tparams, typename Tdout, typename Trest>
 /*
-DPCT1110:2: The total declared local variable size in device function
+DPCT1110:3: The total declared local variable size in device function
 layernorm_backward_kernel4 exceeds 128 bytes and may cause high register
 pressure. Consult with your hardware vendor to find the total register size
 available and adjust the code, or use smaller sub-group size to avoid high
@@ -433,7 +443,7 @@ void layernorm_backward_kernel4(Tdinp *dinp, Tparams *dweight, Tparams *dbias,
        dweight_shared[i] = 0.0f;
     }
     /*
-    DPCT1065:55: Consider replacing sycl::nd_item::barrier() with
+    DPCT1065:57: Consider replacing sycl::nd_item::barrier() with
     sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better
     performance if there is no access to global memory.
     */
@@ -479,14 +489,14 @@ void layernorm_backward_kernel4(Tdinp *dinp, Tparams *dweight, Tparams *dbias,
              i < C; i += sycl::ext::oneapi::this_work_item::get_sub_group()
                              .get_local_linear_range()) {
             /*
-            DPCT1098:57: The '*' expression is used instead of the __ldcs call.
+            DPCT1098:59: The '*' expression is used instead of the __ldcs call.
             These two expressions do not provide the exact same functionality.
             Check the generated code for potential precision and/or performance
             issues.
             */
             float dout_i = (float)dout_bt[i];
             /*
-            DPCT1098:58: The '*' expression is used instead of the __ldcs call.
+            DPCT1098:60: The '*' expression is used instead of the __ldcs call.
             These two expressions do not provide the exact same functionality.
             Check the generated code for potential precision and/or performance
             issues.
@@ -509,7 +519,7 @@ void layernorm_backward_kernel4(Tdinp *dinp, Tparams *dweight, Tparams *dbias,
         }
     }
     /*
-    DPCT1065:56: Consider replacing sycl::nd_item::barrier() with
+    DPCT1065:58: Consider replacing sycl::nd_item::barrier() with
     sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better
     performance if there is no access to global memory.
     */
@@ -524,22 +534,34 @@ void layernorm_backward_kernel4(Tdinp *dinp, Tparams *dweight, Tparams *dbias,
     for (int i = item_ct1.get_local_id(2); i < C / 2;
          i += item_ct1.get_local_range(2)) {
         sycl::vec<sycl::ext::oneapi::bfloat16, 2> add_dbias =
-            __halves2bfloat162((__nv_bfloat16)dbias_shared[i * 2],
-                               (__nv_bfloat16)dbias_shared[i * 2 + 1]);
+            sycl::vec<sycl::ext::oneapi::bfloat16, 2>(
+                (sycl::ext::oneapi::bfloat16)dbias_shared[i * 2],
+                (sycl::ext::oneapi::bfloat16)dbias_shared[i * 2 + 1]);
         sycl::vec<sycl::ext::oneapi::bfloat16, 2> add_dweight =
-            __halves2bfloat162((__nv_bfloat16)dweight_shared[i * 2],
-                               (__nv_bfloat16)dweight_shared[i * 2 + 1]);
+            sycl::vec<sycl::ext::oneapi::bfloat16, 2>(
+                (sycl::ext::oneapi::bfloat16)dweight_shared[i * 2],
+                (sycl::ext::oneapi::bfloat16)dweight_shared[i * 2 + 1]);
 
         // Get the current value from L2 cache
-        sycl::vec<sycl::ext::oneapi::bfloat16, 2> current_dbias =
-            __ldcg(&dbiasVec2[i]);
+        /*
+        DPCT1098:61: The '*' expression is used instead of the __ldcg call.
+        These two expressions do not provide the exact same functionality. Check
+        the generated code for potential precision and/or performance issues.
+        */
+        sycl::vec<sycl::ext::oneapi::bfloat16, 2> current_dbias = dbiasVec2[i];
+        /*
+        DPCT1098:62: The '*' expression is used instead of the __ldcg call.
+        These two expressions do not provide the exact same functionality. Check
+        the generated code for potential precision and/or performance issues.
+        */
         sycl::vec<sycl::ext::oneapi::bfloat16, 2> current_dweight =
-            __ldcg(&dweightVec2[i]);
+            dweightVec2[i];
 
         // Add the two values
         sycl::vec<sycl::ext::oneapi::bfloat16, 2> new_dbias =
             add_dbias + current_dbias;
-        __nv_bfloat162 new_dweight = add_dweight + current_dweight;
+        sycl::vec<sycl::ext::oneapi::bfloat16, 2> new_dweight =
+            add_dweight + current_dweight;
 
         // Write the result back to L2 cache using 32-bit integer atomic compare and exchange
         unsigned int current_dbias32b = *reinterpret_cast<unsigned int*>(&current_dbias);
@@ -548,22 +570,38 @@ void layernorm_backward_kernel4(Tdinp *dinp, Tparams *dweight, Tparams *dbias,
         unsigned int new_dbias32b = *reinterpret_cast<unsigned int*>(&new_dbias);
         unsigned int new_dweight32b = *reinterpret_cast<unsigned int*>(&new_dweight);
 
-        unsigned int old_dbias32b = atomicCAS((unsigned int*)&dbiasVec2[i], current_dbias32b, new_dbias32b);
-        unsigned int old_dweight32b = atomicCAS((unsigned int*)&dweightVec2[i], current_dweight32b, new_dweight32b);
+        unsigned int old_dbias32b = dpct::atomic_compare_exchange_strong<
+            sycl::access::address_space::generic_space>(
+            (unsigned int *)&dbiasVec2[i], current_dbias32b, new_dbias32b);
+        unsigned int old_dweight32b = dpct::atomic_compare_exchange_strong<
+            sycl::access::address_space::generic_space>(
+            (unsigned int *)&dweightVec2[i], current_dweight32b,
+            new_dweight32b);
 
         // If the value has changed between read and atomic, we need to try again
         while (old_dbias32b != current_dbias32b) {
             current_dbias32b = old_dbias32b;
-            new_dbias = *reinterpret_cast<__nv_bfloat162*>(&current_dbias32b) + add_dbias;
+            new_dbias =
+                *reinterpret_cast<sycl::vec<sycl::ext::oneapi::bfloat16, 2> *>(
+                    &current_dbias32b) +
+                add_dbias;
             new_dbias32b = *reinterpret_cast<unsigned int*>(&new_dbias);
-            old_dbias32b = atomicCAS((unsigned int*)&dbiasVec2[i], current_dbias32b, new_dbias32b);
+            old_dbias32b = dpct::atomic_compare_exchange_strong<
+                sycl::access::address_space::generic_space>(
+                (unsigned int *)&dbiasVec2[i], current_dbias32b, new_dbias32b);
         }
 
         while (old_dweight32b != current_dweight32b) {
             current_dweight32b = old_dweight32b;
-            new_dweight = *reinterpret_cast<__nv_bfloat162*>(&current_dweight32b) + add_dweight;
+            new_dweight =
+                *reinterpret_cast<sycl::vec<sycl::ext::oneapi::bfloat16, 2> *>(
+                    &current_dweight32b) +
+                add_dweight;
             new_dweight32b = *reinterpret_cast<unsigned int*>(&new_dweight);
-            old_dweight32b = atomicCAS((unsigned int*)&dweightVec2[i], current_dweight32b, new_dweight32b);
+            old_dweight32b = dpct::atomic_compare_exchange_strong<
+                sycl::access::address_space::generic_space>(
+                (unsigned int *)&dweightVec2[i], current_dweight32b,
+                new_dweight32b);
         }
     }
 }
@@ -571,7 +609,7 @@ void layernorm_backward_kernel4(Tdinp *dinp, Tparams *dweight, Tparams *dbias,
 // FP32 scratchpad per threadgroup, zero atomics except atomicAdd on unsigned int for the flag (based on kernel3)
 template <typename Tdinp, typename Tparams, typename Tdout, typename Trest>
 /*
-DPCT1110:3: The total declared local variable size in device function
+DPCT1110:4: The total declared local variable size in device function
 layernorm_backward_kernel5 exceeds 128 bytes and may cause high register
 pressure. Consult with your hardware vendor to find the total register size
 available and adjust the code, or use smaller sub-group size to avoid high
@@ -587,9 +625,12 @@ void layernorm_backward_kernel5(Tdinp *dinp, Tparams *dweight, Tparams *dbias,
 
     sycl::group<3> block =
         sycl::ext::oneapi::this_work_item::get_work_group<3>();
-    cg::thread_block_tile<32> warp = cg::tiled_partition<32>(block);
-    int base_idx =
-        item_ct1.get_group(2) * warp.meta_group_size() + warp.meta_group_rank();
+    sycl::sub_group warp = sycl::ext::oneapi::this_work_item::get_sub_group();
+    int base_idx = item_ct1.get_group(2) *
+                       sycl::ext::oneapi::this_work_item::get_sub_group()
+                           .get_group_linear_range() +
+                   sycl::ext::oneapi::this_work_item::get_sub_group()
+                       .get_group_linear_id();
 
     // the first half of shared memory is bias, second is weight
     float* dbias_shared = shared;
@@ -604,13 +645,15 @@ void layernorm_backward_kernel5(Tdinp *dinp, Tparams *dweight, Tparams *dbias,
     }
     unsigned int *tmp_flag = (unsigned int*)(shared + C*2);
     /*
-    DPCT1065:59: Consider replacing sycl::nd_item::barrier() with
+    DPCT1065:63: Consider replacing sycl::nd_item::barrier() with
     sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better
     performance if there is no access to global memory.
     */
     item_ct1.barrier();
 
-    int warps_in_grid = item_ct1.get_group_range(2) * warp.meta_group_size();
+    int warps_in_grid = item_ct1.get_group_range(2) *
+                        sycl::ext::oneapi::this_work_item::get_sub_group()
+                            .get_group_linear_range();
     for (int idx = base_idx; idx < B * T; idx += warps_in_grid) {
         int b = idx / T;
         int t = idx % T;
@@ -624,28 +667,38 @@ void layernorm_backward_kernel5(Tdinp *dinp, Tparams *dweight, Tparams *dbias,
         // first: two reduce operations
         float dnorm_mean = 0.0f;
         float dnorm_norm_mean = 0.0f;
-        for (int i = warp.thread_rank(); i < C; i  += warp.size()) {
+        for (int i = sycl::ext::oneapi::this_work_item::get_sub_group()
+                         .get_local_linear_id();
+             i < C; i += sycl::ext::oneapi::this_work_item::get_sub_group()
+                             .get_local_linear_range()) {
             float norm_bti = ((float)inp_bt[i] - mean_bt) * rstd_bt;
             float dnorm_i = (float)weight[i] * (float)dout_bt[i];
             dnorm_mean += dnorm_i;
             dnorm_norm_mean += dnorm_i * norm_bti;
         }
-        dnorm_mean = cg::reduce(warp, dnorm_mean, cg::plus<float>{});
-        dnorm_norm_mean = cg::reduce(warp, dnorm_norm_mean, cg::plus<float>{});
+        dnorm_mean = sycl::reduce_over_group(
+            sycl::ext::oneapi::this_work_item::get_sub_group(), dnorm_mean,
+            sycl::plus<float>{});
+        dnorm_norm_mean = sycl::reduce_over_group(
+            sycl::ext::oneapi::this_work_item::get_sub_group(), dnorm_norm_mean,
+            sycl::plus<float>{});
         dnorm_mean = dnorm_mean / C;
         dnorm_norm_mean = dnorm_norm_mean / C;
 
         // now iterate again and accumulate all the gradients
-        for (int i = warp.thread_rank(); i < C; i += warp.size()) {
+        for (int i = sycl::ext::oneapi::this_work_item::get_sub_group()
+                         .get_local_linear_id();
+             i < C; i += sycl::ext::oneapi::this_work_item::get_sub_group()
+                             .get_local_linear_range()) {
             /*
-            DPCT1098:63: The '*' expression is used instead of the __ldcs call.
+            DPCT1098:67: The '*' expression is used instead of the __ldcs call.
             These two expressions do not provide the exact same functionality.
             Check the generated code for potential precision and/or performance
             issues.
             */
             float dout_i = (float)dout_bt[i];
             /*
-            DPCT1098:64: The '*' expression is used instead of the __ldcs call.
+            DPCT1098:68: The '*' expression is used instead of the __ldcs call.
             These two expressions do not provide the exact same functionality.
             Check the generated code for potential precision and/or performance
             issues.
@@ -668,7 +721,7 @@ void layernorm_backward_kernel5(Tdinp *dinp, Tparams *dweight, Tparams *dbias,
         }
     }
     /*
-    DPCT1065:60: Consider replacing sycl::nd_item::barrier() with
+    DPCT1065:64: Consider replacing sycl::nd_item::barrier() with
     sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better
     performance if there is no access to global memory.
     */
@@ -685,13 +738,13 @@ void layernorm_backward_kernel5(Tdinp *dinp, Tparams *dweight, Tparams *dbias,
         scratch_dweight[i + C * item_ct1.get_group(2)] = dweight_shared[i];
     }
     /*
-    DPCT1078:4: Consider replacing memory_order::acq_rel with
+    DPCT1078:5: Consider replacing memory_order::acq_rel with
     memory_order::seq_cst for correctness if strong memory order restrictions
     are needed.
     */
     sycl::atomic_fence(sycl::memory_order::acq_rel, sycl::memory_scope::device);
     /*
-    DPCT1065:61: Consider replacing sycl::nd_item::barrier() with
+    DPCT1065:65: Consider replacing sycl::nd_item::barrier() with
     sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better
     performance if there is no access to global memory.
     */
@@ -702,7 +755,7 @@ void layernorm_backward_kernel5(Tdinp *dinp, Tparams *dweight, Tparams *dbias,
                 scratchFlag, 1);
     }
     /*
-    DPCT1065:62: Consider replacing sycl::nd_item::barrier() with
+    DPCT1065:66: Consider replacing sycl::nd_item::barrier() with
     sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better
     performance if there is no access to global memory.
     */
@@ -727,7 +780,7 @@ void layernorm_backward_kernel5(Tdinp *dinp, Tparams *dweight, Tparams *dbias,
 // single FP32 scratchpad shared by all the threadblocks (based on kernels 3 & 5)
 template <typename Tdinp, typename Tparams, typename Tdout, typename Trest>
 /*
-DPCT1110:5: The total declared local variable size in device function
+DPCT1110:6: The total declared local variable size in device function
 layernorm_backward_kernel6 exceeds 128 bytes and may cause high register
 pressure. Consult with your hardware vendor to find the total register size
 available and adjust the code, or use smaller sub-group size to avoid high
@@ -743,9 +796,12 @@ void layernorm_backward_kernel6(Tdinp *dinp, Tparams *dweight, Tparams *dbias,
 
     sycl::group<3> block =
         sycl::ext::oneapi::this_work_item::get_work_group<3>();
-    cg::thread_block_tile<32> warp = cg::tiled_partition<32>(block);
-    int base_idx =
-        item_ct1.get_group(2) * warp.meta_group_size() + warp.meta_group_rank();
+    sycl::sub_group warp = sycl::ext::oneapi::this_work_item::get_sub_group();
+    int base_idx = item_ct1.get_group(2) *
+                       sycl::ext::oneapi::this_work_item::get_sub_group()
+                           .get_group_linear_range() +
+                   sycl::ext::oneapi::this_work_item::get_sub_group()
+                       .get_group_linear_id();
 
     // the first half of shared memory is bias, second is weight
     float* dbias_shared = shared;
@@ -760,13 +816,15 @@ void layernorm_backward_kernel6(Tdinp *dinp, Tparams *dweight, Tparams *dbias,
     }
     unsigned int *tmp_flag = (unsigned int*)(shared + C*2);
     /*
-    DPCT1065:65: Consider replacing sycl::nd_item::barrier() with
+    DPCT1065:69: Consider replacing sycl::nd_item::barrier() with
     sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better
     performance if there is no access to global memory.
     */
     item_ct1.barrier();
 
-    int warps_in_grid = item_ct1.get_group_range(2) * warp.meta_group_size();
+    int warps_in_grid = item_ct1.get_group_range(2) *
+                        sycl::ext::oneapi::this_work_item::get_sub_group()
+                            .get_group_linear_range();
     for (int idx = base_idx; idx < B * T; idx += warps_in_grid) {
         int b = idx / T;
         int t = idx % T;
@@ -780,28 +838,38 @@ void layernorm_backward_kernel6(Tdinp *dinp, Tparams *dweight, Tparams *dbias,
         // first: two reduce operations
         float dnorm_mean = 0.0f;
         float dnorm_norm_mean = 0.0f;
-        for (int i = warp.thread_rank(); i < C; i  += warp.size()) {
+        for (int i = sycl::ext::oneapi::this_work_item::get_sub_group()
+                         .get_local_linear_id();
+             i < C; i += sycl::ext::oneapi::this_work_item::get_sub_group()
+                             .get_local_linear_range()) {
             float norm_bti = ((float)inp_bt[i] - mean_bt) * rstd_bt;
             float dnorm_i = (float)weight[i] * (float)dout_bt[i];
             dnorm_mean += dnorm_i;
             dnorm_norm_mean += dnorm_i * norm_bti;
         }
-        dnorm_mean = cg::reduce(warp, dnorm_mean, cg::plus<float>{});
-        dnorm_norm_mean = cg::reduce(warp, dnorm_norm_mean, cg::plus<float>{});
+        dnorm_mean = sycl::reduce_over_group(
+            sycl::ext::oneapi::this_work_item::get_sub_group(), dnorm_mean,
+            sycl::plus<float>{});
+        dnorm_norm_mean = sycl::reduce_over_group(
+            sycl::ext::oneapi::this_work_item::get_sub_group(), dnorm_norm_mean,
+            sycl::plus<float>{});
         dnorm_mean = dnorm_mean / C;
         dnorm_norm_mean = dnorm_norm_mean / C;
 
         // now iterate again and accumulate all the gradients
-        for (int i = warp.thread_rank(); i < C; i += warp.size()) {
+        for (int i = sycl::ext::oneapi::this_work_item::get_sub_group()
+                         .get_local_linear_id();
+             i < C; i += sycl::ext::oneapi::this_work_item::get_sub_group()
+                             .get_local_linear_range()) {
             /*
-            DPCT1098:69: The '*' expression is used instead of the __ldcs call.
+            DPCT1098:73: The '*' expression is used instead of the __ldcs call.
             These two expressions do not provide the exact same functionality.
             Check the generated code for potential precision and/or performance
             issues.
             */
             float dout_i = (float)dout_bt[i];
             /*
-            DPCT1098:70: The '*' expression is used instead of the __ldcs call.
+            DPCT1098:74: The '*' expression is used instead of the __ldcs call.
             These two expressions do not provide the exact same functionality.
             Check the generated code for potential precision and/or performance
             issues.
@@ -827,7 +895,7 @@ void layernorm_backward_kernel6(Tdinp *dinp, Tparams *dweight, Tparams *dbias,
     // Accumulate into a FP32 scratchpad
     // BF16 atomics are potentially much slower... and this is more precise!
     /*
-    DPCT1065:66: Consider replacing sycl::nd_item::barrier() with
+    DPCT1065:70: Consider replacing sycl::nd_item::barrier() with
     sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better
     performance if there is no access to global memory.
     */
@@ -843,7 +911,7 @@ void layernorm_backward_kernel6(Tdinp *dinp, Tparams *dweight, Tparams *dbias,
             &scratch_dweight[i], dweight_shared[i]);
     }
     /*
-    DPCT1065:67: Consider replacing sycl::nd_item::barrier() with
+    DPCT1065:71: Consider replacing sycl::nd_item::barrier() with
     sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better
     performance if there is no access to global memory.
     */
@@ -854,7 +922,7 @@ void layernorm_backward_kernel6(Tdinp *dinp, Tparams *dweight, Tparams *dbias,
                 scratchFlag, 1);
     }
     /*
-    DPCT1065:68: Consider replacing sycl::nd_item::barrier() with
+    DPCT1065:72: Consider replacing sycl::nd_item::barrier() with
     sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better
     performance if there is no access to global memory.
     */
@@ -872,7 +940,7 @@ void layernorm_backward_kernel6(Tdinp *dinp, Tparams *dweight, Tparams *dbias,
 
 // Same as kernel 6 but without cooperative groups or templates
 /*
-DPCT1110:6: The total declared local variable size in device function
+DPCT1110:7: The total declared local variable size in device function
 layernorm_backward_kernel7 exceeds 128 bytes and may cause high register
 pressure. Consult with your hardware vendor to find the total register size
 available and adjust the code, or use smaller sub-group size to avoid high
@@ -913,7 +981,7 @@ void layernorm_backward_kernel7(floatX *dinp, floatX *dweight, floatX *dbias,
     }
     unsigned int *tmp_flag = (unsigned int*)(shared + C*2);
     /*
-    DPCT1065:71: Consider replacing sycl::nd_item::barrier() with
+    DPCT1065:75: Consider replacing sycl::nd_item::barrier() with
     sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better
     performance if there is no access to global memory.
     */
@@ -953,14 +1021,14 @@ void layernorm_backward_kernel7(floatX *dinp, floatX *dweight, floatX *dbias,
                       .get_local_range()
                       .get(0)) {
             /*
-            DPCT1098:75: The '*' expression is used instead of the __ldcs call.
+            DPCT1098:79: The '*' expression is used instead of the __ldcs call.
             These two expressions do not provide the exact same functionality.
             Check the generated code for potential precision and/or performance
             issues.
             */
             float dout_i = (float)dout_bt[i];
             /*
-            DPCT1098:76: The '*' expression is used instead of the __ldcs call.
+            DPCT1098:80: The '*' expression is used instead of the __ldcs call.
             These two expressions do not provide the exact same functionality.
             Check the generated code for potential precision and/or performance
             issues.
@@ -986,7 +1054,7 @@ void layernorm_backward_kernel7(floatX *dinp, floatX *dweight, floatX *dbias,
     // Accumulate into a FP32 scratchpad
     // BF16 atomics are potentially much slower... and this is more precise!
     /*
-    DPCT1065:72: Consider replacing sycl::nd_item::barrier() with
+    DPCT1065:76: Consider replacing sycl::nd_item::barrier() with
     sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better
     performance if there is no access to global memory.
     */
@@ -1002,7 +1070,7 @@ void layernorm_backward_kernel7(floatX *dinp, floatX *dweight, floatX *dbias,
             &scratch_dweight[i], dweight_shared[i]);
     }
     /*
-    DPCT1065:73: Consider replacing sycl::nd_item::barrier() with
+    DPCT1065:77: Consider replacing sycl::nd_item::barrier() with
     sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better
     performance if there is no access to global memory.
     */
@@ -1013,7 +1081,7 @@ void layernorm_backward_kernel7(floatX *dinp, floatX *dweight, floatX *dbias,
                 scratchFlag, 1);
     }
     /*
-    DPCT1065:74: Consider replacing sycl::nd_item::barrier() with
+    DPCT1065:78: Consider replacing sycl::nd_item::barrier() with
     sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better
     performance if there is no access to global memory.
     */
@@ -1029,7 +1097,7 @@ void layernorm_backward_kernel7(floatX *dinp, floatX *dweight, floatX *dbias,
 }
 
 /*
-DPCT1110:7: The total declared local variable size in device function
+DPCT1110:8: The total declared local variable size in device function
 layernorm_backward_kernel8 exceeds 128 bytes and may cause high register
 pressure. Consult with your hardware vendor to find the total register size
 available and adjust the code, or use smaller sub-group size to avoid high
@@ -1056,7 +1124,10 @@ void layernorm_backward_kernel8(floatX *dinp, floatX *dweight, floatX *dbias,
                             .get_local_range()
                             .get(0); // Thread index within the warp
     int warpsInGrid = item_ct1.get_group_range(2) * warpsInBlock;
-    int C_per_iteration = warpSize * x128::size;
+    int C_per_iteration = sycl::ext::oneapi::this_work_item::get_sub_group()
+                              .get_local_range()
+                              .get(0) *
+                          x128::size;
     int iterations_C = C / C_per_iteration;
 
     // the first half of shared memory is bias, second is weight
@@ -1071,7 +1142,7 @@ void layernorm_backward_kernel8(floatX *dinp, floatX *dweight, floatX *dbias,
     }
     unsigned int *tmp_flag = (unsigned int*)(shared + C*2);
     /*
-    DPCT1065:77: Consider replacing sycl::nd_item::barrier() with
+    DPCT1065:81: Consider replacing sycl::nd_item::barrier() with
     sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better
     performance if there is no access to global memory.
     */
@@ -1090,7 +1161,11 @@ void layernorm_backward_kernel8(floatX *dinp, floatX *dweight, floatX *dbias,
         // first: two reduce operations
         float dnorm_mean = 0.0f;
         float dnorm_norm_mean = 0.0f;
-        for (int i = warpThreadIdx * x128::size; i < C; i += warpSize * x128::size) {
+        for (int i = warpThreadIdx * x128::size; i < C;
+             i += sycl::ext::oneapi::this_work_item::get_sub_group()
+                      .get_local_range()
+                      .get(0) *
+                  x128::size) {
             x128 dout128_i   = load128(dout_bt + i);
             x128 inp128_i    = load128(inp_bt  + i);
             x128 weight128_i = load128(weight  + i);
@@ -1155,7 +1230,7 @@ void layernorm_backward_kernel8(floatX *dinp, floatX *dweight, floatX *dbias,
     // BF16 atomics are potentially much slower... and this is more precise!
     // todo - could potentially avoid the extra copy if floatX is FP32, fairly negligible though
     /*
-    DPCT1065:78: Consider replacing sycl::nd_item::barrier() with
+    DPCT1065:82: Consider replacing sycl::nd_item::barrier() with
     sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better
     performance if there is no access to global memory.
     */
@@ -1172,7 +1247,7 @@ void layernorm_backward_kernel8(floatX *dinp, floatX *dweight, floatX *dbias,
             &scratch_dweight[i], dweight_shared[i]);
     }
     /*
-    DPCT1065:79: Consider replacing sycl::nd_item::barrier() with
+    DPCT1065:83: Consider replacing sycl::nd_item::barrier() with
     sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better
     performance if there is no access to global memory.
     */
@@ -1183,7 +1258,7 @@ void layernorm_backward_kernel8(floatX *dinp, floatX *dweight, floatX *dbias,
             scratchFlag, item_ct1.get_group_range(2));
     }
     /*
-    DPCT1065:80: Consider replacing sycl::nd_item::barrier() with
+    DPCT1065:84: Consider replacing sycl::nd_item::barrier() with
     sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better
     performance if there is no access to global memory.
     */
@@ -1218,7 +1293,7 @@ void layernorm_backward_kernel8(floatX *dinp, floatX *dweight, floatX *dbias,
 }
 
 /*
-DPCT1110:8: The total declared local variable size in device function
+DPCT1110:9: The total declared local variable size in device function
 layernorm_backward_kernel9 exceeds 128 bytes and may cause high register
 pressure. Consult with your hardware vendor to find the total register size
 available and adjust the code, or use smaller sub-group size to avoid high
@@ -1323,7 +1398,7 @@ void layernorm_backward_kernel9(floatX *dinp, floatX *dweight, floatX *dbias,
                         norm_bti * dout_i;
                 }
                 /*
-                DPCT1118:9: SYCL group functions and algorithms must be
+                DPCT1118:10: SYCL group functions and algorithms must be
                 encountered in converged control flow. You may need to adjust
                 the code.
                 */
@@ -1344,7 +1419,7 @@ void layernorm_backward_kernel9(floatX *dinp, floatX *dweight, floatX *dbias,
                     dweight_shared[shared_index + x*WARP_SIZE] += dweight_tmp;
                 }
                 /*
-                DPCT1118:10: SYCL group functions and algorithms must be
+                DPCT1118:11: SYCL group functions and algorithms must be
                 encountered in converged control flow. You may need to adjust
                 the code.
                 */
@@ -1387,7 +1462,8 @@ void layernorm_backward_kernel9(floatX *dinp, floatX *dweight, floatX *dbias,
         // Reduction of the partial sums by the final block
         // todo - there isn't enough parallelism even inside that single SM...
         // ==> so could maybe split into another kernel with YET ANOTHER level of reduction?!
-        for(int i = threadIdx.x * f128::size; i < C; i+= BLOCK_SIZE * f128::size) {
+        for (int i = item_ct1.get_local_id(2) * f128::size; i < C;
+             i += BLOCK_SIZE * f128::size) {
             f128 dbias_accum = f128::zeros();
             f128 dweight_accum = f128::zeros();
 
@@ -1406,7 +1482,7 @@ void layernorm_backward_kernel9(floatX *dinp, floatX *dweight, floatX *dbias,
             store128(dweight_shared + i, dweight_accum);
         }
         /*
-        DPCT1118:11: SYCL group functions and algorithms must be encountered in
+        DPCT1118:12: SYCL group functions and algorithms must be encountered in
         converged control flow. You may need to adjust the code.
         */
         item_ct1.barrier(sycl::access::fence_space::local_space);
@@ -1442,7 +1518,7 @@ void layernorm_backward_kernel9(floatX *dinp, floatX *dweight, floatX *dbias,
 // warning: this kernel is _extremely_ close to getting register spills, so many "optimizations" turn out to be unhelpful
 // or need to be implemented in a very specific way.
 /*
-DPCT1110:12: The total declared local variable size in device function
+DPCT1110:13: The total declared local variable size in device function
 layernorm_backward_kernel10 exceeds 128 bytes and may cause high register
 pressure. Consult with your hardware vendor to find the total register size
 available and adjust the code, or use smaller sub-group size to avoid high
@@ -1478,7 +1554,8 @@ void layernorm_backward_kernel10(floatX *dinp, floatX *dweight, floatX *dbias,
     float* dweight_tmp_shared = shared + 2 * rounded_C + f128::size * BLOCK_SIZE - 2 * WARP_SIZE * f128::size;
 
     // init shared memory to zero
-    for(int i = threadIdx.x * f128::size; i < rounded_C; i += BLOCK_SIZE * f128::size) {
+    for (int i = item_ct1.get_local_id(2) * f128::size; i < rounded_C;
+         i += BLOCK_SIZE * f128::size) {
         store128(dbias_shared + i, f128::zeros());
         store128(dweight_shared + i, f128::zeros());
     }
@@ -1542,23 +1619,33 @@ void layernorm_backward_kernel10(floatX *dinp, floatX *dweight, floatX *dbias,
                 }
 
                 if (warpId != 0) {
-                    store128(dbias_tmp_shared + threadIdx.x * f128::size, dbias_f);
+                    store128(dbias_tmp_shared +
+                                 item_ct1.get_local_id(2) * f128::size,
+                             dbias_f);
                     // this seems to generate a 64-bit store, instead of 128-bit.
                     // however, forcing 128-bit (e.g., using inline ptx), results in register
                     // spilling and much worse performance, so we'll keep it like this for now
                     // but ideally, we could reduce the register pressure a little.
-                    store128(dweight_tmp_shared + threadIdx.x * f128::size, dweight_f);
+                    store128(dweight_tmp_shared +
+                                 item_ct1.get_local_id(2) * f128::size,
+                             dweight_f);
                 }
                 /*
-                DPCT1118:13: SYCL group functions and algorithms must be
+                DPCT1118:14: SYCL group functions and algorithms must be
                 encountered in converged control flow. You may need to adjust
                 the code.
                 */
                 item_ct1.barrier(sycl::access::fence_space::local_space);
                 if (warpId == 0) {
                     for (int j = 1; j < warpsInBlock; j++) {
-                        f128 dbias_tmp = load128(dbias_tmp_shared + f128::size * (threadIdx.x + j * WARP_SIZE));
-                        f128 dweight_tmp = load128(dweight_tmp_shared + f128::size * (threadIdx.x + j * WARP_SIZE));
+                        f128 dbias_tmp =
+                            load128(dbias_tmp_shared +
+                                    f128::size * (item_ct1.get_local_id(2) +
+                                                  j * WARP_SIZE));
+                        f128 dweight_tmp =
+                            load128(dweight_tmp_shared +
+                                    f128::size * (item_ct1.get_local_id(2) +
+                                                  j * WARP_SIZE));
                         for(int i = 0; i < f128::size; ++i) {
                             dbias_f[i] += dbias_tmp[i];
                             dweight_f[i] += dweight_tmp[i];
@@ -1566,7 +1653,7 @@ void layernorm_backward_kernel10(floatX *dinp, floatX *dweight, floatX *dbias,
                     }
                 }
                 /*
-                DPCT1118:14: SYCL group functions and algorithms must be
+                DPCT1118:15: SYCL group functions and algorithms must be
                 encountered in converged control flow. You may need to adjust
                 the code.
                 */
@@ -1597,7 +1684,8 @@ void layernorm_backward_kernel10(floatX *dinp, floatX *dweight, floatX *dbias,
     scratch += 32;
     float* scratch_dbias = scratch;
     float* scratch_dweight = scratch + C;
-    for(int i = threadIdx.x * f128::size; i < C; i += BLOCK_SIZE * f128::size) {
+    for (int i = item_ct1.get_local_id(2) * f128::size; i < C;
+         i += BLOCK_SIZE * f128::size) {
         // Write to global memory in the same "shared memory banking friendly" order
         store128(scratch_dbias + i + 2 * C * item_ct1.get_group(2),
                  load128(dbias_shared + i));
@@ -1617,7 +1705,8 @@ void layernorm_backward_kernel10(floatX *dinp, floatX *dweight, floatX *dbias,
         // Reduction of the partial sums by the final block
         // todo - there isn't enough parallelism even inside that single SM...
         // ==> so could maybe split into another kernel with YET ANOTHER level of reduction?!
-        for(int i = threadIdx.x * f128::size; i < C; i += BLOCK_SIZE * f128::size) {
+        for (int i = item_ct1.get_local_id(2) * f128::size; i < C;
+             i += BLOCK_SIZE * f128::size) {
             f128 dbias_accum = f128::zeros();
             f128 dweight_accum = f128::zeros();
 
@@ -1636,7 +1725,7 @@ void layernorm_backward_kernel10(floatX *dinp, floatX *dweight, floatX *dbias,
             store128(dweight_shared + i, dweight_accum);
         }
         /*
-        DPCT1118:15: SYCL group functions and algorithms must be encountered in
+        DPCT1118:16: SYCL group functions and algorithms must be encountered in
         converged control flow. You may need to adjust the code.
         */
         item_ct1.barrier(sycl::access::fence_space::local_space);
@@ -1677,7 +1766,7 @@ void layernorm_backward1(float* dinp, float* dweight, float* dbias,
     const int N = B * T;
     const int grid_size = ceil_div(N, block_size);
     /*
-    DPCT1049:16: The work-group size passed to the SYCL kernel may exceed the
+    DPCT1049:17: The work-group size passed to the SYCL kernel may exceed the
     limit. To get the device limit, query info::device::max_work_group_size.
     Adjust the work-group size if needed.
     */
@@ -1698,19 +1787,21 @@ void layernorm_backward2(Tdinp* dinp, Tparams* dweight, Tparams* dbias,
     const int N = B * T;
     const int grid_size = ceil_div(32*N, block_size);
     /*
-    DPCT1083:18: The size of local memory in the migrated code may be different
+    DPCT1083:19: The size of local memory in the migrated code may be different
     from the original code. Check that the allocated memory size in the migrated
     code is correct.
     */
     size_t shared_mem_size = 2 * C * sizeof(float);
     float* dweight_tmp;
     float* dbias_tmp;
-    cudaCheck(cudaMalloc(&dweight_tmp, C * sizeof(float)));
-    cudaCheck(cudaMalloc(&dbias_tmp, C * sizeof(float)));
+    cudaCheck(DPCT_CHECK_ERROR(dweight_tmp = sycl::malloc_device<float>(
+                                   C, dpct::get_in_order_queue())));
+    cudaCheck(DPCT_CHECK_ERROR(
+        dbias_tmp = sycl::malloc_device<float>(C, dpct::get_in_order_queue())));
     dpct::get_in_order_queue().memset(dweight_tmp, 0, C * sizeof(float)).wait();
     dpct::get_in_order_queue().memset(dbias_tmp, 0, C * sizeof(float)).wait();
     /*
-    DPCT1049:17: The work-group size passed to the SYCL kernel may exceed the
+    DPCT1049:18: The work-group size passed to the SYCL kernel may exceed the
     limit. To get the device limit, query info::device::max_work_group_size.
     Adjust the work-group size if needed.
     */
@@ -1734,7 +1825,7 @@ void layernorm_backward2(Tdinp* dinp, Tparams* dweight, Tparams* dbias,
                         });
         });
     /*
-    DPCT1049:19: The work-group size passed to the SYCL kernel may exceed the
+    DPCT1049:20: The work-group size passed to the SYCL kernel may exceed the
     limit. To get the device limit, query info::device::max_work_group_size.
     Adjust the work-group size if needed.
     */
@@ -1757,13 +1848,13 @@ void layernorm_backward3(Tdinp* dinp, Tparams* dweight, Tparams* dbias,
                         int B, int T, int C, int block_size) {
     const int grid_size = (1024/block_size) * cuda_num_SMs;
     /*
-    DPCT1083:21: The size of local memory in the migrated code may be different
+    DPCT1083:22: The size of local memory in the migrated code may be different
     from the original code. Check that the allocated memory size in the migrated
     code is correct.
     */
     size_t shared_mem_size = 2 * C * sizeof(float);
     /*
-    DPCT1049:20: The work-group size passed to the SYCL kernel may exceed the
+    DPCT1049:21: The work-group size passed to the SYCL kernel may exceed the
     limit. To get the device limit, query info::device::max_work_group_size.
     Adjust the work-group size if needed.
     */
@@ -1794,13 +1885,13 @@ void layernorm_backward4(Tdinp* dinp, Tparams* dweight, Tparams* dbias,
                         int B, int T, int C, int block_size) {
         const int grid_size = (1024/block_size) * cuda_num_SMs;
         /*
-        DPCT1083:23: The size of local memory in the migrated code may be
+        DPCT1083:24: The size of local memory in the migrated code may be
         different from the original code. Check that the allocated memory size
         in the migrated code is correct.
         */
         size_t shared_mem_size = 2 * C * sizeof(float);
         /*
-        DPCT1049:22: The work-group size passed to the SYCL kernel may exceed
+        DPCT1049:23: The work-group size passed to the SYCL kernel may exceed
         the limit. To get the device limit, query
         info::device::max_work_group_size. Adjust the work-group size if needed.
         */
@@ -1831,7 +1922,7 @@ void layernorm_backward5(Tdinp* dinp, Tparams* dweight, Tparams* dbias, float* s
                         int B, int T, int C, int block_size) {
         const int grid_size = 1 * cuda_num_SMs; // only support 1 block per SM for simplicity, 1024 threads is best anyway
         /*
-        DPCT1083:25: The size of local memory in the migrated code may be
+        DPCT1083:26: The size of local memory in the migrated code may be
         different from the original code. Check that the allocated memory size
         in the migrated code is correct.
         */
@@ -1840,7 +1931,7 @@ void layernorm_backward5(Tdinp* dinp, Tparams* dweight, Tparams* dbias, float* s
             .memset(scratch, 0, (grid_size * 2 * C + 1) * sizeof(float))
             .wait();
         /*
-        DPCT1049:24: The work-group size passed to the SYCL kernel may exceed
+        DPCT1049:25: The work-group size passed to the SYCL kernel may exceed
         the limit. To get the device limit, query
         info::device::max_work_group_size. Adjust the work-group size if needed.
         */
@@ -1852,15 +1943,16 @@ void layernorm_backward5(Tdinp* dinp, Tparams* dweight, Tparams* dbias, float* s
                     sycl::nd_range<3>(sycl::range<3>(1, 1, grid_size) *
                                           sycl::range<3>(1, 1, block_size),
                                       sycl::range<3>(1, 1, block_size)),
-                    [=](sycl::nd_item<3> item_ct1) {
-                            layernorm_backward_kernel5(
-                                dinp, dweight, dbias, scratch, dout, inp,
-                                weight, mean, rstd, B, T, C,
-                                dpct_local_acc_ct1
-                                    .get_multi_ptr<
-                                        sycl::access::decorated::no>()
-                                    .get());
-                    });
+                    [=](sycl::nd_item<3> item_ct1)
+                        [[sycl::reqd_sub_group_size(32)]] {
+                                layernorm_backward_kernel5(
+                                    dinp, dweight, dbias, scratch, dout, inp,
+                                    weight, mean, rstd, B, T, C,
+                                    dpct_local_acc_ct1
+                                        .get_multi_ptr<
+                                            sycl::access::decorated::no>()
+                                        .get());
+                        });
         });
 }
 
@@ -1870,7 +1962,7 @@ void layernorm_backward6(Tdinp* dinp, Tparams* dweight, Tparams* dbias, float* s
                         int B, int T, int C, int block_size) {
         const int grid_size = (1024/block_size) * cuda_num_SMs;
         /*
-        DPCT1083:27: The size of local memory in the migrated code may be
+        DPCT1083:28: The size of local memory in the migrated code may be
         different from the original code. Check that the allocated memory size
         in the migrated code is correct.
         */
@@ -1883,7 +1975,7 @@ void layernorm_backward6(Tdinp* dinp, Tparams* dweight, Tparams* dbias, float* s
             .wait();
 
         /*
-        DPCT1049:26: The work-group size passed to the SYCL kernel may exceed
+        DPCT1049:27: The work-group size passed to the SYCL kernel may exceed
         the limit. To get the device limit, query
         info::device::max_work_group_size. Adjust the work-group size if needed.
         */
@@ -1895,15 +1987,16 @@ void layernorm_backward6(Tdinp* dinp, Tparams* dweight, Tparams* dbias, float* s
                     sycl::nd_range<3>(sycl::range<3>(1, 1, grid_size) *
                                           sycl::range<3>(1, 1, block_size),
                                       sycl::range<3>(1, 1, block_size)),
-                    [=](sycl::nd_item<3> item_ct1) {
-                            layernorm_backward_kernel6(
-                                dinp, dweight, dbias, scratch, dout, inp,
-                                weight, mean, rstd, B, T, C,
-                                dpct_local_acc_ct1
-                                    .get_multi_ptr<
-                                        sycl::access::decorated::no>()
-                                    .get());
-                    });
+                    [=](sycl::nd_item<3> item_ct1)
+                        [[sycl::reqd_sub_group_size(32)]] {
+                                layernorm_backward_kernel6(
+                                    dinp, dweight, dbias, scratch, dout, inp,
+                                    weight, mean, rstd, B, T, C,
+                                    dpct_local_acc_ct1
+                                        .get_multi_ptr<
+                                            sycl::access::decorated::no>()
+                                        .get());
+                        });
         });
 }
 
@@ -1913,7 +2006,7 @@ void layernorm_backward7(Tdinp* dinp, Tparams* dweight, Tparams* dbias, float* s
                         int B, int T, int C, int block_size) {
         const int grid_size = (1024/block_size) * cuda_num_SMs;
         /*
-        DPCT1083:29: The size of local memory in the migrated code may be
+        DPCT1083:30: The size of local memory in the migrated code may be
         different from the original code. Check that the allocated memory size
         in the migrated code is correct.
         */
@@ -1926,7 +2019,7 @@ void layernorm_backward7(Tdinp* dinp, Tparams* dweight, Tparams* dbias, float* s
             .wait();
 
         /*
-        DPCT1049:28: The work-group size passed to the SYCL kernel may exceed
+        DPCT1049:29: The work-group size passed to the SYCL kernel may exceed
         the limit. To get the device limit, query
         info::device::max_work_group_size. Adjust the work-group size if needed.
         */
@@ -1957,7 +2050,7 @@ void layernorm_backward8(Tdinp* dinp, Tparams* dweight, Tparams* dbias, float* s
                         int B, int T, int C, int block_size) {
         const int grid_size = (1024/block_size) * cuda_num_SMs;
         /*
-        DPCT1083:31: The size of local memory in the migrated code may be
+        DPCT1083:32: The size of local memory in the migrated code may be
         different from the original code. Check that the allocated memory size
         in the migrated code is correct.
         */
@@ -1970,7 +2063,7 @@ void layernorm_backward8(Tdinp* dinp, Tparams* dweight, Tparams* dbias, float* s
             .wait();
 
         /*
-        DPCT1049:30: The work-group size passed to the SYCL kernel may exceed
+        DPCT1049:31: The work-group size passed to the SYCL kernel may exceed
         the limit. To get the device limit, query
         info::device::max_work_group_size. Adjust the work-group size if needed.
         */
@@ -2003,7 +2096,7 @@ void layernorm_backward9(Tdinp* dinp, Tparams* dweight, Tparams* dbias, float* s
         assert(C % (32 * x128::size) == 0  && "Channels must be divisible by (32 * x128::size)");
         const int grid_size = (1024/block_size) * cuda_num_SMs; // todo - heuristics for other GPUs?
         /*
-        DPCT1083:33: The size of local memory in the migrated code may be
+        DPCT1083:34: The size of local memory in the migrated code may be
         different from the original code. Check that the allocated memory size
         in the migrated code is correct.
         */
@@ -2013,7 +2106,7 @@ void layernorm_backward9(Tdinp* dinp, Tparams* dweight, Tparams* dbias, float* s
             .memset(scratch, 0, 1 * sizeof(float))
             .wait(); // just need to memset the flag for this version
         /*
-        DPCT1049:32: The work-group size passed to the SYCL kernel may exceed
+        DPCT1049:33: The work-group size passed to the SYCL kernel may exceed
         the limit. To get the device limit, query
         info::device::max_work_group_size. Adjust the work-group size if needed.
         */
@@ -2050,14 +2143,21 @@ void layernorm_backward10(Tdinp* dinp, Tparams* dweight, Tparams* dbias, float* 
         //assert(C % (32 * x128::size) == 0  && "Channels must be divisible by (32 * x128::size)");
         const int grid_size = (1024/block_size) * cuda_num_SMs; // todo - heuristics for other GPUs?
         size_t rounded_C = ceil_div(C, (32 * x128::size)) * (32 * x128::size);
-        size_t shared_mem_size = (2 * rounded_C + 2 * (block_size - 32) * f128::size) * sizeof(float);
+        /*
+        DPCT1083:36: The size of local memory in the migrated code may be
+        different from the original code. Check that the allocated memory size
+        in the migrated code is correct.
+        */
+        size_t shared_mem_size =
+            (2 * rounded_C + 2 * (block_size - 32) * f128::size) *
+            sizeof(float);
 
         cudaCheck(DPCT_CHECK_ERROR(
             dpct::get_in_order_queue()
                 .memset(scratch, 0, 1 * sizeof(float))
                 .wait())); // just need to memset the flag for this version
         /*
-        DPCT1049:34: The work-group size passed to the SYCL kernel may exceed
+        DPCT1049:35: The work-group size passed to the SYCL kernel may exceed
         the limit. To get the device limit, query
         info::device::max_work_group_size. Adjust the work-group size if needed.
         */
@@ -2081,7 +2181,7 @@ void layernorm_backward10(Tdinp* dinp, Tparams* dweight, Tparams* dbias, float* 
                         });
         });
         /*
-        DPCT1010:81: SYCL uses exceptions to report errors and does not use the
+        DPCT1010:85: SYCL uses exceptions to report errors and does not use the
         error codes. The cudaGetLastError function call was replaced with 0. You
         need to rewrite this code.
         */
@@ -2134,7 +2234,7 @@ void layernorm_backward(int kernel_num,
             exit(1);
     }
     /*
-    DPCT1010:82: SYCL uses exceptions to report errors and does not use the
+    DPCT1010:86: SYCL uses exceptions to report errors and does not use the
     error codes. The cudaGetLastError function call was replaced with 0. You
     need to rewrite this code.
     */
@@ -2174,33 +2274,53 @@ int main(int argc, char** argv) {
     if (!fout) { perror(argv[2]); return 2; }
     float *mean = (float*)malloc((size_t)B * T * sizeof(float)); float *rstd = (float*)malloc((size_t)B * T * sizeof(float)); for (int b = 0; b < B; ++b) { for (int t = 0; t < T; ++t) { const float *x = inp + (size_t)b * T * C + (size_t)t * C; float m = 0.0f; for (int i = 0; i < C; ++i) { m += x[i]; } m /= C; float v = 0.0f; for (int i = 0; i < C; ++i) { float d = x[i] - m; v += d * d; } v /= C; float s = 1.0f / sqrtf(v + 1e-5f); mean[(size_t)b * T + t] = m; rstd[(size_t)b * T + t] = s; } }
     float* d_inp;
-    cudaCheck(cudaMalloc(&d_inp, sizeof(float) * (size_t)(B*T*C)));
+    cudaCheck(
+        DPCT_CHECK_ERROR(d_inp = sycl::malloc_device<float>(
+                             (size_t)(B * T * C), dpct::get_in_order_queue())));
     cudaCheck(DPCT_CHECK_ERROR(
         dpct::get_in_order_queue()
             .memcpy(d_inp, inp, sizeof(float) * (size_t)(B * T * C))
             .wait()));
     float* d_weight;
-    cudaCheck(cudaMalloc(&d_weight, sizeof(float) * (size_t)(C)));
+    cudaCheck(DPCT_CHECK_ERROR(d_weight = sycl::malloc_device<float>(
+                                   (size_t)(C), dpct::get_in_order_queue())));
     cudaCheck(DPCT_CHECK_ERROR(
         dpct::get_in_order_queue()
             .memcpy(d_weight, weight, sizeof(float) * (size_t)(C))
             .wait()));
     float* d_dout;
-    cudaCheck(cudaMalloc(&d_dout, sizeof(float) * (size_t)(B*T*C)));
+    cudaCheck(
+        DPCT_CHECK_ERROR(d_dout = sycl::malloc_device<float>(
+                             (size_t)(B * T * C), dpct::get_in_order_queue())));
     cudaCheck(DPCT_CHECK_ERROR(
         dpct::get_in_order_queue()
             .memcpy(d_dout, dout, sizeof(float) * (size_t)(B * T * C))
             .wait()));
     float* dinp = (float*)malloc(sizeof(float) * (size_t)(B*T*C));
     float* d_dinp;
-    cudaCheck(cudaMalloc(&d_dinp, sizeof(float) * (size_t)(B*T*C)));
+    cudaCheck(
+        DPCT_CHECK_ERROR(d_dinp = sycl::malloc_device<float>(
+                             (size_t)(B * T * C), dpct::get_in_order_queue())));
     float* dweight = (float*)malloc(sizeof(float) * (size_t)(C));
     float* d_dweight;
-    cudaCheck(cudaMalloc(&d_dweight, sizeof(float) * (size_t)(C)));
+    cudaCheck(DPCT_CHECK_ERROR(d_dweight = sycl::malloc_device<float>(
+                                   (size_t)(C), dpct::get_in_order_queue())));
     float* dbias = (float*)malloc(sizeof(float) * (size_t)(C));
     float* d_dbias;
-    cudaCheck(cudaMalloc(&d_dbias, sizeof(float) * (size_t)(C)));
-    floatX *d_mean; floatX *d_rstd; float *d_scratch; cudaCheck(cudaMalloc(&d_mean, (size_t)B * T * sizeof(floatX))); cudaCheck(cudaMalloc(&d_rstd, (size_t)B * T * sizeof(floatX))); cudaCheck(memcpy_convert(d_mean, mean, (size_t)B * T)); cudaCheck(memcpy_convert(d_rstd, rstd, (size_t)B * T)); cudaCheck(cudaMalloc(&d_scratch, (size_t)(1024/32) * (size_t)cuda_num_SMs * (size_t)(2*C+1) * sizeof(float)));
+    cudaCheck(DPCT_CHECK_ERROR(d_dbias = sycl::malloc_device<float>(
+                                   (size_t)(C), dpct::get_in_order_queue())));
+    floatX *d_mean; floatX * d_rstd; float * d_scratch; cudaCheck(
+        DPCT_CHECK_ERROR(d_mean = sycl::malloc_device<floatX>(
+                             (size_t)B * T, dpct::get_in_order_queue())));
+        cudaCheck(
+            DPCT_CHECK_ERROR(d_rstd = sycl::malloc_device<floatX>(
+                                 (size_t)B * T, dpct::get_in_order_queue())));
+        cudaCheck(memcpy_convert(d_mean, mean, (size_t)B * T));
+        cudaCheck(memcpy_convert(d_rstd, rstd, (size_t)B * T)); cudaCheck(
+            DPCT_CHECK_ERROR(d_scratch = sycl::malloc_device<float>(
+                                 (size_t)(1024 / 32) * (size_t)cuda_num_SMs *
+                                     (size_t)(2 * C + 1),
+                                 dpct::get_in_order_queue())));
     const int variants[] = {2, 3, 4, 5, 6, 7, 8, 9, 10};
     for (int vi = 0; vi < 9; vi++) {
         const int k = variants[vi];
@@ -2218,7 +2338,7 @@ int main(int argc, char** argv) {
                 .wait()));
         layernorm_backward(k, d_dinp, d_dweight, d_dbias, d_scratch, d_dout, d_inp, d_weight, d_mean, d_rstd, B, T, C, 256);
         /*
-        DPCT1010:83: SYCL uses exceptions to report errors and does not use the
+        DPCT1010:87: SYCL uses exceptions to report errors and does not use the
         error codes. The cudaGetLastError function call was replaced with 0. You
         need to rewrite this code.
         */

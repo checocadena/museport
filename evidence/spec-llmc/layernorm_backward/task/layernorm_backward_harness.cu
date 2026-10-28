@@ -19,6 +19,7 @@ version 2 moves a lot of reduction to shared memory over global memory
 #include <cooperative_groups/reduce.h>
 
 // museport: fp32 build (#define ENABLE_BF16 removed)
+#include <cuda_bf16.h>  // museport: needed by the fp32 build
 #include "common.h"
 
 // ----------------------------------------------------------------------------
