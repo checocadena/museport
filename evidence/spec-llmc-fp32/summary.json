@@ -1,7 +1,7 @@
 {
   "model": "muse-spark-1.3",
-  "spent_usd": 0.1022,
-  "gpu_usd": 0.003,
+  "spent_usd": 0.3014,
+  "gpu_usd": 0.007,
   "examples": [
     "gelu_forward.cu",
     "global_norm.cu"
@@ -54,6 +54,14 @@
         2
       ],
       "dropped_variants": []
+    },
+    {
+      "file": "trimat_forward.cu",
+      "proven": false,
+      "proven_by": null,
+      "attempts": 3,
+      "cost_usd": 0.199172,
+      "gpu_usd": 0.004
     },
     {
       "file": "matmul_backward_bias.cu",
