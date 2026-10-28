@@ -926,7 +926,7 @@ int main(int argc, char** argv) {
     fclose(fin);
     FILE* fout = fopen(argv[2], "wb");
     if (!fout) { perror(argv[2]); return 2; }
-    float* probs = (float*)malloc((size_t)B * T * V * sizeof(float)); for (int j = 0; j < B * T; ++j) { for (int k = 0; k < 3; ++k) { int idx = rand() % V; logits[j * V + idx] *= 20.0f; } }
+    float* probs = (float*)malloc((size_t)B * T * V * sizeof(float)); for (size_t j = 0; j < (size_t)B * T; ++j) { for (int k = 0; k < 3; ++k) { size_t idx = (j * 1315423911u + (size_t)k * 2654435761u + 12345u) % (size_t)V; logits[j * (size_t)V + idx] *= 20.0f; } }
     float* d_logits;
     cudaCheck(
         DPCT_CHECK_ERROR(d_logits = sycl::malloc_device<float>(

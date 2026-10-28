@@ -1838,7 +1838,7 @@ Replacements:
     NewHostVarName:  ''
     BlockLevelFormatFlag: false
   - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
-    Offset:          30622
+    Offset:          30698
     Length:          54
     ReplacementText: 'DPCT_CHECK_ERROR(d_logits = sycl::malloc_device<float>((size_t)(B*T*V), dpct::get_in_order_queue()))'
     ConstantFlag:    ''
@@ -1847,7 +1847,7 @@ Replacements:
     NewHostVarName:  ''
     BlockLevelFormatFlag: false
   - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
-    Offset:          30693
+    Offset:          30769
     Length:          85
     ReplacementText: 'DPCT_CHECK_ERROR(dpct::get_in_order_queue().memcpy(d_logits, logits, sizeof(float) * (size_t)(B*T*V)).wait())'
     ConstantFlag:    ''
@@ -1856,7 +1856,7 @@ Replacements:
     NewHostVarName:  ''
     BlockLevelFormatFlag: false
   - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
-    Offset:          30817
+    Offset:          30893
     Length:          53
     ReplacementText: 'DPCT_CHECK_ERROR(d_dlosses = sycl::malloc_device<float>((size_t)(B*T), dpct::get_in_order_queue()))'
     ConstantFlag:    ''
@@ -1865,7 +1865,7 @@ Replacements:
     NewHostVarName:  ''
     BlockLevelFormatFlag: false
   - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
-    Offset:          30887
+    Offset:          30963
     Length:          85
     ReplacementText: 'DPCT_CHECK_ERROR(dpct::get_in_order_queue().memcpy(d_dlosses, dlosses, sizeof(float) * (size_t)(B*T)).wait())'
     ConstantFlag:    ''
@@ -1874,7 +1874,7 @@ Replacements:
     NewHostVarName:  ''
     BlockLevelFormatFlag: false
   - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
-    Offset:          31009
+    Offset:          31085
     Length:          51
     ReplacementText: 'DPCT_CHECK_ERROR(d_targets = sycl::malloc_device<int>((size_t)(B*T), dpct::get_in_order_queue()))'
     ConstantFlag:    ''
@@ -1883,7 +1883,7 @@ Replacements:
     NewHostVarName:  ''
     BlockLevelFormatFlag: false
   - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
-    Offset:          31077
+    Offset:          31153
     Length:          83
     ReplacementText: 'DPCT_CHECK_ERROR(dpct::get_in_order_queue().memcpy(d_targets, targets, sizeof(int) * (size_t)(B*T)).wait())'
     ConstantFlag:    ''
@@ -1892,7 +1892,7 @@ Replacements:
     NewHostVarName:  ''
     BlockLevelFormatFlag: false
   - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
-    Offset:          31265
+    Offset:          31341
     Length:          52
     ReplacementText: 'DPCT_CHECK_ERROR(d_losses = sycl::malloc_device<float>((size_t)(B*T), dpct::get_in_order_queue()))'
     ConstantFlag:    ''
@@ -1901,7 +1901,7 @@ Replacements:
     NewHostVarName:  ''
     BlockLevelFormatFlag: false
   - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
-    Offset:          31426
+    Offset:          31502
     Length:          55
     ReplacementText: 'DPCT_CHECK_ERROR(d_dlogits = sycl::malloc_device<float>((size_t)(B*T*V), dpct::get_in_order_queue()))'
     ConstantFlag:    ''
@@ -1910,7 +1910,7 @@ Replacements:
     NewHostVarName:  ''
     BlockLevelFormatFlag: false
   - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
-    Offset:          31619
+    Offset:          31695
     Length:          10
     ReplacementText: 'DPCT_CHECK_ERROR(dpct::get_in_order_queue().memset'
     ConstantFlag:    ''
@@ -1919,7 +1919,7 @@ Replacements:
     NewHostVarName:  ''
     BlockLevelFormatFlag: false
   - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
-    Offset:          31673
+    Offset:          31749
     Length:          0
     ReplacementText: '.wait())'
     ConstantFlag:    ''
@@ -1928,7 +1928,7 @@ Replacements:
     NewHostVarName:  ''
     BlockLevelFormatFlag: false
   - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
-    Offset:          31694
+    Offset:          31770
     Length:          10
     ReplacementText: 'DPCT_CHECK_ERROR(dpct::get_in_order_queue().memset'
     ConstantFlag:    ''
@@ -1937,7 +1937,7 @@ Replacements:
     NewHostVarName:  ''
     BlockLevelFormatFlag: false
   - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
-    Offset:          31751
+    Offset:          31827
     Length:          0
     ReplacementText: '.wait())'
     ConstantFlag:    ''
@@ -1946,7 +1946,7 @@ Replacements:
     NewHostVarName:  ''
     BlockLevelFormatFlag: false
   - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
-    Offset:          31853
+    Offset:          31929
     Length:          0
     ReplacementText: "        /*\n        DPCT1010:34: SYCL uses exceptions to report errors and does not use the error codes. The cudaGetLastError function call was replaced with 0. You need to rewrite this code.\n        */\n"
     ConstantFlag:    ''
@@ -1955,7 +1955,7 @@ Replacements:
     NewHostVarName:  ''
     BlockLevelFormatFlag: false
   - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
-    Offset:          31871
+    Offset:          31947
     Length:          18
     ReplacementText: '0'
     ConstantFlag:    ''
@@ -1964,7 +1964,7 @@ Replacements:
     NewHostVarName:  ''
     BlockLevelFormatFlag: false
   - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
-    Offset:          31910
+    Offset:          31986
     Length:          23
     ReplacementText: 'DPCT_CHECK_ERROR(dpct::get_current_device().queues_wait_and_throw())'
     ConstantFlag:    ''
@@ -1973,7 +1973,7 @@ Replacements:
     NewHostVarName:  ''
     BlockLevelFormatFlag: false
   - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
-    Offset:          31954
+    Offset:          32030
     Length:          83
     ReplacementText: 'DPCT_CHECK_ERROR(dpct::get_in_order_queue().memcpy(losses, d_losses, sizeof(float) * (size_t)(B*T)).wait())'
     ConstantFlag:    ''
@@ -1982,7 +1982,7 @@ Replacements:
     NewHostVarName:  ''
     BlockLevelFormatFlag: false
   - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
-    Offset:          32118
+    Offset:          32194
     Length:          87
     ReplacementText: 'DPCT_CHECK_ERROR(dpct::get_in_order_queue().memcpy(dlogits, d_dlogits, sizeof(float) * (size_t)(B*T*V)).wait())'
     ConstantFlag:    ''
@@ -2829,7 +2829,7 @@ Replacements:
     BlockLevelFormatFlag: false
 MainSourceFilesDigest:
   - MainSourceFile:  '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
-    Digest:          542ff5fba292774240c65a0d76404e3f
+    Digest:          76fdf04e06a6dbfcd006eac72710e8a6
     HasCUDASyntax:   true
 DpctVersion:     21.0.0
 SDKVersionMajor: '12'

@@ -36,6 +36,6 @@
       "T": 32,
       "V": 2048
     },
-    "note": "B=4, T=32 (llm.c: B=8, T=1024); V=2048 (llm.c: V=50257, P=50304); V multiple of 64 so P==V and no 2D unpadding needed, rows stay 16B-aligned for float4/x128; probs is scratch allocated in host_prep; outlier x20 injection kept in host_prep; block size 256."
+    "note": "B=4, T=32 (llm.c: B=8, T=1024); V=2048 (llm.c: V=50257, P=50304); V multiple of 64 so P==V and no 2D unpadding needed, rows stay 16B-aligned for float4/x128; probs is scratch allocated in host_prep; deterministic 3x outlier x20 injection per row without rand() so reference and harness agree; block size 256."
   }
 }
