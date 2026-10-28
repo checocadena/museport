@@ -1,0 +1,85 @@
+{
+  "cpu_call": "layernorm_forward_cpu(out, mean, rstd, inp, weight, bias, B, T, C)",
+  "cpu_functions": [
+    "layernorm_forward_cpu"
+  ],
+  "dropped_variants": [],
+  "extra_includes": [],
+  "gpu_call": "layernorm_forward(k, d_out, d_mean, d_rstd, d_inp, d_weight, d_bias, B, T, C, 256)",
+  "gpu_prelude": "",
+  "host_prep": "",
+  "inputs": [
+    {
+      "count": "B*T*C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "uniform",
+      "name": "inp"
+    },
+    {
+      "count": "C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "uniform",
+      "name": "weight"
+    },
+    {
+      "count": "C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "uniform",
+      "name": "bias"
+    }
+  ],
+  "keep_cublas": false,
+  "keep_cublaslt": false,
+  "keep_in_harness": [],
+  "note": "B=4, T=256 (llm.c: B=8, T=1024); C=768 as in llm.c.",
+  "output_post": "",
+  "outputs": [
+    {
+      "count": "B*T*C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "zeros",
+      "name": "out"
+    },
+    {
+      "count": "B*T",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "zeros",
+      "name": "mean"
+    },
+    {
+      "count": "B*T",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "zeros",
+      "name": "rstd"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "B",
+      "value": 4
+    },
+    {
+      "name": "T",
+      "value": 256
+    },
+    {
+      "name": "C",
+      "value": 768
+    }
+  ],
+  "tol": 1e-05,
+  "variants": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ]
+}

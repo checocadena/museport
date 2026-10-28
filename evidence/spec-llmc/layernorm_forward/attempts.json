@@ -1,0 +1,119 @@
+[
+  {
+    "attempt": 1,
+    "answer": {
+      "cpu_call": "layernorm_forward_cpu(out, mean, rstd, inp, weight, bias, B, T, C)",
+      "cpu_functions": [
+        "layernorm_forward_cpu"
+      ],
+      "dropped_variants": [],
+      "extra_includes": [],
+      "gpu_call": "layernorm_forward(k, d_out, d_mean, d_rstd, d_inp, d_weight, d_bias, B, T, C, 256)",
+      "gpu_prelude": "",
+      "host_prep": "",
+      "inputs": [
+        {
+          "count": "B*T*C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "uniform",
+          "name": "inp"
+        },
+        {
+          "count": "C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "uniform",
+          "name": "weight"
+        },
+        {
+          "count": "C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "uniform",
+          "name": "bias"
+        }
+      ],
+      "keep_cublas": false,
+      "keep_cublaslt": false,
+      "keep_in_harness": [],
+      "note": "B=4, T=256 (llm.c: B=8, T=1024); C=768 as in llm.c.",
+      "output_post": "",
+      "outputs": [
+        {
+          "count": "B*T*C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "zeros",
+          "name": "out"
+        },
+        {
+          "count": "B*T",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "zeros",
+          "name": "mean"
+        },
+        {
+          "count": "B*T",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "zeros",
+          "name": "rstd"
+        }
+      ],
+      "sizes": [
+        {
+          "name": "B",
+          "value": 4
+        },
+        {
+          "name": "T",
+          "value": 256
+        },
+        {
+          "name": "C",
+          "value": 768
+        }
+      ],
+      "tol": 1e-05,
+      "variants": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    "usage": {
+      "input_tokens": 12186,
+      "output_tokens": 3081,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0
+    },
+    "cost_usd": 0.028327,
+    "static_errors": [],
+    "check": {
+      "ok": true,
+      "steps": {
+        "reference_build": {
+          "returncode": 0,
+          "stderr": ""
+        },
+        "migrate": {
+          "status": "ok",
+          "summary": "migrated 1 CUDA file(s) -> 2 file(s); 55 DPCT warning(s) (DPCT1005x2, DPCT1009x1, DPCT1010x10, DPCT1024x2, DPCT1026x1, DPCT1027x1, DPCT1049x8, DPCT1051x2, DPCT1065x2, DPCT1083x3, DPCT1093x2, DPCT1098x17, DPCT1110x1, DPCT1118x3)"
+        },
+        "compile": {
+          "status": "ok",
+          "summary": "compiled 1 source(s) -> /home/user/museport-hackathon/evidence/spec-llmc/layernorm_forward/.work/build/candidate (218 warning(s))"
+        },
+        "verify": {
+          "status": "ok",
+          "summary": "PASS: 1/1 case(s) match (worst max abs err 1.31e-06, atol 1e-05)"
+        }
+      }
+    }
+  }
+]
