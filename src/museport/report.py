@@ -85,7 +85,56 @@ def load(evidence: Path) -> dict[str, Any]:
                               gpu.get(task.get("name", ""), [])))
     plan_file = evidence / PLAN_DIR / "plan.json"
     plan = json.loads(plan_file.read_text()) if plan_file.exists() else None
-    return {"items": items, "batches": batches, "plan": plan}
+    return {"items": items, "batches": batches, "plan": plan, "gpt2": load_gpt2(evidence)}
+
+
+@dataclass
+class Gpt2Stage:
+    """One stage of the GPT-2 training port (evidence/gpt2-stage<N>/)."""
+    dir: Path
+    title: str
+    task: dict[str, Any]
+    outcome: dict[str, Any]
+    cpu_proof: dict[str, Any] | None
+    gpu: list[dict[str, Any]]
+
+    @property
+    def slug(self) -> str:
+        return self.dir.name
+
+    @property
+    def correct(self) -> bool:
+        ev = self.outcome.get("evaluation") or {}
+        return ev.get("verify_status") == "ok" and ev.get("helpers") == 0
+
+    @property
+    def label(self) -> str:
+        stage = self.task.get("museport", {}).get("stage", "")
+        return {"forward": "1 · Forward pass", "backward": "2 · Backward pass",
+                "train": "3 · Training: 10 AdamW steps"}.get(stage, self.slug)
+
+
+def _json_after_log(path: Path) -> dict[str, Any]:
+    """A JSON file that may start with log lines (captured with the command's stderr)."""
+    text = path.read_text()
+    return json.loads(text[text.index("{"):])
+
+
+def load_gpt2(evidence: Path) -> list[Gpt2Stage]:
+    stages = []
+    for d in sorted(evidence.glob("gpt2-stage*")):
+        out_file, task_file = d / "run1" / "outcome.json", d / "task" / "task.json"
+        if not (out_file.exists() and task_file.exists()):
+            continue
+        readme = d / "README.md"
+        title = next((ln[2:].strip() for ln in readme.read_text().splitlines()
+                      if ln.startswith("# ")), d.name) if readme.exists() else d.name
+        proof = d / "cpu-proof.json"
+        stages.append(Gpt2Stage(d, title, json.loads(task_file.read_text()),
+                                json.loads(out_file.read_text()),
+                                _json_after_log(proof) if proof.exists() else None,
+                                [g for gs in _gpu_results(d).values() for g in gs]))
+    return stages
 
 
 def _gpu_results(bdir: Path) -> dict[str, list[dict[str, Any]]]:
@@ -338,7 +387,7 @@ def render_index(data: dict[str, Any]) -> str:
         "run on NVIDIA GPUs against llm.c's own CUDA, and on an AMD GPU against the "
         "reference.</p>"
         '<nav class="crumb"><a href="plan.html">The plan</a><a href="#items">Every item</a>'
-        '<a href="#first-runs">The first runs</a>'
+        '<a href="#gpt2">GPT-2</a><a href="#first-runs">The first runs</a>'
         f'<a href="{REPO}">Repository</a></nav></header>',
         '<section><h2>Results with the fixed loop</h2>' + _tier_head(True)
         + _tier_rows(current_table(items), True) + "</tbody></table></div>"
@@ -349,6 +398,7 @@ def render_index(data: dict[str, Any]) -> str:
         "both the reference and llm.c's CUDA on a real GPU. <b>AMD pass</b>: the port matched "
         "the reference on an AMD GPU. One run per item, after the loop fixes (delete_file, "
         "ranged read_file, 32k output per turn); the first runs are below.</p></section>",
+        _gpt2_section(data.get("gpt2", [])),
         '<section id="items"><h2>Every item</h2>' + _item_table(current, compare=firsts)
         + "</section>",
         '<section id="first-runs"><h2>The first runs</h2><p class="note">The same tasks and '
@@ -365,6 +415,7 @@ def render_index(data: dict[str, Any]) -> str:
             f'<a href="{REPO}/tree/main/evidence/{esc(batch)}">evidence/{esc(batch)}</a>.</p>'
             + _item_table(its, compare=firsts) + "</section>")
     spent = sum(b["spent_usd"] for b in data["batches"].values())
+    gpt2 = sum(st.outcome.get("cost_usd") or 0.0 for st in data.get("gpt2", []))
     plan = data["plan"]
     plan_cost = plan.get("cost_usd") if plan else None
     body.append(
@@ -372,12 +423,116 @@ def render_index(data: dict[str, Any]) -> str:
         + "".join(f'<div><span class="eyebrow">{esc(k)}</span><span class="v">'
                   f'{money(b["spent_usd"])}</span><span class="d">{esc(b["model"])}</span></div>'
                   for k, b in data["batches"].items())
+        + (f'<div><span class="eyebrow">GPT-2 stages</span><span class="v">{money(gpt2)}</span>'
+           f'<span class="d">{len(data["gpt2"])} loop runs</span></div>' if gpt2 else "")
         + f'<div><span class="eyebrow">plan</span><span class="v">{money(plan_cost)}</span>'
         f'<span class="d">one grounded plan</span></div>'
         f'<div><span class="eyebrow">all of the above</span><span class="v">'
-        f'{money(spent + (plan_cost or 0))}</span><span class="d">ports and plan</span></div>'
+        f'{money(spent + gpt2 + (plan_cost or 0))}</span><span class="d">ports, GPT-2 and plan'
+        "</span></div>"
         "</div></section>")
     return page("Muse Port Evidence", "\n".join(body))
+
+
+def _gpt2_gpu_cell(st: Gpt2Stage) -> str:
+    if not st.gpu:
+        return '<span class="note">CPU device only</span>'
+    return "<br>".join(
+        pill("pass" if g["status"] == "ok" else g["status"], "ok" if g["status"] == "ok" else "bad")
+        + f" {esc(g['device'].replace('NVIDIA ', ''))}<br><span class=\"note\">vs PyTorch"
+        + (" and llm.c's CUDA" if g["vs_native"] else "") + "</span>" for g in st.gpu)
+
+
+def _gpt2_section(stages: list[Gpt2Stage]) -> str:
+    if not stages:
+        return ""
+    rows = "".join(
+        f'<tr><td><a href="gpt2/{esc(st.slug)}.html">{esc(st.label)}</a></td>'
+        f'<td>{esc(st.task.get("museport", {}).get("note", ""))}</td>'
+        f'<td>{pill("pass" if st.correct else "fail", "ok" if st.correct else "bad")} '
+        f'<span class=mono>{esc((st.outcome.get("evaluation") or {}).get("verify_summary", ""))}'
+        f'</span></td><td class=num>{esc(st.outcome.get("iterations"))}</td>'
+        f'<td class=num>{money(st.outcome.get("cost_usd"))}</td>'
+        f"<td>{_gpt2_gpu_cell(st)}</td></tr>" for st in stages)
+    return (
+        '<section id="gpt2"><h2>GPT-2: llm.c\'s training program</h2><p class="note">Muse '
+        "ported llm.c's fp32 GPT-2 training file (<code>train_gpt2_fp32.cu</code>) in stages, "
+        "with the real GPT-2 124M weights and llm.c's debug batch. Each stage is graded against "
+        "PyTorch's numbers at llm.c's own test tolerance, and each check was first proven to "
+        "pass llm.c's CPU code.</p><div class=\"scroll\"><table><thead><tr><th>Stage</th>"
+        "<th>What is checked</th><th>Hidden grade of the final sources</th>"
+        "<th class=num>Turns</th><th class=num>Muse cost</th><th>GPU</th></tr></thead><tbody>"
+        + rows + "</tbody></table></div></section>")
+
+
+def render_gpt2(st: Gpt2Stage) -> str:
+    o = st.outcome
+    ev = o.get("evaluation") or {}
+    usage = o.get("usage") or {}
+    proof = ((st.cpu_proof or {}).get("steps") or {}).get("verify_cpu_proof") or {}
+    facts = [
+        ("Hidden grade", pill("pass" if st.correct else "fail", "ok" if st.correct else "bad"),
+         esc(f"{ev.get('verify_summary', '')}; {ev.get('helpers', '-')} helpers")),
+        ("Loop", pill(o.get("stop_reason", "?"),
+                      "ok" if o.get("stop_reason") == "success" else "warn"),
+         esc(o.get("stop_detail", ""))),
+        ("Turns and cost", f'<span class="v">{esc(o.get("iterations", "-"))} · '
+         f'{money(o.get("cost_usd"))}</span>',
+         esc(f"{usage.get('input_tokens', 0):,} in, {usage.get('output_tokens', 0):,} out, "
+             f"{usage.get('cache_read_input_tokens', 0):,} cached") if usage else ""),
+        ("Check proven on llm.c's CPU code",
+         pill(proof.get("status", "?"), "ok" if proof.get("status") == "ok" else "bad"),
+         esc(proof.get("summary", ""))),
+        ("GPU", _gpt2_gpu_cell(st), " ".join(esc(g["summary"]) for g in st.gpu)),
+        ("Tolerance", f'<span class="v">atol {esc(st.task.get("tolerance", "-"))}</span>',
+         "llm.c's own test tolerance, absolute"),
+    ]
+    body = [
+        '<nav class="crumb"><a href="../index.html">Overview</a>'
+        f'<a href="../index.html#gpt2">GPT-2</a><span>{esc(st.slug)}</span></nav>',
+        f'<header style="display:grid;gap:8px"><span class="eyebrow">GPT-2 · '
+        f'{esc(st.task.get("museport", {}).get("source", ""))}</span><h1>{esc(st.title)}</h1>'
+        f'<p class="lede">{esc(st.task.get("museport", {}).get("note", ""))}</p></header>',
+        '<section class="facts">' + "".join(
+            f'<div><span class="eyebrow">{esc(k)}</span><span>{v}</span>'
+            f'<span class="d">{d}</span></div>' for k, v, d in facts) + "</section>",
+    ]
+    if st.task.get("goal"):
+        body.append(f'<section><h2>The goal Muse was given</h2><p>{esc(st.task["goal"])}</p>'
+                    '<p class="note">The reference (PyTorch\'s numbers) stays hidden from the '
+                    "model.</p></section>")
+    harness = st.dir / "task" / st.task.get("cuda_path", "-")
+    ports = sorted(p for p in (st.dir / "run1" / "port").glob("*") if p.is_file())
+    if harness.exists() and ports:
+        body.append(
+            "<section><h2>CUDA harness and Muse's SYCL port</h2><p class=\"note\">The harness "
+            "includes llm.c's <code>train_gpt2_fp32.cu</code> unchanged and adds a contract "
+            "<code>main</code>; Muse read llm.c's file and wrote its own SYCL program.</p>"
+            f"<div class=grid2><details><summary>CUDA: {esc(harness.name)} "
+            f"({len(harness.read_text().splitlines())} lines)</summary>"
+            f"<pre>{esc(harness.read_text())}</pre></details>"
+            + "".join(f"<details><summary>SYCL: {esc(p.name)} "
+                      f"({len(p.read_text().splitlines())} lines)</summary>"
+                      f"<pre>{esc(p.read_text())}</pre></details>" for p in ports)
+            + "</div></section>")
+    if st.gpu:
+        out = ["<section><h2>On a GPU</h2>"]
+        for g in st.gpu:
+            steps = "".join(
+                f"<tr><td><code>{esc(x.get('step'))}</code></td><td>"
+                f"{pill(x.get('status', '?'), 'ok' if x.get('status') == 'ok' else 'bad')}</td>"
+                f"<td class=mono>{esc(_strip_tmp(x.get('summary', '')))}</td></tr>"
+                for x in g["steps"])
+            out.append(f"<h3>{esc(g['device'])} ({esc(g['vendor'])})</h3>"
+                       f'<div class="scroll"><table><tbody>{steps}</tbody></table></div>')
+        out.append("</section>")
+        body.append("".join(out))
+    trace = st.dir / "run1" / "trace.jsonl"
+    if trace.exists():
+        body.append(_replay(trace))
+    body.append(f'<p class="note">Source: <a href="{REPO}/tree/main/evidence/{st.slug}">'
+                f"evidence/{esc(st.slug)}</a>.</p>")
+    return page(f"{st.slug} · Muse Port", "\n".join(body), root="../")
 
 
 def _item_table(items: list[Item], compare: list[Item] | None = None) -> str:
@@ -621,5 +776,11 @@ def build(evidence: Path, out: Path) -> dict[str, Any]:
     for it in data["items"]:
         name = f"items/{it.slug}.html"
         (out / name).write_text(render_item(it, evidence))
+        pages.append(name)
+    if data["gpt2"]:
+        (out / "gpt2").mkdir(exist_ok=True)
+    for st in data["gpt2"]:
+        name = f"gpt2/{st.slug}.html"
+        (out / name).write_text(render_gpt2(st))
         pages.append(name)
     return {"pages": pages, "tiers": tier_table(data["items"])}

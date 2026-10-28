@@ -859,7 +859,8 @@
      }
     ]
    }
-  ]
+  ],
+  "gpu": []
  },
  "gpt2_stage3": {
   "status": "success",
@@ -1192,6 +1193,15 @@
       "summary": "5 run(s) each; Intel(R) Xeon(R) Processor @ 2.10GHz: median 22836.25 ms, p95 23271.67 ms"
      }
     ]
+   }
+  ],
+  "gpu": [
+   {
+    "device": "NVIDIA RTX 4000 Ada Generation",
+    "vendor": "nvidia",
+    "pass": true,
+    "vs_native": true,
+    "summary": "PASS on NVIDIA RTX 4000 Ada Generation (cuda:0, nvidia): sycl_verify_vs_reference: PASS: 1/1 case(s) match (worst max abs err 0.000135, atol 0.01); sycl_verify_vs_native: PASS: 1/1 case(s) match (worst max abs err 5.9e-06, atol 0.01)"
    }
   ]
  },
