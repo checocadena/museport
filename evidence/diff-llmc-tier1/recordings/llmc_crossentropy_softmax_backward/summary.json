@@ -1,0 +1,104 @@
+{
+  "tool": "gpu_test",
+  "status": "ok",
+  "summary": "recorded 1 output(s) of the original CUDA on NVIDIA RTX 2000 Ada Generation (nvidia); two runs identical: PASS: 1/1 case(s) match (worst max abs err 0, atol 0)",
+  "evidence": {
+    "task": "llmc_crossentropy_softmax_backward",
+    "device": {
+      "backend": "cuda",
+      "device_type": "gpu",
+      "index": 0,
+      "platform": "NVIDIA CUDA BACKEND",
+      "name": "NVIDIA RTX 2000 Ada Generation",
+      "description": "NVIDIA CUDA BACKEND, NVIDIA RTX 2000 Ada Generation 8.9 [CUDA 13.2]",
+      "selector": "cuda:0"
+    },
+    "vendor": "nvidia",
+    "recorded": [
+      {
+        "case": 0,
+        "input": "input.bin",
+        "file": "recorded/case0.out",
+        "bytes": 12865792,
+        "sha256": "b9975a803090c9e93e511ace1a58064b6643df40219ff051a6de2c2a0f2ecfa1"
+      }
+    ],
+    "deterministic": true,
+    "repeat": {
+      "mode": "array",
+      "cases": [
+        {
+          "input": "/tmp/tmp.T3ZC938b2a/task/input.bin",
+          "reference": {
+            "command": "build/native /tmp/tmp.T3ZC938b2a/task/input.bin /tmp/tmp.T3ZC938b2a/out/work/v_record/case0_reference.out 2 32 50257",
+            "returncode": 0,
+            "duration_s": 0.280032,
+            "stdout": "",
+            "stderr": "",
+            "cwd": "/tmp/tmp.T3ZC938b2a/out/work",
+            "output_file": "/tmp/tmp.T3ZC938b2a/out/work/v_record/case0_reference.out"
+          },
+          "candidate": {
+            "command": "build/native /tmp/tmp.T3ZC938b2a/task/input.bin /tmp/tmp.T3ZC938b2a/out/work/v_record/case0_candidate.out 2 32 50257",
+            "returncode": 0,
+            "duration_s": 0.266545,
+            "stdout": "",
+            "stderr": "",
+            "cwd": "/tmp/tmp.T3ZC938b2a/out/work",
+            "output_file": "/tmp/tmp.T3ZC938b2a/out/work/v_record/case0_candidate.out"
+          },
+          "reference_format": "f32",
+          "candidate_format": "f32",
+          "mode": "array",
+          "stats": {
+            "n_reference": 3216448,
+            "n_candidate": 3216448,
+            "atol": 0.0,
+            "rtol": 0.0,
+            "max_ulp_allowed": null,
+            "passed": true,
+            "max_abs_err": 0.0,
+            "rms_err": 0.0,
+            "mean_abs_err": 0.0,
+            "max_rel_err": 0.0,
+            "max_ulp_f32": 0,
+            "median_ulp_f32": 0.0,
+            "exact_matches": 3216448,
+            "mismatches": 0,
+            "nan_mismatches": 0,
+            "reference_range": [
+              -0.9492948055267334,
+              0.9331459403038025
+            ],
+            "first_mismatches": []
+          },
+          "passed": true
+        }
+      ],
+      "work_dir": "/tmp/tmp.T3ZC938b2a/out/work/v_record",
+      "passed_cases": 1,
+      "total_cases": 1,
+      "worst_max_abs_err": 0.0
+    },
+    "steps": [
+      {
+        "step": "reference_build",
+        "status": "ok",
+        "summary": "exit 0: true"
+      },
+      {
+        "step": "native_build",
+        "status": "ok",
+        "summary": "exit 0: /usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.T3ZC938b2a/task /tmp/tmp.T3ZC938b2a/task/crossentropy_softmax_backward_harness.cu -o build/native"
+      },
+      {
+        "step": "native_repeat",
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 0)"
+      }
+    ]
+  },
+  "limitations": [
+    "A recorded reference is the original program's own output on one GPU: it is only as right as that program, and a non-deterministic program needs a tolerance at least as wide as its run-to-run difference."
+  ]
+}

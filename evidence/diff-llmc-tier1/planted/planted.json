@@ -1,0 +1,34 @@
+{
+  "subtle: 0.044715f -> 0.0447f": {
+    "cpu_reference": {
+      "compiled": true,
+      "verify_status": "ok",
+      "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 3.22e-06, atol 1e-05)",
+      "helpers": 0,
+      "graded": "after the run, by museport grade_run"
+    },
+    "recorded_cuda": {
+      "compiled": true,
+      "verify_status": "ok",
+      "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 3.22e-06, atol 1e-05)",
+      "helpers": 0,
+      "graded": "after the run, by museport grade_run"
+    }
+  },
+  "dropped digit: 0.044715f -> 0.04715f": {
+    "cpu_reference": {
+      "compiled": true,
+      "verify_status": "fail",
+      "verify_summary": "FAIL: 0/1 case(s) match; first failure: 1062632 of 1572864 element(s) outside tolerance",
+      "helpers": 0,
+      "graded": "after the run, by museport grade_run"
+    },
+    "recorded_cuda": {
+      "compiled": true,
+      "verify_status": "fail",
+      "verify_summary": "FAIL: 0/1 case(s) match; first failure: 1062644 of 1572864 element(s) outside tolerance",
+      "helpers": 0,
+      "graded": "after the run, by museport grade_run"
+    }
+  }
+}

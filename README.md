@@ -134,6 +134,19 @@ Three experiments take a piece away, or add a second agent. Each is one run per 
   - It flagged 4 correct ports whose variants drop the CUDA variant's parallel structure,
     which neither check can see.
 
+### Hidden checks without a hand-written reference
+
+Each kernel's hidden reference was a C++ program written from llm.c's CPU code. A differential
+check replaces it with **the original CUDA's own output**, recorded on an NVIDIA GPU
+([evidence](evidence/diff-llmc-tier1/README.md)):
+
+- **Recording:** all 10 Tier 1 kernels were recorded for **$0.034**. Each program's two runs
+  were bit-identical.
+- **Recordings vs llm.c's CPU references:** they agree on 10 of 10.
+- **Muse's ports vs the recordings:** they pass on 10 of 10, the same verdicts as before.
+- **Planted bugs:** a dropped-digit typo in gelu fails. A typo smaller than the tolerance passes
+  both references; that is the limit of any tolerance-based check.
+
 **Limits of all results:** fp32 only, reduced sizes for the kernels, one run per item.
 
 ## How we got here: the first runs
