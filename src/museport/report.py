@@ -154,7 +154,23 @@ def load_j3(evidence: Path) -> dict[str, Any] | None:
     if not programs:
         return None
     return {"check": json.loads(check.read_text()) if check.exists() else None,
+            "fresh": _fresh_clone(evidence / "j3-fresh-clone"),
             "programs": programs}
+
+
+def _fresh_clone(d: Path) -> dict[str, Any] | None:
+    """The llm.c-sycl Quick start, run from a fresh clone: each step's wall time (``real`` in
+    its log) and whether the test printed ``overall okay: 1``."""
+    if not (d / "test.log").exists():
+        return None
+
+    def secs(name: str) -> float | None:
+        m = re.search(r"^real\s+(\d+)m([\d.]+)s", (d / name).read_text(), re.M)
+        return int(m.group(1)) * 60 + float(m.group(2)) if m else None
+
+    return {"okay": "overall okay: 1" in (d / "test.log").read_text(),
+            "download_s": secs("download.log"), "make_s": secs("make.log"),
+            "test_s": secs("test.log")}
 
 
 @dataclass
@@ -630,6 +646,20 @@ def _j3_gpu_cell(prog: dict[str, Any], vendor: str) -> str:
             + (f"<br>vs llm.c's CUDA: {_check_cell(native)}" if native else ""))
 
 
+def _fresh_note(f: dict[str, Any] | None) -> str:
+    if not f:
+        return ""
+    t = {k: f"{f[k]:.0f} s" if f.get(k) is not None else "?"
+         for k in ("download_s", "make_s", "test_s")}
+    return (
+        '<p class="note"><b>From a fresh clone</b> (CPU device): '
+        f"<code>./dev/download_starter_pack.sh</code> ({t['download_s']}), <code>make</code> "
+        f"({t['make_s']}), <code>./test_gpt2fp32sycl</code> ({t['test_s']}): "
+        + (pill("overall okay: 1", "ok") if f["okay"] else pill("test failed", "bad"))
+        + f' (<a href="{REPO}/tree/main/evidence/j3-fresh-clone">evidence/j3-fresh-clone</a>).'
+        "</p>")
+
+
 def _j3_run_line(r: dict[str, Any]) -> str:
     ok = r.get("stop_reason") == "success"
     return (f"{esc(r['run'])}: " + pill("success" if ok else "no success", "ok" if ok else "warn")
@@ -681,7 +711,8 @@ def _j3_section(j3: dict[str, Any] | None) -> str:
         "losses against PyTorch's; both at llm.c's tolerance, 1e-2. The GPU runs build the "
         "sources Muse last compiled, unchanged. llm.c's CUDA does not hipify into something "
         "that builds, so on AMD there is no comparison with it.</p>"
-        "<h3>Each check, proven first</h3><div class=\"scroll\"><table><thead><tr><th>Program"
+        + _fresh_note(j3.get("fresh"))
+        + "<h3>Each check, proven first</h3><div class=\"scroll\"><table><thead><tr><th>Program"
         "</th><th>Candidate</th><th>Result</th></tr></thead><tbody>" + proofs
         + "</tbody></table></div><p class=\"note\">llm.c's own CPU programs must pass and "
         "planted bugs must fail before a check grades Muse. A bug can keep every loss within "
