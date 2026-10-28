@@ -18,7 +18,7 @@ repo whose build passes llm.c's own test on a CPU, an NVIDIA GPU and an AMD GPU.
 
 > "Pre-existing: my open-source oneapi-agent-toolkit, the SYCL tools and agent loop, used here
 > as a pinned dependency. Built this week: Muse Port. Meta's Muse plans and ports CUDA code
-> against hidden checks, with reports, NVIDIA and AMD runs, and a port of GPT-2."
+> against hidden checks, with reports, NVIDIA and AMD runs, and ports of GPT-2 and llama2.cu."
 
 ## What it does
 
