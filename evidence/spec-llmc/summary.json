@@ -1,6 +1,6 @@
 {
   "model": "muse-spark-1.3",
-  "spent_usd": 0.4202,
+  "spent_usd": 0.6143,
   "examples": [
     "gelu_forward.cu",
     "global_norm.cu"
@@ -243,6 +243,12 @@
       "proven": false,
       "attempts": 3,
       "cost_usd": 0.128876
+    },
+    {
+      "file": "classifier_fused.cu",
+      "proven": false,
+      "attempts": 3,
+      "cost_usd": 0.19415
     }
   ]
 }
