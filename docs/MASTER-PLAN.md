@@ -20,8 +20,8 @@ Rules for every item:
 
 Budget so far:
 - **Development:** about $0.55 of $5, plus the first failed plan run (at most $1.15).
-- **Comparison runs:** about $24.52 of $30, at most $24.70, with J3's $2.33 below
-  (Oct 28; the author has said the cap will be raised, amount to be set). Before J3: $22.19,
+- **Comparison runs:** about $24.52 of $40, at most $24.70, with J3's $2.33 below. The author
+  raised this cap from $30 to $40 on Oct 28; the per-run cap stays $3. Before J3: $22.19,
   at most $22.37 (after the C1-C3 reruns, Tier 1 run 2,
   the run without SYCLomatic, GPT-2 stages 1-3, Tiers 2-3 run 2, two softmax_forward reruns, E1,
   E3 and J2's Muse specs, about $1.64-1.82 with the fp32 rerun). The author raised
@@ -312,8 +312,8 @@ planned for Oct 29-30, so the schedule is about two days ahead.
 | Nov 4 | I6, submit by midday |
 
 **Decisions needed from the author:**
-- the new comparison cap (the author has said to raise it; the amount is open), and caps for
-  J4 and K1: comparison runs have about $5.30-5.50 left of $30, and GPUs about $5.27 left of $10;
+- caps for J4 and K1 within the budgets: comparison runs have about $15.30-15.50 left of $40
+  (raised from $30 on Oct 28), and GPUs about $5.27 left of $10;
 - Intel Tiber AI Cloud sign-up (D5);
 - Baseten or Modal access (F1);
 - sharing the report (B2).
