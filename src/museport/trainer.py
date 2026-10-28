@@ -347,22 +347,23 @@ TOKENIZER_SHA256 = "6f3abc21e444e4e8300e225f4e03da48ea121cf17e30f67009b8dad7a66c
 
 
 def make_j3_gpu_task(evidence_dir: Path, dest: Path, model: str,
-                     vendor: str = "nvidia") -> Path:
+                     vendor: str = "nvidia", run: str = "run1") -> Path:
     """A ``remote-test`` task for a J3 port (``evidence/j3-trainer`` or ``evidence/j3-test``):
     its task (wrapper, recorded reference), Muse's port as last compiled, the large files
     fetched on the machine with their sha256, and oneMath built there for the vendor. On
-    NVIDIA the native build is llm.c's own CUDA program, run through the same wrapper."""
+    NVIDIA the native build is llm.c's own CUDA program, run through the same wrapper. ``run``
+    names the successful run's folder (``run3`` for the test)."""
     from .gpt2 import DATA_SHA256, ONEMATH_BACKENDS, STARTER_PACK, onemath_gpu_setup
     from .port import last_compiled_sources
 
-    srcs = last_compiled_sources(evidence_dir / "run1" / "trace.jsonl")
+    srcs = last_compiled_sources(evidence_dir / run / "trace.jsonl")
     if not srcs:
         raise ValueError(f"{evidence_dir}: the model never compiled")
     if dest.exists():
         shutil.rmtree(dest)
     big = (WEIGHTS, STATE, TOKENIZER)
     shutil.copytree(evidence_dir / "task", dest, ignore=shutil.ignore_patterns(*big, "seed"))
-    shutil.copytree(evidence_dir / "run1" / "port", dest / "agent_port")
+    shutil.copytree(evidence_dir / run / "port", dest / "agent_port")
     backend = ONEMATH_BACKENDS[vendor]
     setup = f"onemath_{backend['backend']}_setup.sh"
     (dest / setup).write_text(onemath_gpu_setup(vendor))
@@ -374,7 +375,7 @@ def make_j3_gpu_task(evidence_dir: Path, dest: Path, model: str,
     task["gpu_setup"] = setup
     task["fetch"] = [{"path": f, "url": f"{STARTER_PACK}{f}?download=true", "sha256": sha[f]}
                      for f in needs]
-    task["port_origin"] = (f"agent-made: {model} via museport loop, {evidence_dir.name}; "
+    task["port_origin"] = (f"agent-made: {model} via museport loop, {evidence_dir.name}/{run}; "
                            "sources as last compiled by the agent, unchanged")
     (dest / "task.json").write_text(json.dumps(task, indent=2) + "\n")
     return dest / "task.json"
