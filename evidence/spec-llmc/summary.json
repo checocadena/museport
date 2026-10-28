@@ -1,6 +1,6 @@
 {
   "model": "muse-spark-1.3",
-  "spent_usd": 0.1041,
+  "spent_usd": 0.1305,
   "examples": [
     "gelu_forward.cu",
     "global_norm.cu"
@@ -75,6 +75,26 @@
       "proven": true,
       "attempts": 1,
       "cost_usd": 0.021542,
+      "compare": {
+        "variants": true,
+        "cpu_functions": true,
+        "sizes": false,
+        "tol": true,
+        "hand_variants": [
+          1
+        ],
+        "hand_tol": 1e-05
+      },
+      "variants": [
+        1
+      ],
+      "dropped_variants": []
+    },
+    {
+      "file": "crossentropy_softmax_backward.cu",
+      "proven": true,
+      "attempts": 1,
+      "cost_usd": 0.026361,
       "compare": {
         "variants": true,
         "cpu_functions": true,
