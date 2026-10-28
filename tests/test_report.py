@@ -116,3 +116,14 @@ def test_differential_checks_get_a_section(tmp_path):
     assert section.count("pill ok\">pass") == 2 * 10 + 2  # 10 x (recording, port) + subtle bug
     assert "pill bad\">fail" in section and "worst 1.43e-06" in section
     assert 'href="#diff"' in index and "MI350X VF" in index[index.index('id="gpt2"'):]
+
+
+def test_muse_written_specs_get_a_section(tmp_path):
+    build(ROOT / "evidence", tmp_path / "site")
+    index = (tmp_path / "site" / "index.html").read_text()
+    section = index[index.index('<section id="specs">'):]
+    section = section[:section.index("</section>")]
+    assert section.count("<tr><td><code>") == 17
+    assert ">16 of 17<" in section and ">16 of 16<" in section
+    assert section.count("not proven") == 1 and "trimat_forward" in section
+    assert "gpu, after the run" in section and 'href="#specs"' in index
