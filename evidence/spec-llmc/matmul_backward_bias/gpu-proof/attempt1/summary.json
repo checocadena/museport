@@ -1,0 +1,167 @@
+{
+  "tool": "gpu_test",
+  "status": "ok",
+  "summary": "recorded 1 output(s) of the original CUDA on NVIDIA RTX A4500 (nvidia); two runs differ: FAIL: 0/1 case(s) match; first failure: 1343 of 7168 element(s) outside tolerance",
+  "evidence": {
+    "task": "llmc_matmul_backward_bias",
+    "device": {
+      "backend": "cuda",
+      "device_type": "gpu",
+      "index": 0,
+      "platform": "NVIDIA CUDA BACKEND",
+      "name": "NVIDIA RTX A4500",
+      "description": "NVIDIA CUDA BACKEND, NVIDIA RTX A4500 8.6 [CUDA 13.2]",
+      "selector": "cuda:0"
+    },
+    "vendor": "nvidia",
+    "recorded": [
+      {
+        "case": 0,
+        "input": "input.bin",
+        "file": "recorded/case0.out",
+        "bytes": 28672,
+        "sha256": "c5bec6e11ec8377e25024f39cfa99f22413a42024d8d246dfb23369d822d1a01"
+      }
+    ],
+    "deterministic": false,
+    "repeat": {
+      "mode": "array",
+      "cases": [
+        {
+          "input": "/tmp/tmp.fdsYKsaLZ6/task/input.bin",
+          "reference": {
+            "command": "build/native /tmp/tmp.fdsYKsaLZ6/task/input.bin /tmp/tmp.fdsYKsaLZ6/out/work/v_record/case0_reference.out 4 256 768 1024",
+            "returncode": 0,
+            "duration_s": 0.414178,
+            "stdout": "",
+            "stderr": "",
+            "cwd": "/tmp/tmp.fdsYKsaLZ6/out/work",
+            "output_file": "/tmp/tmp.fdsYKsaLZ6/out/work/v_record/case0_reference.out"
+          },
+          "candidate": {
+            "command": "build/native /tmp/tmp.fdsYKsaLZ6/task/input.bin /tmp/tmp.fdsYKsaLZ6/out/work/v_record/case0_candidate.out 4 256 768 1024",
+            "returncode": 0,
+            "duration_s": 0.369959,
+            "stdout": "",
+            "stderr": "",
+            "cwd": "/tmp/tmp.fdsYKsaLZ6/out/work",
+            "output_file": "/tmp/tmp.fdsYKsaLZ6/out/work/v_record/case0_candidate.out"
+          },
+          "reference_format": "f32",
+          "candidate_format": "f32",
+          "mode": "array",
+          "stats": {
+            "n_reference": 7168,
+            "n_candidate": 7168,
+            "atol": 0.0,
+            "rtol": 0.0,
+            "max_ulp_allowed": null,
+            "passed": false,
+            "max_abs_err": 1.9073486328125e-05,
+            "rms_err": 1.2831914095805466e-06,
+            "mean_abs_err": 4.296972682433469e-07,
+            "max_rel_err": 3.200176732340831e-05,
+            "max_ulp_f32": 496,
+            "median_ulp_f32": 0.0,
+            "exact_matches": 5825,
+            "mismatches": 1343,
+            "nan_mismatches": 0,
+            "reference_range": [
+              -58.787879943847656,
+              59.385990142822266
+            ],
+            "first_mismatches": [
+              {
+                "index": 4096,
+                "reference": 16.200639724731445,
+                "candidate": 16.20063591003418,
+                "abs_err": 3.814697265625e-06
+              },
+              {
+                "index": 4097,
+                "reference": 7.4307098388671875,
+                "candidate": 7.4307050704956055,
+                "abs_err": 4.76837158203125e-06
+              },
+              {
+                "index": 4098,
+                "reference": -1.0809338092803955,
+                "candidate": -1.080935001373291,
+                "abs_err": 1.1920928955078125e-06
+              },
+              {
+                "index": 4099,
+                "reference": 18.10403823852539,
+                "candidate": 18.104042053222656,
+                "abs_err": 3.814697265625e-06
+              },
+              {
+                "index": 4100,
+                "reference": -15.072383880615234,
+                "candidate": -15.072381973266602,
+                "abs_err": 1.9073486328125e-06
+              },
+              {
+                "index": 4101,
+                "reference": -7.968232154846191,
+                "candidate": -7.96823263168335,
+                "abs_err": 4.76837158203125e-07
+              },
+              {
+                "index": 4102,
+                "reference": -10.317195892333984,
+                "candidate": -10.317193984985352,
+                "abs_err": 1.9073486328125e-06
+              },
+              {
+                "index": 4103,
+                "reference": 40.62736511230469,
+                "candidate": 40.62736129760742,
+                "abs_err": 3.814697265625e-06
+              },
+              {
+                "index": 4104,
+                "reference": 2.685577392578125,
+                "candidate": 2.685577869415283,
+                "abs_err": 4.76837158203125e-07
+              },
+              {
+                "index": 4105,
+                "reference": -15.81910228729248,
+                "candidate": -15.81910514831543,
+                "abs_err": 2.86102294921875e-06
+              }
+            ],
+            "reason": "1343 of 7168 element(s) outside tolerance"
+          },
+          "passed": false,
+          "reason": "1343 of 7168 element(s) outside tolerance"
+        }
+      ],
+      "work_dir": "/tmp/tmp.fdsYKsaLZ6/out/work/v_record",
+      "passed_cases": 0,
+      "total_cases": 1,
+      "worst_max_abs_err": 1.9073486328125e-05
+    },
+    "steps": [
+      {
+        "step": "reference_build",
+        "status": "ok",
+        "summary": "exit 0: true"
+      },
+      {
+        "step": "native_build",
+        "status": "ok",
+        "summary": "exit 0: /usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.fdsYKsaLZ6/task /tmp/tmp.fdsYKsaLZ6/task/matmul_backward_bias_harness.cu -o build/native"
+      },
+      {
+        "step": "native_repeat",
+        "status": "fail",
+        "summary": "FAIL: 0/1 case(s) match; first failure: 1343 of 7168 element(s) outside tolerance"
+      }
+    ]
+  },
+  "limitations": [
+    "A recorded reference is the original program's own output on one GPU: it is only as right as that program, and a non-deterministic program needs a tolerance at least as wide as its run-to-run difference."
+  ]
+}

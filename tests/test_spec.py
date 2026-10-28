@@ -194,3 +194,13 @@ def test_gpu_proof_reads_the_recording_and_its_cost(tmp_path, monkeypatch):
     out = sp.gpu_proof(task, tmp_path / "gpu", runner=runner)
     assert out["ok"] and out["cost_usd"] == 0.004 and out["device"] == "NVIDIA L4"
     assert out["summary"] == "PASS (worst 0)" and out["deterministic"] is True
+
+
+def test_an_api_error_moves_on_to_the_next_attempt(tmp_path, monkeypatch):
+    replies = [{"choices": [{"message": {"content": ""}, "finish_reason": "stop"}]},
+               {"choices": [{"message": {"content": json.dumps(SCALE)}, "finish_reason": "stop"}],
+                "usage": {"prompt_tokens": 1000, "completion_tokens": 100}}]
+    monkeypatch.setattr(sp, "check_harness", lambda task, work: {"ok": True, "steps": {}})
+    row = sp.write_spec("scale.cu", MINI, tmp_path, model="muse-spark-1.3",
+                        transport=lambda url, headers, body: replies.pop(0), log=lambda m: None)
+    assert row["proven"] and row["attempts"] == 2

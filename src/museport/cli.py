@@ -202,7 +202,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                             total_cap_usd=args.total_cap, file_cap_usd=args.file_cap,
                             prove_on_gpu=gpu_proof if args.gpu_proof else None,
                             log=lambda m: print(m, file=sys.stderr))
-        proven = sum(r["proven"] for r in summary["files"])
+        proven = sum(r["proven"] for r in summary["files"] if r["file"] in files)
         print(f"[spec] {proven}/{len(files)} proven, spent ${summary['spent_usd']:.4f}",
               file=sys.stderr)
         return 0

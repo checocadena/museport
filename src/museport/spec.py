@@ -365,11 +365,11 @@ def write_spec(file: str, cuda_dir: Path, out: Path, *, model: str, provider: st
             ans, usage = call_model(msgs, model=model, provider=provider,
                                     max_output_tokens=MAX_OUTPUT_TOKENS, transport=transport,
                                     schema_name="harness_spec", schema=SPEC_SCHEMA)
-        except RuntimeError as e:
+        except RuntimeError as e:  # e.g. an empty answer: ask again, the cap still holds
             spent += worst
             attempts.append({"attempt": n, "error": str(e)[:500], "cost_usd": worst})
             log(f"[spec] {file}: attempt {n} error {e}")
-            break
+            continue
         cost = ((usage["input_tokens"] * p.input + usage["output_tokens"] * p.output
                  + usage["cache_read_input_tokens"] * p.cache_read) / 1e6 if usage else worst)
         spent += cost

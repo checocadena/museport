@@ -1,0 +1,1 @@
+[gpu_test] ok: recorded 1 output(s) of the original CUDA on NVIDIA RTX A4500 (nvidia); two runs differ: FAIL: 0/1 case(s) match; first failure: 1343 of 7168 element(s) outside tolerance

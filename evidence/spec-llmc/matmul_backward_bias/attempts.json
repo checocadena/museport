@@ -1,0 +1,112 @@
+[
+  {
+    "attempt": 1,
+    "answer": {
+      "cpu_call": "matmul_backward_bias_cpu(NULL, NULL, dbias, dout, NULL, NULL, B, T, C, OC)",
+      "cpu_functions": [
+        "matmul_backward_bias_cpu"
+      ],
+      "dropped_variants": [
+        {
+          "reason": "fp32-only (guarded by #ifndef ENABLE_BF16)",
+          "variant": 5
+        }
+      ],
+      "extra_includes": [],
+      "gpu_call": "matmul_backward_bias(k, d_dbias, d_dout, B, T, OC, 256)",
+      "gpu_prelude": "cudaCheck(cudaMalloc(&dbias_buffer, (size_t)OC * 256 * sizeof(float)));",
+      "host_prep": "",
+      "inputs": [
+        {
+          "count": "B*T*OC",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "uniform",
+          "name": "dout"
+        }
+      ],
+      "keep_cublas": false,
+      "keep_cublaslt": false,
+      "keep_in_harness": [],
+      "note": "B=4, T=256, OC=1024 (llm.c: B=8, T=1024, OC=3072); C=768 as in llm.c (unused in bias reduction); OC kept multiple of 256/32/8 for kernels 4,7-9; tol 1.0 matches bf16 branch in llm.c main.",
+      "output_post": "",
+      "outputs": [
+        {
+          "count": "OC",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "zeros",
+          "name": "dbias"
+        }
+      ],
+      "sizes": [
+        {
+          "name": "B",
+          "value": 4
+        },
+        {
+          "name": "T",
+          "value": 256
+        },
+        {
+          "name": "C",
+          "value": 768
+        },
+        {
+          "name": "OC",
+          "value": 1024
+        }
+      ],
+      "tol": 1.0,
+      "variants": [
+        1,
+        2,
+        3,
+        4,
+        7,
+        8,
+        9
+      ]
+    },
+    "usage": {
+      "input_tokens": 13149,
+      "output_tokens": 7882,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0
+    },
+    "cost_usd": 0.049935,
+    "static_errors": [],
+    "check": {
+      "ok": false,
+      "failed": "verify",
+      "steps": {
+        "reference_build": {
+          "returncode": 0,
+          "stderr": ""
+        },
+        "migrate": {
+          "status": "ok",
+          "summary": "migrated 1 CUDA file(s) -> 2 file(s); 67 DPCT warning(s) (DPCT1005x2, DPCT1009x1, DPCT1010x14, DPCT1024x2, DPCT1049x10, DPCT1051x2, DPCT1064x2, DPCT1065x8, DPCT1083x3, DPCT1093x2, DPCT1096x8, DPCT1098x3, DPCT1101x8, DPCT1118x2)"
+        },
+        "compile": {
+          "status": "ok",
+          "summary": "compiled 1 source(s) -> /home/user/museport-hackathon/evidence/spec-llmc/matmul_backward_bias/.work/build/candidate (586 warning(s))"
+        },
+        "verify": {
+          "status": "fail",
+          "summary": "FAIL: 0/1 case(s) match; first failure: 1472 of 7168 element(s) outside tolerance"
+        }
+      },
+      "evidence": "{\"mode\": \"array\", \"cases\": [{\"input\": \"/home/user/museport-hackathon/evidence/spec-llmc/matmul_backward_bias/task/input.bin\", \"reference\": {\"command\": \"build/reference /home/user/museport-hackathon/evidence/spec-llmc/matmul_backward_bias/task/input.bin /home/user/museport-hackathon/evidence/spec-llmc/matmul_backward_bias/.work/verify_out/case0_reference.out 4 256 768 1024\", \"returncode\": 0, \"duration_s\": 0.012177, \"stdout\": \"\", \"stderr\": \"\", \"cwd\": \"/home/user/museport-hackathon/evidence/spec-llmc/matmul_backward_bias/.work\", \"output_file\": \"/home/user/museport-hackathon/evidence/spec-llmc/matmul_backward_bias/.work/verify_out/case0_reference.out\"}, \"candidate\": {\"command\": \"build/candidate /home/user/museport-hackathon/evidence/spec-llmc/matmul_backward_bias/task/input.bin /home/user/museport-hackathon/evidence/spec-llmc/matmul_backward_bias/.work/verify_out/case0_candidate.out 4 256 768 1024\", \"returncode\": 0, \"duration_s\": 1.888359, \"stdout\": \"\", \"stderr\": \"\", \"cwd\": \"/home/user/museport-hackathon/evidence/spec-llmc/matmul_backward_bias/.work\", \"output_file\": \"/home/user/museport-hackathon/evidence/spec-llmc/matmul_backward_bias/.work/verify_out/case0_candidate.out\"}, \"reference_format\": \"f32\", \"candidate_format\": \"f32\", \"mode\": \"array\", \"stats\": {\"n_reference\": 7168, \"n_candidate\": 7168, \"atol\": 1.0, \"rtol\": 1.1920929e-07, \"max_ulp_allowed\": null, \"passed\": false, \"max_abs_err\": 59.385986328125, \"rms_err\": 8.822157295803438, \"mean_abs_err\": 3.2832305448901025, \"max_rel_err\": 1.0, \"max_ulp_f32\": 1114475328, \"median_ulp_f32\": 2.0, \"exact_matches\": 1311, \"mismatches\": 1472, \"nan_mismatches\": 0, \"reference_range\": [-58.787872314453125, 59.385986328125], \"first_mismatches\": [{\"index\": 3584, \"reference\": 11.425469398498535, \"candidate\": 0.0, \"abs_err\": 11.425469398498535}, {\"index\": 3585, \"reference\": -19.3997859954834, \"candidate\": 0.0, \"abs_err\": 19.3997859954834}, {\"index\": 3586, \"reference\": 3.5591983795166016, \"candidate\": 0.0, \"abs_err\": 3.5591983795166016}, {\"index\": 3587, \"reference\": 12.39975643157959, \"candidate\": 0.0, \"abs_err\": 12.39975643157959}, {\"index\": 3588, \"reference\": 9.688770294189453, \"candidate\": 0.0, \"abs_err\": 9.688770294189453}, {\"index\": 3589, \"reference\": 32.140037536621094, \"candidate\": 0.0, \"abs_err\": 32.140037536621094}, {\"index\": 3590, \"reference\": 41.226097106933594, \"candidate\": 0.0, \"abs_err\": 41.226097106933594}, {\"index\": 3591, \"reference\": 10.748913764953613, \"candidate\": 0.0, \"abs_err\": 10.748913764953613}, {\"index\": 3592, \"reference\": 29.703224182128906, \"candidate\": 0.0, \"abs_err\": 29.703224182128906}, {\"index\": 3593, \"reference\": 39.29855728149414, \"candidate\": 0.0, \"abs_err\": 39.29855728149414}], \"reason\": \"1472 of 7168 element(s) outside tolerance\"}, \"passed\": false, \"reason\": \"1472 of 7168 element(s) outside tolerance\"}], \"work_dir\": \"/home/user/museport-hackathon/evidence/spec-llmc/matmul_backward_bias/.work/verify_out\", \"passed_cases\": 0, \"total_cases\": 1, \"worst_max_abs_err\": 59.385986328125}"
+    },
+    "gpu_proof": {
+      "ok": true,
+      "cost_usd": 0.003,
+      "device": "NVIDIA RTX A4500",
+      "deterministic": false,
+      "results": "/home/user/museport-hackathon/evidence/spec-llmc/matmul_backward_bias/.gpu/res/nvidia-rtx-a4500/llmc_matmul_backward_bias",
+      "step": "compare",
+      "summary": "PASS: 1/1 case(s) match (worst max abs err 1.53e-05, atol 1)"
+    }
+  }
+]
