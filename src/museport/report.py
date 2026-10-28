@@ -90,7 +90,7 @@ def load(evidence: Path) -> dict[str, Any]:
     plan = json.loads(plan_file.read_text()) if plan_file.exists() else None
     return {"items": items, "batches": batches, "plan": plan, "gpt2": load_gpt2(evidence),
             "diff": load_diff(evidence), "specs": load_specs(evidence), "j3": load_j3(evidence),
-            "k1": load_k1(evidence)}
+            "k1": load_k1(evidence), "j4": load_j4(evidence)}
 
 
 def load_k1(evidence: Path) -> dict[str, Any] | None:
@@ -170,6 +170,28 @@ def load_j3(evidence: Path) -> dict[str, Any] | None:
     return {"check": json.loads(check.read_text()) if check.exists() else None,
             "fresh": _fresh_clone(evidence / "j3-fresh-clone"),
             "programs": programs}
+
+
+def load_j4(evidence: Path) -> dict[str, Any] | None:
+    """J4, llama2.cu end to end (evidence/j4-llama2): Muse's plan and port runs, the check's
+    proof, the GPU results and the fresh-clone comparison (evidence/j4-fresh-clone)."""
+    d = evidence / "j4-llama2"
+    runs = [json.loads(f.read_text()) | {"run": f.parent.name}
+            for f in sorted(d.glob("run*/outcome.json"))]
+    if not runs:
+        return None
+    plan = json.loads((d / "plan" / "plan.json").read_text())
+    compare = evidence / "j4-fresh-clone" / "compare.txt"
+    fresh = compare.read_text().splitlines() if compare.exists() else []
+    port = d / runs[-1]["run"] / "port" / "llama2.cpp"
+    return {"dir": d.name, "runs": runs, "plan_cost": plan.get("cost_usd"),
+            "port_lines": len(port.read_text().splitlines()),
+            "plan_items": len(plan.get("plan", {}).get("items", [])),
+            "grounded": (plan.get("grounding") or {}).get("grounded"),
+            "proof": json.loads((d / "check-proof.json").read_text())["rows"],
+            "gpu": [g for gs in _gpu_results(d).values() for g in gs],
+            "fresh": [ln.split(": ", 1)[0] + ": " + ln.rsplit(": ", 1)[-1] for ln in fresh],
+            "fresh_ok": bool(fresh) and all(ln.endswith("True") for ln in fresh)}
 
 
 def _fresh_clone(d: Path) -> dict[str, Any] | None:
@@ -497,7 +519,7 @@ def render_index(data: dict[str, Any]) -> str:
         '<nav class="crumb"><a href="plan.html">The plan</a><a href="#items">Every item</a>'
         '<a href="#gpt2">GPT-2</a><a href="#diff">Differential checks</a>'
         '<a href="#specs">Specs by Muse</a><a href="#j3">llm.c-sycl</a>'
-        '<a href="#k1">Full training</a>'
+        '<a href="#k1">Full training</a><a href="#j4">llama2.cu</a>'
         '<a href="#first-runs">The first runs</a>'
         f'<a href="{REPO}">Repository</a></nav></header>',
         '<section><h2>Results with the fixed loop</h2>' + _tier_head(True)
@@ -514,6 +536,7 @@ def render_index(data: dict[str, Any]) -> str:
         _spec_section(data.get("specs", [])),
         _j3_section(data.get("j3")),
         _k1_section(data.get("k1")),
+        _j4_section(data.get("j4")),
         '<section id="items"><h2>Every item</h2>' + _item_table(current, compare=firsts)
         + "</section>",
         '<section id="first-runs"><h2>The first runs</h2><p class="note">The same tasks and '
@@ -655,7 +678,7 @@ def _proof_rows(proof: dict[str, Any]) -> list[tuple[str, str]]:
             if k != "reference" and "result" in v]
 
 
-def _j3_gpu_cell(prog: dict[str, Any], vendor: str) -> str:
+def _j3_gpu_cell(prog: dict[str, Any], vendor: str, original: str = "llm.c's CUDA") -> str:
     gs = [g for g in prog["gpu"] if g["vendor"] == vendor]
     if not gs:
         return '<span class="note">not run</span>'
@@ -664,7 +687,7 @@ def _j3_gpu_cell(prog: dict[str, Any], vendor: str) -> str:
     native = steps.get("sycl_verify_vs_native")
     return (_check_cell(steps.get("sycl_verify_vs_reference") or {"status": g["status"]})
             + f'<br><span class="note">{esc(short_device(g["device"]))}</span>'
-            + (f"<br>vs llm.c's CUDA: {_check_cell(native)}" if native else ""))
+            + (f"<br>vs {esc(original)}: {_check_cell(native)}" if native else ""))
 
 
 def _fresh_note(f: dict[str, Any] | None) -> str:
@@ -743,6 +766,70 @@ def _j3_section(j3: dict[str, Any] | None) -> str:
         "planted bugs must fail before a check grades Muse. A bug can keep every loss within "
         "1e-2 yet fail llm.c's test, so the test check also needs <code>overall okay: 1</code>."
         "</p></section>")
+
+
+def _j4_section(j4: dict[str, Any] | None) -> str:
+    if not j4:
+        return ""
+    last = j4["runs"][-1]
+    loc = j4["port_lines"]
+    muse = (j4["plan_cost"] or 0.0) + sum(r.get("cost_usd") or 0.0 for r in j4["runs"])
+    passes = 1 + sum(g["status"] == "ok" for g in j4["gpu"])
+    facts = (
+        '<div><span class="eyebrow">CUDA in the repo</span><span class="v">1 file</span>'
+        '<span class="d">llama2.cu: 772 lines, 8 kernels, fp16, CUB</span></div>'
+        f'<div><span class="eyebrow">Muse\'s port</span><span class="v">{loc} lines</span>'
+        f'<span class="d">{esc(last.get("iterations"))} turns, one run, 0 helpers</span></div>'
+        f'<div><span class="eyebrow">identical stories</span><span class="v">{passes} devices'
+        '</span><span class="d">CPU, NVIDIA, AMD; byte for byte</span></div>'
+        f'<div><span class="eyebrow">Muse</span><span class="v">{money(muse)}</span>'
+        '<span class="d">plan and port</span></div>')
+    prog = {"gpu": j4["gpu"]}
+    row = (f"<tr><td><code>llama2.cpp</code><br>{_j3_run_line(last)}</td>"
+           f"<td>{_check_cell(last.get('evaluation'))}</td>"
+           f"<td>{_j3_gpu_cell(prog, 'nvidia', 'llama2.cu')}</td>"
+           f"<td>{_j3_gpu_cell(prog, 'amd')}</td></tr>")
+    proofs = "".join(
+        f"<tr><td>{esc(r['candidate'])}</td><td>"
+        + pill("pass" if r["result"] == "PASS" else "fail",
+               "ok" if r["result"] == "PASS" else "bad")
+        + ' <span class="note">'
+        + esc(", ".join("identical" if c["identical"] else f"differs at byte "
+                        f"{c['first_difference_byte']}" for c in r["cases"]))
+        + "</span></td></tr>" for r in j4["proof"])
+    fresh = ("<p class=\"note\"><b>From a fresh clone</b> of this repository, "
+             "llama2-sycl's Quick start (<code>make llama2</code>, then the two prompts) on the "
+             "CPU: " + (pill("both stories identical", "ok") if j4["fresh_ok"]
+                        else pill("differs", "bad"))
+             + f' (<a href="{REPO}/tree/main/evidence/j4-fresh-clone">evidence/j4-fresh-clone'
+             "</a>).</p>") if j4["fresh"] else ""
+    return (
+        '<section id="j4"><h2>A second CUDA repo (one 772-line file): llama2.cu</h2>'
+        '<p class="note"><a href="https://github.com/ankan-ban/llama2.cu">ankan-ban/llama2.cu'
+        "</a> is Llama 2 inference in one CUDA file; the rest of the repo is llama2.c's C "
+        "program and Python scripts, not CUDA. Muse Port had never run on it. Muse planned it "
+        f"as {j4['plan_items']} item{'s' if j4['plan_items'] != 1 else ''}"
+        + (", grounded against the scan," if j4["grounded"] else "")
+        + f" for {money(j4['plan_cost'])}. The hidden check runs greedy decoding with the "
+        "stories15M model on two prompts, 64 steps each, and compares the story byte for byte "
+        "with llama2.cu's own output, recorded on an NVIDIA GPU. "
+        f'<a href="{REPO}/tree/main/llama2-sycl">llama2-sycl</a> is llama2.cu\'s repo with '
+        "the port in place of <code>llama2.cu</code>.</p>"
+        f'<div class="facts">{facts}</div>'
+        '<div class="scroll"><table><thead><tr><th>Port</th><th>CPU (hidden grade)</th>'
+        "<th>NVIDIA</th><th>AMD</th></tr></thead><tbody>" + row + "</tbody></table></div>"
+        '<p class="note">The GPU runs build the sources Muse last compiled, unchanged. On '
+        "NVIDIA the port is also compared with llama2.cu itself, built with nvcc on the same "
+        "GPU. llama2.cu's automatic HIP conversion did not build, so on AMD there is no such "
+        f'comparison. Evidence: <a href="{REPO}/tree/main/evidence/j4-llama2">'
+        "evidence/j4-llama2</a>.</p>" + fresh
+        + "<h3>The check, proven first</h3><div class=\"scroll\"><table><thead><tr>"
+        "<th>Candidate</th><th>Result</th></tr></thead><tbody>" + proofs
+        + "</tbody></table></div><p class=\"note\">llama2.c's fp32 <code>run.c</code>, a "
+        "known-good program, must produce the same stories, and planted one-line bugs must "
+        "not. At 128 steps, <code>run.c</code> differs from llama2.cu's fp16 output on a "
+        "near-tie token, so the check uses 64 steps; that was set before any model ran.</p>"
+        "</section>")
 
 
 def _k1_section(c: dict[str, Any] | None) -> str:

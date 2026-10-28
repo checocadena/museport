@@ -154,3 +154,17 @@ def test_k1_gets_a_section(tmp_path):
     assert 'href="#k1"' in index and "298 steps" in section and "<svg " in section
     assert ">0.0042<" in section and ">0.0037<" in section and ">0.0030<" in section
     assert "RTX A5000" in section and "MI350X" in section
+
+
+def test_j4_gets_a_section(tmp_path):
+    build(ROOT / "evidence", tmp_path / "site")
+    index = (tmp_path / "site" / "index.html").read_text()
+    section = index[index.index('<section id="j4">'):]
+    section = section[:section.index("</section>")]
+    assert 'href="#j4"' in index and "one 772-line file" in section
+    assert ">737 lines<" in section and ">3 devices<" in section
+    # CPU, NVIDIA, NVIDIA vs llama2.cu, AMD + run.c in the proof
+    assert section.count('pill ok">pass') == 4 + 1
+    assert section.count('pill bad">fail') == 2  # the planted bugs
+    assert "vs llama2.cu" in section and "MI350X VF" in section
+    assert "both stories identical" in section and "differs at byte 16" in section
