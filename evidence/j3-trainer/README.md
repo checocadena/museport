@@ -23,13 +23,13 @@ its printout. Muse's work dir started with its own proven port (`task/seed/`).
   sits in the task dir, outside the work dir, so the model cannot edit it. This needs toolkit
   [#27](https://github.com/checocadena/oneapi-agent-toolkit/pull/27).
 
-**The check was proven before and alongside the run, at $0, on the CPU:**
+**The check was proven alongside the run, at $0, on the CPU** ([`check-proof.json`](check-proof.json), planted sources in [`planted/`](planted/)):
 
 | Candidate | Result |
 |---|---|
 | llm.c's own `train_gpt2.c`, the same 10 steps | PASS, worst error 0 |
 | planted bug: learning rate 3e-4 instead of 1e-4 (what ignoring `-l` would do) | FAIL, 10 of 12 values out of tolerance |
-| planted bug: training data not shuffled | see [`check-proof.json`](check-proof.json) |
+| planted bug: training data not shuffled | FAIL, 11 of 12 values out of tolerance |
 
 ## Result: success, first verify, $0.71
 
