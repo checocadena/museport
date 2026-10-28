@@ -28,10 +28,11 @@ Budget so far:
   the per-run cap from $1 to $3 on Oct 27, and this cap from $20 to $30 on Oct 27.
   The author set a $7 cap for GPT-2 (G3); $4.45 used, including E1's GPT-2 run.
   J3 adds $2.33 of its $4 Muse cap: the trainer ($0.71) and three test-port runs ($1.62).
-- **GPUs:** about $4.73 (Runpod NVIDIA about $0.34, DigitalOcean AMD about $4.39), of a $10 cap
+- **GPUs:** about $4.90 (Runpod NVIDIA about $0.36, DigitalOcean AMD about $4.54), of a $10 cap
   the author set on Oct 27. Oct 28 added the J1 recordings ($0.034), Tiers 2-3 and softmax on
   AMD ($0.72), GPT-2 stage 3 on AMD (five runs, $0.65), J2's GPU proofs ($0.041) and J3's
-  four GPU runs plus one failed AMD setup ($0.43), and the Makefile's two GPU runs ($0.20).
+  four GPU runs plus one failed AMD setup ($0.43), the Makefile's two GPU runs ($0.20) and K1's
+  three runs ($0.17).
 **The author sets their caps before they start.**
 
 ## Status at the start (Oct 26)
@@ -251,9 +252,16 @@ file. This section removes both limits.
 
 ## K. Beyond the GPT-2 port (added Oct 28)
 
-- [ ] **K1. Real training, compared across vendors.** GPT-2 124M for a few hundred steps on
+- [x] **K1. Real training, compared across vendors.** GPT-2 124M for a few hundred steps on
   real text: llm.c's CUDA on NVIDIA, the SYCL port on NVIDIA and AMD (and Intel with D5);
   overlay the loss curves. Extends G4. *A few dollars of GPU.*
+  - **Done Oct 28** (`evidence/k1-curves`): one epoch of tiny-shakespeare, 298 steps.
+  - **Reference:** llm.c's CUDA trainer, recorded on an RTX 2000 Ada. Its two runs differ by
+    up to 0.0030.
+  - **Muse's SYCL trainer** stays within 0.0042 of it on an RTX A5000 and 0.0037 on an
+    MI350X, all 311 values, atol 1e-2. On the same A5000 it is within 0.0040 of llm.c's CUDA
+    and about 1.4× slower.
+  - **Cost:** $0.17 of GPU. Intel (D5) not run.
 - [ ] **K2. llm.c's production trainer `train_gpt2.cu`:** bf16 mixed precision, cuBLASLt,
   fused kernels, multi-GPU. Much harder; about two days.
 - [ ] **K3. Llama 3 (`train_llama3.cu`).** The biggest headline and the highest risk.
@@ -304,7 +312,7 @@ planned for Oct 29-30, so the schedule is about two days ahead.
 
 | Day | Items |
 |---|---|
-| Oct 29 | K1 (loss curves: llm.c's CUDA and the SYCL port on NVIDIA, the port on AMD); D2's 3 oneMath kernel ports on GPUs |
+| Oct 29 | D2's 3 oneMath kernel ports on GPUs (K1 done Oct 28) |
 | Oct 30-Nov 1 | J4 (a second, unseen CUDA repo, end to end), once its cap is set; D5 if Intel access arrives |
 | Nov 1 | C6 or E1 repeat runs, if the budget allows |
 | Nov 2 | F2 if Baseten access arrives; refresh SUBMISSION and DEMO with every new result |

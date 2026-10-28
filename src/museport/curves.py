@@ -20,6 +20,7 @@ import json
 import shutil
 import struct
 from pathlib import Path
+from typing import Any
 
 from .gpt2 import DATA_SHA256, ONEMATH_BACKENDS, STARTER_PACK, WEIGHTS, onemath_gpu_setup
 from .llmc import ONEMATH_FLAGS
@@ -136,10 +137,10 @@ def make_sycl_task(llmc: Path, trainer_run: Path, recording: Path, dest: Path, m
     return dest / "task.json"
 
 
-def load_curve(results: Path) -> dict[str, object]:
+def load_curve(results: Path) -> dict[str, Any]:
     """The curve(s) a run printed: from a gpu-test results dir, every verify step's candidate
     and reference stdout that is a JSON curve line."""
-    curves: dict[str, object] = {}
+    curves: dict[str, Any] = {}
     for f in sorted(results.glob("*verify*.json")) + sorted(results.glob("native_repeat.json")):
         for case in json.loads(f.read_text()).get("evidence", {}).get("cases", []):
             for side in ("candidate", "reference"):
@@ -152,3 +153,132 @@ def load_curve(results: Path) -> dict[str, object]:
 def read_f32(path: Path) -> list[float]:
     raw = path.read_bytes()
     return list(struct.unpack(f"<{len(raw) // 4}f", raw))
+
+
+# ----------------------------------------------------------------------------- the evidence
+
+SERIES = (  # (key, label, colour): the reference palette's first three categorical slots
+    ("cuda", "llm.c CUDA (recording)", "#2a78d6"),
+    ("sycl_nvidia", "Muse SYCL, NVIDIA", "#eb6834"),
+    ("sycl_amd", "Muse SYCL, AMD", "#1baf7a"),
+)
+
+
+def collect(evidence: Path) -> dict[str, dict[str, Any]]:
+    """Every K1 curve, from evidence/k1-curves/{record,nvidia,amd}/<device>/<task>/results."""
+    def results(sub: str) -> Path:
+        found = sorted((evidence / "k1-curves" / sub).glob("*/*/results"))
+        if not found:
+            raise FileNotFoundError(f"no results under evidence/k1-curves/{sub}")
+        return found[0]
+
+    def device(sub: str) -> str:
+        return json.loads((results(sub).parent / "summary.json").read_text())[
+            "evidence"]["device"]["name"]
+
+    rec, nv, amd = load_curve(results("record")), load_curve(results("nvidia")), \
+        load_curve(results("amd"))
+    return {
+        "cuda": {**rec["native_repeat:reference"], "device": device("record")},
+        "cuda_repeat": {**rec["native_repeat:candidate"], "device": device("record")},
+        "cuda_nvidia": {**nv["native_verify_vs_reference:candidate"], "device": device("nvidia")},
+        "sycl_nvidia": {**nv["sycl_verify_vs_reference:candidate"], "device": device("nvidia")},
+        "sycl_amd": {**amd["sycl_verify_vs_reference:candidate"], "device": device("amd")},
+    }
+
+
+def worst(a: dict[str, Any], b: dict[str, Any]) -> float:
+    """Worst absolute difference over every val and train loss (what the check compares)."""
+    xs = [*a["val"], *a["train"]]
+    ys = [*b["val"], *b["train"]]
+    if len(xs) != len(ys):
+        raise ValueError(f"curves differ in length: {len(xs)} and {len(ys)}")
+    return max(abs(x - y) for x, y in zip(xs, ys, strict=True))
+
+
+def chart_svg(c: dict[str, dict[str, Any]], tol: float = 1e-2) -> str:
+    """Two panels on their own axes: the train loss of each run, and each run's per-step
+    distance from the CUDA recording, with llm.c's own CUDA-vs-CUDA repeat and the tolerance."""
+    W, H, L, R = 960, 640, 70, 190
+    pw = W - L - R
+    top = (60, 330)   # panel A: y0, y1
+    bot = (400, 590)  # panel B
+    ink, ink2, muted, grid, axis, surf = ("#0b0b0b", "#52514e", "#898781", "#e1e0d9",
+                                          "#c3c2b7", "#fcfcfb")
+    cuda = c["cuda"]["train"]
+    n = len(cuda)
+
+    def x(i: int) -> float:
+        return L + pw * i / (n - 1)
+
+    def path(ys: list[float], y0: float, y1: float, lo: float, hi: float) -> str:
+        def y(v: float) -> float:
+            return y1 - (y1 - y0) * (v - lo) / (hi - lo)
+        return " ".join(f"{'M' if i == 0 else 'L'}{x(i):.1f},{y(v):.1f}"
+                        for i, v in enumerate(ys))
+
+    out = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" '
+           f'height="{H}" font-family="system-ui,-apple-system,Segoe UI,sans-serif">',
+           f'<rect width="{W}" height="{H}" fill="{surf}"/>',
+           f'<text x="{L}" y="28" font-size="18" font-weight="600" fill="{ink}">GPT-2 124M, one '
+           f'epoch of tiny-shakespeare ({n} steps): train loss</text>']
+    trains = {k: c[k]["train"] for k, _, _ in SERIES}
+    lo = min(min(v) for v in trains.values())
+    hi = max(max(v) for v in trains.values())
+    lo, hi = float(int(lo * 2)) / 2, float(int(hi * 2) + 1) / 2
+    y0, y1 = top
+    t = lo
+    while t <= hi + 1e-9:
+        yy = y1 - (y1 - y0) * (t - lo) / (hi - lo)
+        out.append(f'<line x1="{L}" x2="{L + pw}" y1="{yy:.1f}" y2="{yy:.1f}" stroke="{grid}"/>'
+                   f'<text x="{L - 8}" y="{yy + 4:.1f}" font-size="12" fill="{muted}" '
+                   f'text-anchor="end">{t:.1f}</text>')
+        t += 0.5
+    for k, _, col in SERIES:
+        ys = trains[k]
+        out.append(f'<path d="{path(ys, y0, y1, lo, hi)}" fill="none" stroke="{col}" '
+                   f'stroke-width="2" stroke-linejoin="round" opacity="0.85"/>')
+    for j, (_, label, col) in enumerate(SERIES):  # direct labels, stacked at the right edge
+        yy = y0 + 18 + 22 * j
+        out.append(f'<line x1="{L + pw + 14}" x2="{L + pw + 30}" y1="{yy - 4}" y2="{yy - 4}" '
+                   f'stroke="{col}" stroke-width="3"/><text x="{L + pw + 36}" y="{yy}" '
+                   f'font-size="13" fill="{ink2}">{label}</text>')
+    out.append(f'<text x="{L + pw + 14}" y="{y0 + 92}" font-size="12" fill="{muted}">The three '
+               f'curves</text><text x="{L + pw + 14}" y="{y0 + 108}" font-size="12" '
+               f'fill="{muted}">overlap: see below.</text>')
+    # panel B: distance from the CUDA recording, per train step
+    y0, y1 = bot
+    hi2 = tol * 1.1
+    out.append(f'<text x="{L}" y="{y0 - 18}" font-size="15" font-weight="600" fill="{ink}">'
+               f'Distance from the CUDA recording, per step (tolerance {tol:g})</text>')
+    for t in (0.0, 0.0025, 0.005, 0.0075, 0.01):
+        yy = y1 - (y1 - y0) * t / hi2
+        out.append(f'<line x1="{L}" x2="{L + pw}" y1="{yy:.1f}" y2="{yy:.1f}" stroke="{grid}"/>'
+                   f'<text x="{L - 8}" y="{yy + 4:.1f}" font-size="12" fill="{muted}" '
+                   f'text-anchor="end">{t:g}</text>')
+    yt = y1 - (y1 - y0) * tol / hi2
+    out.append(f'<line x1="{L}" x2="{L + pw}" y1="{yt:.1f}" y2="{yt:.1f}" stroke="{ink2}" '
+               f'stroke-dasharray="6 4"/><text x="{L + pw + 14}" y="{yt + 4:.1f}" font-size="12" '
+               f'fill="{ink2}">tolerance</text>')
+    diffs = [("cuda_repeat", "llm.c CUDA, 2nd run", SERIES[0][2], "4 3"),
+             ("sycl_nvidia", "Muse SYCL, NVIDIA", SERIES[1][2], ""),
+             ("sycl_amd", "Muse SYCL, AMD", SERIES[2][2], "")]
+    for j, (k, label, col, dash) in enumerate(diffs):
+        ds = [abs(a - b) for a, b in zip(c[k]["train"], cuda, strict=True)]
+        out.append(f'<path d="{path(ds, y0, y1, 0.0, hi2)}" fill="none" stroke="{col}" '
+                   f'stroke-width="2" stroke-linejoin="round"'
+                   + (f' stroke-dasharray="{dash}"' if dash else "") + "/>")
+        yy = y0 + 40 + 22 * j
+        out.append(f'<line x1="{L + pw + 14}" x2="{L + pw + 30}" y1="{yy - 4}" y2="{yy - 4}" '
+                   f'stroke="{col}" stroke-width="3"' + (f' stroke-dasharray="{dash}"' if dash
+                                                          else "") +
+                   f'/><text x="{L + pw + 36}" y="{yy}" font-size="13" fill="{ink2}">{label}'
+                   f'</text>')
+    for y in (top[1], bot[1]):
+        out.append(f'<line x1="{L}" x2="{L + pw}" y1="{y}" y2="{y}" stroke="{axis}"/>')
+        for s in (1, 50, 100, 150, 200, 250, n):
+            out.append(f'<text x="{x(s - 1):.1f}" y="{y + 18}" font-size="12" fill="{muted}" '
+                       f'text-anchor="middle">{s}</text>')
+    out.append(f'<text x="{L + pw / 2:.0f}" y="{H - 14}" font-size="12" fill="{muted}" '
+               f'text-anchor="middle">training step</text></svg>')
+    return "\n".join(out) + "\n"
