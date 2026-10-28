@@ -1,0 +1,8 @@
+{
+  "command": "/usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.VDe6cBEFeS/task /tmp/tmp.VDe6cBEFeS/task/matmul_backward_harness.cu -lcublas -o build/native",
+  "returncode": 0,
+  "duration_s": 2.098929,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.VDe6cBEFeS/out/work"
+}
