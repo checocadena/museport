@@ -32,7 +32,8 @@ took a median of 732 ms. This is not a kernel speed measurement.
 
 DigitalOcean's MI350X image (ROCm 7.14 prerelease) lacks the development files oneMath's rocBLAS
 backend needs. Each run got one step further, and the fixes are in `museport/gpt2.py`
-(`ROCBLAS_UNPACK`):
+(`ROCBLAS_UNPACK`). The attempt 4 fix (AMDDeviceLibs) reached the code only on Oct 28, after
+J3's first AMD run failed without it:
 
 | Run | What stopped it | Fix | est_cost_usd |
 |---|---|---|---|

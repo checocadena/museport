@@ -106,6 +106,8 @@ def test_amd_gpu_task_builds_onemath_with_rocblas():
     amd, nv = onemath_gpu_setup("amd"), onemath_gpu_setup("nvidia")
     assert "-DENABLE_ROCBLAS_BACKEND=ON" in amd and 'HIP_TARGETS="$HIP_ARCH"' in amd
     assert "rocm_agent_enumerator" in amd and "onemath-rocblas" in amd
+    # attempt 4 on the MI350X: hip-config needs AMDDeviceLibs' CMake config (J3 hit it again)
+    assert "amdrocm-llvm-dev" in amd and "lib/llvm/lib/cmake/" in amd
     assert "-DENABLE_CUBLAS_BACKEND=ON" in nv and "ROCBLAS" not in nv
 
 

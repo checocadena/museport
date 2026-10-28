@@ -1,0 +1,8 @@
+{
+  "command": "/usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.bZ6H8n0Xv9/task /tmp/tmp.bZ6H8n0Xv9/task/test_gpt2_fp32.cu -lcublas -o build/native",
+  "returncode": 0,
+  "duration_s": 3.894158,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.bZ6H8n0Xv9/out/work"
+}

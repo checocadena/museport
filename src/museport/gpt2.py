@@ -488,8 +488,8 @@ ls -l "$ONEMATH_PREFIX/lib"
 # be touched: names here are prefixed MP_.
 ROCBLAS_UNPACK = r"""
   MP_RC="$(basename "$(dirname "$(dirname "$(readlink -f "$(command -v hipcc)")")")")"
+  MP_RV="${MP_RC#core-}"
   if [ ! -e "/opt/rocm/$MP_RC/lib/cmake/rocblas/rocblas-config.cmake" ]; then
-    MP_RV="${MP_RC#core-}"
     MP_V="$(apt-cache madison "amdrocm-blas-dev$MP_RV" | awk '{print $3}' | sort -V | head -1)"
     MP_D="$(mktemp -d)"
     (cd "$MP_D" && apt-get download "amdrocm-blas-dev$MP_RV=$MP_V" "amdrocm-blas-host$MP_RV=$MP_V" \
@@ -497,6 +497,17 @@ ROCBLAS_UNPACK = r"""
       && for f in "$MP_D"/*.deb; do dpkg-deb -x "$f" "$MP_D/x"; done \
       && cp -rn "$MP_D/x/opt/rocm/$MP_RC/." "/opt/rocm/$MP_RC/" \
       && echo "rocBLAS: unpacked $MP_V for $HIP_ARCH into /opt/rocm/$MP_RC"
+    rm -rf "$MP_D"
+  fi
+  # hip-config needs AMDDeviceLibs' CMake config, which only the LLVM development package has;
+  # take just its lib/llvm/lib/cmake directory
+  if [ ! -e "/opt/rocm/$MP_RC/lib/llvm/lib/cmake/AMDDeviceLibs/AMDDeviceLibsConfig.cmake" ]; then
+    MP_V="$(apt-cache madison "amdrocm-llvm-dev$MP_RV" | awk '{print $3}' | sort -V | head -1)"
+    MP_D="$(mktemp -d)"
+    (cd "$MP_D" && apt-get download "amdrocm-llvm-dev$MP_RV=$MP_V") \
+      && dpkg-deb --fsys-tarfile "$MP_D"/*.deb \
+        | tar -x -C / --skip-old-files "./opt/rocm/$MP_RC/lib/llvm/lib/cmake/" \
+      && echo "AMDDeviceLibs: unpacked CMake config of amdrocm-llvm-dev$MP_RV=$MP_V"
     rm -rf "$MP_D"
   fi
   export CMAKE_PREFIX_PATH="/opt/rocm/$MP_RC${CMAKE_PREFIX_PATH:+:$CMAKE_PREFIX_PATH}"

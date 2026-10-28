@@ -1,0 +1,53 @@
+{
+  "name": "llmc_test_gpt2_fp32",
+  "goal": "Port llm.c's GPT-2 test, test_gpt2_fp32.cu, to SYCL 2020 as test_gpt2_fp32.cpp, with zero dpct helpers. Like the CUDA test it starts with `#define TESTING` and `#include \"train_gpt2_fp32.cpp\"`: train_gpt2_fp32.cpp in the work dir is your own SYCL port of llm.c's trainer, already proven against llm.c (its training losses match llm.c's own trainer). Change train_gpt2_fp32.cpp only to wrap its main in `#ifndef TESTING` ... `#endif`, as train_gpt2_fp32.cu does; leave the rest of it as it is. Port the test's main (device setup, loading gpt2_124M_debug_state.bin, the logits, loss and gradient comparisons and the 10 training steps) using the trainer's functions, with the same printout ('step %d: loss %f ...', 'overall okay: %d'). Compile with sources [test_gpt2_fp32.cpp]. A hidden check runs your test and requires 'overall okay: 1' and 10 step losses that match PyTorch's within 1e-2 (llm.c's test tolerance). Success requires compile, verify and a zero-helper scan_helpers of the whole work directory (path '.') on the same sources; delete migrate's output (delete_file) once your port is done. What the test needs from train_gpt2_fp32.cpp: the device queue is the global `static sycl::queue *g_q` (the trainer's main sets it: `sycl::queue q{ sycl::property::queue::in_order{} }; g_q = &q;`; `qq()` returns it); the model's tensors are device USM (sycl::malloc_device), so copy with qq().memcpy(dst, src, bytes).wait(); the functions are gpt2_build_from_checkpoint(GPT2*, path), gpt2_forward(GPT2*, int* inputs, int* targets, B, T), gpt2_zero_grad(GPT2*), gpt2_backward(GPT2*), gpt2_update(GPT2*, lr, beta1, beta2, eps, weight_decay, t) and gpt2_free(GPT2*); the fields are model.acts.output, model.grads.<tensor>, model.grads_memory, model.mean_loss, model.config.*, model.param_sizes and model.num_parameters. main is the last function in train_gpt2_fp32.cpp: add the guard with two small edit_file calls (put `#ifndef TESTING` before the `int main(int argc, char *argv[]) {` line, and `#endif` after main's closing brace at the end of the file), not by rewriting the file. You do not need to read the whole trainer: write test_gpt2_fp32.cpp within your first few turns, then compile and verify, and fix what the compiler and verify report.",
+  "cuda_path": "test_gpt2_fp32.cu",
+  "include_dirs": [
+    "."
+  ],
+  "reference_build": [
+    "true"
+  ],
+  "reference_cmd": "cp {task_dir}/reference.out {output}",
+  "candidate_cmd": "python3 {task_dir}/run_test.py build/candidate {input} {output}",
+  "inputs": [
+    "test_args.txt"
+  ],
+  "mode": "array",
+  "output_format": "f32",
+  "base_flags": [
+    "-O2",
+    "-I${ONEMATH_PREFIX}/include",
+    "-Wl,--no-as-needed",
+    "-L${ONEMATH_PREFIX}/lib",
+    "-Wl,-rpath,${ONEMATH_PREFIX}/lib",
+    "-lonemath"
+  ],
+  "native_flags": [
+    "-lcublas"
+  ],
+  "tolerance": 0.01,
+  "rtol": 0.0,
+  "museport": {
+    "source": "karpathy/llm.c test_gpt2_fp32.cu",
+    "stage": "test",
+    "seed": "seed",
+    "note": "llm.c's own test: 'overall okay: 1' (logits, loss and gradients against PyTorch's debug state, inside the test) and its 10 training losses against PyTorch's within 1e-2",
+    "reference": {
+      "values": [
+        1.0,
+        5.270007133483887,
+        4.059706687927246,
+        3.3751230239868164,
+        2.8007826805114746,
+        2.315382242202759,
+        1.8490285873413086,
+        1.3946564197540283,
+        0.9991465210914612,
+        0.6240804195404053,
+        0.37651097774505615
+      ],
+      "source": "1.0 for 'overall okay: 1', then expected_losses from llm.c's test_gpt2_fp32.cu (PyTorch)"
+    }
+  }
+}
