@@ -141,3 +141,6 @@ def test_j3_gets_a_section(tmp_path):
     assert "worst 7.03e-06" in section and "MI350X VF" in section
     # the GELU bug fails on "overall okay" alone: its losses stay within tolerance
     assert "overall okay 0, 0 of 10 losses out of tolerance" in section
+    # the Quick start from a fresh clone, timed from its logs
+    assert "From a fresh clone" in section and "(26 s)" in section
+    assert 'pill ok">overall okay: 1</span>' in section
