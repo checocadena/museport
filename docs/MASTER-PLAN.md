@@ -20,7 +20,9 @@ Rules for every item:
 
 Budget so far:
 - **Development:** about $0.55 of $5, plus the first failed plan run (at most $1.15).
-- **Comparison runs:** about $22.19 of $30, at most $22.37 (after the C1-C3 reruns, Tier 1 run 2,
+- **Comparison runs:** about $24.52 of $30, at most $24.70, with J3's $2.33 below
+  (Oct 28; the author has said the cap will be raised, amount to be set). Before J3: $22.19,
+  at most $22.37 (after the C1-C3 reruns, Tier 1 run 2,
   the run without SYCLomatic, GPT-2 stages 1-3, Tiers 2-3 run 2, two softmax_forward reruns, E1,
   E3 and J2's Muse specs, about $1.64-1.82 with the fp32 rerun). The author raised
   the per-run cap from $1 to $3 on Oct 27, and this cap from $20 to $30 on Oct 27.
@@ -69,8 +71,9 @@ See the README's results table.
   *Cost: $0. Done when the pages build from the committed evidence with no hand-written
   numbers, and tests cover the generator.*
 - [ ] **B2. Publish it** (an artifact page or GitHub Pages) and link it from the README and
-  the submission. *Cost: $0.* *(Oct 28: published as a private claude.ai artifact, version 13,
-  built from main. Still to do: the author shares it, and the README and submission link it.)*
+  the submission. *Cost: $0.* *(Oct 28: published as a private claude.ai artifact, now version 16,
+  built from main, with every result including J3. `docs/SUBMISSION.md` links it. Still to do:
+  the author shares it publicly, then the README links it.)*
 
 ## C. Finish and harden the current results (cheap; removes caveats)
 
@@ -182,19 +185,24 @@ See the README's results table.
   kernels it uses, its cuBLAS calls, and its data files: the GPT-2 124M weights and debug
   state from llm.c's download script, about 500 MB. *$0.* *Done Oct 27:
   [`GPT2-PLAN.md`](GPT2-PLAN.md).*
-- [ ] **G2. Hidden check: llm.c's own `test_gpt2`.** It compares logits, loss and gradients
+- [x] **G2. Hidden check: llm.c's own `test_gpt2`.** It compares logits, loss and gradients
   with a PyTorch reference over 10 steps. Prove it passes for llm.c's CUDA on a GPU first.
-  *About $0.10.*
-- [ ] **G3. Muse ports the fp32 training program to SYCL** *(Oct 27: stage 1, the forward pass,
+  *About $0.10.* *Done Oct 28 as part of J3 (`evidence/j3-test`):*
+  - *the check was proven on llm.c's CPU test (pass) and a planted GELU bug (fail);*
+  - *llm.c's own CUDA test passes it on an RTX 2000 Ada;*
+  - *Muse's port of the test passes it on the CPU, NVIDIA and AMD.*
+- [x] **G3. Muse ports the fp32 training program to SYCL** *(Oct 27: stage 1, the forward pass,
   passes on the CPU device for $0.74; stage 2, the backward pass, for $1.21; stage 3, 10
   AdamW training steps against llm.c's expected losses, for $1.15; see `evidence/gpt2-stage1`
   to `evidence/gpt2-stage3`. Stage 3 also passes on an NVIDIA RTX 4000 Ada against PyTorch and
   llm.c's CUDA, with oneMath built on the machine with cuBLAS: `evidence/gpt2-stage3/gpu`.)*, reusing its kernel ports, in
   stages (forward, backward, optimizer). It passes `test_gpt2` on the CPU device, then on
   NVIDIA, and on AMD if D1 works. *About $3-8 plus GPU minutes; needs a cap. Done when the SYCL
-  build matches PyTorch within llm.c's tolerances, with the evidence committed.*
+  build matches PyTorch within llm.c's tolerances, with the evidence committed.* *Done Oct 28:
+  stages 1-3, then llm.c's real trainer and test (J3), on CPU, NVIDIA and AMD.*
 - [ ] **G4. If time allows: train GPT-2 124M for a few hundred steps** on a GPU with the SYCL
-  port, and compare its loss curve with the CUDA build. *About $2-5 of GPU time.*
+  port, and compare its loss curve with the CUDA build. *About $2-5 of GPU time.* *(Folded
+  into K1.)*
 
 ## H. Generalisation (Impact)
 
@@ -254,7 +262,9 @@ file. This section removes both limits.
 
 ## I. Demo, submission text, outreach (Demo 25%, Most Viral, Community Vote)
 
-- [ ] **I1. Video script, shot by shot (3 minutes).**
+- [ ] **I1. Video script, shot by shot (3 minutes).** *(Drafted in `demo/DEMO.md`, with J3 as
+  shot 12. The rendered clips were refreshed Oct 28 (`gpus`, `numbers`). Left: the author's
+  recordings and voiceover, I3.)*
   - Opening line on pre-existing vs new (draft in `docs/SUBMISSION.md`).
   - Plan.
   - A hidden check failing on a planted bug, then passing.
@@ -266,7 +276,8 @@ file. This section removes both limits.
 - [ ] **I2. Demo commands that run in seconds at $0**, plus one optional real run on camera
   (about $0.20).
 - [ ] **I3. Record the video** (author).
-- [ ] **I4. Submission text for Cerebral Valley:**
+- [ ] **I4. Submission text for Cerebral Valley:** *(Drafted in `docs/SUBMISSION.md`, up to date
+  with J3 on Oct 28. Left: a final pass with I6.)*
   - summary;
   - how Meta's models are used (planning, porting, the reviewer if E3 is done, open weights
     if F is done);
@@ -286,24 +297,23 @@ file. This section removes both limits.
 
 ## Suggested schedule (revised Oct 28, night)
 
-Done by Oct 28: A1-A2, B1, C1-C3, D1, D2 (GPT-2, NVIDIA and AMD), D4, D6, E3, G1, G3 on CPU,
-NVIDIA and AMD, J1, J2 (with the fp32 rerun), the post-fix reruns, E1 (one run each), the
-demo clips and the submission draft. J1 and J2 were planned for Oct 29-31, so the schedule is a
-day ahead.
+Done by Oct 28: A1-A2, B1, C1-C3, D1, D2 (GPT-2, NVIDIA and AMD), D4, D6, E3, G1-G3, J1, J2
+(with the fp32 rerun), J3 (`llm.c-sycl`, on CPU, NVIDIA and AMD, with its own Makefile), the
+post-fix reruns, E1 (one run each), the demo script and clips, and the submission draft. J3 was
+planned for Oct 29-30, so the schedule is about two days ahead.
 
 | Day | Items |
 |---|---|
-| Oct 29-30 | J3 (`llm.c-sycl`), after its scope and cost are agreed (see `docs/J3-PLAN.md`) |
-| Oct 31 | K1 (loss curves on CPU, NVIDIA and AMD); D5 if Intel access arrives |
-| Nov 1 | J4 (a second CUDA repo); C6 or E1 runs if the budget allows |
+| Oct 29 | K1 (loss curves: llm.c's CUDA and the SYCL port on NVIDIA, the port on AMD); D2's 3 oneMath kernel ports on GPUs |
+| Oct 30-Nov 1 | J4 (a second, unseen CUDA repo, end to end), once its cap is set; D5 if Intel access arrives |
+| Nov 1 | C6 or E1 repeat runs, if the budget allows |
 | Nov 2 | F2 if Baseten access arrives; refresh SUBMISSION and DEMO with every new result |
 | Nov 3 | I1-I5: script, record, submission text, posts |
 | Nov 4 | I6, submit by midday |
 
 **Decisions needed from the author:**
-- caps for J3, J4 and K1: comparison runs have about $7.6-7.8 left of $30, and J3 alone is
-  estimated at several dollars; GPUs have about $5.90 left of $10; the GPT-2 cap for K1 is $7,
-  with $4.45 used;
+- the new comparison cap (the author has said to raise it; the amount is open), and caps for
+  J4 and K1: comparison runs have about $5.30-5.50 left of $30, and GPUs about $5.27 left of $10;
 - Intel Tiber AI Cloud sign-up (D5);
 - Baseten or Modal access (F1);
 - sharing the report (B2).

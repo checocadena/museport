@@ -189,9 +189,12 @@ const SHOTS = {
        ${names.map(n => `<tr><td class="mono" style="font-size:28px">${n}</td>
          <td><span class="tick ${D.nvidia[n].pass && D.nvidia[n].vs_native ? 'ok' : 'bad'}">${D.nvidia[n].pass && D.nvidia[n].vs_native ? '✔' : '✘'} ${D.nvidia[n].device.replace('NVIDIA ', '').replace(' Generation', '')}</span></td>
          <td>${D.amd[n] && D.amd[n].pass ? '<span class="tick ok">✔ pass</span>' : '<span class="tick bad">✘ not run</span>'}</td></tr>`).join('')}
-       ${D.gpt2_stage3.gpu.map(g => `<tr style="border-top:2px solid var(--accent)"><td class="mono" style="font-size:28px">GPT-2 training, 10 steps</td>
-         <td><span class="tick ${g.pass && g.vs_native ? 'ok' : 'bad'}">${g.pass && g.vs_native ? '✔' : '✘'} ${g.device.replace('NVIDIA ', '').replace(' Generation', '')}</span></td>
-         <td><span class="tick bad">– not run</span></td></tr>`).join('')}</table>`);
+       ${[['GPT-2 training, 10 steps', D.gpt2_stage3.gpu],
+          ...(D.j3 || []).filter(p => p.target === 'test_gpt2fp32sycl').map(p => ["llm.c's own test (llm.c-sycl)", p.gpu])]
+         .map(([label, gpus], i) => { const nv = gpus.find(g => g.vendor === 'nvidia'), amd = gpus.find(g => g.vendor === 'amd');
+           return `<tr style="${i ? '' : 'border-top:2px solid var(--accent)'}"><td class="mono" style="font-size:28px">${label}</td>
+         <td><span class="tick ${nv && nv.pass && nv.vs_native ? 'ok' : 'bad'}">${nv && nv.pass && nv.vs_native ? '✔ ' + nv.device.replace('NVIDIA ', '').replace(' Generation', '') : '✘ not run'}</span></td>
+         <td>${amd && amd.pass ? '<span class="tick ok">✔ pass</span>' : '<span class="tick bad">✘ not run</span>'}</td></tr>`; }).join('')}</table>`);
     const ticks = [...document.querySelectorAll('.tick')];
     for (let i = 0; i < ticks.length; i += 2) { ticks[i].classList.add('on'); ticks[i + 1].classList.add('on'); await sleep(260); }
   },
@@ -200,8 +203,10 @@ const SHOTS = {
     const all = D.current.find(r => r.label === 'All');
     const stats = [[`${all.correct}/${all.items}`, 'llm.c kernel files ported correctly, 0 helpers'],
                    [`${all.gpu}`, 'pass on NVIDIA against llm.c\'s own CUDA'],
-                   [`${Object.values(D.amd).filter(x => x.pass).length}/${Object.keys(D.amd).length}`, 'Tier 1 ports pass on an AMD MI350X'],
-                   [fmt$(D.gpt2_stage1.cost + D.gpt2_stage2.cost + D.gpt2_stage3.cost), 'GPT-2 training ported: forward, backward, AdamW. Matches PyTorch on ' + (D.gpt2_stage3.gpu.some(g => g.pass) ? 'an NVIDIA GPU' : 'the CPU')]];
+                   [`${all.amd}`, 'the same ports pass on an AMD MI350X against the reference'],
+                   [fmt$(D.gpt2_stage1.cost + D.gpt2_stage2.cost + D.gpt2_stage3.cost), 'GPT-2 training ported: forward, backward, AdamW. Matches PyTorch on the CPU' +
+                     (D.gpt2_stage3.gpu.some(g => g.pass && g.vendor === 'nvidia') ? ', an NVIDIA GPU' : '') +
+                     (D.gpt2_stage3.gpu.some(g => g.pass && g.vendor === 'amd') ? ' and an AMD GPU' : '')]];
     h(`<div class="eyebrow">Measured, with the evidence committed</div>
        <div style="display:grid;grid-template-columns:1fr 1fr;gap:34px;margin-top:70px">${stats.map((s, i) =>
          `<div class="card in" style="animation-delay:${i * .5}s"><div class="big">${s[0]}</div><div class="label">${s[1]}</div></div>`).join('')}</div>`);

@@ -70,7 +70,7 @@
    "correct": 4,
    "success": 3,
    "gpu": 4,
-   "amd": 0,
+   "amd": 4,
    "cost": 1.6857
   },
   {
@@ -80,7 +80,7 @@
    "correct": 4,
    "success": 3,
    "gpu": 1,
-   "amd": 0,
+   "amd": 1,
    "cost": 1.0576
   },
   {
@@ -90,7 +90,7 @@
    "correct": 18,
    "success": 15,
    "gpu": 15,
-   "amd": 10,
+   "amd": 15,
    "cost": 3.7497
   }
  ],
@@ -1197,6 +1197,13 @@
   ],
   "gpu": [
    {
+    "device": "AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85]",
+    "vendor": "amd",
+    "pass": true,
+    "vs_native": false,
+    "summary": "PASS on AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85] (hip:0, amd): sycl_verify_vs_reference: PASS: 1/1 case(s) match (worst max abs err 2.46e-05, atol 0.01)"
+   },
+   {
     "device": "NVIDIA RTX 4000 Ada Generation",
     "vendor": "nvidia",
     "pass": true,
@@ -1240,5 +1247,43 @@
   },
   "reference_loss": 5.270008563995361,
   "rows": 256
- }
+ },
+ "j3": [
+  {
+   "label": "llm.c's fp32 trainer",
+   "target": "train_gpt2fp32sycl",
+   "gpu": [
+    {
+     "device": "AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85]",
+     "vendor": "amd",
+     "pass": true,
+     "vs_native": false
+    },
+    {
+     "device": "NVIDIA RTX 2000 Ada Generation",
+     "vendor": "nvidia",
+     "pass": true,
+     "vs_native": true
+    }
+   ]
+  },
+  {
+   "label": "llm.c's own test",
+   "target": "test_gpt2fp32sycl",
+   "gpu": [
+    {
+     "device": "AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85]",
+     "vendor": "amd",
+     "pass": true,
+     "vs_native": false
+    },
+    {
+     "device": "NVIDIA RTX 2000 Ada Generation",
+     "vendor": "nvidia",
+     "pass": true,
+     "vs_native": true
+    }
+   ]
+  }
+ ]
 }
