@@ -203,7 +203,7 @@ const SHOTS = {
     const all = D.current.find(r => r.label === 'All');
     const stats = [[`${all.correct}/${all.items}`, 'llm.c kernel files ported correctly, 0 helpers'],
                    [`${all.gpu}`, 'pass on NVIDIA against llm.c\'s own CUDA'],
-                   [`${all.amd}`, 'the same ports pass on an AMD MI350X against the reference'],
+                   [`${all.amd}`, 'pass on an AMD MI350X against the reference'],
                    [fmt$(D.gpt2_stage1.cost + D.gpt2_stage2.cost + D.gpt2_stage3.cost), 'GPT-2 training ported: forward, backward, AdamW. Matches PyTorch on the CPU' +
                      (D.gpt2_stage3.gpu.some(g => g.pass && g.vendor === 'nvidia') ? ', an NVIDIA GPU' : '') +
                      (D.gpt2_stage3.gpu.some(g => g.pass && g.vendor === 'amd') ? ' and an AMD GPU' : '')]];

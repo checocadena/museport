@@ -19,7 +19,7 @@ Each folder holds Muse's port of one llm.c `dev/cuda` file, exactly as Muse last
 | `classifier_fused` | classifier_fused.cpp | PASS: 1/1 case(s) match (worst max abs err 3.81e-06, atol 0.0001) | 7 | $0.1397 | `evidence/port-llmc-tier23-run2/t2-classifier-fused` |
 | `layernorm_backward` | layernorm_backward_sycl.cpp | PASS: 1/1 case(s) match (worst max abs err 1.91e-05, atol 0.001) | 14 | $0.4848 | `evidence/port-llmc-tier23-run2/t2-layernorm-backward` |
 | `matmul_forward` | matmul_forward.cpp | PASS: 1/1 case(s) match (worst max abs err 5.72e-05, atol 0.1) | 12 | $0.2449 | `evidence/port-llmc-tier23-run2/t3-matmul-forward` |
-| `matmul_backward` | matmul_backward.cpp | PASS: 1/1 case(s) match (worst max abs err 0.00021, atol 0.001) | 8 | $0.1108 | `evidence/port-llmc-tier23-run2/t3-matmul-backward` |
 | `trimat_forward` | trimat_forward.cpp | PASS: 1/1 case(s) match (worst max abs err 7.15e-07, atol 0.0001) | 16 | $0.3740 | `evidence/port-llmc-tier23-run2/t3-trimat-forward` |
 | `matmul_backward_bias` | matmul_backward_bias.cpp | PASS: 1/1 case(s) match (worst max abs err 7.63e-06, atol 0.005) | 13 | $0.3278 | `evidence/port-llmc-tier23-run2/t3-matmul-backward-bias` |
 | `softmax_forward` | softmax_forward.cpp | PASS: 1/1 case(s) match (worst max abs err 2.86e-05, atol 0.0001) | 23 | $0.9063 | `evidence/port-llmc-softmax-rerun-2/t2-softmax-forward` |
+| `matmul_backward` | matmul_backward_sycl.cpp | PASS: 1/1 case(s) match (worst max abs err 0.00021, atol 0.001) | 7 | $0.0943 | `evidence/port-llmc-matmul-backward-colmajor/t3-matmul-backward` |

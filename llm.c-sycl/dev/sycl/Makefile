@@ -17,7 +17,7 @@ endif
 ONEMATH_FLAGS = -I$(ONEMATH_PREFIX)/include -Wl,--no-as-needed -L$(ONEMATH_PREFIX)/lib \
                 -Wl,-rpath,$(ONEMATH_PREFIX)/lib -lonemath
 
-KERNELS = gelu_forward gelu_backward residual_forward permute crossentropy_forward crossentropy_softmax_backward encoder_forward encoder_backward adamw fused_residual_forward global_norm layernorm_forward classifier_fused layernorm_backward matmul_forward matmul_backward trimat_forward matmul_backward_bias softmax_forward
+KERNELS = gelu_forward gelu_backward residual_forward permute crossentropy_forward crossentropy_softmax_backward encoder_forward encoder_backward adamw fused_residual_forward global_norm layernorm_forward classifier_fused layernorm_backward matmul_forward trimat_forward matmul_backward_bias softmax_forward matmul_backward
 all: $(addprefix build/,$(KERNELS))
 build:
 	mkdir -p build
@@ -51,14 +51,14 @@ build/layernorm_backward: layernorm_backward/layernorm_backward_sycl.cpp | build
 	$(SYCL_CXX) -fsycl -O2 $(TARGET_FLAGS) layernorm_backward/layernorm_backward_sycl.cpp -o $@
 build/matmul_forward: matmul_forward/matmul_forward.cpp | build
 	$(SYCL_CXX) -fsycl -O2 $(TARGET_FLAGS) matmul_forward/matmul_forward.cpp -o $@ $(ONEMATH_FLAGS)
-build/matmul_backward: matmul_backward/matmul_backward.cpp | build
-	$(SYCL_CXX) -fsycl -O2 $(TARGET_FLAGS) matmul_backward/matmul_backward.cpp -o $@ $(ONEMATH_FLAGS)
 build/trimat_forward: trimat_forward/trimat_forward.cpp | build
 	$(SYCL_CXX) -fsycl -O2 $(TARGET_FLAGS) trimat_forward/trimat_forward.cpp -o $@ $(ONEMATH_FLAGS)
 build/matmul_backward_bias: matmul_backward_bias/matmul_backward_bias.cpp | build
 	$(SYCL_CXX) -fsycl -O2 $(TARGET_FLAGS) matmul_backward_bias/matmul_backward_bias.cpp -o $@
 build/softmax_forward: softmax_forward/softmax_forward.cpp | build
 	$(SYCL_CXX) -fsycl -O2 $(TARGET_FLAGS) softmax_forward/softmax_forward.cpp -o $@
+build/matmul_backward: matmul_backward/matmul_backward_sycl.cpp | build
+	$(SYCL_CXX) -fsycl -O2 $(TARGET_FLAGS) matmul_backward/matmul_backward_sycl.cpp -o $@ $(ONEMATH_FLAGS)
 clean:
 	rm -rf build
 .PHONY: all clean

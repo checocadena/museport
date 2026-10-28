@@ -61,8 +61,8 @@ repo whose build passes llm.c's own test on a CPU, an NVIDIA GPU and an AMD GPU.
 **llm.c kernels, with the fixed agent loop** (one run per file):
 - 19 kernel files ported.
 - **18 correct with 0 helpers**, by the hidden check; 15 also met the loop's stricter rule.
-- **15 pass on NVIDIA** against llm.c's own CUDA, and the same **15 pass on an AMD MI350X**
-  against the reference.
+- **17 pass on NVIDIA** against llm.c's own CUDA, and **18 pass on an AMD MI350X** against the
+  reference. The ports that call oneMath run with oneMath built on the GPU machine.
 - $3.75 in total ([README table](../README.md#results-llmc-devcuda-muse-spark-13)).
 - `softmax_forward` failed the hidden check in this run. A rerun with a stricter goal, 30 turns
   and a $3 cap passes, on NVIDIA and AMD too, for $0.91
@@ -79,13 +79,19 @@ turns per item, for $0.48. On these simple kernels the migration tool did not he
 file with warp-level CUDA got correct but plain kernels
 ([evidence](../evidence/port-llmc-tier1-nomigrate/README.md)).
 
-**GPUs:** 15 ports pass on **NVIDIA** GPUs (RTX 2000 Ada, RTX A4500, L4, RTX 4090) against
-both the reference and llm.c's own CUDA ([Tier 1](../evidence/port-llmc-tier1-run2/gpu/NVIDIA.md),
-[Tiers 2-3](../evidence/port-llmc-tier23-run2/gpu/NVIDIA.md)). The same 15 pass on an
-**AMD Instinct MI350X** against the reference ([Tier 1](../evidence/port-llmc-tier1-run2/gpu/AMD.md),
-[Tiers 2-3](../evidence/port-llmc-tier23-run2/gpu/AMD.md)). Tiers 2-3 ran from the cloud
-session, through a public-TLS mode added to the toolkit this week. The 3 kernel ports that
-call oneMath are verified on the CPU device.
+**GPUs:**
+- **NVIDIA:** 17 ports pass on NVIDIA GPUs (RTX 2000 Ada, RTX A4500, L4, RTX 4090) against both
+  the reference and llm.c's own CUDA ([Tier 1](../evidence/port-llmc-tier1-run2/gpu/NVIDIA.md),
+  [Tiers 2-3](../evidence/port-llmc-tier23-run2/gpu/NVIDIA.md)).
+- **AMD:** 18 pass on an **AMD Instinct MI350X** against the reference
+  ([Tier 1](../evidence/port-llmc-tier1-run2/gpu/AMD.md),
+  [Tiers 2-3](../evidence/port-llmc-tier23-run2/gpu/AMD.md)).
+- **Cloud session:** Tiers 2-3 ran from the cloud session, through a public-TLS mode added to
+  the toolkit this week.
+- **The ports that call oneMath** build it on the GPU machine ([D2](../evidence/d2-onemath-gpu/README.md)).
+  - On NVIDIA, `matmul_backward` aborts, because its row-major gemm is not implemented in
+    oneMath's cuBLAS backend.
+  - Muse's column-major re-port passes there, identical to llm.c's CUDA.
 
 **GPT-2, llm.c's real training code with the GPT-2 124M weights:**
 - **Stage 1, the forward pass:** Muse wrote a 463-line SYCL port that matches PyTorch's logits
