@@ -1,0 +1,8 @@
+{
+  "command": "/usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.i3zht750xj/task /tmp/tmp.i3zht750xj/task/train_gpt2_fp32.cu -lcublas -o build/native",
+  "returncode": 0,
+  "duration_s": 4.564004,
+  "stdout": "",
+  "stderr": "/tmp/tmp.i3zht750xj/task/train_gpt2_fp32.cu(62): warning #550-D: variable \"cublas_compute_type\" was set but never used\n  static cublasComputeType_t cublas_compute_type;\n                             ^\n\nRemark: The warnings can be suppressed with \"-diag-suppress <warning-number>\"\n\n",
+  "cwd": "/tmp/tmp.i3zht750xj/out/work"
+}
