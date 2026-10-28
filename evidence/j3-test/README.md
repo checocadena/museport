@@ -65,6 +65,24 @@ Muse needed three runs. Here is what changed between them:
 [`repo-build-cpu.log`](repo-build-cpu.log): logits OK, loss OK, gradients `TENSOR OK`, 10 losses
 OK, `overall okay: 1`.
 
-## Not yet done
+## On NVIDIA and AMD GPUs (step 4)
 
-- This test and the trainer on NVIDIA and AMD (step 4).
+These runs use the same source, unchanged: `run3/port`, as Muse last compiled it. Each machine
+fetched llm.c's weights and debug state, checked their sha256, built oneMath for its vendor, and
+ran the hidden check above.
+
+| GPU | vs PyTorch (hidden reference) | vs llm.c's own CUDA test | Cost |
+|---|---|---|---|
+| NVIDIA RTX 2000 Ada (Runpod; oneMath on cuBLAS) | **PASS**, okay 1, worst 0.000127 | **PASS**, worst 7.03e-06 | $0.01 |
+| AMD Instinct MI350X (DigitalOcean; oneMath on rocBLAS) | **PASS**, okay 1, worst 0.0000236 | not run: llm.c's CUDA does not hipify into something that builds, as for every llm.c file on AMD | $0.14 |
+
+Results: [NVIDIA](gpu/nvidia/nvidia-rtx-2000-ada-generation/llmc_test_gpt2_fp32/SUMMARY.md),
+[AMD](gpu/amd/amd-instinct-mi350x-vf-gfx950-sramecc-xnack-hip-71460-85/llmc_test_gpt2_fp32/SUMMARY.md). Logs are in [`gpu/logs`](gpu/logs).
+
+The first AMD run failed before any test ran ($0.13). oneMath's rocBLAS backend did not
+configure because `hip-config` could not find `AMDDeviceLibs`. GPT-2 stage 3 had fixed this on
+its fourth AMD run, but that fix never reached `museport/gpt2.py`. It is there now, with a test,
+and the second run passed.
+
+So llm.c's own test, ported by Muse, prints `overall okay: 1` on three targets: the CPU, an
+NVIDIA GPU and an AMD GPU.

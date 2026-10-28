@@ -26,9 +26,10 @@ Budget so far:
   the per-run cap from $1 to $3 on Oct 27, and this cap from $20 to $30 on Oct 27.
   The author set a $7 cap for GPT-2 (G3); $4.45 used, including E1's GPT-2 run.
   J3 adds $2.33 of its $4 Muse cap: the trainer ($0.71) and three test-port runs ($1.62).
-- **GPUs:** about $4.10 (Runpod NVIDIA about $0.31, DigitalOcean AMD about $3.79), of a $10 cap
+- **GPUs:** about $4.53 (Runpod NVIDIA about $0.33, DigitalOcean AMD about $4.20), of a $10 cap
   the author set on Oct 27. Oct 28 added the J1 recordings ($0.034), Tiers 2-3 and softmax on
-  AMD ($0.72), GPT-2 stage 3 on AMD (five runs, $0.65) and J2's GPU proofs ($0.041).
+  AMD ($0.72), GPT-2 stage 3 on AMD (five runs, $0.65), J2's GPU proofs ($0.041) and J3's
+  four GPU runs plus one failed AMD setup ($0.43).
 **The author sets their caps before they start.**
 
 ## Status at the start (Oct 26)
@@ -228,7 +229,9 @@ file. This section removes both limits.
   and trains, on CPU, NVIDIA and AMD. *About $5-10 of Muse.*
   - Done on the CPU, Oct 28: the 19 `dev/sycl` ports (19/19 pass), llm.c's fp32 trainer
     (`evidence/j3-trainer`) and llm.c's own test, `overall okay: 1` (`evidence/j3-test`).
-  - Left: the test and the trainer on NVIDIA and AMD (step 4).
+  - Done on GPUs, Oct 28: the test and the trainer pass on an NVIDIA RTX 2000 Ada and an AMD
+    MI350X ($0.43 of the $1 J3 GPU cap).
+  - Left: publishing (step 5) and the report page.
 - [ ] **J4. A second, unseen CUDA repo, end to end** with J1-J3: scan, plan, port, check,
   reassemble. Replaces H1.
 

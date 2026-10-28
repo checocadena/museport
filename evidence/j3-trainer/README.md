@@ -49,8 +49,23 @@ its printout. Muse's work dir started with its own proven port (`task/seed/`).
 - **The same source, built by `llm.c-sycl`'s own Makefile** (`make` at the top level), passes the
   same check: worst error 0.00227 in 47 s on the CPU device.
 
+## On NVIDIA and AMD GPUs (step 4)
+
+These runs use the same source, unchanged: `run1/port`. Each machine fetched llm.c's weights and
+tokenizer, checked their sha256, built oneMath for its vendor, and ran the hidden check above.
+
+| GPU | vs llm.c's CPU trainer (hidden reference) | vs llm.c's own CUDA trainer | Cost |
+|---|---|---|---|
+| NVIDIA RTX 2000 Ada (Runpod; oneMath on cuBLAS) | **PASS**, worst 0.0023 | **PASS**, worst 0.00147 | $0.009 |
+| AMD Instinct MI350X (DigitalOcean; oneMath on rocBLAS) | **PASS**, worst 0.00242 | not run: llm.c's CUDA does not hipify into something that builds | $0.143 |
+
+On NVIDIA, llm.c's own CUDA trainer is itself 0.00386 from the CPU reference.
+
+Results: [NVIDIA](gpu/nvidia/nvidia-rtx-2000-ada-generation/llmc_train_gpt2_fp32/SUMMARY.md),
+[AMD](gpu/amd/amd-instinct-mi350x-vf-gfx950-sramecc-xnack-hip-71460-85/llmc_train_gpt2_fp32/SUMMARY.md). Logs are in [`gpu/logs`](gpu/logs).
+
+llm.c's own test, ported in step 3, is in [`../j3-test`](../j3-test/README.md).
+
 ## Not yet done
 
-- llm.c's own test, `test_gpt2_fp32.cu`, ported (step 3).
-- This trainer run on NVIDIA and AMD (step 4).
 - A longer training run (K1).
