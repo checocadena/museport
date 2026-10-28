@@ -1,6 +1,6 @@
 {
   "model": "muse-spark-1.3",
-  "spent_usd": 0.1305,
+  "spent_usd": 0.1614,
   "examples": [
     "gelu_forward.cu",
     "global_norm.cu"
@@ -107,6 +107,30 @@
       },
       "variants": [
         1
+      ],
+      "dropped_variants": []
+    },
+    {
+      "file": "encoder_forward.cu",
+      "proven": true,
+      "attempts": 1,
+      "cost_usd": 0.030869,
+      "compare": {
+        "variants": true,
+        "cpu_functions": true,
+        "sizes": false,
+        "tol": true,
+        "hand_variants": [
+          1,
+          2,
+          3
+        ],
+        "hand_tol": 1e-05
+      },
+      "variants": [
+        1,
+        2,
+        3
       ],
       "dropped_variants": []
     }
