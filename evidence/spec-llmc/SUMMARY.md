@@ -1,6 +1,6 @@
 # Harness specs written by Muse and proven
 
-Model `muse-spark-1.3`, spent $0.2231. Worked examples shown to Muse (not graded): gelu_forward.cu, global_norm.cu.
+Model `muse-spark-1.3`, spent $0.2630. Worked examples shown to Muse (not graded): gelu_forward.cu, global_norm.cu.
 
 | file | proven | attempts | variants | same as hand-written: variants / CPU functions / sizes / tol | cost |
 |---|---|---|---|---|---|
@@ -12,3 +12,4 @@ Model `muse-spark-1.3`, spent $0.2231. Worked examples shown to Muse (not graded
 | encoder_forward.cu | yes | 1 | [1, 2, 3] | yes / yes / no / yes | $0.0309 |
 | encoder_backward.cu | yes | 1 | [1, 2] | yes / yes / no / yes | $0.0204 |
 | adamw.cu | yes | 1 | [1, 2] | yes / yes / no / yes | $0.0413 |
+| fused_residual_forward.cu | yes | 1 | [1, 2, 3, 4, 5, 6] | yes / yes / no / yes | $0.0399 |

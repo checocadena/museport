@@ -1,0 +1,100 @@
+{
+  "cpu_call": "residual_forward_cpu(residual, inp1, inp2, B*T*C); layernorm_forward_cpu(normed, mean, rstd, residual, weight, bias, B, T, C)",
+  "cpu_functions": [
+    "residual_forward_cpu",
+    "layernorm_forward_cpu"
+  ],
+  "dropped_variants": [],
+  "extra_includes": [],
+  "gpu_call": "fused_residual_forward(k, d_residual, d_normed, d_mean, d_rstd, d_inp1, d_inp2, d_weight, d_bias, B*T, C, 256)",
+  "gpu_prelude": "",
+  "host_prep": "",
+  "inputs": [
+    {
+      "count": "B*T*C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "uniform",
+      "name": "inp1"
+    },
+    {
+      "count": "B*T*C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "uniform",
+      "name": "inp2"
+    },
+    {
+      "count": "C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "uniform",
+      "name": "weight"
+    },
+    {
+      "count": "C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "uniform",
+      "name": "bias"
+    }
+  ],
+  "keep_cublas": false,
+  "keep_cublaslt": false,
+  "keep_in_harness": [],
+  "note": "B=4, T=256 (llm.c: B=8, T=1024); C=768 as in llm.c. N=B*T=1024 divisible by 256 and by block_y for the idx>N guards.",
+  "output_post": "",
+  "outputs": [
+    {
+      "count": "B*T*C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "zeros",
+      "name": "residual"
+    },
+    {
+      "count": "B*T*C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "zeros",
+      "name": "normed"
+    },
+    {
+      "count": "B*T",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "zeros",
+      "name": "mean"
+    },
+    {
+      "count": "B*T",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "zeros",
+      "name": "rstd"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "B",
+      "value": 4
+    },
+    {
+      "name": "T",
+      "value": 256
+    },
+    {
+      "name": "C",
+      "value": 768
+    }
+  ],
+  "tol": 1e-05,
+  "variants": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ]
+}
