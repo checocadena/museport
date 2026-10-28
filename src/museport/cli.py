@@ -107,6 +107,14 @@ def build_parser() -> argparse.ArgumentParser:
     g3.add_argument("--out", required=True, help="task directory to write")
     g3.add_argument("--model", default=DEFAULT_MODEL)
 
+    rv = sub.add_parser("review", help="Muse reviews each finished port from the code alone "
+                                       "(no test results); verdicts compared with the hidden "
+                                       "grade and the variant check")
+    rv.add_argument("evidence", nargs="?", default="evidence")
+    rv.add_argument("--out", default="evidence/review-muse")
+    rv.add_argument("--model", default=DEFAULT_MODEL)
+    rv.add_argument("--total-cap", type=float, default=1.5, help="USD cap for all reviews")
+
     rp = sub.add_parser("report", help="a static site built only from the committed evidence "
                                        "(overview, plan, one page per item with a replay)")
     rp.add_argument("evidence", nargs="?", default="evidence", help="the evidence directory")
@@ -136,6 +144,16 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _report(args)
     if args.cmd == "gpt2-task":
         return _gpt2_task(args)
+    if args.cmd == "review":
+        from pathlib import Path
+
+        from .review import run_reviews
+
+        summary = run_reviews(Path(args.evidence), Path(args.out), model=args.model,
+                              total_cap_usd=args.total_cap,
+                              log=lambda m: print(m, file=sys.stderr))
+        print(f"[review] spent ${summary['spent_usd']:.4f}", file=sys.stderr)
+        return 0
     if args.cmd == "gpt2-gpu-task":
         from pathlib import Path
 

@@ -160,10 +160,11 @@ def estimate_cost_usd(model: str, messages: list[dict[str, str]], max_output_tok
 
 def call_model(messages: list[dict[str, str]], *, model: str, provider: str,
                max_output_tokens: int, transport: Transport | None = None,
-               environ: Mapping[str, str] | None = None
+               environ: Mapping[str, str] | None = None, schema_name: str = "port_plan",
+               schema: dict[str, Any] | None = None
                ) -> tuple[dict[str, Any], dict[str, int] | None]:
-    """One structured-output chat completion; returns (plan, usage), usage None if the
-    server did not report it."""
+    """One structured-output chat completion (the plan schema unless ``schema`` is given);
+    returns (answer, usage), usage None if the server did not report it."""
     p = PROVIDERS[provider]
     env = os.environ if environ is None else environ
     key = provider_api_key(provider, env)
@@ -176,7 +177,8 @@ def call_model(messages: list[dict[str, str]], *, model: str, provider: str,
         "messages": messages,
         "max_completion_tokens": max_output_tokens,
         "response_format": {"type": "json_schema",
-                            "json_schema": {"name": "port_plan", "schema": PLAN_SCHEMA}},
+                            "json_schema": {"name": schema_name,
+                                            "schema": schema or PLAN_SCHEMA}},
     }
     if env.get("ONEAPI_AGENT_EFFORT"):
         body["reasoning_effort"] = env["ONEAPI_AGENT_EFFORT"]
