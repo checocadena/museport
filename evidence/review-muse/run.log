@@ -1,0 +1,21 @@
+[review] port-llmc-softmax-rerun-2/t2-softmax-forward: reject (hidden grade pass), $0.0681
+[review] port-llmc-tier1-run2/t1-crossentropy-forward: accept (hidden grade pass), $0.0085
+[review] port-llmc-tier1-run2/t1-crossentropy-softmax-backward: accept (hidden grade pass), $0.0102
+[review] port-llmc-tier1-run2/t1-permute: accept (hidden grade pass), $0.0096
+[review] port-llmc-tier1-run2/t1-residual-forward: accept (hidden grade pass), $0.0111
+[review] port-llmc-tier1-run2/t1-gelu-forward: accept (hidden grade pass), $0.0136
+[review] port-llmc-tier1-run2/t1-gelu-backward: accept (hidden grade pass), $0.0141
+[review] port-llmc-tier1-run2/t1-encoder-forward: accept (hidden grade pass), $0.0219
+[review] port-llmc-tier1-run2/t1-encoder-backward: accept (hidden grade pass), $0.0155
+[review] port-llmc-tier1-run2/t1-adamw: accept (hidden grade pass), $0.0137
+[review] port-llmc-tier1-run2/t1-fused-residual-forward: reject (hidden grade pass), $0.0339
+[review] port-llmc-tier23-run2/t2-global-norm: accept (hidden grade pass), $0.0364
+[review] port-llmc-tier23-run2/t2-layernorm-forward: reject (hidden grade pass), $0.0539
+[review] port-llmc-tier23-run2/t2-softmax-forward: reject (hidden grade fail), $0.0327
+[review] port-llmc-tier23-run2/t2-classifier-fused: reject (hidden grade pass), $0.0505
+[review] port-llmc-tier23-run2/t2-layernorm-backward: reject (hidden grade pass), $0.0520
+[review] port-llmc-tier23-run2/t3-matmul-backward: accept (hidden grade pass), $0.0244
+[review] port-llmc-tier23-run2/t3-trimat-forward: accept (hidden grade pass), $0.0363
+[review] port-llmc-tier23-run2/t3-matmul-backward-bias: reject (hidden grade pass), $0.0433
+[review] port-llmc-tier23-run2/t3-matmul-forward: accept (hidden grade pass), $0.0363
+[review] spent $0.5858

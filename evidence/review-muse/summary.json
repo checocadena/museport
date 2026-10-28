@@ -1,0 +1,1083 @@
+{
+  "model": "muse-spark-1.3",
+  "spent_usd": 0.5858,
+  "reviews": [
+    {
+      "batch": "port-llmc-softmax-rerun-2",
+      "item": "t2-softmax-forward",
+      "worst_case_usd": 0.0822,
+      "status": "ok",
+      "usage": {
+        "input_tokens": 13796,
+        "output_tokens": 11974,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.068135,
+      "review": {
+        "concerns": [
+          "run_k6 (SoftmaxK6): if (row>=N) does tmp[tid]=identity; sycl::group_barrier(grp); return; while valid warps in same 256-thread work-group continue into reduction loop with multiple group_barrier(grp). Barrier must be encountered uniformly by whole group, so partial last group when N % 8 != 0 diverges -> deadlock/UB and missing tail rows.",
+          "run_k8 (SoftmaxK8): same pattern: if (row>=N) does lmax/lsum init; sycl::group_barrier(grp); return; while valid warps continue through warp-merge loop with two group_barrier per offset -> divergent barrier when N % 8 != 0 -> deadlock/UB.",
+          "run_k3/run_k4/run_k6/run_k7/run_k8 replace __shfl_down_sync/__shfl_sync/cooperative_groups::reduce with logical-32 local-memory trees + group_barrier. Same coarsening / per-warp-per-row / inter-warp fan-in / SumMax combine / UNROLL_FACTOR structure is kept, but warp/sub-group primitive is emulated, not sub_group shuffle."
+        ],
+        "copies_one_implementation": false,
+        "idiomatic_sycl": true,
+        "likely_correct": false,
+        "variants": [
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "Keeps K1: one work-item per row (global_id < N), 3 passes over C with max, double sum with sycl::exp, normalize. Launch g*256 matches ceil_div(N,256). Reciprocal multiply vs divide is fp-negligible.",
+            "variant": 1
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "Keeps K2: one 256-thread work-group per row, coarsened max, whole-block tree reduce in local memory, exp, coarsened sum, tree reduce, normalize. Same indexing, barriers and launch N groups.",
+            "variant": 2
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "Keeps K3: single 32-thread group per row, coarsening + intra-warp max/sum + broadcast. CUDA shfl emulated as local-memory tree over the 32-thread group with same work per thread and B=32 launch.",
+            "variant": 3
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "Keeps K4: 256-thread group per row, logical warps of 32, per-thread coarsening, intra-warp max/sum via local tree, lane0 to inter[warp], tid==0 fan-in across warps, broadcast. Same two-phase structure and shared sizes.",
+            "variant": 4
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "Keeps K5 online_kernel1: one work-item per row, online single-pass max/sum update with double sum and sycl::exp, second pass normalize. Same loop and launch.",
+            "variant": 5
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "Keeps K6 online_kernel2: one logical warp (32) per row, per-lane SumMax coarsening with sumax_combine, warp reduction via local tree, final exp/sum normalize. Launch ceil(N/8)*256 with 8 warps/group matches CUDA ceil(N*32/256). Correct algorithm but has tail barrier bug.",
+            "variant": 6
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "Keeps K7: UNROLL_FACTOR=8 register blocking with min/clamped redundant reads, split maxs/sums of size warpsPerBlock, intra-warp trees + tid==0 inter-warp reduction, combined exp+sum loop, final divide loop. Same large-C optimization.",
+            "variant": 7
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "Keeps K8 online8: one logical warp per row, per-lane online fmax/exp coarsening then online warp-merge reduction (max-dependent sum rescaling) emulated with local memory preserving shfl_down read-before-write and lane0 broadcast, then normalize. Same work and launch.",
+            "variant": 8
+          }
+        ],
+        "verdict": "reject"
+      },
+      "compare": {
+        "hidden_grade_correct": true,
+        "reviewer_likely_correct": false,
+        "variant_check_duplicated": false,
+        "reviewer_copies": false,
+        "reviewer_verdict": "reject",
+        "variants_not_kept": []
+      }
+    },
+    {
+      "batch": "port-llmc-tier1-run2",
+      "item": "t1-crossentropy-forward",
+      "worst_case_usd": 0.0709,
+      "status": "ok",
+      "usage": {
+        "input_tokens": 2678,
+        "output_tokens": 1208,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.008481,
+      "review": {
+        "concerns": [],
+        "copies_one_implementation": false,
+        "idiomatic_sycl": true,
+        "likely_correct": true,
+        "variants": [
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "Keeps variant 1 algorithm: 1 thread per (b,t) with N=B*T, nd_range grid=ceil_div(N,256), local=256 matching CUDA <<<grid,256>>>, i=get_global_id(0), guard i<N, b=i/T, t=i%T, losses[i]=-log(probs_bt[ix]). targets[i] equals targets[b*T+t]; sycl::log on float matches logf within fp32 tolerance.",
+            "variant": 1
+          }
+        ],
+        "verdict": "accept"
+      },
+      "compare": {
+        "hidden_grade_correct": true,
+        "reviewer_likely_correct": true,
+        "variant_check_duplicated": false,
+        "reviewer_copies": false,
+        "reviewer_verdict": "accept",
+        "variants_not_kept": []
+      }
+    },
+    {
+      "batch": "port-llmc-tier1-run2",
+      "item": "t1-crossentropy-softmax-backward",
+      "worst_case_usd": 0.0716,
+      "status": "ok",
+      "usage": {
+        "input_tokens": 3365,
+        "output_tokens": 1408,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.01019,
+      "review": {
+        "concerns": [],
+        "copies_one_implementation": false,
+        "idiomatic_sycl": true,
+        "likely_correct": true,
+        "variants": [
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "Keeps kernel1 algorithm: 1 work-item per (b,t,v) with nd_range local 256 and global ceil(N/256)*256 matching CUDA grid, same b=i/(T*V), t=(i/V)%T, v=i%V indexing and dlogits+=(p-indicator)*dloss update via distinct CrossEntropySoftmaxBackwardKernel1 tag.",
+            "variant": 1
+          }
+        ],
+        "verdict": "accept"
+      },
+      "compare": {
+        "hidden_grade_correct": true,
+        "reviewer_likely_correct": true,
+        "variant_check_duplicated": false,
+        "reviewer_copies": false,
+        "reviewer_verdict": "accept",
+        "variants_not_kept": []
+      }
+    },
+    {
+      "batch": "port-llmc-tier1-run2",
+      "item": "t1-permute",
+      "worst_case_usd": 0.0713,
+      "status": "ok",
+      "usage": {
+        "input_tokens": 3207,
+        "output_tokens": 1310,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.009576,
+      "review": {
+        "concerns": [],
+        "copies_one_implementation": false,
+        "idiomatic_sycl": true,
+        "likely_correct": true,
+        "variants": [
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "1 thread/work-item per linear idx; same i1/i2/i3/i4 decomposition and permuted_idx = i4*(dim3*dim1*dim2)+i3*(dim1*dim2)+i1*dim2+i2 scatter; exact range<1>(n) replaces grid+ bounds check with identical effect, no shared/warp/atomics to preserve.",
+            "variant": 1
+          }
+        ],
+        "verdict": "accept"
+      },
+      "compare": {
+        "hidden_grade_correct": true,
+        "reviewer_likely_correct": true,
+        "variant_check_duplicated": false,
+        "reviewer_copies": false,
+        "reviewer_verdict": "accept",
+        "variants_not_kept": []
+      }
+    },
+    {
+      "batch": "port-llmc-tier1-run2",
+      "item": "t1-residual-forward",
+      "worst_case_usd": 0.0713,
+      "status": "ok",
+      "usage": {
+        "input_tokens": 3221,
+        "output_tokens": 1663,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.011094,
+      "review": {
+        "concerns": [],
+        "copies_one_implementation": false,
+        "idiomatic_sycl": true,
+        "likely_correct": true,
+        "variants": [
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "One element per work-item with idx=get_global_id(0) and if(idx<n) guard, nd_range wg=256 and groups=ceil(N/256) matches kernel1 grid=ceil(N/block) and per-thread work.",
+            "variant": 1
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "One float4 per work-item with vid=get_global_id(0), base=vid*4, groups=ceil(ceil(N/4)/256) matches kernel2 idx=(tid)*4 and grid=ceil(N/(block*4)); vector add via sycl::vec<float,4> mirrors x128 loop, plus scalar tail for base+4>n which fixes CUDA OOB while preserving parallel structure.",
+            "variant": 2
+          }
+        ],
+        "verdict": "accept"
+      },
+      "compare": {
+        "hidden_grade_correct": true,
+        "reviewer_likely_correct": true,
+        "variant_check_duplicated": false,
+        "reviewer_copies": false,
+        "reviewer_verdict": "accept",
+        "variants_not_kept": []
+      }
+    },
+    {
+      "batch": "port-llmc-tier1-run2",
+      "item": "t1-gelu-forward",
+      "worst_case_usd": 0.0713,
+      "status": "ok",
+      "usage": {
+        "input_tokens": 3211,
+        "output_tokens": 2247,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.013563,
+      "review": {
+        "concerns": [],
+        "copies_one_implementation": false,
+        "idiomatic_sycl": true,
+        "likely_correct": true,
+        "variants": [
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "gelu_forward1 keeps 1 element per thread with nd_range local 256 and groups ceil(n/256), matching gelu_forward_kernel1 grid ceil(N/block) and bounds check i<n",
+            "variant": 1
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "gelu_forward2 keeps 4 floats per work-item with groups ceil(ceil(n/4)/256), matching gelu_forward_kernel2 grid ceil(N/(block*x128::size)) with size=4 for fp32; per-lane tanh GELU via gelu_elem preserves math, tail branch only fixes CUDA OOB load/store when N%4!=0",
+            "variant": 2
+          }
+        ],
+        "verdict": "accept"
+      },
+      "compare": {
+        "hidden_grade_correct": true,
+        "reviewer_likely_correct": true,
+        "variant_check_duplicated": false,
+        "reviewer_copies": false,
+        "reviewer_verdict": "accept",
+        "variants_not_kept": []
+      }
+    },
+    {
+      "batch": "port-llmc-tier1-run2",
+      "item": "t1-gelu-backward",
+      "worst_case_usd": 0.0718,
+      "status": "ok",
+      "usage": {
+        "input_tokens": 3756,
+        "output_tokens": 2202,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.014054,
+      "review": {
+        "concerns": [],
+        "copies_one_implementation": false,
+        "idiomatic_sycl": true,
+        "likely_correct": true,
+        "variants": [
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "run_variant1 / GeluBackwardKernel1 keeps variant1 algorithm: 1 element per work-item, i=get_global_id(0), if(i<n), same nd_range ceil(N/256)*256 and same GELU grad math via gelu_local_grad.",
+            "variant": 1
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "run_variant2 / GeluBackwardKernel2 keeps variant2 Packed128 algorithm: 1x float4 (sycl::vec<float,4>, kVecWidth=4 matching x128::size for float) per work-item, grid ceil(N/(256*4)), per-lane gelu_local_grad loop. Added scalar tail when base+4>n avoids CUDA OOB read/write on non-multiple-of-4 N, semantically correct fix.",
+            "variant": 2
+          }
+        ],
+        "verdict": "accept"
+      },
+      "compare": {
+        "hidden_grade_correct": true,
+        "reviewer_likely_correct": true,
+        "variant_check_duplicated": false,
+        "reviewer_copies": false,
+        "reviewer_verdict": "accept",
+        "variants_not_kept": []
+      }
+    },
+    {
+      "batch": "port-llmc-tier1-run2",
+      "item": "t1-encoder-forward",
+      "worst_case_usd": 0.0731,
+      "status": "ok",
+      "usage": {
+        "input_tokens": 5098,
+        "output_tokens": 3649,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.021881,
+      "review": {
+        "concerns": [
+          "encoder_forward3 falls back to encoder_forward2 when C%4!=0, so for those sizes variant 3 executes variant 2's scalar path instead of CUDA kernel3's vectorized path",
+          "encoder_forward3 tail when N%4!=0 loads/stores full float4 past N, replicating CUDA kernel3 out-of-bounds behavior; safe only if test sizes have N%4==0"
+        ],
+        "copies_one_implementation": false,
+        "idiomatic_sycl": true,
+        "likely_correct": true,
+        "variants": [
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "encoder_forward1 / EncoderKernel1 keeps kernel1: N=B*T threads, b=idx/T t=idx%T, per-thread loop over C adding wte+wpe",
+            "variant": 1
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "encoder_forward2 / EncoderKernel2 keeps kernel2: N=B*T*C threads, bt=idx/C b=bt/T t=bt%T c=idx%C, one add per thread",
+            "variant": 2
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "encoder_forward3 / EncoderKernel3 keeps kernel3: vectors of 4, idx=v*4 same bt/b/t/c decomposition, float4 load/add/store, grid ceil(N/(256*4)); C%4!=0 fallback to scalar path is host dispatch only",
+            "variant": 3
+          }
+        ],
+        "verdict": "accept"
+      },
+      "compare": {
+        "hidden_grade_correct": true,
+        "reviewer_likely_correct": true,
+        "variant_check_duplicated": false,
+        "reviewer_copies": false,
+        "reviewer_verdict": "accept",
+        "variants_not_kept": []
+      }
+    },
+    {
+      "batch": "port-llmc-tier1-run2",
+      "item": "t1-encoder-backward",
+      "worst_case_usd": 0.0721,
+      "status": "ok",
+      "usage": {
+        "input_tokens": 3898,
+        "output_tokens": 2497,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.015485,
+      "review": {
+        "concerns": [],
+        "copies_one_implementation": false,
+        "idiomatic_sycl": true,
+        "likely_correct": true,
+        "variants": [
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "encoder_backward1 / EncoderBackwardKernel1 keeps kernel1 algorithm: nd_range global=ceil(N/256)*256 local 256, one N=B*T*C idx per work-item, same bt=idx/C b=bt/T t=bt%T c=idx%C, ix=inp[b*T+t], v=dout[b*T*C+t*C+c], atomicAdd replaced by sycl::atomic_ref<float,relaxed,device,global_space>::fetch_add to dwte[ix*C+c] and dwpe[t*C+c].",
+            "variant": 1
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "encoder_backward2 / EncoderBackwardKernel2 keeps kernel2 algorithm: nd_range over C with guard c>=C, BT=B*T loop i=0..BT-1 with t=i%T ix=inp[i] v=dout[i*C+c] and non-atomic dwte[ix*C+c]+=v dwpe[t*C+c]+=v, preserving single-owner-per-c race-free structure and no atomics.",
+            "variant": 2
+          }
+        ],
+        "verdict": "accept"
+      },
+      "compare": {
+        "hidden_grade_correct": true,
+        "reviewer_likely_correct": true,
+        "variant_check_duplicated": false,
+        "reviewer_copies": false,
+        "reviewer_verdict": "accept",
+        "variants_not_kept": []
+      }
+    },
+    {
+      "batch": "port-llmc-tier1-run2",
+      "item": "t1-adamw",
+      "worst_case_usd": 0.0733,
+      "status": "ok",
+      "usage": {
+        "input_tokens": 4904,
+        "output_tokens": 1774,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.013669,
+      "review": {
+        "concerns": [],
+        "copies_one_implementation": false,
+        "idiomatic_sycl": true,
+        "likely_correct": true,
+        "variants": [
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "Variant 1 keeps naive 1-thread-per-element with guard, direct global m/v update and m_hat/v_hat + sqrt param update; only launch tuning 256 vs CUDA 512, same logical mapping.",
+            "variant": 1
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "Variant 2 keeps optimized structure: load grad/m/v to registers, lerp via dual fma for both moments, store, bias-correct, param update; distinct AdamwKernel2Tag implementation.",
+            "variant": 2
+          }
+        ],
+        "verdict": "accept"
+      },
+      "compare": {
+        "hidden_grade_correct": true,
+        "reviewer_likely_correct": true,
+        "variant_check_duplicated": false,
+        "reviewer_copies": false,
+        "reviewer_verdict": "accept",
+        "variants_not_kept": []
+      }
+    },
+    {
+      "batch": "port-llmc-tier1-run2",
+      "item": "t1-fused-residual-forward",
+      "worst_case_usd": 0.0828,
+      "status": "ok",
+      "usage": {
+        "input_tokens": 13785,
+        "output_tokens": 3924,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.033908,
+      "review": {
+        "concerns": [
+          "fused_residual_forward3: CUDA fused_residual_forward3 is one-warp-per-token (dim3(32,block_y), stride threadIdx.x, warpReduceSum for m and v). SYCL FusedResidualK3 is one work-item per token with sequential for(c=0;C) loops, no sub-group/warp reduce, no cooperation.",
+          "fused_residual_forward4: CUDA fused_residual_forward_kernel4 uses warp-per-token, Packed128 load128cs/store128, warpReduceSum of sum/sum_sq, single-pass variance sum_sq/C-m*m with rsqrtf and backward zigzag reload. SYCL FusedResidualK4 is single work-item per token, 4-wide unrolled scalar loop, two-pass stable variance, forward loops only, no warp reduce / no 128-bit / no zigzag.",
+          "fused_residual_forward5: CUDA fused_residual_forward_kernel5 stages weights/biases plus per-warp residual s_res in dynamic shared memory, warp-per-token with warpReduceSum and smem two-pass variance. SYCL FusedResidualK5 stages only weights/bias in local_accessor, no s_res cache, one work-item per token sequential, no warp reduce.",
+          "fused_residual_forward_kernel6: CUDA fused_residual_forward_kernel6 uses dim3(32,block_y,block_z) multiple warps per token, shared s_weight/s_bias + per-z s_res + s_mean/s_var block reductions with __syncthreads and persistent grid-stride tidx loop. SYCL FusedResidualK6 uses 1D 64-wide groups, persistent stride but one work-item per whole token, no multi-warp cooperation, no s_res/s_mean/s_var, no block reduce.",
+          "Variants 2-6 all collapsed to same serial per-token algorithm despite distinct kernel names (FusedResidualK2/K3/K4/K5/K6); parallel structure distinctions lost."
+        ],
+        "copies_one_implementation": false,
+        "idiomatic_sycl": true,
+        "likely_correct": true,
+        "variants": [
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "Keeps two-stage structure: elementwise residual over N*C (ResidualFwdK1) then one work-item per row layernorm loop over C (LayernormFwdK1), matching residual_forward_kernel1 + layernorm_forward_kernel1.",
+            "variant": 1
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "Keeps naive fused one-thread-per-token sequential loops over C; matches fused_residual_forward2 work per thread (SYCL correctly uses range N vs CUDA if(idx>N) off-by-one).",
+            "variant": 2
+          },
+          {
+            "keeps_cuda_algorithm": false,
+            "note": "Does not keep warp-per-token coalesced algorithm with strided c+=WarpSize and warpReduceSum; replaced by single work-item sequential token loop.",
+            "variant": 3
+          },
+          {
+            "keeps_cuda_algorithm": false,
+            "note": "Does not keep vectorized Packed128 warp, single-pass sum/sum_sq with warpReduceSum and zigzag backward pass; replaced by serial 4-unrolled two-pass variance.",
+            "variant": 4
+          },
+          {
+            "keeps_cuda_algorithm": false,
+            "note": "Does not keep shared-memory EVERYTHING with s_weight/s_bias/s_res and warp reduce; only weights/bias in local_accessor, no residual cache, no warp cooperation.",
+            "variant": 5
+          },
+          {
+            "keeps_cuda_algorithm": false,
+            "note": "Does not keep multi-warp-per-token 3D persistent kernel with per-z s_res/s_mean/s_var and block reductions; replaced by 1D persistent one-thread-per-token loop.",
+            "variant": 6
+          }
+        ],
+        "verdict": "reject"
+      },
+      "compare": {
+        "hidden_grade_correct": true,
+        "reviewer_likely_correct": true,
+        "variant_check_duplicated": false,
+        "reviewer_copies": false,
+        "reviewer_verdict": "reject",
+        "variants_not_kept": [
+          3,
+          4,
+          5,
+          6
+        ]
+      }
+    },
+    {
+      "batch": "port-llmc-tier23-run2",
+      "item": "t2-global-norm",
+      "worst_case_usd": 0.0753,
+      "status": "ok",
+      "usage": {
+        "input_tokens": 6261,
+        "output_tokens": 6715,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.036365,
+      "review": {
+        "concerns": [
+          "global_norm3 first-subgroup gather assumes sg size >= num sub-groups (sg_size^2 >= work-group size); correct for block_size 256 with 32-wide sub-groups (8 partials) but would drop partials e.g. 256-wide group with 8-wide sub-groups (32 partials). Portable alternative is reduce_over_group over group as in global_norm1.",
+          "pick_grid_size (cus*16 clamped 8..512, ignores block_size) and global_norm4 aggregate work-group 256 with strided loop differ from CUDA occupancy grid_size and <<<1,1024>>> launch; functionally covered by grid-stride loops so result-equivalent, only perf/ordering difference."
+        ],
+        "copies_one_implementation": false,
+        "idiomatic_sycl": true,
+        "likely_correct": true,
+        "variants": [
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "global_norm1: grid-stride per-thread acc, group-wide reduce_over_group, one GlobalAtomic per work-group matches CUDA norm_kernel1 grid-stride + block-reduce + one atomicAdd per block; collapsing warp+shared block_result[32] into group collective is idiomatic SYCL, same granularity.",
+            "variant": 1
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "global_norm2: grid-stride acc, reduce_over_group over sub_group, sg.leader() atomic matches CUDA norm_kernel2 warp cg::reduce + atomic per warp (warp->sub-group).",
+            "variant": 2
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "global_norm3: grid-stride acc, sub-group partials via local_accessor scratch + group_barrier + first-sub-group reduce_over_group + group_broadcast + atomic per group matches CUDA norm_kernel3 grid-stride + blockReduce<warpReduceSum> + atomic per block.",
+            "variant": 3
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "global_norm4: two-stage NormKernel4Stage1 grid-stride + reduce_over_group + out[gid]=block_sum plus NormAggregate single-group sum to out[0] matches CUDA norm_kernel4 + global_norm_aggregate_kernel deterministic no-atomic path; aggregate strided loop and 256 vs 1024 width is portable adaptation.",
+            "variant": 4
+          }
+        ],
+        "verdict": "accept"
+      },
+      "compare": {
+        "hidden_grade_correct": true,
+        "reviewer_likely_correct": true,
+        "variant_check_duplicated": false,
+        "reviewer_copies": false,
+        "reviewer_verdict": "accept",
+        "variants_not_kept": []
+      }
+    },
+    {
+      "batch": "port-llmc-tier23-run2",
+      "item": "t2-layernorm-forward",
+      "worst_case_usd": 0.0809,
+      "status": "ok",
+      "usage": {
+        "input_tokens": 11977,
+        "output_tokens": 9157,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.053888,
+      "review": {
+        "concerns": [
+          "layernorm_forward6 does not preserve launch shape / work distribution: CUDA uses dim3(32,block_y) with grid ceil(N/block_y), block_y rows per block sharing s_weight/s_bias and per-row s_in cache, 32 threads per row with warpReduceSum and x128 vector loads; SYCL uses N groups of local_size (256) = one row per group, 256 threads per row, scalar loads, no s_in input staging, group-wide reduce_over_group. Same math but different parallel structure.",
+          "layernorm_forward6 allocates w_local(C)+b_local(C) unconditionally with no fallback: CUDA layernorm_forward6 checks cudaFuncSetAttribute smem=(2+block_y)*C*sizeof(float) and falls back to layernorm_forward_kernel5 on failure; SYCL will exceed local memory / fail launch for large C.",
+          "layernorm_forward3/4 oversubscribe: nd_range N*local_size with idx=group*sgs_per_group+sg_id vs CUDA grid ceil(N*32/block_size). Injective so at most one sub-group per row and guarded by idx>=N, hence correct but launches N groups vs ceil(N/sgs) needed, most groups idle.",
+          "LayerNormK2Norm computes o then recomputes n identically before store; harmless redundancy, final store n*weight+bias matches normalization_kernel."
+        ],
+        "copies_one_implementation": false,
+        "idiomatic_sycl": true,
+        "likely_correct": true,
+        "variants": [
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "one work-item per row with serial loops over C for mean/var/norm matches layernorm_forward_kernel1; 1/sqrt vs 1/sqrtf only.",
+            "variant": 1
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "three launches match mean_kernel/rstd_kernel/normalization_kernel: N groups x local_size with local_accessor scratch, strided sum, tree reduction with barriers, plus flat N*C norm kernel with bt=flat/C, c=flat%C.",
+            "variant": 2
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "one sub-group per row, two-pass mean then variance with reduce_over_group(sg) matches kernel3 warp-per-row plus reduce; oversubscribed grid still yields unique sg per row.",
+            "variant": 3
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "one sub-group per row, single-pass sum+sum2 then var=sum2/C-(sum/C)^2 with two sub-group reduces matches kernel4 var(x)=mean(x^2)-mean(x)^2.",
+            "variant": 4
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "one work-group per row (grid N), strided per-thread sum/sum2 then block-wide reduction matches kernel5 block-per-row single-pass; uses reduce_over_group(group) instead of explicit shared_sum[32]+two warp reduces but same work-per-thread and launch shape.",
+            "variant": 5
+          },
+          {
+            "keeps_cuda_algorithm": false,
+            "note": "loses K6 structure: CUDA is 32 x block_y threads/block, ceil(N/block_y) blocks, block_y rows share weights/bias, per-row s_in input cache, x128 vectorized load128cs/store128cs, 32 threads/row warp reductions. SYCL layernorm_forward6 is N groups x 256, one row/group, 256 threads/row, only w/b staging, no s_in, scalar loads, group reductions, no multi-row sharing or fallback.",
+            "variant": 6
+          }
+        ],
+        "verdict": "reject"
+      },
+      "compare": {
+        "hidden_grade_correct": true,
+        "reviewer_likely_correct": true,
+        "variant_check_duplicated": false,
+        "reviewer_copies": false,
+        "reviewer_verdict": "reject",
+        "variants_not_kept": [
+          6
+        ]
+      }
+    },
+    {
+      "batch": "port-llmc-tier23-run2",
+      "item": "t2-softmax-forward",
+      "worst_case_usd": 0.0814,
+      "status": "ok",
+      "usage": {
+        "input_tokens": 12522,
+        "output_tokens": 4007,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.032682,
+      "review": {
+        "concerns": [
+          "softmax_forward3 drops warp shuffles: CUDA warpReduceMax/warpReduceSum + __shfl_sync with block 32, SYCL uses local_accessor tree reduction identical to variant 2 with no sycl::sub_group ops",
+          "softmax_forward4 drops intra-warp + inter-warp structure: CUDA warpId/laneId + warpReduceMax/Sum + shared[warpsPerBlock] reduction by tid==0, SYCL uses flat local tree of size L identical to variant 2",
+          "softmax_forward_online2 changes mapping and primitive: CUDA one warp per row, multiple rows per block via meta_group_size/rank + cg::reduce(warp,...), SYCL one work-group per row (N*32) + local SumMax tree, no sub-group/cooperative_groups",
+          "softmax_forward7 only keeps UNROLL_FACTOR=8 idea: CUDA intra-warp reductions + 2*warpsPerBlock split maxvals/sumvals + min(C-1) redundant reads + __ldcs + tid>=C early return, SYCL uses single local buffer size L + guarded j<C loads + flat tree, no warp ops",
+          "softmax_forward_online8 changes reduction: CUDA per-lane online loop + manual __syncwarp/__shfl_down_sync pairwise max/sum merge with exp rescaling + multiple rows per block, SYCL per-WI fused online then combine_sum_max local tree, one group per row",
+          "variants 2,3,4 are textually the same implementation (strided max/exp/sum + local tree) differing only in L=256/32/256; variants 6 and 8 share same local SumMax tree pattern"
+        ],
+        "copies_one_implementation": true,
+        "idiomatic_sycl": true,
+        "likely_correct": true,
+        "variants": [
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "one work-item per row, serial loops over C with double sum; matches kernel1 work-per-thread and math",
+            "variant": 1
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "one work-group per row, strided coarsening + local-memory halving reductions for max and sum with barriers; matches kernel2",
+            "variant": 2
+          },
+          {
+            "keeps_cuda_algorithm": false,
+            "note": "CUDA requires block 32 and warp shuffles only; SYCL replaces with local tree reduction, no sub-group shuffle",
+            "variant": 3
+          },
+          {
+            "keeps_cuda_algorithm": false,
+            "note": "CUDA intra-warp warpReduce + shared inter-warp reduction via warpId/laneId; SYCL uses flat local tree, no sub-groups",
+            "variant": 4
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "one work-item per row single-pass online max/sum then normalize; matches softmax_forward_online_kernel1",
+            "variant": 5
+          },
+          {
+            "keeps_cuda_algorithm": false,
+            "note": "CUDA one warp per row with cg::tiled_partition + cg::reduce SumMax op and multi-row blocks; SYCL one group per row with local tree, no warp/cg primitive",
+            "variant": 6
+          },
+          {
+            "keeps_cuda_algorithm": false,
+            "note": "keeps unroll factor 8 but drops warp reductions, split max/sum shared layout, __ldcs/min trick and early-return structure",
+            "variant": 7
+          },
+          {
+            "keeps_cuda_algorithm": false,
+            "note": "CUDA warp-per-row online with __shfl_down_sync merge loop; SYCL fused per-WI online + local combine_sum_max tree, different mapping and primitive",
+            "variant": 8
+          }
+        ],
+        "verdict": "reject"
+      },
+      "compare": {
+        "hidden_grade_correct": false,
+        "reviewer_likely_correct": true,
+        "variant_check_duplicated": true,
+        "reviewer_copies": true,
+        "reviewer_verdict": "reject",
+        "variants_not_kept": [
+          3,
+          4,
+          6,
+          7,
+          8
+        ]
+      }
+    },
+    {
+      "batch": "port-llmc-tier23-run2",
+      "item": "t2-classifier-fused",
+      "worst_case_usd": 0.0837,
+      "status": "ok",
+      "usage": {
+        "input_tokens": 14809,
+        "output_tokens": 7524,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.050488,
+      "review": {
+        "concerns": [
+          "launch_k1 changes launch shape and reduction scope: CUDA fused_classifier_kernel1 uses rows_per_block=block_size/32 rows per block with idx=blockIdx.x*meta_group_size+meta_group_rank and warp-level prepare_softmax (32 threads per row, cg::reduce over warp); SYCL launch_k1 uses one work-group per row (global=N*local, idx=get_group(0)) with reduce_over_group over whole block_size=256 threads",
+          "launch_k2/launch_k3/launch_k4 drop CUDA optional-pointer logic: CUDA kernels test dlosses!=NULL (default 1/(B*T)) and probs/dlogits!=NULL before writing; SYCL launch_k2/launch_k3/launch_k4 unconditionally read dlosses[idx] and always write dlogits, never handle probs",
+          "reinterpret of row pointer to sycl::vec<float,4>* in launch_k2 assumes 16B alignment and reads full V4 vectors; safe only because P is 64-aligned and OOB lanes are masked, but differs from CUDA float4+__ldcs handling"
+        ],
+        "copies_one_implementation": false,
+        "idiomatic_sycl": true,
+        "likely_correct": true,
+        "variants": [
+          {
+            "keeps_cuda_algorithm": false,
+            "note": "CUDA1 is warp-per-row (4 warps per 128-thread block, stride 32, warp cg::reduce); SYCL K1 is block-per-row (256 threads per row, stride 256, group-wide reduce_over_group). Different launch shape, work per thread and reduction scope.",
+            "variant": 1
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "Preserves block-per-row, reverse strided V4 loop, float4-style vector load via sycl::vec<float,4>, forward gradient loop; only replaces shared+warp cg::reduce with reduce_over_group and drops NULL branches unused by harness.",
+            "variant": 2
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "Preserves block-per-row, reverse scalar loop (V-1-lid) vs CUDA V+tid-blockDim covering same set, forward scalar gradient loop; reduction replaced by group reduction as in K2.",
+            "variant": 3
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "Preserves block-per-row reverse blocked x128-size loop with bounds-continue and forward blocked gradient loop; implements 4-wide blocking with scalar loads instead of load128cs/store128 but retains bulk structure.",
+            "variant": 4
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "Preserves block-per-row split bulk (V/4*4, no bounds check) + tail distinction in both softmax (tail-first then reverse bulk) and gradient (bulk then tail) matching prepare_softmax_blockwide3/kernel5 intent.",
+            "variant": 5
+          }
+        ],
+        "verdict": "reject"
+      },
+      "compare": {
+        "hidden_grade_correct": true,
+        "reviewer_likely_correct": true,
+        "variant_check_duplicated": false,
+        "reviewer_copies": false,
+        "reviewer_verdict": "reject",
+        "variants_not_kept": [
+          1
+        ]
+      }
+    },
+    {
+      "batch": "port-llmc-tier23-run2",
+      "item": "t2-layernorm-backward",
+      "worst_case_usd": 0.0974,
+      "status": "ok",
+      "usage": {
+        "input_tokens": 27019,
+        "output_tokens": 4289,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.052002,
+      "review": {
+        "concerns": [
+          "run_layernorm_backward2 does not keep layernorm_backward_kernel2: CUDA is 1 warp per BT with shared[2*C], cg::reduce warp reduction, per-block shared atomics + dweight_tmp/dbias_tmp + copy_to_dweight_dbias second kernel; SYCL is 1 work-item per BT serial loops with direct global atomics, no local memory, no sub-group reduce, no tmp buffers - identical to K1.",
+          "run_layernorm_backward3 does not keep layernorm_backward_kernel3: CUDA is grid-stride warp-per-BT, shared[2*C], cg::reduce, __ldcs, final atomicAddX flush; SYCL is per-work-item grid-stride serial loops with direct global atomics, no shared, no warp cooperation, no reduce.",
+          "run_layernorm_backward5/6 ignore scratch and flag protocol: CUDA kernel5 has per-block scratch[C*gridDim] + atomicAdd flag + last-block accumulation, kernel6 has single shared scratch[2*C+1] + global atomicAdd to scratch + flag + last-block copy; SYCL has (void)scratch and direct global atomics.",
+          "run_layernorm_backward7 does not keep layernorm_backward_kernel7: CUDA uses warpId/warpsInBlock/warpReduceSum warp-cooperative, shared[2*C+1], scratch+flag; SYCL uses range<1>(N) single item per BT, no local, no sub-group, no scratch/flag; vec<float,4> in first pass is not equivalent to warp parallelism.",
+          "run_layernorm_backward8 does not keep layernorm_backward_kernel8: CUDA uses x128 128-bit loads, shared-bank-friendly shared_index vs global_index reorder, store128cg, scratch atomics + atomicInc flag + reordered f128/x128 final write; SYCL only uses vec<float,4> for reduction, scalar second pass, direct global atomics, no shared, no reorder, no scratch.",
+          "run_layernorm_backward9 does not keep layernorm_backward_kernel9: CUDA traps if C%(32*x128)!=0, uses dbias_tmp_shared/dweight_tmp_shared inter-warp reduction with __syncthreads without atomics, per-block scratch[2*C*gridDim], f128 final-block reduction + reorder; SYCL is single item split s1a/s1b serial sum, direct atomics, no barriers/shared/scratch/trap.",
+          "run_layernorm_backward10 does not keep layernorm_backward_kernel10: CUDA uses rounded_C, f128 vector shared accesses, warp-0 aggregation via dbias_tmp_shared/dweight_tmp_shared, per-block scratch, final-block f128 reduction; SYCL loops reverse i=C-1..0 serially, direct atomics, no local/vectors/scratch.",
+          "copies one naive implementation across variants: run_layernorm_backward1/2/3/5/6/7/8/9/10 all are per-BT serial for C loops + atomic_float_ref(dbias/dweight) + dinp_bt[i]=(dnorm-s1-norm*s2)*rstd; K5 vs K6 differ only in groups 16 vs 8, K7/K8 add vec loads but same structure.",
+          "idiomatic but numerically equivalent differences: CUDA kernel1 does dinp_bt[i]+=dval while SYCL K1/K2/K3/K5/K6/K7/K8/K9/K10 do dinp_bt[i]=dval; safe only because harness memsets d_dinp to 0; K7/K8 reinterpret *(sycl::vec<float,4>*)(inp_bt+i) requires 16B alignment of n*C offset which fails when C%4!=0."
+        ],
+        "copies_one_implementation": true,
+        "idiomatic_sycl": true,
+        "likely_correct": true,
+        "variants": [
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "keeps 1-thread-per-BT serial C loops and global atomics; range<1>(N) vs grid ceil(N/block) same work per thread; dinp = vs += equivalent after memset.",
+            "variant": 1
+          },
+          {
+            "keeps_cuda_algorithm": false,
+            "note": "loses warp-per-BT, shared[2*C], cg::reduce, dweight_tmp/dbias_tmp + copy kernel; replaced by single-item serial loops identical to K1.",
+            "variant": 2
+          },
+          {
+            "keeps_cuda_algorithm": false,
+            "note": "loses warp-per-BT grid-stride, shared, cg::reduce, __ldcs, atomicAddX flush; replaced by per-work-item stride serial loops + global atomics.",
+            "variant": 3
+          },
+          {
+            "keeps_cuda_algorithm": false,
+            "note": "loses shared[2*C+1], warp cooperation, per-block scratch + threadfence + atomic flag last-block reduction; scratch ignored, direct global atomics.",
+            "variant": 5
+          },
+          {
+            "keeps_cuda_algorithm": false,
+            "note": "loses shared, warp cooperation, single FP32 scratch + global atomics to scratch + flag last-block copy; scratch ignored, direct global atomics.",
+            "variant": 6
+          },
+          {
+            "keeps_cuda_algorithm": false,
+            "note": "loses manual warpId/warpsInBlock/warpReduceSum, shared+scratch+flag; replaced by single-item per BT with vec4 reduction only.",
+            "variant": 7
+          },
+          {
+            "keeps_cuda_algorithm": false,
+            "note": "loses x128 vectorization, bank-conflict-avoiding shared_index reorder, store128cg, scratch+atomicInc + reordered final write; only vec4 reduction kept.",
+            "variant": 8
+          },
+          {
+            "keeps_cuda_algorithm": false,
+            "note": "loses C-alignment trap, tmp_shared inter-warp non-atomic reduction with barriers, per-block 2*C scratch, f128 last-block reduction/reorder; replaced by two-half serial sum.",
+            "variant": 9
+          },
+          {
+            "keeps_cuda_algorithm": false,
+            "note": "loses rounded_C f128 shared vectors, warp-0 aggregation, per-block scratch, f128 final reduction/reorder; replaced by reverse-order serial loops.",
+            "variant": 10
+          }
+        ],
+        "verdict": "reject"
+      },
+      "compare": {
+        "hidden_grade_correct": true,
+        "reviewer_likely_correct": true,
+        "variant_check_duplicated": true,
+        "reviewer_copies": true,
+        "reviewer_verdict": "reject",
+        "variants_not_kept": [
+          2,
+          3,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      }
+    },
+    {
+      "batch": "port-llmc-tier23-run2",
+      "item": "t3-matmul-backward",
+      "worst_case_usd": 0.074,
+      "status": "ok",
+      "usage": {
+        "input_tokens": 5633,
+        "output_tokens": 4083,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.024394,
+      "review": {
+        "concerns": [],
+        "copies_one_implementation": false,
+        "idiomatic_sycl": true,
+        "likely_correct": true,
+        "variants": [
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "Variant 1 (matmul_backward1: 2x SGEMM + faster bias) preserved: row_major::gemm dinp= dout*weight (BT,C,OC) and dweight=dout^T*inp (OC,C,BT) matches cuBLAS column-major maths; bias uses one work-group per OC with strided double accumulation then float work-group reduction, same coarsening/reduction structure as matmul_backward_bias_kernel_faster (only WG 256 vs 512 and reduce_over_group vs manual shared tree, idiomatic).",
+            "variant": 1
+          }
+        ],
+        "verdict": "accept"
+      },
+      "compare": {
+        "hidden_grade_correct": true,
+        "reviewer_likely_correct": true,
+        "variant_check_duplicated": false,
+        "reviewer_copies": false,
+        "reviewer_verdict": "accept",
+        "variants_not_kept": []
+      }
+    },
+    {
+      "batch": "port-llmc-tier23-run2",
+      "item": "t3-trimat-forward",
+      "worst_case_usd": 0.0813,
+      "status": "ok",
+      "usage": {
+        "input_tokens": 13231,
+        "output_tokens": 4650,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.036301,
+      "review": {
+        "concerns": [],
+        "copies_one_implementation": false,
+        "idiomatic_sycl": true,
+        "likely_correct": true,
+        "variants": [
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "run_permute + run_gemm keeps permute_kernel + cublasSgemmStridedBatched: same index math and same K^T@Q mapping with lda=HS, strides T*HS, ldc=T, batch B*NH via column_major::gemm_batch.",
+            "variant": 0
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "run_trimul_naive keeps trimul_global + matmul_tri_naive: same nd_range mapping (bx,by,bz,tx,ty), same block-level by>bx and thread-level j_base>i_base early-outs, same 8x8 per-thread i,j,s loops.",
+            "variant": 1
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "run_trimul_registers keeps matmul_tri_registers: same pointer shifts, vals[8][8], hs loop loading lhs[8]/rhs[8] then 8x8 outer-product accumulate, then scaled store.",
+            "variant": 2
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "run_trimul_tri3 keeps matmul_tri3: same hs+=4 vectorized algorithm, rhs[8] float4 loads, per-i lhs float4 load, 4-way accumulate via sycl::vec<float,4>, vectorized scaled store.",
+            "variant": 3
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "run_trimul_tri4 keeps matmul_tri4: same 128x32 lhs_s/rhs_s in local_accessor, same coalesced load loop y=ty/2;y<128;y+=8 with xo, same group_barrier pair for __syncthreads, same (si+tx)%32 swizzle compute, same post-compute j_base>i_base guard.",
+            "variant": 4
+          }
+        ],
+        "verdict": "accept"
+      },
+      "compare": {
+        "hidden_grade_correct": true,
+        "reviewer_likely_correct": true,
+        "variant_check_duplicated": false,
+        "reviewer_copies": false,
+        "reviewer_verdict": "accept",
+        "variants_not_kept": []
+      }
+    },
+    {
+      "batch": "port-llmc-tier23-run2",
+      "item": "t3-matmul-backward-bias",
+      "worst_case_usd": 0.0809,
+      "status": "ok",
+      "usage": {
+        "input_tokens": 12589,
+        "output_tokens": 6490,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.043319,
+      "review": {
+        "concerns": [
+          "run_k7 does not keep kernel7 algorithm: CUDA uses dim3(32,block/32) block, dim3(Gx,Gy>1) grid, vectorized load128, per-thread accumulators + conflict-free shared atomicAdd + global float buffer + cast_and_add_kernel; SYCL uses flattened 256 (32x8), Gx-only grid, local scratch Ty*Tile with serial cross-row sum and direct dbias add, no atomics, no aux buffer, no second kernel, different Ty (8 vs 16)",
+          "run_k8 does not keep kernel8 algorithm: CUDA uses 3D block {4,8,Z}, __shfl_down_sync(width 4) within-warp + shared sub_results[x128][32][bdy] + second shuffle, 2D grid (Gx,Gy occupancy) with Atomic vs direct branches via atomics to dbias_buffer; SYCL uses flattened 1D group, Gx-only grid (Gy=1), local_accessor serial sum over bt_per_block by local_bt==0 threads, no sub-group shuffles, no atomics, no cross-block path",
+          "run_k9 does not keep kernel9 algorithm: CUDA uses shuffle-based two-stage reduction, occupancy-derived Gy with conditional direct (!UseAuxBuffer) vs aux (UseAuxBuffer) + vectorized reduce_add_sum_kernel (f128); SYCL always uses Gy=4 aux path, serial local reduction, scalar BiasK9Reduce row-reduce, fixed Gy, no shuffles, no direct branch"
+        ],
+        "copies_one_implementation": false,
+        "idiomatic_sycl": true,
+        "likely_correct": true,
+        "variants": [
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "run_k1/BiasK1 keeps kernel1: one group per OC, thread coarsening i+=L, local tree reduction with barriers, tid==0 adds to dbias.",
+            "variant": 1
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "run_k2/BiasK2 keeps kernel2 one-warp-per-channel: coarsen lid+=32 plus group reduce; repacks CUDA multi-warp-per-block (grid OC*32/block) to one 32-thread group per OC but same work/warp-reduce.",
+            "variant": 2
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "run_k3/BiasK3 keeps kernel3 one-block-per-channel two-level reduce: thread coarsening + sub_group reduce_over_group + local[32] + cross-warp sum; second stage serial by lid==0 vs CUDA warp reduce but same structure.",
+            "variant": 3
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "run_k4/BiasK4 keeps kernel4: G=OC/32, vstep=L/32, warp_id/lane split, strided column loop col[row*OC], sm[lane+warp_id*32] then warp_id==0 linear sum + add.",
+            "variant": 4
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "run_k5/BiasK5 keeps kernel5: 2D grid flattened (Gx,Gy=4), oc=gx*L+lid, strided rows gy+=Gy plus atomic_ref fetch_add; Gy fixed 4 vs occupancy-derived gridDim.y but same grid-stride+atomic algorithm.",
+            "variant": 5
+          },
+          {
+            "keeps_cuda_algorithm": false,
+            "note": "run_k7/BiasK7 replaces kernel7 vectorized + shared conflict-free atomics + 2D grid + dbias_buffer/cast_and_add with Ty=8 local-scratch serial reduction and direct add, single-partition grid, no atomics.",
+            "variant": 7
+          },
+          {
+            "keeps_cuda_algorithm": false,
+            "note": "run_k8/BiasK8 replaces kernel8 __shfl_down_sync + 3D shared + 2D grid atomic/direct paths with flattened block, Gx-only launch, local scratch serial sum, no shuffles/atomics.",
+            "variant": 8
+          },
+          {
+            "keeps_cuda_algorithm": false,
+            "note": "run_k9/BiasK9 replaces kernel9 shuffle + occupancy Gy + direct/aux branches + vectorized reduce_add_sum with fixed Gy=4 local serial partials to aux + scalar BiasK9Reduce; tiling similar but sub-group ops, atomics, launch shape differ.",
+            "variant": 9
+          }
+        ],
+        "verdict": "reject"
+      },
+      "compare": {
+        "hidden_grade_correct": true,
+        "reviewer_likely_correct": true,
+        "variant_check_duplicated": false,
+        "reviewer_copies": false,
+        "reviewer_verdict": "reject",
+        "variants_not_kept": [
+          7,
+          8,
+          9
+        ]
+      }
+    },
+    {
+      "batch": "port-llmc-tier23-run2",
+      "item": "t3-matmul-forward",
+      "worst_case_usd": 0.0773,
+      "status": "ok",
+      "usage": {
+        "input_tokens": 8773,
+        "output_tokens": 5964,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.036313,
+      "review": {
+        "concerns": [
+          "matmul_forward4 replicates CUDA kernel4 lack of bounds checks for BT/OC not multiple of 128 and C not multiple of 32; identical to CUDA so not a new bug if harness uses multiples",
+          "matmul_forward3 does not preserve cuBLASLt fused BIAS epilogue, uses separate add_bias_k3 GEMM+ bias; numerically identical, no extra pass difference"
+        ],
+        "copies_one_implementation": false,
+        "idiomatic_sycl": true,
+        "likely_correct": true,
+        "variants": [
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "MatmulK1 preserves kernel1: 2D launch over (BT,OC) with 16x16 groups, one work-item per output, loop over C with inline bias, same indexing.",
+            "variant": 1
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "matmul_forward2 preserves kernel2: column_major gemm with trans/nontrans, m=OC n=BT k=C lda=C ldb=C ldc=OC matching cublasSgemm args, plus separate 1D grid-stride BiasK2 matching add_bias.",
+            "variant": 2
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "matmul_forward3 preserves kernel3 high-level algorithm via oneMath GEMM with same trans/m/n/k/ld as variant2 plus own BiasK3 kernel; Lt descriptor/heuristic/workspace and fused epilogue have no SYCL equivalent, separate bias add is closest and math-identical, distinct kernel name keeps variant separate.",
+            "variant": 3
+          },
+          {
+            "keeps_cuda_algorithm": true,
+            "note": "MatmulK4 preserves kernel4: 16x16 groups, 128x128 tiles, 8x8 outputs per item, 128x32 lhs/rhs local memory, si_start, load/compute/store pattern, double group_barrier matching __syncthreads, bias init; float4 vector ops replaced by scalar loads/stores with same addresses.",
+            "variant": 4
+          }
+        ],
+        "verdict": "accept"
+      },
+      "compare": {
+        "hidden_grade_correct": true,
+        "reviewer_likely_correct": true,
+        "variant_check_duplicated": false,
+        "reviewer_copies": false,
+        "reviewer_verdict": "accept",
+        "variants_not_kept": []
+      }
+    }
+  ]
+}
