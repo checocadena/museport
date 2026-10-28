@@ -1,0 +1,50 @@
+[System]
+Device 0: Intel(R) Xeon(R) Processor @ 2.10GHz
+[State]
+batch_size: 4
+seq_len: 64
+allocated 221 MiB for activations
+-43.431618, -43.431702
+-39.836346, -39.836411
+-43.065910, -43.065929
+-42.828045, -42.828117
+-43.529541, -43.529617
+-44.318398, -44.318470
+-41.227425, -41.227448
+-41.270760, -41.270809
+-42.541393, -42.541439
+-42.394997, -42.395081
+OK (LOGITS)
+allocated 474 MiB for parameter gradients
+allocated 4 MiB for activation gradients
+LOSS OK: 5.270010 5.270009
+grads
+OK -0.002320 -0.002320
+OK 0.002072 0.002072
+OK 0.003717 0.003717
+OK 0.001307 0.001307
+OK 0.000632 0.000632
+TENSOR OK
+allocated 474 MiB for AdamW optimizer state m
+allocated 474 MiB for AdamW optimizer state v
+step 0: loss 5.270010 (took 2520.991598 ms)
+step 1: loss 4.059663 (took 2038.576176 ms)
+step 2: loss 3.375040 (took 2070.050376 ms)
+step 3: loss 2.800668 (took 2146.816915 ms)
+step 4: loss 2.315285 (took 1960.270161 ms)
+step 5: loss 1.848921 (took 2183.226962 ms)
+step 6: loss 1.394537 (took 2010.391529 ms)
+step 7: loss 0.998993 (took 1996.933059 ms)
+step 8: loss 0.624035 (took 2101.894565 ms)
+step 9: loss 0.376496 (took 2205.186261 ms)
+loss ok at step 0: 5.270010 5.270007
+loss ok at step 1: 4.059663 4.059707
+loss ok at step 2: 3.375040 3.375123
+loss ok at step 3: 2.800668 2.800783
+loss ok at step 4: 2.315285 2.315382
+loss ok at step 5: 1.848921 1.849029
+loss ok at step 6: 1.394537 1.394656
+loss ok at step 7: 0.998993 0.999147
+loss ok at step 8: 0.624035 0.624080
+loss ok at step 9: 0.376496 0.376511
+overall okay: 1
