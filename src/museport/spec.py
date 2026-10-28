@@ -117,6 +117,11 @@ scratch buffers, cuBLAS math mode, masking elements validate_result skips.
 - extra_includes: headers (e.g. "<cuda_bf16.h>") the fp32 build needs before common.h; \
 usually empty.
 
+The build is fp32: ENABLE_BF16 is not defined and floatX is float. Wherever the file or its \
+main branches on it (#if defined(ENABLE_BF16) ... #else, #ifdef, #ifndef ENABLE_BF16, \
+std::is_same_v<floatX, float>), take the fp32 side: the fp32 tolerance, and keep the variants \
+under #ifndef ENABLE_BF16 (they exist only in the fp32 build).
+
 Match llm.c's own check: the same CPU function, the same inputs and tolerance, all fp32 variants. \
 The spec is proven by migrating the harness with SYCLomatic, compiling it, and comparing with \
 the reference on a CPU device; if a step fails you will be told and asked for a corrected spec.\
