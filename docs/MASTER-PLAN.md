@@ -121,6 +121,22 @@ See the README's results table.
 
   *About $1-2.*
 
+- [ ] **D4. GPU runs from the cloud session, not the author's laptop.** DigitalOcean (and
+  Vultr, Vast) droplets are reached on a bare IP with a self-signed, pinned certificate, which
+  the session's egress proxy cannot pass (it re-checks TLS and does not support pinning).
+  - Fix: give each droplet a hostname (an `sslip.io` name for its IP) and a Let's Encrypt
+    certificate at boot; the runner then connects to an ordinary HTTPS host, no pinning.
+  - *Oct 28: blocked before any code. The session's safety checks deny probing or reaching
+    rented machines by IP ("containment escape"). The author decides: allow it (a permission
+    rule in the session settings), or keep AMD on the laptop.* *About $0.10 to test.*
+- [ ] **D5. Intel GPUs: the third vendor.** oneAPI's native target. Intel Tiber AI Cloud has
+  Data Center GPU Max and Arc machines (often free for developers). The runner already knows
+  Level Zero (`level_zero:gpu`). Run the Tier 1-3 ports and GPT-2 stage 3. *Needs the author
+  to sign up; cost depends on the tier.*
+- [ ] **D6. AMD for the rest.** The 6 Tier 2-3 ports without oneMath calls (4 Tier 2, the
+  `softmax_forward` fix, `matmul_backward_bias`), and GPT-2 stage 3 with a `gpu_setup` that
+  builds oneMath's rocBLAS backend. *About $2; from the laptop unless D4 lands.*
+
 ## E. Measure what the method is worth (Use of Meta AI tooling, Technical depth)
 
 - [ ] **E1. Comparison: Muse with the hidden checks against Muse without them.** *(Oct 28: one run each, Tier 1 and GPT-2 stage 3, `evidence/port-llmc-tier1-baseline`, `evidence/gpt2-stage3-baseline`; 3 runs per item per arm still to do.)* Use the
@@ -173,11 +189,40 @@ See the README's results table.
 
 ## H. Generalisation (Impact)
 
-- [ ] **H1. A second CUDA project.** Run `scan` and `plan` on a different repository (backup
+- [ ] **H1. A second CUDA project.** *(Replaced by J4.)* Run `scan` and `plan` on a different repository (backup
   in `PLAN.md`: thundersvm; or a smaller one with CPU references). Port 3-5 kernels with new
   specs. *About $1-3. Done when the plan is grounded and the ports pass hidden checks.*
-- [ ] **H2. Make specs easier to write:** a small spec format in TOML or JSON, so a new
+- [ ] **H2. Make specs easier to write:** *(Replaced by J2.)* a small spec format in TOML or JSON, so a new
   project needs no Python. *$0.*
+
+## J. Point at a CUDA repo, get a oneAPI repo (Impact; added Oct 28)
+
+Today `scan` and `plan` take any CUDA repo, but each ported file needs a hand-written spec
+(variants, sizes, tolerance, a CPU reference), and the result is one standalone program per
+file. This section removes both limits.
+
+- [ ] **J1. Automatic hidden checks by differential testing.** Build the original CUDA on an
+  NVIDIA GPU, run it and record its outputs; those recordings become the hidden reference.
+  Use the repo's own tests where it has them. No hand-written CPU reference. *Runpod time.*
+- [ ] **J2. Automatic harness.** Generate each file's harness (inputs, sizes, the contract
+  `main`) from the CUDA source and its own `main`/tests, by tool or by Muse, proven like
+  today: the original CUDA must pass it. Replaces H2.
+- [ ] **J3. A reassembled repo: `llm.c-sycl`.** Every ported file, the build converted
+  (`Makefile` to `icpx -fsycl`), one project that builds, passes llm.c's own `test_gpt2`
+  and trains, on CPU, NVIDIA and AMD. *About $5-10 of Muse.*
+- [ ] **J4. A second, unseen CUDA repo, end to end** with J1-J3: scan, plan, port, check,
+  reassemble. Replaces H1.
+
+## K. Beyond the GPT-2 port (added Oct 28)
+
+- [ ] **K1. Real training, compared across vendors.** GPT-2 124M for a few hundred steps on
+  real text: llm.c's CUDA on NVIDIA, the SYCL port on NVIDIA and AMD (and Intel with D5);
+  overlay the loss curves. Extends G4. *A few dollars of GPU.*
+- [ ] **K2. llm.c's production trainer `train_gpt2.cu`:** bf16 mixed precision, cuBLASLt,
+  fused kernels, multi-GPU. Much harder; about two days.
+- [ ] **K3. Llama 3 (`train_llama3.cu`).** The biggest headline and the highest risk.
+- [ ] **K4. Speed.** Muse optimises the simple-kernel ports under the hidden check, measured
+  against llm.c's CUDA on the same GPU. Extends D3.
 
 ## I. Demo, submission text, outreach (Demo 25%, Most Viral, Community Vote)
 
@@ -211,21 +256,24 @@ See the README's results table.
 
 ---
 
-## Suggested schedule
+## Suggested schedule (revised Oct 28)
+
+Done by Oct 28: A1-A2, B1, C1-C3, D1, D2 (GPT-2), E3, G1, G3 on CPU and NVIDIA, the post-fix
+reruns, E1 (one run each), the demo clips and the submission draft.
 
 | Day | Items |
 |---|---|
-| Oct 27 | A1-A3, B1, C1-C3 |
-| Oct 28 | B2, E2, D1 (AMD), I1 draft |
-| Oct 29 | E1 (comparison), F1 (request access) |
-| Oct 30 | G1-G2, C4 (attention) |
-| Oct 31 - Nov 1 | G3 (GPT-2 port), F2 if access arrives |
-| Nov 2 | G4 or C5 (bf16), D2/D3 if time; refresh the report pages |
+| Oct 28 (evening) | D4 if allowed; D6 (AMD, laptop otherwise); the author reviews the demo clips |
+| Oct 29-31 | J1, J2, J3 (`llm.c-sycl`) |
+| Nov 1 | K1 (loss curves on every vendor we have); D5 if Intel access arrives |
+| Nov 2 | J4 (a second CUDA repo); F2 if Baseten access arrives |
 | Nov 3 | I1-I5: script, record, submission text, posts |
 | Nov 4 | I6, submit by midday |
 
 **Decisions needed from the author:**
-- caps for E1, G3 and G4;
+- D4: allow this session to reach rented GPU machines by IP, or keep AMD on the laptop;
+- caps for J and K: about $45 for comparison runs (now $30), $15 for GPUs (now $10), and the
+  GPT-2 cap for K1 (now $7, $4.45 used);
+- Intel Tiber AI Cloud sign-up (D5);
 - Baseten or Modal access (F1);
-- A2 (old repository);
-- which of G or E is the headline if time runs short.
+- sharing the report (B2).
