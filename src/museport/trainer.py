@@ -272,7 +272,10 @@ TEST_API_HINT = (
     "inputs, int* targets, B, T), gpt2_zero_grad(GPT2*), gpt2_backward(GPT2*), "
     "gpt2_update(GPT2*, lr, beta1, beta2, eps, weight_decay, t) and gpt2_free(GPT2*); the "
     "fields are model.acts.output, model.grads.<tensor>, model.grads_memory, model.mean_loss, "
-    "model.config.*, model.param_sizes and model.num_parameters. You do not need to read the "
+    "model.config.*, model.param_sizes and model.num_parameters. main is the last function in "
+    "train_gpt2_fp32.cpp: add the guard with two small edit_file calls (put `#ifndef TESTING` "
+    "before the `int main(int argc, char *argv[]) {` line, and `#endif` after main's closing "
+    "brace at the end of the file), not by rewriting the file. You do not need to read the "
     "whole trainer: write test_gpt2_fp32.cpp within your first few turns, then compile and "
     "verify, and fix what the compiler and verify report.")
 
