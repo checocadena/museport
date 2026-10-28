@@ -449,10 +449,10 @@ DATA_SHA256 = {
 ONEMATH_REF = "1308c5e979daf0c80e3d6ae61c1e2de5ad0f2e4a"
 
 # Sourced on the GPU machine before gpu-test (the task's gpu_setup): builds oneMath's BLAS
-# domain with its cuBLAS backend, with the machine's SYCL compiler, and exports the
-# ONEMATH_PREFIX that the task's base_flags use. NVIDIA only.
-ONEMATH_GPU_SETUP = r"""# museport: oneMath (BLAS, cuBLAS backend) for an NVIDIA machine.
-ONEMATH_PREFIX="$HOME/onemath-cublas"
+# domain with the vendor's backend (cuBLAS on NVIDIA, rocBLAS on AMD), with the machine's SYCL
+# compiler, and exports the ONEMATH_PREFIX that the task's base_flags use.
+ONEMATH_GPU_SETUP_TEMPLATE = r"""# museport: oneMath (BLAS, __BACKEND__ backend) for __VENDOR__.
+ONEMATH_PREFIX="$HOME/onemath-__BACKEND__"
 if [ ! -f "$ONEMATH_PREFIX/lib/libonemath.so" ]; then
   CXX_BIN="${SYCL_CXX:-$(command -v icpx || command -v clang++)}"
   C_BIN="$(dirname "$CXX_BIN")/clang"
@@ -461,13 +461,14 @@ if [ ! -f "$ONEMATH_PREFIX/lib/libonemath.so" ]; then
   python3 -m pip install -q cmake ninja 2>/dev/null \
     || python3 -m pip install -q --break-system-packages cmake ninja
   export PATH="$HOME/.local/bin:$PATH"
+__PRE__
   SRC="$(mktemp -d)/oneMath"
   git init -q "$SRC" \
     && git -C "$SRC" fetch -q --depth 1 https://github.com/uxlfoundation/oneMath.git __REF__ \
     && git -C "$SRC" checkout -q FETCH_HEAD
   cmake -S "$SRC" -B "$SRC/build" -G Ninja -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_CXX_COMPILER="$CXX_BIN" -DCMAKE_C_COMPILER="$C_BIN" \
-    -DENABLE_MKLCPU_BACKEND=OFF -DENABLE_MKLGPU_BACKEND=OFF -DENABLE_CUBLAS_BACKEND=ON \
+    -DENABLE_MKLCPU_BACKEND=OFF -DENABLE_MKLGPU_BACKEND=OFF __FLAGS__ \
     -DTARGET_DOMAINS=blas -DBUILD_FUNCTIONAL_TESTS=OFF -DBUILD_EXAMPLES=OFF \
     -DCMAKE_INSTALL_PREFIX="$ONEMATH_PREFIX" -DCMAKE_INSTALL_RPATH="$ONEMATH_PREFIX/lib" \
     && cmake --build "$SRC/build" -j"$(nproc)" && cmake --install "$SRC/build"
@@ -475,13 +476,39 @@ fi
 export ONEMATH_PREFIX
 export LD_LIBRARY_PATH="$ONEMATH_PREFIX/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 ls -l "$ONEMATH_PREFIX/lib"
-""".replace("__REF__", ONEMATH_REF)
+"""
+
+# What differs per vendor: the backend, its CMake flags, a pre-step, and llm.c's native build.
+ONEMATH_BACKENDS: dict[str, dict[str, Any]] = {
+    "nvidia": {"backend": "cublas", "flags": "-DENABLE_CUBLAS_BACKEND=ON", "pre": "",
+               "native_flags": ["-lcublas"]},
+    # rocBLAS needs the GPU's gfx target; the machine reports it.
+    "amd": {"backend": "rocblas",
+            "flags": '-DENABLE_ROCBLAS_BACKEND=ON -DHIP_TARGETS="$HIP_ARCH" '
+                     "-DCMAKE_PREFIX_PATH=/opt/rocm",
+            "pre": '  HIP_ARCH="$( (rocm_agent_enumerator 2>/dev/null; rocminfo 2>/dev/null '
+                   "| awk '/Name: *gfx/{print $2}') | grep -v gfx000 | head -1)\"\n"
+                   '  echo "AMD target: $HIP_ARCH"',
+            # llm.c's CUDA does not hipify into something that builds (evidence: Tier 1 AMD)
+            "native_flags": []},
+}
 
 
-def make_gpu_task(stage_dir: Path, dest: Path, model: str) -> Path:
+def onemath_gpu_setup(vendor: str) -> str:
+    b = ONEMATH_BACKENDS[vendor]
+    return (ONEMATH_GPU_SETUP_TEMPLATE.replace("__REF__", ONEMATH_REF)
+            .replace("__BACKEND__", b["backend"]).replace("__VENDOR__", vendor.upper())
+            .replace("__FLAGS__", b["flags"]).replace("__PRE__", b["pre"]))
+
+
+ONEMATH_GPU_SETUP = onemath_gpu_setup("nvidia")
+
+
+def make_gpu_task(stage_dir: Path, dest: Path, model: str, vendor: str = "nvidia") -> Path:
     """A ``remote-test`` task for a passing GPT-2 stage: its task (harness, hidden reference),
     Muse's port as last compiled, the data fetched on the machine, and oneMath built there with
-    its cuBLAS backend. The native build is llm.c's CUDA with cuBLAS."""
+    the vendor's backend (cuBLAS or rocBLAS). On NVIDIA the native build is llm.c's CUDA with
+    cuBLAS."""
     from .port import last_compiled_sources
 
     srcs = last_compiled_sources(stage_dir / "run1" / "trace.jsonl")
@@ -491,11 +518,13 @@ def make_gpu_task(stage_dir: Path, dest: Path, model: str) -> Path:
         shutil.rmtree(dest)
     shutil.copytree(stage_dir / "task", dest, ignore=shutil.ignore_patterns(WEIGHTS, STATE))
     shutil.copytree(stage_dir / "run1" / "port", dest / "agent_port")
-    (dest / "onemath_cublas_setup.sh").write_text(ONEMATH_GPU_SETUP)
+    backend = ONEMATH_BACKENDS[vendor]
+    setup = f"onemath_{backend['backend']}_setup.sh"
+    (dest / setup).write_text(onemath_gpu_setup(vendor))
     task = json.loads((dest / "task.json").read_text())
     task["sycl_sources"] = [f"agent_port/{s}" for s in srcs]
-    task["native_flags"] = ["-lcublas"]
-    task["gpu_setup"] = "onemath_cublas_setup.sh"
+    task["native_flags"] = backend["native_flags"]
+    task["gpu_setup"] = setup
     task["fetch"] = [{"path": f, "url": f"{STARTER_PACK}{f}?download=true",
                       "sha256": DATA_SHA256[f]} for f in (WEIGHTS, STATE)]
     task["port_origin"] = (f"agent-made: {model} via museport loop, {stage_dir.name}; "
