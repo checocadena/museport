@@ -458,8 +458,11 @@ if [ ! -f "$ONEMATH_PREFIX/lib/libonemath.so" ]; then
   C_BIN="$(dirname "$CXX_BIN")/clang"
   [ -x "$C_BIN" ] || C_BIN="$(command -v icx || command -v clang || command -v gcc)"
   echo "oneMath __REF__ with $CXX_BIN"
+  # pip where there is one (Runpod images); apt otherwise (DigitalOcean's AMD image has
+  # neither pip nor cmake)
   python3 -m pip install -q cmake ninja 2>/dev/null \
-    || python3 -m pip install -q --break-system-packages cmake ninja
+    || python3 -m pip install -q --break-system-packages cmake ninja 2>/dev/null \
+    || { apt-get update -qq && apt-get install -y -qq cmake ninja-build; }
   export PATH="$HOME/.local/bin:$PATH"
 __PRE__
   SRC="$(mktemp -d)/oneMath"
@@ -478,6 +481,28 @@ export LD_LIBRARY_PATH="$ONEMATH_PREFIX/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 ls -l "$ONEMATH_PREFIX/lib"
 """
 
+# DigitalOcean's AMD image has the HIP runtime but no rocBLAS. Unpack AMD's rocBLAS packages
+# (development files, host library, the GPU's kernels) into the ROCm tree, as the toolkit does
+# for the HIP headers, without letting apt resolve them against the image's prerelease runtime.
+# The script is sourced by the toolkit's runner, whose own variables (D, HERE, ...) must not
+# be touched: names here are prefixed MP_.
+ROCBLAS_UNPACK = r"""
+  MP_RC="$(basename "$(dirname "$(dirname "$(readlink -f "$(command -v hipcc)")")")")"
+  if [ ! -e "/opt/rocm/$MP_RC/lib/cmake/rocblas/rocblas-config.cmake" ]; then
+    MP_RV="${MP_RC#core-}"
+    MP_V="$(apt-cache madison "amdrocm-blas-dev$MP_RV" | awk '{print $3}' | sort -V | head -1)"
+    MP_D="$(mktemp -d)"
+    (cd "$MP_D" && apt-get download "amdrocm-blas-dev$MP_RV=$MP_V" "amdrocm-blas-host$MP_RV=$MP_V" \
+      "amdrocm-blas$MP_RV-$HIP_ARCH=$MP_V") \
+      && for f in "$MP_D"/*.deb; do dpkg-deb -x "$f" "$MP_D/x"; done \
+      && cp -rn "$MP_D/x/opt/rocm/$MP_RC/." "/opt/rocm/$MP_RC/" \
+      && echo "rocBLAS: unpacked $MP_V for $HIP_ARCH into /opt/rocm/$MP_RC"
+    rm -rf "$MP_D"
+  fi
+  export CMAKE_PREFIX_PATH="/opt/rocm/$MP_RC${CMAKE_PREFIX_PATH:+:$CMAKE_PREFIX_PATH}"
+  export LD_LIBRARY_PATH="/opt/rocm/$MP_RC/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+"""
+
 # What differs per vendor: the backend, its CMake flags, a pre-step, and llm.c's native build.
 ONEMATH_BACKENDS: dict[str, dict[str, Any]] = {
     "nvidia": {"backend": "cublas", "flags": "-DENABLE_CUBLAS_BACKEND=ON", "pre": "",
@@ -488,7 +513,7 @@ ONEMATH_BACKENDS: dict[str, dict[str, Any]] = {
                      "-DCMAKE_PREFIX_PATH=/opt/rocm",
             "pre": '  HIP_ARCH="$( (rocm_agent_enumerator 2>/dev/null; rocminfo 2>/dev/null '
                    "| awk '/Name: *gfx/{print $2}') | grep -v gfx000 | head -1)\"\n"
-                   '  echo "AMD target: $HIP_ARCH"',
+                   '  echo "AMD target: $HIP_ARCH"\n' + ROCBLAS_UNPACK,
             # llm.c's CUDA does not hipify into something that builds (evidence: Tier 1 AMD)
             "native_flags": []},
 }
