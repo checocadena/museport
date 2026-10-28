@@ -21,8 +21,11 @@ from pathlib import Path
 MODEL = "stories15M.bin"
 MODEL_URL = "https://huggingface.co/karpathy/tinyllamas/resolve/main/stories15M.bin"
 MODEL_SHA256 = "cd590644d963867a2b6e5a1107f51fad663c41d79c149fbecbbb1f95fa81f49a"
-# (temperature, steps, prompt): greedy, so the story is fixed by the model and the code
-CASES = (("0.0", "128", "Once upon a time"), ("0.0", "128", "Tom and his dog went to the park"))
+# (temperature, steps, prompt): greedy, so the story is fixed by the model and the code. 64
+# steps: at 128, llama2.c's fp32 run.c (correct, but rounding differently from llama2.cu's
+# fp16) flips a near-tie token at byte 322 of the first story; two planted bugs diverge by
+# byte 87 (evidence/j4-llama2/record-128steps). Chosen before any model ran.
+CASES = (("0.0", "64", "Once upon a time"), ("0.0", "64", "Tom and his dog went to the park"))
 
 RUN_STORY = '''"""Hidden check wrapper (museport J4): run a llama2 program (llama2.cu,
 llama2.c's run.c, or a port) on one case and write the story it prints as f32, one value per
