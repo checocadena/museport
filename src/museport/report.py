@@ -697,8 +697,9 @@ def _j3_section(j3: dict[str, Any] | None) -> str:
     return (
         '<section id="j3"><h2>llm.c-sycl: the ports put back together</h2><p class="note">'
         f'<a href="{REPO}/tree/main/llm.c-sycl">llm.c-sycl</a> is llm.c laid out as llm.c is, '
-        "in SYCL, built with <code>make</code> and <code>icpx -fsycl</code> for a CPU, an "
-        "NVIDIA GPU or an AMD GPU. It holds the kernel ports in <code>dev/sycl</code>, and two "
+        "in SYCL, built with <code>make</code> and <code>icpx -fsycl</code>; its programs run "
+        "on a CPU, an NVIDIA GPU and an AMD GPU. It holds the kernel ports in "
+        "<code>dev/sycl</code>, and two "
         "programs that Muse wrote on top of its proven GPT-2 port: llm.c's fp32 trainer, with "
         "its real <code>main</code>, and llm.c's own test, which checks logits, loss and every "
         "gradient against PyTorch, then 10 training steps.</p>"
@@ -709,7 +710,9 @@ def _j3_section(j3: dict[str, Any] | None) -> str:
         '<p class="note"><b>Hidden grade</b>: the trainer\'s validation and training losses '
         "against llm.c's own CPU trainer; the test's <code>overall okay</code> and its 10 "
         "losses against PyTorch's; both at llm.c's tolerance, 1e-2. The GPU runs build the "
-        "sources Muse last compiled, unchanged. llm.c's CUDA does not hipify into something "
+        "sources Muse last compiled, unchanged, with the toolkit's <code>gpu-test</code> (the "
+        "Makefile's GPU targets have not run on a GPU yet). llm.c's CUDA does not hipify into "
+        "something "
         "that builds, so on AMD there is no comparison with it.</p>"
         + _fresh_note(j3.get("fresh"))
         + "<h3>Each check, proven first</h3><div class=\"scroll\"><table><thead><tr><th>Program"
