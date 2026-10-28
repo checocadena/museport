@@ -201,9 +201,13 @@ Today `scan` and `plan` take any CUDA repo, but each ported file needs a hand-wr
 (variants, sizes, tolerance, a CPU reference), and the result is one standalone program per
 file. This section removes both limits.
 
-- [ ] **J1. Automatic hidden checks by differential testing.** Build the original CUDA on an
+- [x] **J1. Automatic hidden checks by differential testing.** Build the original CUDA on an
   NVIDIA GPU, run it and record its outputs; those recordings become the hidden reference.
   Use the repo's own tests where it has them. No hand-written CPU reference. *Runpod time.*
+  **Done Oct 28** (`evidence/diff-llmc-tier1`): all 10 Tier 1 kernels recorded for $0.034, with
+  bit-identical repeat runs. The recordings match llm.c's CPU references 10/10, Muse's ports
+  pass against them 10/10, and a planted dropped-digit bug fails. Not yet done: using the
+  repo's own tests.
 - [ ] **J2. Automatic harness.** Generate each file's harness (inputs, sizes, the contract
   `main`) from the CUDA source and its own `main`/tests, by tool or by Muse, proven like
   today: the original CUDA must pass it. Replaces H2.

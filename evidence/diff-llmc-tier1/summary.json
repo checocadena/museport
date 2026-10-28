@@ -1,0 +1,255 @@
+{
+  "port_run": "evidence/port-llmc-tier1-run2",
+  "items": [
+    {
+      "item": "t1-crossentropy-forward",
+      "recorded": true,
+      "device": "NVIDIA RTX A4500",
+      "deterministic": true,
+      "sha256": [
+        "d72e02d4fc979bcd3d548ef186f0440930850c08ffa9b1fd991f8fdff9a6f9f8"
+      ],
+      "recording_vs_cpu_reference": {
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 1.19e-07, atol 1e-05)"
+      },
+      "cpu_grade": {
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 5.96e-08, atol 1e-05)",
+        "helpers": 0
+      },
+      "differential_grade": {
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.19e-07, atol 1e-05)",
+        "helpers": 0,
+        "graded": "after the run, by museport grade_run"
+      }
+    },
+    {
+      "item": "t1-crossentropy-softmax-backward",
+      "recorded": true,
+      "device": "NVIDIA RTX 2000 Ada Generation",
+      "deterministic": true,
+      "sha256": [
+        "b9975a803090c9e93e511ace1a58064b6643df40219ff051a6de2c2a0f2ecfa1"
+      ],
+      "recording_vs_cpu_reference": {
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)"
+      },
+      "cpu_grade": {
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)",
+        "helpers": 0
+      },
+      "differential_grade": {
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)",
+        "helpers": 0,
+        "graded": "after the run, by museport grade_run"
+      }
+    },
+    {
+      "item": "t1-permute",
+      "recorded": true,
+      "device": "NVIDIA RTX A4500",
+      "deterministic": true,
+      "sha256": [
+        "178ec68d60fe79d7461cf0ea7b23bbb62de50487e064ce6ed9fa4149076fcff7"
+      ],
+      "recording_vs_cpu_reference": {
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)"
+      },
+      "cpu_grade": {
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)",
+        "helpers": 0
+      },
+      "differential_grade": {
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)",
+        "helpers": 0,
+        "graded": "after the run, by museport grade_run"
+      }
+    },
+    {
+      "item": "t1-residual-forward",
+      "recorded": true,
+      "device": "NVIDIA RTX A4500",
+      "deterministic": true,
+      "sha256": [
+        "0b13961635d12c6e59517ce33a29cca67bee8a982a42f13b1894955d6b3113b0"
+      ],
+      "recording_vs_cpu_reference": {
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)"
+      },
+      "cpu_grade": {
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)",
+        "helpers": 0
+      },
+      "differential_grade": {
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)",
+        "helpers": 0,
+        "graded": "after the run, by museport grade_run"
+      }
+    },
+    {
+      "item": "t1-gelu-forward",
+      "recorded": true,
+      "device": "NVIDIA RTX A4500",
+      "deterministic": true,
+      "sha256": [
+        "83a653a1e794dd2ab8a75f0440310e1d7dd6a946dc5aa05ed103e841b0c2e09c"
+      ],
+      "recording_vs_cpu_reference": {
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 1.19e-07, atol 1e-05)"
+      },
+      "cpu_grade": {
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.19e-07, atol 1e-05)",
+        "helpers": 0
+      },
+      "differential_grade": {
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.19e-07, atol 1e-05)",
+        "helpers": 0,
+        "graded": "after the run, by museport grade_run"
+      }
+    },
+    {
+      "item": "t1-gelu-backward",
+      "recorded": true,
+      "device": "NVIDIA RTX 2000 Ada Generation",
+      "deterministic": true,
+      "sha256": [
+        "c8ed7b8b8e73847fa70544fc32605d5c664e8a8912fc3a1e06605072322df286"
+      ],
+      "recording_vs_cpu_reference": {
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 2.38e-07, atol 1e-05)"
+      },
+      "cpu_grade": {
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 2.38e-07, atol 1e-05)",
+        "helpers": 0
+      },
+      "differential_grade": {
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 2.38e-07, atol 1e-05)",
+        "helpers": 0,
+        "graded": "after the run, by museport grade_run"
+      }
+    },
+    {
+      "item": "t1-encoder-forward",
+      "recorded": true,
+      "device": "NVIDIA RTX A4500",
+      "deterministic": true,
+      "sha256": [
+        "8e088d4cbf6b5f92635d74c9487b82ee62122887640df4ed1186d5e5274b9ec0"
+      ],
+      "recording_vs_cpu_reference": {
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)"
+      },
+      "cpu_grade": {
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)",
+        "helpers": 0
+      },
+      "differential_grade": {
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)",
+        "helpers": 0,
+        "graded": "after the run, by museport grade_run"
+      }
+    },
+    {
+      "item": "t1-encoder-backward",
+      "recorded": true,
+      "device": "NVIDIA RTX 2000 Ada Generation",
+      "deterministic": true,
+      "sha256": [
+        "aeed8f0618c043ac6c3ace3c16e9d73a2b0a9ec17289babff765d616ecfa525b"
+      ],
+      "recording_vs_cpu_reference": {
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)"
+      },
+      "cpu_grade": {
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 4.77e-07, atol 1e-05)",
+        "helpers": 0
+      },
+      "differential_grade": {
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 4.77e-07, atol 1e-05)",
+        "helpers": 0,
+        "graded": "after the run, by museport grade_run"
+      }
+    },
+    {
+      "item": "t1-adamw",
+      "recorded": true,
+      "device": "NVIDIA RTX A4500",
+      "deterministic": true,
+      "sha256": [
+        "1eb74f1e4205f7d0676ad266228a53a7f25930f71e023fa31453b065a7bc757a"
+      ],
+      "recording_vs_cpu_reference": {
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 5.96e-08, atol 0.0001)"
+      },
+      "cpu_grade": {
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.79e-07, atol 0.0001)",
+        "helpers": 0
+      },
+      "differential_grade": {
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.79e-07, atol 0.0001)",
+        "helpers": 0,
+        "graded": "after the run, by museport grade_run"
+      }
+    },
+    {
+      "item": "t1-fused-residual-forward",
+      "recorded": true,
+      "device": "NVIDIA RTX 2000 Ada Generation",
+      "deterministic": true,
+      "sha256": [
+        "12e40f729667ab6116c0b5e8bea5baa42c0577357e9aaf482d47cf4dd6062776"
+      ],
+      "recording_vs_cpu_reference": {
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 1.43e-06, atol 1e-05)"
+      },
+      "cpu_grade": {
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 5.96e-07, atol 1e-05)",
+        "helpers": 0
+      },
+      "differential_grade": {
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.43e-06, atol 1e-05)",
+        "helpers": 0,
+        "graded": "after the run, by museport grade_run"
+      }
+    }
+  ]
+}
