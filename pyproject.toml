@@ -14,7 +14,7 @@ authors = [{ name = "Checo Cadena", email = "checo@innercircuit.com" }]
 # the tag pre_hackathon; later changes made for Muse Port are listed in docs/CHANGES-TO-TOOLKIT.md
 # (pinned at the merge of #20, native_flags).
 dependencies = [
-  "oneapi-agent-toolkit @ git+https://github.com/checocadena/oneapi-agent-toolkit@0d4a1af06fbd93407eb82c67c0fe130d66f09e37",
+  "oneapi-agent-toolkit @ git+https://github.com/checocadena/oneapi-agent-toolkit@80f4f4fa5cb5884f2033e76092ae450c6518f43c",
 ]
 
 [project.optional-dependencies]
