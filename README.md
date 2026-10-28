@@ -162,11 +162,12 @@ written by hand. Muse now writes them from the CUDA file alone, and each one is 
 ([evidence](evidence/spec-llmc/README.md)):
 - **Proof:** llm.c's own GPU code and CPU code must agree under the spec, checked through
   SYCLomatic on the CPU, or on an NVIDIA GPU where SYCLomatic fails.
-- **Proven:** 16 of llm.c's 17 files (2 were worked examples, not graded). 13 of the 16 are as
-  strict as llm.c's own check. The other 3 took llm.c's bf16 tolerance instead of the fp32 one,
-  and one also dropped an fp32 variant.
-- **Not proven:** `trimat_forward`. The GPU proof caught its masked-triangle mistake.
-- **Cost:** about $1.34–1.52 of Muse and $0.03 of GPU.
+- **Proven:** 16 of llm.c's 17 files (2 were worked examples, not graded). **All 16 are as strict
+  as llm.c's own check**, once the prompt says the build is fp32: in the first run, 3 specs took
+  llm.c's bf16 tolerance, and one dropped an fp32 variant
+  ([rerun](evidence/spec-llmc-fp32/README.md)).
+- **Not proven:** `trimat_forward`. The GPU proof caught its masked-triangle mistake each time.
+- **Cost:** about $1.64–1.82 of Muse and $0.04 of GPU.
 
 **Limits of all results:** fp32 only, reduced sizes for the kernels, one run per item.
 

@@ -55,8 +55,9 @@ Sizes are Muse's own reductions and usually differ from mine.
   5e-3. It also dropped variant 5 as "fp32-only (guarded by `#ifndef ENABLE_BF16`)", but this is
   the fp32 build, so variant 5 belongs in. A proof shows llm.c's GPU and CPU code agree under the
   spec; it cannot show the spec is as strict as llm.c's. Telling Muse plainly that the build is
-  fp32 is the obvious fix. It is not made here: this run uses one prompt throughout.
-- **`trimat_forward` is not proven** (two runs, 3 attempts each, $0.32):
+  fp32 fixed all three: see the rerun in [`../spec-llmc-fp32`](../spec-llmc-fp32/README.md).
+- **`trimat_forward` is not proven** (two runs, $0.32): 2 attempts, then 3 once an API error
+  no longer ended a file's attempts.
   - Both runs' first specs fail on the GPU with about half the values off: 4,112,984 of
     7,864,320 in the first run. That is the causal-masked triangle. llm.c's CPU code writes NaN
     there and its `validate_result` skips them; my spec zeroes them in both programs, and Muse's

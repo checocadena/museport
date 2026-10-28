@@ -1,0 +1,111 @@
+[
+  {
+    "attempt": 1,
+    "answer": {
+      "cpu_call": "trimul_cpu(out, inp, B, T, C, NH)",
+      "cpu_functions": [
+        "trimul_cpu"
+      ],
+      "dropped_variants": [],
+      "extra_includes": [],
+      "gpu_call": "trimul_gpu(k, d_out, d_inp, B, T, C, NH)",
+      "gpu_prelude": "cudaCheck(cudaMalloc(&d_qkvr, (size_t)B * T * 3 * C * sizeof(float)));",
+      "host_prep": "",
+      "inputs": [
+        {
+          "count": "B*T*3*C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "uniform",
+          "name": "inp"
+        }
+      ],
+      "keep_cublas": true,
+      "keep_cublaslt": false,
+      "keep_in_harness": [],
+      "note": "B=2 (llm.c: B=8), T=256 (llm.c: T=1024); C=768, NH=12 unchanged to keep HS=64 and T%128==0 assert. Out ~1.57M floats (~6MB).",
+      "output_post": "",
+      "outputs": [
+        {
+          "count": "B*NH*T*T",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "zeros",
+          "name": "out"
+        }
+      ],
+      "sizes": [
+        {
+          "name": "B",
+          "value": 2
+        },
+        {
+          "name": "T",
+          "value": 256
+        },
+        {
+          "name": "C",
+          "value": 768
+        },
+        {
+          "name": "NH",
+          "value": 12
+        }
+      ],
+      "tol": 0.0001,
+      "variants": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    "usage": {
+      "input_tokens": 13048,
+      "output_tokens": 3600,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0
+    },
+    "cost_usd": 0.03161,
+    "static_errors": [],
+    "check": {
+      "ok": false,
+      "failed": "compile",
+      "steps": {
+        "reference_build": {
+          "returncode": 0,
+          "stderr": ""
+        },
+        "migrate": {
+          "status": "ok",
+          "summary": "migrated 1 CUDA file(s) -> 2 file(s); 26 DPCT warning(s) (DPCT1005x2, DPCT1009x1, DPCT1010x3, DPCT1024x2, DPCT1051x2, DPCT1065x4, DPCT1084x1, DPCT1093x2, DPCT1098x3, DPCT1110x3, DPCT1118x3)"
+        },
+        "compile": {
+          "status": "fail",
+          "summary": "compile failed with 1 error(s) at /home/user/museport-hackathon/evidence/spec-llmc-fp32/trimat_forward/.work/migrated/trimat_forward_harness.dp.cpp:614: no matching function for call to 'trimul_launcher'"
+        }
+      },
+      "evidence": "{\"run\": {\"command\": \"/opt/dpcpp/bin/icpx -fsycl -O2 -I/opt/onemath/include -Wl,--no-as-needed -L/opt/onemath/lib -Wl,-rpath,/opt/onemath/lib -lonemath -I/home/user/museport-hackathon/evidence/spec-llmc-fp32/trimat_forward/task -DMKL_ILP64 -I/opt/onemkl/include -Wl,--no-as-needed -L/opt/onemkl/lib -Wl,-rpath,/opt/onemkl/lib -lmkl_sycl_blas -lmkl_intel_ilp64 -lmkl_sequential -lmkl_core -I/opt/syclomatic/include /home/user/museport-hackathon/evidence/spec-llmc-fp32/trimat_forward/.work/migrated/trimat_forward_harness.dp.cpp -o /home/user/museport-hackathon/evidence/spec-llmc-fp32/trimat_forward/.work/build/candidate\", \"returncode\": 1, \"duration_s\": 6.755697, \"stdout\": \"\", \"stderr\": \"In file included from /home/user/museport-hackathon/evidence/spec-llmc-fp32/trimat_forward/.work/migrated/trimat_forward_harness.dp.cpp:27:\\nIn file included from /opt/onemkl/include/sycl/sycl.hpp:60:\\nIn file included from /opt/onemkl/include/sycl/detail/core.hpp:21:\\nIn file included from /opt/onemkl/include/sycl/accessor.hpp:11:\\n/opt/onemkl/include/sycl/access/access.hpp:79:63: warning: 'constant_buffer' is deprecated: use 'target::device' instead [-Wdeprecated-declarations]\\n   79 | inline constexpr mode_target_tag_t<access_mode::read, target::constant_buffer>\\n      |                                                               ^\\n/opt/onemkl/include/sycl/access/access.hpp:24:19: note: 'constant_buffer' has been explicitly marked deprecated here\\n   24 |   constant_buffer __SYCL2020_DEPRECATED(\\\"use 'target::device' instead\\\") = 2015,\\n      |                   ^\\n/opt/onemkl/include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'\\n   75 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)\\n      |                                        ^\\n/opt/onemkl/include/sycl/detail/defines_elementary.hpp:66:38: note: expanded from macro '__SYCL_DEPRECATED'\\n   66 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]\\n      |                                      ^\\nIn file included from /home/user/museport-hackathon/evidence/spec-llmc-fp32/trimat_forward/.work/migrated/trimat_forward_harness.dp.cpp:27:\\nIn file included from /opt/onemkl/include/sycl/sycl.hpp:60:\\nIn file included from /opt/onemkl/include/sycl/detail/core.hpp:21:\\nIn file included from /opt/onemkl/include/sycl/accessor.hpp:11:\\n/opt/onemkl/include/sycl/access/access.hpp:91:31: warning: 'host_buffer' is deprecated: use 'host_accessor' instead [-Wdeprecated-declarations]\\n   91 |   return T == access::target::host_buffer || T == access::target::host_image;\\n      |                               ^\\n/opt/onemkl/include/sycl/access/access.hpp:27:15: note: 'host_buffer' has been explicitly marked deprecated here\\n   27 |   host_buffer __SYCL2020_DEPRECATED(\\\"use 'host_accessor' instead\\\") = 2018,\\n      |               ^\\n/opt/onemkl/include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'\\n   75 | #define __"
+    },
+    "gpu_proof": {
+      "ok": false,
+      "cost_usd": 0.004,
+      "device": "NVIDIA RTX A4500",
+      "deterministic": true,
+      "results": "/home/user/museport-hackathon/evidence/spec-llmc-fp32/trimat_forward/.gpu/res/nvidia-rtx-a4500/llmc_trimat_forward",
+      "step": "compare",
+      "summary": "FAIL: 0/1 case(s) match; first failure: 4112984 of 7864320 element(s) outside tolerance"
+    }
+  },
+  {
+    "attempt": 2,
+    "error": "no complete plan (finish_reason=stop, 0 characters, reasoning tokens not reported): the output budget was probably spent on reasoning; raise --max-output or lower ONEAPI_AGENT_EFFORT",
+    "cost_usd": 0.0837809375
+  },
+  {
+    "attempt": 3,
+    "error": "no complete plan (finish_reason=stop, 0 characters, reasoning tokens not reported): the output budget was probably spent on reasoning; raise --max-output or lower ONEAPI_AGENT_EFFORT",
+    "cost_usd": 0.0837809375
+  }
+]

@@ -1,0 +1,1 @@
+[gpu_test] ok: recorded 1 output(s) of the original CUDA on NVIDIA RTX 2000 Ada Generation (nvidia); two runs differ: FAIL: 0/1 case(s) match; first failure: 3789 of 24576 element(s) outside tolerance

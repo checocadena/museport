@@ -1,0 +1,167 @@
+{
+  "tool": "gpu_test",
+  "status": "ok",
+  "summary": "recorded 1 output(s) of the original CUDA on NVIDIA RTX 2000 Ada Generation (nvidia); two runs differ: FAIL: 0/1 case(s) match; first failure: 3789 of 24576 element(s) outside tolerance",
+  "evidence": {
+    "task": "llmc_matmul_backward_bias",
+    "device": {
+      "backend": "cuda",
+      "device_type": "gpu",
+      "index": 0,
+      "platform": "NVIDIA CUDA BACKEND",
+      "name": "NVIDIA RTX 2000 Ada Generation",
+      "description": "NVIDIA CUDA BACKEND, NVIDIA RTX 2000 Ada Generation 8.9 [CUDA 13.2]",
+      "selector": "cuda:0"
+    },
+    "vendor": "nvidia",
+    "recorded": [
+      {
+        "case": 0,
+        "input": "input.bin",
+        "file": "recorded/case0.out",
+        "bytes": 98304,
+        "sha256": "725a34931965c2db5bc46e02a2b0a19f17ab6837be742da283097d1f85fee39d"
+      }
+    ],
+    "deterministic": false,
+    "repeat": {
+      "mode": "array",
+      "cases": [
+        {
+          "input": "/tmp/tmp.mGT3cx3Etp/task/input.bin",
+          "reference": {
+            "command": "build/native /tmp/tmp.mGT3cx3Etp/task/input.bin /tmp/tmp.mGT3cx3Etp/out/work/v_record/case0_reference.out 2 256 768 3072",
+            "returncode": 0,
+            "duration_s": 0.394509,
+            "stdout": "",
+            "stderr": "",
+            "cwd": "/tmp/tmp.mGT3cx3Etp/out/work",
+            "output_file": "/tmp/tmp.mGT3cx3Etp/out/work/v_record/case0_reference.out"
+          },
+          "candidate": {
+            "command": "build/native /tmp/tmp.mGT3cx3Etp/task/input.bin /tmp/tmp.mGT3cx3Etp/out/work/v_record/case0_candidate.out 2 256 768 3072",
+            "returncode": 0,
+            "duration_s": 0.378703,
+            "stdout": "",
+            "stderr": "",
+            "cwd": "/tmp/tmp.mGT3cx3Etp/out/work",
+            "output_file": "/tmp/tmp.mGT3cx3Etp/out/work/v_record/case0_candidate.out"
+          },
+          "reference_format": "f32",
+          "candidate_format": "f32",
+          "mode": "array",
+          "stats": {
+            "n_reference": 24576,
+            "n_candidate": 24576,
+            "atol": 0.0,
+            "rtol": 0.0,
+            "max_ulp_allowed": null,
+            "passed": false,
+            "max_abs_err": 9.5367431640625e-06,
+            "rms_err": 7.667606539669727e-07,
+            "mean_abs_err": 2.4572303421640146e-07,
+            "max_rel_err": 0.0007745558406351358,
+            "max_ulp_f32": 12288,
+            "median_ulp_f32": 0.0,
+            "exact_matches": 20787,
+            "mismatches": 3789,
+            "nan_mismatches": 0,
+            "reference_range": [
+              -47.347564697265625,
+              46.47561264038086
+            ],
+            "first_mismatches": [
+              {
+                "index": 12288,
+                "reference": -15.536328315734863,
+                "candidate": -15.53632640838623,
+                "abs_err": 1.9073486328125e-06
+              },
+              {
+                "index": 12289,
+                "reference": 6.688846111297607,
+                "candidate": 6.688847064971924,
+                "abs_err": 9.5367431640625e-07
+              },
+              {
+                "index": 12290,
+                "reference": -5.982988357543945,
+                "candidate": -5.982990264892578,
+                "abs_err": 1.9073486328125e-06
+              },
+              {
+                "index": 12293,
+                "reference": -12.43709659576416,
+                "candidate": -12.437097549438477,
+                "abs_err": 9.5367431640625e-07
+              },
+              {
+                "index": 12294,
+                "reference": 12.43368911743164,
+                "candidate": 12.433696746826172,
+                "abs_err": 7.62939453125e-06
+              },
+              {
+                "index": 12295,
+                "reference": 32.345069885253906,
+                "candidate": 32.34507369995117,
+                "abs_err": 3.814697265625e-06
+              },
+              {
+                "index": 12297,
+                "reference": 8.744205474853516,
+                "candidate": 8.744206428527832,
+                "abs_err": 9.5367431640625e-07
+              },
+              {
+                "index": 12298,
+                "reference": -9.960759162902832,
+                "candidate": -9.9607572555542,
+                "abs_err": 1.9073486328125e-06
+              },
+              {
+                "index": 12299,
+                "reference": 2.201907157897949,
+                "candidate": 2.201906204223633,
+                "abs_err": 9.5367431640625e-07
+              },
+              {
+                "index": 12301,
+                "reference": -18.877260208129883,
+                "candidate": -18.877269744873047,
+                "abs_err": 9.5367431640625e-06
+              }
+            ],
+            "reason": "3789 of 24576 element(s) outside tolerance"
+          },
+          "passed": false,
+          "reason": "3789 of 24576 element(s) outside tolerance"
+        }
+      ],
+      "work_dir": "/tmp/tmp.mGT3cx3Etp/out/work/v_record",
+      "passed_cases": 0,
+      "total_cases": 1,
+      "worst_max_abs_err": 9.5367431640625e-06
+    },
+    "steps": [
+      {
+        "step": "reference_build",
+        "status": "ok",
+        "summary": "exit 0: true"
+      },
+      {
+        "step": "native_build",
+        "status": "ok",
+        "summary": "exit 0: /usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.mGT3cx3Etp/task /tmp/tmp.mGT3cx3Etp/task/matmul_backward_bias_harness.cu -o build/native"
+      },
+      {
+        "step": "native_repeat",
+        "status": "fail",
+        "summary": "FAIL: 0/1 case(s) match; first failure: 3789 of 24576 element(s) outside tolerance"
+      }
+    ]
+  },
+  "limitations": [
+    "A recorded reference is the original program's own output on one GPU: it is only as right as that program, and a non-deterministic program needs a tolerance at least as wide as its run-to-run difference."
+  ]
+}
