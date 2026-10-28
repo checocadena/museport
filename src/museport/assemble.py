@@ -184,10 +184,10 @@ def _programs(evidence: Path, out: Path) -> list[str]:
     the graded J3 trainer with only the TESTING guard added."""
     port = evidence.joinpath(*PROGRAMS_RUN) / "port"
     graded = evidence.joinpath(*TRAINER_RUN) / "port" / TRAINER
-    ops = difflib.SequenceMatcher(None, graded.read_text().splitlines(),
-                                  (port / TRAINER).read_text().splitlines(), autojunk=False)
+    new = (port / TRAINER).read_text().splitlines()
+    ops = difflib.SequenceMatcher(None, graded.read_text().splitlines(), new, autojunk=False)
     added = [ln for tag, _, _, j1, j2 in ops.get_opcodes() if tag != "equal"
-             for ln in ops.b[j1:j2]]
+             for ln in new[j1:j2]]
     if any(tag != "insert" for tag, *_ in ops.get_opcodes() if tag != "equal") \
             or sorted(added) != sorted(TEST_GUARD):
         raise ValueError(f"{port / TRAINER} is not the graded trainer ({graded}) plus the "
