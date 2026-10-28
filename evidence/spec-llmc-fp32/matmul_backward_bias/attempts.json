@@ -1,0 +1,108 @@
+[
+  {
+    "attempt": 1,
+    "answer": {
+      "cpu_call": "matmul_backward_bias_cpu(NULL, NULL, dbias, dout, NULL, NULL, B, T, C, OC)",
+      "cpu_functions": [
+        "matmul_backward_bias_cpu"
+      ],
+      "dropped_variants": [],
+      "extra_includes": [],
+      "gpu_call": "matmul_backward_bias(k, d_dbias, d_dout, B, T, OC, 256)",
+      "gpu_prelude": "cudaCheck(cudaMalloc(&dbias_buffer, (size_t)OC * 64 * sizeof(float)));",
+      "host_prep": "",
+      "inputs": [
+        {
+          "count": "B*T*OC",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "uniform",
+          "name": "dout"
+        }
+      ],
+      "keep_cublas": false,
+      "keep_cublaslt": false,
+      "keep_in_harness": [],
+      "note": "B=2, T=256 (llm.c: B=8, T=1024); C=768, OC=3072 as in llm.c. dout is B*T*OC ~1.6M floats (~6MB). OC kept large so gridDim.y for kernels 8/9 stays <=32 and OC stays divisible by 32.",
+      "output_post": "",
+      "outputs": [
+        {
+          "count": "OC",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "zeros",
+          "name": "dbias"
+        }
+      ],
+      "sizes": [
+        {
+          "name": "B",
+          "value": 2
+        },
+        {
+          "name": "T",
+          "value": 256
+        },
+        {
+          "name": "C",
+          "value": 768
+        },
+        {
+          "name": "OC",
+          "value": 3072
+        }
+      ],
+      "tol": 0.005,
+      "variants": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        8,
+        9
+      ]
+    },
+    "usage": {
+      "input_tokens": 13244,
+      "output_tokens": 9120,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0
+    },
+    "cost_usd": 0.055315,
+    "static_errors": [],
+    "check": {
+      "ok": false,
+      "failed": "verify",
+      "steps": {
+        "reference_build": {
+          "returncode": 0,
+          "stderr": ""
+        },
+        "migrate": {
+          "status": "ok",
+          "summary": "migrated 1 CUDA file(s) -> 2 file(s); 67 DPCT warning(s) (DPCT1005x2, DPCT1009x1, DPCT1010x14, DPCT1024x2, DPCT1049x10, DPCT1051x2, DPCT1064x2, DPCT1065x8, DPCT1083x3, DPCT1093x2, DPCT1096x8, DPCT1098x3, DPCT1101x8, DPCT1118x2)"
+        },
+        "compile": {
+          "status": "ok",
+          "summary": "compiled 1 source(s) -> /home/user/museport-hackathon/evidence/spec-llmc-fp32/matmul_backward_bias/.work/build/candidate (586 warning(s))"
+        },
+        "verify": {
+          "status": "fail",
+          "summary": "FAIL: 0/1 case(s) match; first failure: 4602 of 24576 element(s) outside tolerance"
+        }
+      },
+      "evidence": "{\"mode\": \"array\", \"cases\": [{\"input\": \"/home/user/museport-hackathon/evidence/spec-llmc-fp32/matmul_backward_bias/task/input.bin\", \"reference\": {\"command\": \"build/reference /home/user/museport-hackathon/evidence/spec-llmc-fp32/matmul_backward_bias/task/input.bin /home/user/museport-hackathon/evidence/spec-llmc-fp32/matmul_backward_bias/.work/verify_out/case0_reference.out 2 256 768 3072\", \"returncode\": 0, \"duration_s\": 0.013842, \"stdout\": \"\", \"stderr\": \"\", \"cwd\": \"/home/user/museport-hackathon/evidence/spec-llmc-fp32/matmul_backward_bias/.work\", \"output_file\": \"/home/user/museport-hackathon/evidence/spec-llmc-fp32/matmul_backward_bias/.work/verify_out/case0_reference.out\"}, \"candidate\": {\"command\": \"build/candidate /home/user/museport-hackathon/evidence/spec-llmc-fp32/matmul_backward_bias/task/input.bin /home/user/museport-hackathon/evidence/spec-llmc-fp32/matmul_backward_bias/.work/verify_out/case0_candidate.out 2 256 768 3072\", \"returncode\": 0, \"duration_s\": 1.956241, \"stdout\": \"\", \"stderr\": \"\", \"cwd\": \"/home/user/museport-hackathon/evidence/spec-llmc-fp32/matmul_backward_bias/.work\", \"output_file\": \"/home/user/museport-hackathon/evidence/spec-llmc-fp32/matmul_backward_bias/.work/verify_out/case0_candidate.out\"}, \"reference_format\": \"f32\", \"candidate_format\": \"f32\", \"mode\": \"array\", \"stats\": {\"n_reference\": 24576, \"n_candidate\": 24576, \"atol\": 0.005, \"rtol\": 1.1920929e-07, \"max_ulp_allowed\": null, \"passed\": false, \"max_abs_err\": 47.347557067871094, \"rms_err\": 5.596133796759061, \"mean_abs_err\": 1.9165448812852997, \"max_rel_err\": 1.0, \"max_ulp_f32\": 1111319526, \"median_ulp_f32\": 2.0, \"exact_matches\": 4238, \"mismatches\": 4602, \"nan_mismatches\": 0, \"reference_range\": [-47.347557067871094, 46.475608825683594], \"first_mismatches\": [{\"index\": 10752, \"reference\": 15.449091911315918, \"candidate\": 0.0, \"abs_err\": 15.449091911315918}, {\"index\": 10753, \"reference\": 11.585713386535645, \"candidate\": 0.0, \"abs_err\": 11.585713386535645}, {\"index\": 10754, \"reference\": 8.329483985900879, \"candidate\": 0.0, \"abs_err\": 8.329483985900879}, {\"index\": 10755, \"reference\": -0.369200199842453, \"candidate\": 0.0, \"abs_err\": 0.369200199842453}, {\"index\": 10756, \"reference\": 7.664911270141602, \"candidate\": 0.0, \"abs_err\": 7.664911270141602}, {\"index\": 10757, \"reference\": 1.9354733228683472, \"candidate\": 0.0, \"abs_err\": 1.9354733228683472}, {\"index\": 10758, \"reference\": 13.6565523147583, \"candidate\": 0.0, \"abs_err\": 13.6565523147583}, {\"index\": 10759, \"reference\": 3.1126322746276855, \"candidate\": 0.0, \"abs_err\": 3.1126322746276855}, {\"index\": 10760, \"reference\": -4.373020648956299, \"candidate\": 0.0, \"abs_err\": 4.373020648956299}, {\"index\": 10761, \"reference\": 15.959915161132812, \"candidate\": 0.0, \"abs_err\": 15.959915161132812}], \"reason\": \"4602 of 24576 element(s) outside tolerance\"}, \"passed\": false, \"reason\": \"4602 of 24576 element(s) outside tolerance\"}], \"work_dir\": \"/home/user/museport-hackathon/evidence/spec-llmc-fp32/matmul_backward_bias/.work/verify_out\", \"passed_case"
+    },
+    "gpu_proof": {
+      "ok": true,
+      "cost_usd": 0.003,
+      "device": "NVIDIA RTX 2000 Ada Generation",
+      "deterministic": false,
+      "results": "/home/user/museport-hackathon/evidence/spec-llmc-fp32/matmul_backward_bias/.gpu/res/nvidia-rtx-2000-ada-generation/llmc_matmul_backward_bias",
+      "step": "compare",
+      "summary": "PASS: 1/1 case(s) match (worst max abs err 1.53e-05, atol 0.005)"
+    }
+  }
+]

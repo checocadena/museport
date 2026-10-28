@@ -1,0 +1,63 @@
+{
+  "cpu_call": "matmul_backward_bias_cpu(NULL, NULL, dbias, dout, NULL, NULL, B, T, C, OC)",
+  "cpu_functions": [
+    "matmul_backward_bias_cpu"
+  ],
+  "dropped_variants": [],
+  "extra_includes": [],
+  "gpu_call": "matmul_backward_bias(k, d_dbias, d_dout, B, T, OC, 256)",
+  "gpu_prelude": "cudaCheck(cudaMalloc(&dbias_buffer, (size_t)OC * 64 * sizeof(float)));",
+  "host_prep": "",
+  "inputs": [
+    {
+      "count": "B*T*OC",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "uniform",
+      "name": "dout"
+    }
+  ],
+  "keep_cublas": false,
+  "keep_cublaslt": false,
+  "keep_in_harness": [],
+  "note": "B=2, T=256 (llm.c: B=8, T=1024); C=768, OC=3072 as in llm.c. dout is B*T*OC ~1.6M floats (~6MB). OC kept large so gridDim.y for kernels 8/9 stays <=32 and OC stays divisible by 32.",
+  "output_post": "",
+  "outputs": [
+    {
+      "count": "OC",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "zeros",
+      "name": "dbias"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "B",
+      "value": 2
+    },
+    {
+      "name": "T",
+      "value": 256
+    },
+    {
+      "name": "C",
+      "value": 768
+    },
+    {
+      "name": "OC",
+      "value": 3072
+    }
+  ],
+  "tol": 0.005,
+  "variants": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    7,
+    8,
+    9
+  ]
+}

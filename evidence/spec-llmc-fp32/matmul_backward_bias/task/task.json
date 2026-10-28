@@ -1,0 +1,56 @@
+{
+  "name": "llmc_matmul_backward_bias",
+  "goal": "Port matmul_backward_bias_harness.cu (llm.c dev/cuda/matmul_backward_bias.cu, fp32 build) to idiomatic SYCL 2020 with zero dpct helpers. Keep every kernel variant k in [1, 2, 3, 4, 5, 7, 8, 9] as its own SYCL kernel, computed on the SYCL device, and keep the program's contract: `build/candidate <input> <output> B T C OC` reads the inputs and writes each variant's outputs in order as raw float32, exactly as the CUDA main does. A hidden reference checks the output (atol 0.005 + rtol FLT_EPSILON*|ref|, llm.c's own fp32 rule). Success requires compile, verify and a zero-helper scan_helpers of the whole work directory (path '.') on the same sources: migrate's output under migrated/ counts, so delete it (delete_file) once your own port is done. migrate's output can be long: read it in parts (read_file offset/limit) or work from the CUDA harness.",
+  "cuda_path": "matmul_backward_bias_harness.cu",
+  "include_dirs": [
+    "."
+  ],
+  "reference_build": [
+    "g++",
+    "-O2",
+    "-std=c++17",
+    "{task_dir}/matmul_backward_bias_ref.cpp",
+    "-o",
+    "build/reference"
+  ],
+  "reference_cmd": "build/reference {input} {output} 2 256 768 3072",
+  "candidate_cmd": "build/candidate {input} {output} 2 256 768 3072",
+  "inputs": [
+    "input.bin"
+  ],
+  "mode": "array",
+  "output_format": "f32",
+  "tolerance": 0.005,
+  "rtol": 1.1920929e-07,
+  "museport": {
+    "source": "karpathy/llm.c dev/cuda/matmul_backward_bias.cu",
+    "variants": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9
+    ],
+    "sizes": {
+      "B": 2,
+      "T": 256,
+      "C": 768,
+      "OC": 3072
+    },
+    "note": "B=2, T=256 (llm.c: B=8, T=1024); C=768, OC=3072 as in llm.c. dout is B*T*OC ~1.6M floats (~6MB). OC kept large so gridDim.y for kernels 8/9 stays <=32 and OC stays divisible by 32.",
+    "check_flags": [
+      "-DMKL_ILP64",
+      "-I${ONEMKL_PREFIX}/include",
+      "-Wl,--no-as-needed",
+      "-L${ONEMKL_PREFIX}/lib",
+      "-Wl,-rpath,${ONEMKL_PREFIX}/lib",
+      "-lmkl_sycl_blas",
+      "-lmkl_intel_ilp64",
+      "-lmkl_sequential",
+      "-lmkl_core"
+    ]
+  }
+}
