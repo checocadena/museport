@@ -1,0 +1,8 @@
+{
+  "command": "/opt/rocm/bin/hipcc -O2 -std=c++17 --offload-arch=gfx950 -I/tmp/tmp.PLqvqq9OnU/task /tmp/tmp.PLqvqq9OnU/out/work/train_gpt2_fp32.hip.cpp -o build/native",
+  "returncode": 1,
+  "duration_s": 0.303349,
+  "stdout": "",
+  "stderr": "/tmp/tmp.PLqvqq9OnU/out/work/train_gpt2_fp32.hip.cpp:25:10: fatal error: 'hipblas.h' file not found\n   25 | #include <hipblas.h>\n      |          ^~~~~~~~~~~\n1 error generated when compiling for gfx950.\nfailed to execute:/opt/rocm/core-7.14/lib/llvm/bin/clang++  --offload-arch=gfx950 --driver-mode=g++ --hip-link  -O2 -std=c++17 -I/tmp/tmp.PLqvqq9OnU/task -x hip /tmp/tmp.PLqvqq9OnU/out/work/train_gpt2_fp32.hip.cpp -o \"build/native\"\n",
+  "cwd": "/tmp/tmp.PLqvqq9OnU/out/work"
+}
