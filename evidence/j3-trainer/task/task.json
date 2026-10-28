@@ -1,0 +1,59 @@
+{
+  "name": "llmc_train_gpt2_fp32",
+  "goal": "Port llm.c's fp32 GPT-2 trainer, train_gpt2_fp32.cu, to one SYCL 2020 program, train_gpt2_fp32.cpp, with zero dpct helpers and the model computed on the SYCL device. Start from your own proven port: gpt2_train_proven.cpp in the work dir is the model of this file (forward, backward, AdamW, with oneMath) that you ported earlier. It passed llm.c's own training test on a CPU, an NVIDIA GPU and an AMD GPU, behind a test main. Keep that model code; replace its main with llm.c's real main and host code from train_gpt2_fp32.cu: the same command line (-i -j -o -b -t -l -v -m -s -g), gpt2_build_from_checkpoint on \"gpt2_124M.bin\", the train and val DataLoaders, the validation loss every -v steps and at the last step, sampling with the tokenizer (\"gpt2_tokenizer.bin\") every -s steps, and the same printout ('val loss %f' and 'step %4d/%d: train loss %f ...'). Use llm.c's host headers unchanged, as the CUDA file does (#include \"llmc/utils.h\", \"llmc/tokenizer.h\", \"llmc/dataloader.h\"; they are plain C and on the include path). Compile with sources [train_gpt2_fp32.cpp]. A hidden check runs your program on a short tiny-shakespeare run with fixed arguments and compares the losses it prints with llm.c's own trainer (atol 1e-2, llm.c's test tolerance). Success requires compile, verify and a zero-helper scan_helpers of the whole work directory (path '.') on the same sources; delete migrate's output (delete_file) once your port is done.",
+  "cuda_path": "train_gpt2_fp32.cu",
+  "include_dirs": [
+    "."
+  ],
+  "reference_build": [
+    "true"
+  ],
+  "reference_cmd": "cp {task_dir}/reference.out {output}",
+  "candidate_cmd": "python3 {task_dir}/run_train.py build/candidate {input} {output}",
+  "inputs": [
+    "train_args.txt"
+  ],
+  "mode": "array",
+  "output_format": "f32",
+  "base_flags": [
+    "-O2",
+    "-I${ONEMATH_PREFIX}/include",
+    "-Wl,--no-as-needed",
+    "-L${ONEMATH_PREFIX}/lib",
+    "-Wl,-rpath,${ONEMATH_PREFIX}/lib",
+    "-lonemath"
+  ],
+  "native_flags": [
+    "-lcublas"
+  ],
+  "tolerance": 0.01,
+  "rtol": 0.0,
+  "museport": {
+    "source": "karpathy/llm.c train_gpt2_fp32.cu",
+    "stage": "train-main",
+    "seed": "seed",
+    "note": "tiny-shakespeare cut to 10 train and 5 val batches of B=4, T=64; the val loss before and after training and the 10 train losses checked against llm.c's train_gpt2.c within 1e-2",
+    "reference": {
+      "build": [
+        "bash",
+        "-c",
+        "mkdir -p build && sed 's/step <= 40/step <= 10/' {task_dir}/train_gpt2.c > build/train_gpt2_ref.c && gcc -O2 -fopenmp -I{task_dir} build/train_gpt2_ref.c -lm -o build/reference"
+      ],
+      "cmd": "python3 {task_dir}/run_train.py --reference build/reference {input} {output}",
+      "values": [
+        5.325414180755615,
+        5.1440019607543945,
+        4.821117877960205,
+        5.008752822875977,
+        4.190316200256348,
+        3.7781829833984375,
+        3.4406330585479736,
+        4.201943874359131,
+        4.792271137237549,
+        4.074019908905029,
+        4.530979156494141,
+        4.29581880569458
+      ]
+    }
+  }
+}

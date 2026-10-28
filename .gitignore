@@ -12,3 +12,4 @@ input.bin
 gpt2_124M*.bin
 /gpt2-task/
 /demo/out/
+gpt2_tokenizer.bin

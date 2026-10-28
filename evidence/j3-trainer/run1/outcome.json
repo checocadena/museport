@@ -1,0 +1,33 @@
+{
+  "stop_reason": "success",
+  "stop_detail": "verify passed and zero dpct helpers on the current compiled sources",
+  "iterations": 19,
+  "usage": {
+    "input_tokens": 338370,
+    "output_tokens": 38462,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 800671
+  },
+  "cost_usd": 0.70652665,
+  "best": {
+    "iteration": 19,
+    "source_hash": "84295a7e64e7aac4",
+    "helpers": 0,
+    "path": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/j3runs/20261028T063034418055Z/best",
+    "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0.00227, atol 0.01)"
+  },
+  "run_dir": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/j3runs/20261028T063034418055Z",
+  "trace": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/j3runs/20261028T063034418055Z/trace.jsonl",
+  "report": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/j3runs/20261028T063034418055Z/report.md",
+  "model": "muse-spark-1.3",
+  "baseline": false,
+  "shell": false,
+  "evaluation": {
+    "source_hash": "84295a7e64e7aac4",
+    "compiled": true,
+    "verify_status": "ok",
+    "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0.00227, atol 0.01)",
+    "helpers": 0,
+    "advisories": []
+  }
+}
