@@ -1,0 +1,2022 @@
+---
+MainSourceFile:  '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/MainSrcFiles_placeholder'
+Replacements:
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          0
+    Length:          0
+    ReplacementText: "#define DPCT_COMPAT_RT_MAJOR_VERSION 12\n#define DPCT_PROFILING_ENABLED\n#include <sycl/sycl.hpp>\n#include <dpct/dpct.hpp>\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          38
+    Length:          0
+    ReplacementText: "\n#include <dpct/blas_utils.hpp>\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          39
+    Length:          26
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          65
+    Length:          23
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          106
+    Length:          0
+    ReplacementText: "\n#include <dpct/lib_common_utils.hpp>\n\n#include <cmath>\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          137
+    Length:          14
+    ReplacementText: 'dpct::device_info'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          183
+    Length:          9
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          192
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          287
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          399
+    Length:          40
+    ReplacementText: 'dpct::permute_sub_group_by_xor(sycl::ext::oneapi::this_work_item::get_sub_group(), val, offset)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          937
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          1020
+    Length:          0
+    ReplacementText: ",\n                         float *shared_val"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          1162
+    Length:          39
+    ReplacementText: "auto item_ct1 = sycl::ext::oneapi::this_work_item::get_nd_item<3>();\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          1226
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          1275
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          1326
+    Length:          10
+    ReplacementText: 'item_ct1.get_local_range(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          1455
+    Length:          15
+    ReplacementText: "/*\n    DPCT1065:7: Consider replacing sycl::nd_item::barrier() with sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better performance if there is no access to global memory.\n    */\n    item_ct1.barrier()"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          1619
+    Length:          0
+    ReplacementText: "        /*\n        DPCT1118:0: SYCL group functions and algorithms must be encountered in converged control flow. You may need to adjust the code.\n        */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          1627
+    Length:          15
+    ReplacementText: "/*\n        DPCT1065:8: Consider replacing sycl::nd_item::barrier() with sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better performance if there is no access to global memory.\n        */\n        item_ct1.barrier()"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          1847
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          1892
+    Length:          0
+    ReplacementText: ', float *shared_val'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          1951
+    Length:          0
+    ReplacementText: ', shared_val'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          2095
+    Length:          11
+    ReplacementText: 'dpct::err0'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          2148
+    Length:          168
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          2424
+    Length:          14
+    ReplacementText: int
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          2495
+    Length:          21
+    ReplacementText: '0'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          2931
+    Length:          19
+    ReplacementText: 'dpct::compute_type'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          2972
+    Length:          14
+    ReplacementText: 'dpct::blas::descriptor_ptr'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          3397
+    Length:          13
+    ReplacementText: DPCT_COMPATIBILITY_TEMP
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          3421
+    Length:          13
+    ReplacementText: DPCT_COMPATIBILITY_TEMP
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          4087
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          4117
+    Length:          4
+    ReplacementText: 'sycl::int4'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          4262
+    Length:          12
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          4470
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          4547
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          4623
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          4712
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          4813
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          4824
+    Length:          4
+    ReplacementText: 'sycl::int4'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          4856
+    Length:          4
+    ReplacementText: 'sycl::int4'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          5229
+    Length:          4
+    ReplacementText: 'sycl::int4'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          5426
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          5556
+    Length:          4
+    ReplacementText: 'sycl::int4'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          5681
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          5755
+    Length:          0
+    ReplacementText: "    /*\n    DPCT1098:10: The '*' expression is used instead of the __ldcs call. These two expressions do not provide the exact same functionality. Check the generated code for potential precision and/or performance issues.\n    */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          5789
+    Length:          46
+    ReplacementText: '*(reinterpret_cast<const sycl::int4*>(address))'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          5918
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          6018
+    Length:          4
+    ReplacementText: 'sycl::int4'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          6159
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          6239
+    Length:          0
+    ReplacementText: "    /*\n    DPCT1098:11: The '=' expression is used instead of the __stcs call. These two expressions do not provide the exact same functionality. Check the generated code for potential precision and/or performance issues.\n    */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          6243
+    Length:          57
+    ReplacementText: '*(reinterpret_cast<sycl::int4*>(target)) = value.get_bits()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          6419
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          6499
+    Length:          0
+    ReplacementText: "    /*\n    DPCT1098:12: The '=' expression is used instead of the __stcg call. These two expressions do not provide the exact same functionality. Check the generated code for potential precision and/or performance issues.\n    */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          6503
+    Length:          57
+    ReplacementText: '*(reinterpret_cast<sycl::int4*>(target)) = value.get_bits()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          7511
+    Length:          20
+    ReplacementText: DPCT_COMPAT_RT_MAJOR_VERSION
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          7544
+    Length:          13
+    ReplacementText: DPCT_COMPATIBILITY_TEMP
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          7578
+    Length:          13
+    ReplacementText: DPCT_COMPATIBILITY_TEMP
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          9128
+    Length:          11
+    ReplacementText: 'dpct::err0'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          9434
+    Length:          11
+    ReplacementText: 'dpct::err0'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          9455
+    Length:          80
+    ReplacementText: 'DPCT_CHECK_ERROR(dpct::get_in_order_queue().memcpy(d_ptr, converted, count * sizeof(TargetType)).wait())'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          9880
+    Length:          0
+    ReplacementText: "    /*\n    DPCT1093:13: The \"deviceIdx\" device may be not the one intended for use. Adjust the selected device if needed.\n    */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          9894
+    Length:          13
+    ReplacementText: 'DPCT_CHECK_ERROR(dpct::select_device'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          9918
+    Length:          0
+    ReplacementText: ')'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          9925
+    Length:          14
+    ReplacementText: 'dpct::device_info'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          9956
+    Length:          47
+    ReplacementText: 'dpct::get_device(deviceIdx).get_device_info(deviceProp)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          10035
+    Length:          19
+    ReplacementText: 'get_max_compute_units()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          10093
+    Length:          27
+    ReplacementText: 'get_max_work_items_per_compute_unit()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          10122
+    Length:          0
+    ReplacementText: "    /*\n    DPCT1005:14: The SYCL device version is different from CUDA Compute Compatibility. You may need to rewrite this code.\n    */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          10155
+    Length:          5
+    ReplacementText: 'get_major_version()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          10162
+    Length:          0
+    ReplacementText: "    /*\n    DPCT1005:15: The SYCL device version is different from CUDA Compute Compatibility. You may need to rewrite this code.\n    */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          10195
+    Length:          5
+    ReplacementText: 'get_minor_version()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          10252
+    Length:          28
+    ReplacementText: 'DPCT_CHECK_ERROR(cublas_handle = new dpct::blas::descriptor())'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          10600
+    Length:          28
+    ReplacementText: 'dpct::compute_type::f32_fast_tf32'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          10631
+    Length:          18
+    ReplacementText: 'dpct::compute_type::f32'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          10655
+    Length:          12
+    ReplacementText: 'dpct::blas::math_mode'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          10701
+    Length:          26
+    ReplacementText: 'dpct::blas::math_mode::mm_tf32'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          10730
+    Length:          19
+    ReplacementText: 'dpct::blas::math_mode::mm_default'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          10767
+    Length:          50
+    ReplacementText: 'DPCT_CHECK_ERROR(cublas_handle->set_math_mode(cublas_math_mode))'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          11046
+    Length:          84
+    ReplacementText: 'DPCT_CHECK_ERROR(dpct::get_in_order_queue().memcpy(out_gpu, device_result, num_elements * sizeof(D)).wait())'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          12332
+    Length:          11
+    ReplacementText: 'dpct::event_ptr'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          12641
+    Length:          0
+    ReplacementText: "    /*\n    DPCT1093:16: The \"deviceIdx\" device may be not the one intended for use. Adjust the selected device if needed.\n    */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          12655
+    Length:          13
+    ReplacementText: 'DPCT_CHECK_ERROR(dpct::select_device'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          12679
+    Length:          0
+    ReplacementText: ')'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          12686
+    Length:          14
+    ReplacementText: 'dpct::device_info'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          12727
+    Length:          47
+    ReplacementText: 'DPCT_CHECK_ERROR(dpct::get_device(deviceIdx).get_device_info(deviceProp))'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          12801
+    Length:          0
+    ReplacementText: "    /*\n    DPCT1051:17: SYCL does not support a device property functionally compatible with l2CacheSize. It was migrated to global_mem_cache_size. You may need to adjust the value of global_mem_cache_size for the specific device.\n    */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          12815
+    Length:          49
+    ReplacementText: 'DPCT_CHECK_ERROR(flush_buffer = (void *)sycl::malloc_device(deviceProp.get_global_mem_cache_size(), dpct::get_in_order_queue()))'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          12882
+    Length:          23
+    ReplacementText: 'DPCT_CHECK_ERROR(start = new sycl::event())'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          12922
+    Length:          22
+    ReplacementText: 'DPCT_CHECK_ERROR(stop = new sycl::event())'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          13037
+    Length:          0
+    ReplacementText: "        /*\n        DPCT1051:18: SYCL does not support a device property functionally compatible with l2CacheSize. It was migrated to global_mem_cache_size. You may need to adjust the value of global_mem_cache_size for the specific device.\n        */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          13055
+    Length:          10
+    ReplacementText: 'DPCT_CHECK_ERROR(dpct::get_in_order_queue().memset'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          13094
+    Length:          11
+    ReplacementText: 'get_global_mem_cache_size()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          13106
+    Length:          0
+    ReplacementText: '.wait())'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          13172
+    Length:          0
+    ReplacementText: "        /*\n        DPCT1024:19: The original code returned the error code that was further consumed by the program logic. This original code was replaced with 0. You may need to rewrite the program logic consuming the error code.\n        */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          13190
+    Length:          15
+    ReplacementText: 'DPCT_CHECK_ERROR(dpct::sync_barrier'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          13213
+    Length:          7
+    ReplacementText: '&dpct::get_in_order_queue()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          13221
+    Length:          0
+    ReplacementText: ')'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          13282
+    Length:          0
+    ReplacementText: "        /*\n        DPCT1024:20: The original code returned the error code that was further consumed by the program logic. This original code was replaced with 0. You may need to rewrite the program logic consuming the error code.\n        */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          13300
+    Length:          15
+    ReplacementText: 'DPCT_CHECK_ERROR(dpct::sync_barrier'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          13322
+    Length:          7
+    ReplacementText: '&dpct::get_in_order_queue()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          13330
+    Length:          0
+    ReplacementText: ')'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          13351
+    Length:          27
+    ReplacementText: 'DPCT_CHECK_ERROR(start->wait_and_throw())'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          13399
+    Length:          26
+    ReplacementText: 'DPCT_CHECK_ERROR(stop->wait_and_throw())'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          13473
+    Length:          47
+    ReplacementText: 'DPCT_CHECK_ERROR(single_call = (stop->get_profiling_info<sycl::info::event_profiling::command_end>() - start->get_profiling_info<sycl::info::event_profiling::command_start>()) / 1000000.0f)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/common.h'
+    Offset:          13581
+    Length:          22
+    ReplacementText: 'DPCT_CHECK_ERROR(dpct::dpct_free(flush_buffer, dpct::get_in_order_queue()))'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          352
+    Length:          0
+    ReplacementText: "#define DPCT_PROFILING_ENABLED\n#include <sycl/sycl.hpp>\n#include <dpct/dpct.hpp>\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          429
+    Length:          0
+    ReplacementText: "\n#include <dpct/blas_utils.hpp>\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          430
+    Length:          23
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          453
+    Length:          26
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          479
+    Length:          32
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          511
+    Length:          39
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          569
+    Length:          0
+    ReplacementText: "\n#include <cmath>\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          2082
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          2418
+    Length:          0
+    ReplacementText: "auto item_ct1 = sycl::ext::oneapi::this_work_item::get_nd_item<3>();\n    "
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          2428
+    Length:          10
+    ReplacementText: 'item_ct1.get_group(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          2441
+    Length:          10
+    ReplacementText: 'item_ct1.get_local_range(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          2454
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          3517
+    Length:          63
+    ReplacementText: "dpct::get_in_order_queue().parallel_for(\n      sycl::nd_range<3>(sycl::range<3>(1, 1, num_blocks) * sycl::range<3>(1, 1, 256), sycl::range<3>(1, 1, 256)), \n      [=](sycl::nd_item<3> item_ct1) {\n        permute_kernel(q, k, v, inp, B, T, NH, HS);\n      });"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: true
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          3580
+    Length:          1
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          3582
+    Length:          0
+    ReplacementText: "    /*\n    DPCT1010:21: SYCL uses exceptions to report errors and does not use the error codes. The cudaGetLastError function call was replaced with 0. You need to rewrite this code.\n    */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          3596
+    Length:          18
+    ReplacementText: '0'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          5574
+    Length:          483
+    ReplacementText: 'DPCT_CHECK_ERROR(oneapi::mkl::blas::column_major::gemm_batch(cublas_handle->get_queue(), oneapi::mkl::transpose::trans, oneapi::mkl::transpose::nontrans, T, T, HS, alpha, k, HS, T * HS, q, HS, T * HS, beta, preatt, T, T * T, B * NH))'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          7265
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          7281
+    Length:          26
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          7410
+    Length:          0
+    ReplacementText: "auto item_ct1 = sycl::ext::oneapi::this_work_item::get_nd_item<3>();\n    "
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          7413
+    Length:          10
+    ReplacementText: 'item_ct1.get_group(1)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          7426
+    Length:          10
+    ReplacementText: 'item_ct1.get_group(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          7553
+    Length:          9
+    ReplacementText: 'sycl::sqrt((float)HS)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          7644
+    Length:          10
+    ReplacementText: 'item_ct1.get_group(0)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          7674
+    Length:          10
+    ReplacementText: 'item_ct1.get_group(0)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          8102
+    Length:          0
+    ReplacementText: "    /*\n    DPCT1084:6: The function call \"matmul_tri_naive\" has multiple migration results in different template instantiations that could not be unified. You may need to adjust the code.\n    */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          8534
+    Length:          95
+    ReplacementText: "dpct::get_in_order_queue().parallel_for(\n      sycl::nd_range<3>(sycl::range<3>(NH * B, T / 128, T / 128) * sycl::range<3>(1, 16, 16), sycl::range<3>(1, 16, 16)), \n      [=](sycl::nd_item<3> item_ct1) {\n        trimul_global<matmul_tri>(out, inp, T, C, NH);\n      });"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: true
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          8629
+    Length:          1
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          8631
+    Length:          0
+    ReplacementText: "    /*\n    DPCT1010:22: SYCL uses exceptions to report errors and does not use the error codes. The cudaGetLastError function call was replaced with 0. You need to rewrite this code.\n    */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          8645
+    Length:          18
+    ReplacementText: '0'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          10282
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          10589
+    Length:          0
+    ReplacementText: "auto item_ct1 = sycl::ext::oneapi::this_work_item::get_nd_item<3>();\n    "
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          10608
+    Length:          10
+    ReplacementText: 'item_ct1.get_group(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          10625
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          10661
+    Length:          10
+    ReplacementText: 'item_ct1.get_group(1)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          10678
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(1)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          13592
+    Length:          11
+    ReplacementText: "/*\nDPCT1110:1: The total declared local variable size in device function matmul_tri_registers exceeds 128 bytes and may cause high register pressure. Consult with your hardware vendor to find the total register size available and adjust the code, or use smaller sub-group size to avoid high register pressure.\n*/\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          13729
+    Length:          0
+    ReplacementText: "auto item_ct1 = sycl::ext::oneapi::this_work_item::get_nd_item<3>();\n    "
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          13748
+    Length:          10
+    ReplacementText: 'item_ct1.get_group(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          13765
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          13801
+    Length:          10
+    ReplacementText: 'item_ct1.get_group(1)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          13818
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(1)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          16534
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          16545
+    Length:          6
+    ReplacementText: 'sycl::float4'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          16618
+    Length:          6
+    ReplacementText: 'sycl::float4'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          16640
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          16679
+    Length:          6
+    ReplacementText: 'sycl::float4'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          16715
+    Length:          6
+    ReplacementText: 'sycl::float4'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          16802
+    Length:          11
+    ReplacementText: "/*\nDPCT1110:2: The total declared local variable size in device function matmul_tri3 exceeds 128 bytes and may cause high register pressure. Consult with your hardware vendor to find the total register size available and adjust the code, or use smaller sub-group size to avoid high register pressure.\n*/\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          17012
+    Length:          0
+    ReplacementText: "auto item_ct1 = sycl::ext::oneapi::this_work_item::get_nd_item<3>();\n    "
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          17031
+    Length:          10
+    ReplacementText: 'item_ct1.get_group(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          17048
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          17084
+    Length:          10
+    ReplacementText: 'item_ct1.get_group(1)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          17101
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(1)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          17431
+    Length:          6
+    ReplacementText: 'sycl::float4'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          17688
+    Length:          6
+    ReplacementText: 'sycl::float4'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          17798
+    Length:          5
+    ReplacementText: 'lhs.x()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          17806
+    Length:          8
+    ReplacementText: 'rhs[j].x()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          17846
+    Length:          5
+    ReplacementText: 'lhs.y()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          17854
+    Length:          8
+    ReplacementText: 'rhs[j].y()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          17894
+    Length:          5
+    ReplacementText: 'lhs.z()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          17902
+    Length:          8
+    ReplacementText: 'rhs[j].z()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          17942
+    Length:          5
+    ReplacementText: 'lhs.w()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          17950
+    Length:          8
+    ReplacementText: 'rhs[j].w()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          18078
+    Length:          6
+    ReplacementText: 'sycl::float4'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          18105
+    Length:          8
+    ReplacementText: 'result.x()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          18152
+    Length:          8
+    ReplacementText: 'result.y()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          18199
+    Length:          8
+    ReplacementText: 'result.z()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          18246
+    Length:          8
+    ReplacementText: 'result.w()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          19262
+    Length:          11
+    ReplacementText: "/*\nDPCT1110:3: The total declared local variable size in device function matmul_tri4 exceeds 128 bytes and may cause high register pressure. Consult with your hardware vendor to find the total register size available and adjust the code, or use smaller sub-group size to avoid high register pressure.\n*/\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          19382
+    Length:          0
+    ReplacementText: ",\n                 float lhs_s[128][32], float rhs_s[128][32]"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          19390
+    Length:          0
+    ReplacementText: "auto item_ct1 = sycl::ext::oneapi::this_work_item::get_nd_item<3>();\n    "
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          19409
+    Length:          10
+    ReplacementText: 'item_ct1.get_group(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          19426
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          19462
+    Length:          10
+    ReplacementText: 'item_ct1.get_group(1)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          19479
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(1)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          19648
+    Length:          10
+    ReplacementText: 'item_ct1.get_group(1)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          19661
+    Length:          10
+    ReplacementText: 'item_ct1.get_group(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          19705
+    Length:          10
+    ReplacementText: 'item_ct1.get_group(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          19737
+    Length:          10
+    ReplacementText: 'item_ct1.get_group(1)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          19759
+    Length:          32
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          19796
+    Length:          32
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          20598
+    Length:          0
+    ReplacementText: "        /*\n        DPCT1118:4: SYCL group functions and algorithms must be encountered in converged control flow. You may need to adjust the code.\n        */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          20606
+    Length:          15
+    ReplacementText: "/*\n        DPCT1065:23: Consider replacing sycl::nd_item::barrier() with sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better performance if there is no access to global memory.\n        */\n        item_ct1.barrier()"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          20643
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(1)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          20701
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(1)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          20745
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          20781
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          20821
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          20857
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          20886
+    Length:          0
+    ReplacementText: "        /*\n        DPCT1118:5: SYCL group functions and algorithms must be encountered in converged control flow. You may need to adjust the code.\n        */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          20894
+    Length:          15
+    ReplacementText: "/*\n        DPCT1065:24: Consider replacing sycl::nd_item::barrier() with sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better performance if there is no access to global memory.\n        */\n        item_ct1.barrier()"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          21651
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(1)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          21670
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          21793
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          21812
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          22220
+    Length:          6
+    ReplacementText: 'sycl::float4'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          22247
+    Length:          8
+    ReplacementText: 'result.x()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          22296
+    Length:          8
+    ReplacementText: 'result.y()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          22345
+    Length:          8
+    ReplacementText: 'result.z()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          22394
+    Length:          8
+    ReplacementText: 'result.w()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          25099
+    Length:          59
+    ReplacementText: 'DPCT_CHECK_ERROR(d_inp = sycl::malloc_device<float>((size_t)(B * T * 3 * C), dpct::get_in_order_queue()))'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          25175
+    Length:          87
+    ReplacementText: 'DPCT_CHECK_ERROR(dpct::get_in_order_queue().memcpy(d_inp, inp, sizeof(float) * (size_t)(B * T * 3 * C)).wait())'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          25372
+    Length:          60
+    ReplacementText: 'DPCT_CHECK_ERROR(d_out = sycl::malloc_device<float>((size_t)(B * NH * T * T), dpct::get_in_order_queue()))'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          25449
+    Length:          58
+    ReplacementText: 'DPCT_CHECK_ERROR(d_qkvr = sycl::malloc_device<float>((size_t)B * T * 3 * C, dpct::get_in_order_queue()))'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          25645
+    Length:          10
+    ReplacementText: 'DPCT_CHECK_ERROR(dpct::get_in_order_queue().memset'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          25707
+    Length:          0
+    ReplacementText: '.wait())'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          25760
+    Length:          0
+    ReplacementText: "        /*\n        DPCT1010:25: SYCL uses exceptions to report errors and does not use the error codes. The cudaGetLastError function call was replaced with 0. You need to rewrite this code.\n        */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          25778
+    Length:          18
+    ReplacementText: '0'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          25817
+    Length:          23
+    ReplacementText: 'DPCT_CHECK_ERROR(dpct::get_current_device().queues_wait_and_throw())'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Offset:          25861
+    Length:          88
+    ReplacementText: 'DPCT_CHECK_ERROR(dpct::get_in_order_queue().memcpy(out, d_out, sizeof(float) * (size_t)(B * NH * T * T)).wait())'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+MainSourceFilesDigest:
+  - MainSourceFile:  '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task/trimat_forward_harness.cu'
+    Digest:          41d33395472dfafb77a0f2847c3d8a1c
+    HasCUDASyntax:   true
+DpctVersion:     21.0.0
+SDKVersionMajor: '12'
+SDKVersionMinor: '3'
+MainHelperFileName: ''
+USMLevel:        ''
+FeatureMap:      {}
+CompileTargets:  {}
+OptionMap:
+  AnalysisScopePath:
+    Value:           ''
+    ValueVec:
+      - '/home/user/museport-hackathon/evidence/spec-llmc/trimat_forward/task'
+    Specified:       false
+  AsyncHandler:
+    Value:           'false'
+    Specified:       false
+  BuildScript:
+    Value:           '0'
+    Specified:       false
+  CodePinEnabled:
+    Value:           'false'
+    Specified:       false
+  CommentsEnabled:
+    Value:           'false'
+    Specified:       false
+  CtadEnabled:
+    Value:           'false'
+    Specified:       false
+  EnablepProfiling:
+    Value:           'false'
+    Specified:       false
+  ExperimentalFlag:
+    Value:           '0'
+    Specified:       false
+  ExplicitNamespace:
+    Value:           '20'
+    Specified:       false
+  ExtensionDDFlag:
+    Value:           '0'
+    Specified:       false
+  ExtensionDEFlag:
+    Value:           '4294967295'
+    Specified:       false
+  HelperFuncPreferenceFlag:
+    Value:           '0'
+    Specified:       false
+  NDRangeDim:
+    Value:           '3'
+    Specified:       false
+  NoDRYPattern:
+    Value:           'false'
+    Specified:       false
+  OptimizeMigration:
+    Value:           'false'
+    Specified:       false
+  ProcessAll:
+    Value:           'false'
+    Specified:       false
+  RuleFile:
+    Value:           ''
+    Specified:       false
+  SyclNamedLambda:
+    Value:           'false'
+    Specified:       false
+  UseSYCLCompat:
+    Value:           'false'
+    Specified:       false
+  UsmLevel:
+    Value:           '1'
+    Specified:       false
+...
