@@ -86,7 +86,7 @@ def load(evidence: Path) -> dict[str, Any]:
     plan_file = evidence / PLAN_DIR / "plan.json"
     plan = json.loads(plan_file.read_text()) if plan_file.exists() else None
     return {"items": items, "batches": batches, "plan": plan, "gpt2": load_gpt2(evidence),
-            "diff": load_diff(evidence)}
+            "diff": load_diff(evidence), "specs": load_specs(evidence)}
 
 
 def load_diff(evidence: Path) -> list[dict[str, Any]]:
@@ -98,6 +98,36 @@ def load_diff(evidence: Path) -> list[dict[str, Any]]:
         out.append({"dir": d.name, **json.loads(summary.read_text()),
                     "planted": json.loads(planted.read_text()) if planted.exists() else {}})
     return out
+
+
+def load_specs(evidence: Path) -> list[dict[str, Any]]:
+    """Muse-written harness specs (evidence/spec-llmc*, written by ``museport spec``): each
+    file's latest run, runs taken in name order (spec-llmc, then spec-llmc-fp32). A file the
+    loop left unproven but whose first spec passed a GPU proof after the run
+    (``<file>/gpu-proof/gpu_proof.json``) counts as proven by that proof."""
+    from .llmc import SPECS
+
+    rows: dict[str, dict[str, Any]] = {}
+    for summary in sorted(evidence.glob("spec-llmc*/summary.json")):
+        d = summary.parent
+        for r in json.loads(summary.read_text())["files"]:
+            row = {**r, "run": d.name}
+            stem = r["file"].removesuffix(".cu")
+            proof = d / stem / "gpu-proof" / "gpu_proof.json"
+            attempts = d / stem / "attempts.json"
+            if not r["proven"] and proof.exists() and attempts.exists():
+                first = json.loads(attempts.read_text())[0].get("answer")
+                ok = json.loads(proof.read_text()).get(f"{stem}-a1", {})
+                hand = SPECS.get(r["file"])
+                if first and ok.get("status") == "ok":
+                    row.update(proven=True, proven_by="gpu, after the run (first spec)",
+                               variants=first["variants"], gpu_summary=ok.get("summary"))
+                    if hand:
+                        row["compare"] = {"variants": first["variants"] == list(hand.variants),
+                                          "tol": first["tol"] == hand.tol}
+            rows[r["file"]] = row
+    order = {f: i for i, f in enumerate(SPECS)}
+    return sorted(rows.values(), key=lambda r: order.get(r["file"], len(order)))
 
 
 @dataclass
@@ -404,6 +434,7 @@ def render_index(data: dict[str, Any]) -> str:
         "reference.</p>"
         '<nav class="crumb"><a href="plan.html">The plan</a><a href="#items">Every item</a>'
         '<a href="#gpt2">GPT-2</a><a href="#diff">Differential checks</a>'
+        '<a href="#specs">Specs by Muse</a>'
         '<a href="#first-runs">The first runs</a>'
         f'<a href="{REPO}">Repository</a></nav></header>',
         '<section><h2>Results with the fixed loop</h2>' + _tier_head(True)
@@ -417,6 +448,7 @@ def render_index(data: dict[str, Any]) -> str:
         "ranged read_file, 32k output per turn); the first runs are below.</p></section>",
         _gpt2_section(data.get("gpt2", [])),
         _diff_section(data.get("diff", [])),
+        _spec_section(data.get("specs", [])),
         '<section id="items"><h2>Every item</h2>' + _item_table(current, compare=firsts)
         + "</section>",
         '<section id="first-runs"><h2>The first runs</h2><p class="note">The same tasks and '
@@ -505,6 +537,41 @@ def _diff_section(diffs: list[dict[str, Any]]) -> str:
                 "tolerance passes both references: that is the limit of any tolerance-based "
                 "check.</p>")
     return "".join(parts) + "</section>"
+
+
+def _spec_section(rows: list[dict[str, Any]]) -> str:
+    if not rows:
+        return ""
+    proven = [r for r in rows if r["proven"]]
+    strict = [r for r in proven
+              if all((r.get("compare") or {}).get(k) for k in ("variants", "tol"))]
+    body = "".join(
+        f"<tr><td><code>{esc(r['file'])}</code></td><td>"
+        + (pill("proven", "ok") + f' <span class="note">{esc(r.get("proven_by") or "cpu")}</span>'
+           if r["proven"] else pill("not proven", "bad"))
+        + f"</td><td>{esc(', '.join(map(str, r.get('variants') or [])))}</td><td>"
+        + ((pill("yes", "ok") if all(r["compare"].get(k) for k in ("variants", "tol"))
+            else pill("no", "warn")) if r["proven"] and r.get("compare") else "")
+        + f"</td><td class=num>{esc(r.get('attempts', 0))}</td>"
+        f"<td class=num>{money(r.get('cost_usd'))}</td>"
+        f'<td><a href="{REPO}/tree/main/evidence/{esc(r["run"])}">{esc(r["run"])}</a></td></tr>'
+        for r in rows)
+    return (
+        '<section id="specs"><h2>Hidden checks written by Muse</h2><p class="note">Every hidden '
+        "check is built from a short spec per file: the CPU reference functions, the kernel "
+        "variants, the inputs and sizes, the two calls and the tolerance. Muse wrote these "
+        "specs from the CUDA file alone (two worked examples, not graded). A spec counts only "
+        "once proven: llm.c's GPU code and CPU code must agree under it, through SYCLomatic on "
+        "the CPU, or on an NVIDIA GPU where SYCLomatic fails. <b>As strict as llm.c</b>: the "
+        "same tolerance and every fp32 variant, compared with the hand-written spec.</p>"
+        f'<div class="facts"><div><span class="eyebrow">Proven</span><span class="v">'
+        f"{len(proven)} of {len(rows)}</span></div><div><span class=\"eyebrow\">As strict as "
+        f'llm.c</span><span class="v">{len(strict)} of {len(proven)}</span></div></div>'
+        '<div class="scroll"><table><thead><tr><th>File</th><th>Spec</th><th>Variants</th>'
+        "<th>As strict as llm.c</th><th class=num>Attempts</th><th class=num>Muse cost</th>"
+        "<th>Run</th></tr></thead><tbody>" + body + "</tbody></table></div>"
+        '<p class="note">Each file\'s latest run is shown; spec-llmc-fp32 reran four files with '
+        "the fp32 build stated in the prompt. The cost column is that run's.</p></section>")
 
 
 def _gpt2_gpu_cell(st: Gpt2Stage) -> str:
