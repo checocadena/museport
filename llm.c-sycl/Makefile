@@ -19,11 +19,14 @@ ONEMATH_FLAGS = -I$(ONEMATH_PREFIX)/include -Wl,--no-as-needed -L$(ONEMATH_PREFI
                 -Wl,-rpath,$(ONEMATH_PREFIX)/lib -lonemath
 CXXFLAGS = -fsycl -O2 $(TARGET_FLAGS) -I.
 
-TARGETS = train_gpt2fp32sycl
+TARGETS = train_gpt2fp32sycl test_gpt2fp32sycl
 all: $(TARGETS)
 
 train_gpt2fp32sycl: train_gpt2_fp32.cpp llmc/utils.h llmc/tokenizer.h llmc/dataloader.h llmc/rand.h
 	$(SYCL_CXX) $(CXXFLAGS) train_gpt2_fp32.cpp -o $@ $(ONEMATH_FLAGS)
+
+test_gpt2fp32sycl: test_gpt2_fp32.cpp train_gpt2_fp32.cpp llmc/utils.h llmc/tokenizer.h llmc/dataloader.h llmc/rand.h
+	$(SYCL_CXX) $(CXXFLAGS) test_gpt2_fp32.cpp -o $@ $(ONEMATH_FLAGS)
 
 clean:
 	rm -f $(TARGETS)

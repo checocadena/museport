@@ -22,7 +22,15 @@ tolerances.
   - **Check:** on a short tiny-shakespeare run, the validation and training losses it prints
     match llm.c's own CPU trainer within 1e-2 (worst 0.00227)
     ([evidence](../evidence/j3-trainer/README.md)).
-- [ ] **`test_gpt2_fp32.cpp`:** llm.c's own test (`overall okay: 1`) on a CPU, an NVIDIA GPU and
-  an AMD GPU.
+- [x] **`test_gpt2_fp32.cpp`:** llm.c's own test, on the CPU device.
+  - **What it checks:** the logits, the loss and every gradient against PyTorch, then the
+    losses of 10 training steps. The tolerances are llm.c's (1e-2).
+  - **How it was made:** Muse wrote the test in 24 turns for $0.43, on its third run. It also
+    guarded the trainer's `main` with `#ifndef TESTING`, as llm.c does.
+  - **Build:** `make test_gpt2fp32sycl`. Run it next to `gpt2_124M.bin` and
+    `gpt2_124M_debug_state.bin`.
+  - **Result:** it prints `overall okay: 1`, worst loss error 0.000154
+    ([evidence](../evidence/j3-test/README.md)).
+- [ ] **NVIDIA and AMD:** the test and the trainer on a GPU.
 
 **`llmc/`** holds llm.c's plain-C host headers, unchanged. `LICENSE` is llm.c's (MIT).

@@ -949,6 +949,7 @@ static void error_usage() {
 
 // ----------------------------------------------------------------------------
 // main training loop (llm.c real main, SYCL device for all model compute)
+#ifndef TESTING
 int main(int argc, char *argv[]) {
     // read in the (optional) command line arguments
     const char *train_data_pattern = "dev/data/tinyshakespeare/tiny_shakespeare_train.bin";
@@ -1115,3 +1116,4 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
+#endif
