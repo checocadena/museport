@@ -1,2 +1,5 @@
 train_gpt2fp32sycl
 test_gpt2fp32sycl
+# llm.c data (./dev/download_starter_pack.sh)
+*.bin
+dev/data/
