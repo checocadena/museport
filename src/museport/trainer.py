@@ -211,3 +211,150 @@ def record_reference(task_dir: Path) -> list[float]:
     task["reference_cmd"] = "cp {task_dir}/reference.out {output}"
     task_file.write_text(json.dumps(task, indent=2) + "\n")
     return values
+
+
+# ----------------------------------------------------------------------------- J3 step 3
+
+STATE = "gpt2_124M_debug_state.bin"
+RUN_TEST = '''"""Hidden check wrapper (museport J3): run llm.c's GPT-2 test and write, as f32,
+whether it printed "overall okay: 1" (1.0 or 0.0), then the loss of each of its 10 steps.
+
+usage: run_test.py <binary> <input (unused)> <output>"""
+import os
+import re
+import struct
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+
+here = Path(__file__).resolve().parent
+binary, out = Path(sys.argv[1]).resolve(), sys.argv[3]
+with tempfile.TemporaryDirectory() as run:
+    for name in ("gpt2_124M.bin", "gpt2_124M_debug_state.bin"):
+        os.symlink(here / name, Path(run) / name)
+    p = subprocess.run([str(binary)], cwd=run, capture_output=True, text=True, timeout=1500)
+text = p.stdout
+num = r"([-+0-9.eE]+|nan|-?inf)"
+ok = re.findall(r"overall okay: (\\d+)", text)
+losses = [float(v) for v in re.findall(r"step \\d+: loss " + num, text)]
+if not ok or len(losses) < 10:
+    sys.exit(f"exit {p.returncode}; expected 'overall okay' and 10 step losses, got {len(ok)} "
+             f"and {len(losses)}; output tail: " + (text or p.stderr)[-1500:])
+vals = [1.0 if ok[-1] == "1" and p.returncode == 0 else 0.0, *losses[:10]]
+Path(out).write_bytes(struct.pack(f"<{len(vals)}f", *vals))
+'''
+
+TEST_GOAL = (
+    "Port llm.c's GPT-2 test, test_gpt2_fp32.cu, to SYCL 2020 as test_gpt2_fp32.cpp, with zero "
+    "dpct helpers. Like the CUDA test it starts with `#define TESTING` and "
+    "`#include \"train_gpt2_fp32.cpp\"`: train_gpt2_fp32.cpp in the work dir is your own SYCL "
+    "port of llm.c's trainer, already proven against llm.c (its training losses match llm.c's "
+    "own trainer). Change train_gpt2_fp32.cpp only to wrap its main in `#ifndef TESTING` ... "
+    "`#endif`, as train_gpt2_fp32.cu does; leave the rest of it as it is. Port the test's main "
+    "(device setup, loading gpt2_124M_debug_state.bin, the logits, loss and gradient "
+    "comparisons and the 10 training steps) using the trainer's functions, with the same "
+    "printout ('step %d: loss %f ...', 'overall okay: %d'). Compile with sources "
+    "[test_gpt2_fp32.cpp]. A hidden check runs your test and requires 'overall okay: 1' and "
+    "10 step losses that match PyTorch's within 1e-2 (llm.c's test tolerance). Success requires "
+    "compile, verify and a zero-helper scan_helpers of the whole work directory (path '.') on "
+    "the same sources; delete migrate's output (delete_file) once your port is done.")
+
+
+def expected_losses(test_source: str) -> list[float]:
+    """PyTorch's 10 losses, as written into llm.c's test."""
+    import re
+
+    m = re.search(r"expected_losses\[10\]\s*=\s*\{([^}]*)\}", test_source)
+    if not m:
+        raise ValueError("no expected_losses[10] in the test source")
+    vals = [float(v.rstrip("f")) for v in re.findall(r"[-0-9.eE]+f?", m.group(1))]
+    if len(vals) != 10:
+        raise ValueError(f"expected 10 losses, found {len(vals)}")
+    return vals
+
+
+def make_test_task(llmc: Path, data: Path, trainer_cpp: Path, out: Path) -> Path:
+    """Write the J3 test task: llm.c's test_gpt2_fp32.cu, ported on top of the proven trainer
+    ``trainer_cpp``; ``data`` holds gpt2_124M.bin and gpt2_124M_debug_state.bin."""
+    if out.exists():
+        shutil.rmtree(out)
+    (out / "llmc").mkdir(parents=True)
+    test_src = (llmc / "test_gpt2_fp32.cu").read_text()
+    (out / "test_gpt2_fp32.cu").write_text(test_src)
+    shutil.copyfile(llmc / "train_gpt2_fp32.cu", out / "train_gpt2_fp32.cu")
+    for h in LLMC_HEADERS:
+        shutil.copyfile(llmc / "llmc" / h, out / "llmc" / h)
+    for f in (WEIGHTS, STATE):
+        os.symlink((data / f).resolve(), out / f)
+    (out / "run_test.py").write_text(RUN_TEST)
+    (out / "test_args.txt").write_text("(the test takes no arguments)\n")
+    (out / "seed").mkdir()
+    shutil.copyfile(trainer_cpp, out / "seed" / "train_gpt2_fp32.cpp")
+    ref = [1.0, *expected_losses(test_src)]
+    (out / "reference.out").write_bytes(struct.pack(f"<{len(ref)}f", *ref))
+    task = {
+        "name": "llmc_test_gpt2_fp32",
+        "goal": TEST_GOAL,
+        "cuda_path": "test_gpt2_fp32.cu",
+        "include_dirs": ["."],
+        "reference_build": ["true"],
+        "reference_cmd": "cp {task_dir}/reference.out {output}",
+        "candidate_cmd": "python3 {task_dir}/run_test.py build/candidate {input} {output}",
+        "inputs": ["test_args.txt"],
+        "mode": "array",
+        "output_format": "f32",
+        "base_flags": list(ONEMATH_FLAGS),
+        "native_flags": ["-lcublas"],
+        "tolerance": 1e-2,
+        "rtol": 0.0,
+        "museport": {"source": "karpathy/llm.c test_gpt2_fp32.cu", "stage": "test",
+                     "seed": "seed",
+                     "note": "llm.c's own test: 'overall okay: 1' (logits, loss and gradients "
+                             "against PyTorch's debug state, inside the test) and its 10 "
+                             "training losses against PyTorch's within 1e-2",
+                     "reference": {"values": ref,
+                                   "source": "1.0 for 'overall okay: 1', then expected_losses "
+                                             "from llm.c's test_gpt2_fp32.cu (PyTorch)"}},
+    }
+    (out / "task.json").write_text(json.dumps(task, indent=2) + "\n")
+    return out / "task.json"
+
+
+# ----------------------------------------------------------------------------- J3 step 4
+
+TOKENIZER_SHA256 = "6f3abc21e444e4e8300e225f4e03da48ea121cf17e30f67009b8dad7a66c2f13"
+
+
+def make_j3_gpu_task(evidence_dir: Path, dest: Path, model: str,
+                     vendor: str = "nvidia") -> Path:
+    """A ``remote-test`` task for a J3 port (``evidence/j3-trainer`` or ``evidence/j3-test``):
+    its task (wrapper, recorded reference), Muse's port as last compiled, the large files
+    fetched on the machine with their sha256, and oneMath built there for the vendor. On
+    NVIDIA the native build is llm.c's own CUDA program, run through the same wrapper."""
+    from .gpt2 import DATA_SHA256, ONEMATH_BACKENDS, STARTER_PACK, onemath_gpu_setup
+    from .port import last_compiled_sources
+
+    srcs = last_compiled_sources(evidence_dir / "run1" / "trace.jsonl")
+    if not srcs:
+        raise ValueError(f"{evidence_dir}: the model never compiled")
+    if dest.exists():
+        shutil.rmtree(dest)
+    big = (WEIGHTS, STATE, TOKENIZER)
+    shutil.copytree(evidence_dir / "task", dest, ignore=shutil.ignore_patterns(*big, "seed"))
+    shutil.copytree(evidence_dir / "run1" / "port", dest / "agent_port")
+    backend = ONEMATH_BACKENDS[vendor]
+    setup = f"onemath_{backend['backend']}_setup.sh"
+    (dest / setup).write_text(onemath_gpu_setup(vendor))
+    task = json.loads((dest / "task.json").read_text())
+    needs = (WEIGHTS, STATE) if task["museport"]["stage"] == "test" else (WEIGHTS, TOKENIZER)
+    sha = {**DATA_SHA256, TOKENIZER: TOKENIZER_SHA256}
+    task["sycl_sources"] = [f"agent_port/{s}" for s in srcs]
+    task["native_flags"] = backend["native_flags"]
+    task["gpu_setup"] = setup
+    task["fetch"] = [{"path": f, "url": f"{STARTER_PACK}{f}?download=true", "sha256": sha[f]}
+                     for f in needs]
+    task["port_origin"] = (f"agent-made: {model} via museport loop, {evidence_dir.name}; "
+                           "sources as last compiled by the agent, unchanged")
+    (dest / "task.json").write_text(json.dumps(task, indent=2) + "\n")
+    return dest / "task.json"
