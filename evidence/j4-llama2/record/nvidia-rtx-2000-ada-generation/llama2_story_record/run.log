@@ -1,0 +1,1 @@
+[gpu_test] ok: recorded 2 output(s) of the original CUDA on NVIDIA RTX 2000 Ada Generation (nvidia); two runs identical: PASS: 2/2 case(s) match (worst max abs err 0, atol 0)

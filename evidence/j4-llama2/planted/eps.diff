@@ -1,0 +1,11 @@
+--- run.c	2026-10-28 22:37:16.267860478 +0000
++++ run_eps.c	2026-10-28 22:40:21.953920818 +0000
+@@ -163,7 +163,7 @@
+         ss += x[j] * x[j];
+     }
+     ss /= size;
+-    ss += 1e-5f;
++    ss += 1e-2f;
+     ss = 1.0f / sqrtf(ss);
+     // normalize and scale
+     for (int j = 0; j < size; j++) {

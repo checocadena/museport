@@ -1,0 +1,59 @@
+{
+ "reference": "llama2.cu, recorded on an NVIDIA GPU (64 steps, greedy, stories15M)",
+ "rows": [
+  {
+   "candidate": "llama2.c's fp32 run.c (known good)",
+   "cases": [
+    {
+     "case": 0,
+     "identical": true,
+     "first_difference_byte": null,
+     "bytes": 225
+    },
+    {
+     "case": 1,
+     "identical": true,
+     "first_difference_byte": null,
+     "bytes": 233
+    }
+   ],
+   "result": "PASS"
+  },
+  {
+   "candidate": "planted bug: RMSNorm epsilon 1e-2 instead of 1e-5",
+   "cases": [
+    {
+     "case": 0,
+     "identical": false,
+     "first_difference_byte": 16,
+     "bytes": 225
+    },
+    {
+     "case": 1,
+     "identical": false,
+     "first_difference_byte": 33,
+     "bytes": 233
+    }
+   ],
+   "result": "FAIL"
+  },
+  {
+   "candidate": "planted bug: attention scores divided by sqrt(2*head_size)",
+   "cases": [
+    {
+     "case": 0,
+     "identical": false,
+     "first_difference_byte": 87,
+     "bytes": 225
+    },
+    {
+     "case": 1,
+     "identical": false,
+     "first_difference_byte": 53,
+     "bytes": 233
+    }
+   ],
+   "result": "FAIL"
+  }
+ ]
+}
