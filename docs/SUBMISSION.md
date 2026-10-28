@@ -103,6 +103,19 @@ call oneMath are verified on the CPU device.
   rocBLAS. Its 10 losses match PyTorch's (worst error 0.0000246). The same source trains GPT-2
   on a CPU, an NVIDIA GPU and an AMD GPU ([AMD evidence](../evidence/gpt2-stage3/gpu/AMD.md)).
 
+**`llm.c-sycl`, the ports put back together as a repo**
+([`llm.c-sycl/`](../llm.c-sycl/README.md)): llm.c's layout in SYCL, built with `make` and
+`icpx -fsycl`. From a fresh clone, its test prints `overall okay: 1` on the CPU.
+- **Kernels:** its 19 `dev/sycl` kernel ports pass 19 of 19 hidden checks.
+- **Programs:** Muse wrote llm.c's fp32 trainer, with its real `main`, on top of the proven
+  GPT-2 port, and ported llm.c's own test.
+- **Results:** the test prints `overall okay: 1`, and the trainer's losses match llm.c's CPU
+  trainer, on a CPU, an NVIDIA RTX 2000 Ada and an AMD MI350X. On NVIDIA both also match llm.c's
+  own CUDA.
+- **Cost:** Muse $2.33, GPU $0.43.
+- **The test took three runs.** It succeeded once the toolkit gained an `edit_file` tool
+  ([trainer](../evidence/j3-trainer/README.md), [test](../evidence/j3-test/README.md)).
+
 **Hidden checks without hand-written code:**
 - **The original CUDA as the reference:** llm.c's CUDA is recorded on an NVIDIA GPU, and the
   recording becomes the hidden reference. All 10 Tier 1 kernels were recorded for $0.034;
@@ -128,7 +141,7 @@ call oneMath are verified on the CPU device.
 - **Variant check:** it catches a port that copies one implementation into several kernel
   variants.
 - **Grounded planning:** every claim in Muse's plan is checked against a deterministic scan.
-- **Toolkit changes made this week:** eight pull requests in the pre-existing toolkit, each
+- **Toolkit changes made this week:** ten pull requests in the pre-existing toolkit, each
   logged in `docs/CHANGES-TO-TOOLKIT.md`:
   - Meta API alignment;
   - `native_flags`;
@@ -137,15 +150,17 @@ call oneMath are verified on the CPU device.
   - reading included headers;
   - large-file `fetch` and a `gpu_setup` script for GPU tasks;
   - `remote-test --public-tls`, so DigitalOcean AMD runs work from the cloud;
-  - `record_native`, which records the original CUDA's outputs.
+  - `record_native`, which records the original CUDA's outputs;
+  - `{task_dir}` in `candidate_cmd`, so a check's wrapper stays outside the model's work dir;
+  - `edit_file`, which changes one unique string in a file.
 
 ## Limits
 
 - fp32 only, at reduced sizes for most kernels; one run per item.
 - AMD is checked against the reference only: llm.c's CUDA doesn't convert to HIP
   automatically (errors quoted in the evidence).
-- GPT-2 stages 1 and 2 ran on the CPU device only; stage 3 also on one NVIDIA and one AMD
-  GPU.
+- GPT-2 stages 1 and 2 ran on the CPU device only; stage 3, the trainer and the test also on
+  one NVIDIA and one AMD GPU. The trainer was checked on 10 short steps, not a long run.
 - Muse's GPT-2 ports are lean rewrites with simple kernels, not llm.c's tuned kernels.
   Performance was not compared.
 

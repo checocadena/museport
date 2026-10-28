@@ -114,6 +114,34 @@ llm.c's CPU code and to fail a planted bug.
 - **Limits:** the ports are lean rewrites with simple kernels, not llm.c's tuned kernels.
   Stages 1 and 2 ran on the CPU device only, and kernel performance was not compared.
 
+### `llm.c-sycl`: the ports put back together as a repo
+
+[`llm.c-sycl/`](llm.c-sycl/README.md) is llm.c laid out as llm.c is, in SYCL. Its programs run
+on a CPU, an NVIDIA GPU and an AMD GPU. From a fresh clone, `./dev/download_starter_pack.sh`,
+`make` and `./test_gpt2fp32sycl` print `overall okay: 1` on the CPU
+([evidence](evidence/j3-fresh-clone/README.md)).
+
+- **`dev/sycl`:** the 19 kernel ports, unchanged from their graded runs. They pass 19 of 19
+  hidden checks with 0 helpers ([evidence](evidence/j3-assemble/README.md)).
+- **`train_gpt2_fp32.cpp`:** llm.c's fp32 trainer with its real `main` (options, dataloaders,
+  validation, sampling). Muse wrapped its proven stage 3 port in it, keeping 94% of the lines,
+  in 19 turns for $0.71 ([evidence](evidence/j3-trainer/README.md)).
+- **`test_gpt2_fp32.cpp`:** llm.c's own test, ported by Muse. It checks logits, loss and every
+  gradient against PyTorch, then 10 training steps, and prints `overall okay: 1`
+  ([evidence](evidence/j3-test/README.md)).
+  - It took three runs ($1.62). The third succeeded once the toolkit gained an `edit_file`
+    tool: Muse guarded the trainer's `main` with `#ifndef TESTING` in two edits.
+
+| Program | CPU | NVIDIA RTX 2000 Ada | AMD MI350X |
+|---|---|---|---|
+| `test_gpt2fp32sycl`: `overall okay: 1`, worst error vs PyTorch | 0.000154 | 0.000127 | 0.0000236 |
+| `train_gpt2fp32sycl`: worst error vs llm.c's CPU trainer | 0.00227 | 0.0023 | 0.00242 |
+
+On NVIDIA, both also match llm.c's own CUDA programs: 7.03e-06 for the test and 0.00147 for the
+trainer. The checks were first proven on llm.c's own CPU programs and on planted bugs: a
+learning-rate bug and an unshuffled dataloader fail the trainer check, and a GELU-constant bug
+fails the test. Muse cost $2.33, and the GPU runs $0.43.
+
 ### How much the tooling helps, and Muse as a reviewer
 
 Three experiments take a piece away, or add a second agent. Each is one run per item.
