@@ -379,3 +379,65 @@ def make_j3_gpu_task(evidence_dir: Path, dest: Path, model: str,
                            "sources as last compiled by the agent, unchanged")
     (dest / "task.json").write_text(json.dumps(task, indent=2) + "\n")
     return dest / "task.json"
+
+
+# J3 step 5: llm.c-sycl's own Makefile on a GPU. The task's gpu_setup (sourced before gpu-test,
+# its output archived as setup.log) runs `make` for the machine's GPU; the candidate wrapper then
+# runs the test binary the Makefile built in place of gpu-test's own build. llm.c's CUDA (the
+# native build) still runs as itself. Names in the setup are prefixed MP_ (the toolkit runner
+# owns D, HERE, ...).
+MAKEFILE_SETUP = r"""
+# museport J3: build llm.c-sycl with its own Makefile, for this GPU
+MP_TASK="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+MP_CXX="${SYCL_CXX:-$(command -v icpx || command -v clang++)}"
+if command -v nvidia-smi >/dev/null 2>&1; then
+  MP_TARGET="TARGET=nvidia"
+else
+  MP_ARCH="$( (rocm_agent_enumerator 2>/dev/null; rocminfo 2>/dev/null \
+    | awk '/Name: *gfx/{print $2}') | grep -v gfx000 | head -1)"
+  MP_TARGET="TARGET=amd AMD_ARCH=$MP_ARCH"
+fi
+command -v make >/dev/null 2>&1 || { apt-get update -qq && apt-get install -y -qq make; }
+echo "museport: make -C llmc_sycl SYCL_CXX=$MP_CXX $MP_TARGET"
+make -C "$MP_TASK/llmc_sycl" SYCL_CXX="$MP_CXX" $MP_TARGET \
+  && echo "museport: Makefile build ok" || echo "museport: Makefile build FAILED"
+"""
+
+RUN_MAKE_TEST = '''"""Hidden check wrapper (museport J3, Makefile on a GPU): gpu-test's own
+SYCL build (build/sycl) is replaced by the test binary llm.c-sycl's Makefile built (gpu_setup);
+llm.c's CUDA (build/native) runs as itself. Both go through run_test.py.
+
+usage: run_make_test.py <binary> <input> <output>"""
+import subprocess
+import sys
+from pathlib import Path
+
+here = Path(__file__).resolve().parent
+binary = sys.argv[1]
+if Path(binary).name != "native":
+    binary = str(here / "llmc_sycl" / "test_gpt2fp32sycl")
+    if not Path(binary).exists():
+        sys.exit("the Makefile build is missing: see setup.log")
+sys.exit(subprocess.run([sys.executable, str(here / "run_test.py"), binary, *sys.argv[2:]])
+         .returncode)
+'''
+
+
+def make_j3_makefile_task(evidence_dir: Path, repo: Path, dest: Path, model: str,
+                          vendor: str = "nvidia") -> Path:
+    """The J3 test's GPU task (``make_j3_gpu_task``, run3), with llm.c-sycl (``repo``: its
+    sources, headers and Makefile, not dev/sycl) built by its own Makefile in gpu_setup, and
+    that build graded in place of gpu-test's."""
+    path = make_j3_gpu_task(evidence_dir, dest, model, vendor, run="run3")
+    task = json.loads(path.read_text())
+    shutil.copytree(repo, dest / "llmc_sycl", ignore=shutil.ignore_patterns(
+        "dev", "*.bin", "train_gpt2fp32sycl", "test_gpt2fp32sycl", "*.md"))
+    setup = dest / task["gpu_setup"]
+    setup.write_text(setup.read_text() + MAKEFILE_SETUP)
+    (dest / "run_make_test.py").write_text(RUN_MAKE_TEST)
+    task["name"] = "llmc_test_gpt2_fp32_makefile"
+    task["candidate_cmd"] = "python3 {task_dir}/run_make_test.py build/candidate {input} {output}"
+    task["port_origin"] = ("llm.c-sycl as committed, built by its own Makefile on the GPU "
+                           f"(gpu_setup); test written by {model}, evidence/j3-test/run3")
+    path.write_text(json.dumps(task, indent=2) + "\n")
+    return path

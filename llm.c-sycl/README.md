@@ -70,9 +70,11 @@ On a GPU it is meant to run as llm.c's trainer does.
 - **Short runs:** the trainer was checked on 10 training steps, not a full run.
 - **Sources on the GPUs:** the GPU runs built the sources the graded runs compiled. The trainer
   here differs from them only by the `#ifndef TESTING` guard.
-- **GPU builds:** the toolkit's `gpu-test` compiled those runs. Its target flags are in each
-  run's `SUMMARY.md`, for example `-fsycl-targets=nvidia_gpu_sm_89` on the RTX 2000 Ada. This
-  Makefile's `TARGET=nvidia` and `TARGET=amd` builds have not been run on a GPU yet; `make` for
-  the CPU device has, from a fresh clone.
-- **Cost:** making the two programs cost $2.33 of Muse (four loop runs), and the GPU runs $0.43
+- **GPU builds:** the table's GPU results came from the toolkit's `gpu-test` build.
+  - **This Makefile on GPUs:** `make TARGET=nvidia` and `make TARGET=amd AMD_ARCH=gfx950` built
+    both programs on an RTX 2000 Ada and an MI350X.
+  - **Its test there:** the Makefile-built test passed vs PyTorch, 0.000126 on NVIDIA and
+    0.0000236 on AMD. On NVIDIA it also matched llm.c's CUDA (5.01e-06)
+    ([evidence](../evidence/j3-makefile-gpu/README.md)).
+- **Cost:** making the two programs cost $2.33 of Muse (four loop runs), and the GPU runs $0.63
   (`docs/J3-PLAN.md`).

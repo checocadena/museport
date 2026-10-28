@@ -710,10 +710,11 @@ def _j3_section(j3: dict[str, Any] | None) -> str:
         '<p class="note"><b>Hidden grade</b>: the trainer\'s validation and training losses '
         "against llm.c's own CPU trainer; the test's <code>overall okay</code> and its 10 "
         "losses against PyTorch's; both at llm.c's tolerance, 1e-2. The GPU runs build the "
-        "sources Muse last compiled, unchanged, with the toolkit's <code>gpu-test</code> (the "
-        "Makefile's GPU targets have not run on a GPU yet). llm.c's CUDA does not hipify into "
-        "something "
-        "that builds, so on AMD there is no comparison with it.</p>"
+        "sources Muse last compiled, unchanged, with the toolkit's <code>gpu-test</code>; "
+        "llm.c-sycl's own Makefile also builds and passes the test on both GPUs "
+        f'(<a href="{REPO}/tree/main/evidence/j3-makefile-gpu">evidence/j3-makefile-gpu</a>). '
+        "llm.c's CUDA does not hipify into something that builds, so on AMD there is no "
+        "comparison with it.</p>"
         + _fresh_note(j3.get("fresh"))
         + "<h3>Each check, proven first</h3><div class=\"scroll\"><table><thead><tr><th>Program"
         "</th><th>Candidate</th><th>Result</th></tr></thead><tbody>" + proofs

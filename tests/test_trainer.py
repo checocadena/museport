@@ -117,3 +117,29 @@ def test_the_reference_is_recorded_once(tmp_path):
     task = json.loads((d / "task.json").read_text())
     assert task["reference_cmd"] == "cp {task_dir}/reference.out {output}"
     assert task["museport"]["reference"]["cmd"].endswith("ref.py {input} {output}")
+
+
+def test_makefile_task_grades_the_makefile_build(tmp_path):
+    from museport.trainer import make_j3_makefile_task
+
+    path = make_j3_makefile_task(ROOT / "evidence" / "j3-test", ROOT / "llm.c-sycl",
+                                 tmp_path / "t", "muse-spark-1.3", "amd")
+    task = json.loads(path.read_text())
+    d = path.parent
+    assert task["candidate_cmd"].startswith("python3 {task_dir}/run_make_test.py build/candidate")
+    assert (d / "llmc_sycl" / "Makefile").exists() and not (d / "llmc_sycl" / "dev").exists()
+    setup = (d / task["gpu_setup"]).read_text()
+    assert "make -C \"$MP_TASK/llmc_sycl\"" in setup and "TARGET=amd AMD_ARCH=" in setup
+    # gpu-test's own build is swapped for the Makefile's; llm.c's CUDA runs as itself
+    wrapper = d / "run_make_test.py"
+    (d / "run_test.py").write_text("import sys; print(sys.argv[1])\n")
+    out = subprocess.run([sys.executable, str(wrapper), "build/sycl", "in", "out"],
+                         capture_output=True, text=True)
+    assert out.returncode != 0 and "Makefile build is missing" in out.stderr
+    (d / "llmc_sycl" / "test_gpt2fp32sycl").write_text("")
+    out = subprocess.run([sys.executable, str(wrapper), "build/sycl", "in", "out"],
+                         capture_output=True, text=True)
+    assert out.stdout.strip().endswith("llmc_sycl/test_gpt2fp32sycl")
+    out = subprocess.run([sys.executable, str(wrapper), "build/native", "in", "out"],
+                         capture_output=True, text=True)
+    assert out.stdout.strip() == "build/native"

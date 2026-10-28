@@ -1,0 +1,8 @@
+NVIDIA RTX A4500: not created (HTTP 400: {"detail":"There are no longer any instances available with the requested specifications. Please refresh and try again.","status":400,"title":"Bad Request"}
+); trying the next GPU
+created runpod machine 1s9kr2i351z743 (NVIDIA RTX 2000 Ada Generation, $0.24/h)
+waiting for the agent (HTTP 404)
+bundle uploaded; waiting for the run
+agent phase: running
+agent phase: done
+deleted runpod machine 1s9kr2i351z743: confirmed
