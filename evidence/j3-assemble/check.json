@@ -86,7 +86,7 @@
    "kernel": "global_norm",
    "compiled": true,
    "verify_status": "ok",
-   "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 8.34e-07, atol 0.01)",
+   "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.79e-06, atol 0.01)",
    "helpers": 0,
    "graded": "after the run, by museport grade_run"
   },
@@ -110,7 +110,7 @@
    "kernel": "layernorm_backward",
    "compiled": true,
    "verify_status": "ok",
-   "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.91e-05, atol 0.001)",
+   "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 2e-05, atol 0.001)",
    "helpers": 0,
    "graded": "after the run, by museport grade_run"
   },
@@ -119,14 +119,6 @@
    "compiled": true,
    "verify_status": "ok",
    "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 5.72e-05, atol 0.1)",
-   "helpers": 0,
-   "graded": "after the run, by museport grade_run"
-  },
-  {
-   "kernel": "matmul_backward",
-   "compiled": true,
-   "verify_status": "ok",
-   "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0.00021, atol 0.001)",
    "helpers": 0,
    "graded": "after the run, by museport grade_run"
   },
@@ -151,6 +143,14 @@
    "compiled": true,
    "verify_status": "ok",
    "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 2.86e-05, atol 0.0001)",
+   "helpers": 0,
+   "graded": "after the run, by museport grade_run"
+  },
+  {
+   "kernel": "matmul_backward",
+   "compiled": true,
+   "verify_status": "ok",
+   "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0.00021, atol 0.001)",
    "helpers": 0,
    "graded": "after the run, by museport grade_run"
   }

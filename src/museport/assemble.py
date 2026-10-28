@@ -28,7 +28,8 @@ from typing import Any
 from .port import grade_run, last_compiled_sources
 
 # The kernel ports that make up dev/sycl: the post-fix runs, with softmax_forward taken from
-# the rerun that passes (run 2's softmax_forward fails the hidden check).
+# the rerun that passes (run 2's softmax_forward fails the hidden check) and matmul_backward from
+# its column_major re-port.
 KERNELS: tuple[tuple[str, str], ...] = (
     *(("port-llmc-tier1-run2", i) for i in (
         "t1-gelu-forward", "t1-gelu-backward", "t1-residual-forward", "t1-permute",
@@ -36,9 +37,11 @@ KERNELS: tuple[tuple[str, str], ...] = (
         "t1-encoder-backward", "t1-adamw", "t1-fused-residual-forward")),
     *(("port-llmc-tier23-run2", i) for i in (
         "t2-global-norm", "t2-layernorm-forward", "t2-classifier-fused", "t2-layernorm-backward",
-        "t3-matmul-forward", "t3-matmul-backward", "t3-trimat-forward",
-        "t3-matmul-backward-bias")),
+        "t3-matmul-forward", "t3-trimat-forward", "t3-matmul-backward-bias")),
     ("port-llmc-softmax-rerun-2", "t2-softmax-forward"),
+    # run 2's matmul_backward calls row_major gemm, which oneMath's cuBLAS backend does not
+    # implement (it aborted on NVIDIA: evidence/d2-onemath-gpu); the column_major re-port passes
+    ("port-llmc-matmul-backward-colmajor", "t3-matmul-backward"),
 )
 HOST_HEADERS = ("utils.h", "tokenizer.h", "dataloader.h", "rand.h")
 # llm.c's two programs: Muse's final files from the test run, and the graded trainer they build on

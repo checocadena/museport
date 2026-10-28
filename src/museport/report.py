@@ -78,6 +78,9 @@ def load(evidence: Path) -> dict[str, Any]:
         batches[bdir.name] = {"model": data["model"], "spent_usd": data["spent_usd"],
                               "title": title}
         gpu = _gpu_results(bdir)
+        for extra in EXTRA_GPU.get(bdir.name, ()):
+            for task, runs in _gpu_results(evidence / extra, sub=".").items():
+                gpu.setdefault(task, []).extend(runs)
         for row in data["items"]:
             task_file = bdir / row["item"] / "task" / "task.json"
             task = json.loads(task_file.read_text()) if task_file.exists() else {}
@@ -233,10 +236,15 @@ def load_gpt2(evidence: Path) -> list[Gpt2Stage]:
     return stages
 
 
-def _gpu_results(bdir: Path) -> dict[str, list[dict[str, Any]]]:
+# GPU runs of a batch's ports kept outside its own gpu/ folder: D2 ran the ports that call
+# oneMath, once the GPU tasks could build it (evidence/d2-onemath-gpu/<vendor>/<device>/<task>).
+EXTRA_GPU: dict[str, tuple[str, ...]] = {"port-llmc-tier23-run2": ("d2-onemath-gpu",)}
+
+
+def _gpu_results(bdir: Path, sub: str = "gpu") -> dict[str, list[dict[str, Any]]]:
     out: dict[str, list[dict[str, Any]]] = {}
     # gpu/<vendor>/<device>/<task>/ (the NVIDIA runs) or gpu/<device>/<task>/ (the AMD runs)
-    found = [*bdir.glob("gpu/*/*/*/summary.json"), *bdir.glob("gpu/*/*/summary.json")]
+    found = [*bdir.glob(f"{sub}/*/*/*/summary.json"), *bdir.glob(f"{sub}/*/*/summary.json")]
     for f in sorted(found):
         data = json.loads(f.read_text())
         ev = data.get("evidence", {})

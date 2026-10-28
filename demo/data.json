@@ -79,8 +79,8 @@
    "items": 4,
    "correct": 4,
    "success": 3,
-   "gpu": 1,
-   "amd": 1,
+   "gpu": 3,
+   "amd": 4,
    "cost": 1.0576
   },
   {
@@ -89,8 +89,8 @@
    "items": 19,
    "correct": 18,
    "success": 15,
-   "gpu": 15,
-   "amd": 15,
+   "gpu": 17,
+   "amd": 18,
    "cost": 3.7497
   }
  ],

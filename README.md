@@ -44,8 +44,8 @@ graded by a hidden check built from llm.c's own CPU code and tolerance.
 | Items ported | 10 | 5 | 4 (of 7) | 19 |
 | Correct with 0 helpers (hidden grade) | 10 | 4 | 4 | **18** |
 | Also met the loop's strict success rule | 9 | 3 | 3 | 15 |
-| Pass on an NVIDIA GPU (vs reference and llm.c's CUDA) | 10 | 4 | 1 (3 call oneMath: CPU-verified) | **15** |
-| Pass on an AMD GPU (vs reference) | 10 | 4 | 1 (3 call oneMath: CPU-verified) | **15** |
+| Pass on an NVIDIA GPU (vs reference and llm.c's CUDA) | 10 | 4 | 3 | **17** |
+| Pass on an AMD GPU (vs reference) | 10 | 4 | 4 | **18** |
 | Muse cost | $1.01 | $1.69 | $1.06 | **$3.75** |
 
 - **Evidence:** [Tier 1](evidence/port-llmc-tier1-run2/README.md),
@@ -73,7 +73,7 @@ graded by a hidden check built from llm.c's own CPU code and tolerance.
     llm.c's own CUDA built with `nvcc`
     ([Tier 1](evidence/port-llmc-tier1-run2/gpu/NVIDIA.md),
     [Tiers 2 and 3](evidence/port-llmc-tier23-run2/gpu/NVIDIA.md)).
-  - **AMD:** the same 15 ports pass on an AMD Instinct MI350X against the hidden reference
+  - **AMD:** the same ports pass on an AMD Instinct MI350X against the hidden reference
     ([Tier 1](evidence/port-llmc-tier1-run2/gpu/AMD.md),
     [Tiers 2 and 3](evidence/port-llmc-tier23-run2/gpu/AMD.md)), and so does the
     `softmax_forward` rerun ([evidence](evidence/port-llmc-softmax-rerun-2/gpu/AMD.md)). Tier 1
@@ -81,8 +81,14 @@ graded by a hidden check built from llm.c's own CPU code and tolerance.
     cloud session, once `remote-test --public-tls` made that possible ($0.72). AMD's automatic CUDA-to-HIP conversion can't build
     llm.c's own CUDA (`__ldcs`, a host `memset`, 32-bit warp masks), so the comparison with
     llm.c's CUDA was done on NVIDIA.
-  - Ports that call oneMath are verified on the CPU device: oneMath is not built for the GPU
-    hosts yet.
+  - **Ports that call oneMath** (the 3 Tier 3 files that call cuBLAS) run on GPUs with oneMath
+    built on the machine, with cuBLAS or rocBLAS ([evidence](evidence/d2-onemath-gpu/README.md)).
+    - All 3 pass on AMD.
+    - On NVIDIA, 2 pass. `matmul_backward` aborts there: it calls row-major gemm, which
+      oneMath's cuBLAS backend does not implement.
+    - A column-major re-port of `matmul_backward` passes on NVIDIA, identical to llm.c's CUDA,
+      for $0.09. It is the one `llm.c-sycl` uses. The table counts run 2's port, as for every
+      item.
 
 ### GPT-2: llm.c's real training program
 
