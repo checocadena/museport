@@ -68,9 +68,15 @@ def test_failed_checks_go_back_to_the_model_until_the_spec_is_proven(tmp_path, m
 
     proofs = [{"ok": False, "failed": "verify", "steps": {"verify": {"summary": "FAIL: 3 off"}}},
               {"ok": True, "steps": {}}]
-    monkeypatch.setattr(sp, "check_harness", lambda task, work: proofs.pop(0))
-    row = sp.write_spec("scale.cu", MINI, tmp_path, model="muse-spark-1.3", transport=fake,
+    def check(task, work):
+        assert task.is_absolute() and work.is_absolute()  # a relative work dir breaks migrate
+        return proofs.pop(0)
+
+    monkeypatch.setattr(sp, "check_harness", check)
+    monkeypatch.chdir(tmp_path)
+    row = sp.write_spec("scale.cu", MINI, Path("out"), model="muse-spark-1.3", transport=fake,
                         log=lambda m: None)
+    tmp_path = tmp_path / "out"
     assert row["proven"] and row["attempts"] == 3 and row["compare"] is None
     assert "variants [7] are not cases" in seen[1][-1]["content"]
     assert "'verify': FAIL: 3 off" in seen[2][-1]["content"]

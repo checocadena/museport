@@ -285,6 +285,8 @@ def write_spec(file: str, cuda_dir: Path, out: Path, *, model: str, provider: st
                transport: Any = None, cap_usd: float = 0.5,
                log: Any = print) -> dict[str, Any]:
     """Muse writes ``file``'s spec, which is checked and proven; up to MAX_ATTEMPTS answers."""
+    # absolute paths: the toolkit refuses tool paths that resolve outside a relative work dir
+    cuda_dir, out = cuda_dir.resolve(), out.resolve()
     src = (cuda_dir / file).read_text()
     stem = file.removesuffix(".cu")
     item = out / stem
