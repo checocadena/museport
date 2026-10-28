@@ -86,7 +86,18 @@ def load(evidence: Path) -> dict[str, Any]:
     plan_file = evidence / PLAN_DIR / "plan.json"
     plan = json.loads(plan_file.read_text()) if plan_file.exists() else None
     return {"items": items, "batches": batches, "plan": plan, "gpt2": load_gpt2(evidence),
-            "diff": load_diff(evidence), "specs": load_specs(evidence), "j3": load_j3(evidence)}
+            "diff": load_diff(evidence), "specs": load_specs(evidence), "j3": load_j3(evidence),
+            "k1": load_k1(evidence)}
+
+
+def load_k1(evidence: Path) -> dict[str, Any] | None:
+    """K1's loss curves (evidence/k1-curves), or None before they exist."""
+    from .curves import collect
+
+    try:
+        return collect(evidence)
+    except FileNotFoundError:
+        return None
 
 
 def load_diff(evidence: Path) -> list[dict[str, Any]]:
@@ -478,6 +489,7 @@ def render_index(data: dict[str, Any]) -> str:
         '<nav class="crumb"><a href="plan.html">The plan</a><a href="#items">Every item</a>'
         '<a href="#gpt2">GPT-2</a><a href="#diff">Differential checks</a>'
         '<a href="#specs">Specs by Muse</a><a href="#j3">llm.c-sycl</a>'
+        '<a href="#k1">Full training</a>'
         '<a href="#first-runs">The first runs</a>'
         f'<a href="{REPO}">Repository</a></nav></header>',
         '<section><h2>Results with the fixed loop</h2>' + _tier_head(True)
@@ -493,6 +505,7 @@ def render_index(data: dict[str, Any]) -> str:
         _diff_section(data.get("diff", [])),
         _spec_section(data.get("specs", [])),
         _j3_section(data.get("j3")),
+        _k1_section(data.get("k1")),
         '<section id="items"><h2>Every item</h2>' + _item_table(current, compare=firsts)
         + "</section>",
         '<section id="first-runs"><h2>The first runs</h2><p class="note">The same tasks and '
@@ -722,6 +735,36 @@ def _j3_section(j3: dict[str, Any] | None) -> str:
         "planted bugs must fail before a check grades Muse. A bug can keep every loss within "
         "1e-2 yet fail llm.c's test, so the test check also needs <code>overall okay: 1</code>."
         "</p></section>")
+
+
+def _k1_section(c: dict[str, Any] | None) -> str:
+    if not c:
+        return ""
+    from .curves import chart_svg, worst
+
+    rows = [("llm.c CUDA, second run (noise floor)", "cuda_repeat"),
+            ("llm.c CUDA", "cuda_nvidia"), ("Muse SYCL", "sycl_nvidia"), ("Muse SYCL", "sycl_amd")]
+    body = "".join(
+        f"<tr><td>{esc(label)}</td><td>{esc(short_device(c[k]['device']))}</td>"
+        f"<td class=num>{worst(c[k], c['cuda']):.4f}</td>"
+        f"<td class=num>{c[k]['ms_per_step_median']:.0f} ms</td></tr>" for label, k in rows)
+    # at phone width the chart keeps a readable size and scrolls inside its box
+    svg = chart_svg(c).replace(
+        "<svg ", '<svg style="width:100%;min-width:640px;height:auto;display:block" ', 1)
+    n = len(c["cuda"]["train"])
+    return (
+        '<section id="k1"><h2>Full training: one epoch on NVIDIA and AMD</h2><p class="note">'
+        f"GPT-2 124M trains for one epoch of tiny-shakespeare ({n} steps). llm.c's own CUDA "
+        "trainer was recorded on an NVIDIA GPU; Muse's SYCL trainer from llm.c-sycl, unchanged, "
+        "then ran on an NVIDIA and an AMD GPU and was compared with that recording, every val "
+        "and train loss, at llm.c's tolerance (1e-2).</p>"
+        f'<div class="scroll">{svg}</div>'
+        '<div class="scroll"><table><thead><tr><th>Run</th><th>GPU</th>'
+        "<th class=num>Worst vs recording</th><th class=num>Per step</th></tr>"
+        "</thead><tbody>" + body + "</tbody></table></div>"
+        '<p class="note">Times are the median of the program\'s own step timer, one run each: '
+        "compare them only on the same GPU (the RTX A5000 ran both programs). Evidence: "
+        f'<a href="{REPO}/tree/main/evidence/k1-curves">evidence/k1-curves</a>.</p></section>')
 
 
 def _gpt2_gpu_cell(st: Gpt2Stage) -> str:

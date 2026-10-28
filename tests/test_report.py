@@ -144,3 +144,13 @@ def test_j3_gets_a_section(tmp_path):
     # the Quick start from a fresh clone, timed from its logs
     assert "From a fresh clone" in section and "(26 s)" in section
     assert 'pill ok">overall okay: 1</span>' in section
+
+
+def test_k1_gets_a_section(tmp_path):
+    build(ROOT / "evidence", tmp_path / "site")
+    index = (tmp_path / "site" / "index.html").read_text()
+    section = index[index.index('<section id="k1">'):]
+    section = section[:section.index("</section>")]
+    assert 'href="#k1"' in index and "298 steps" in section and "<svg " in section
+    assert ">0.0042<" in section and ">0.0037<" in section and ">0.0030<" in section
+    assert "RTX A5000" in section and "MI350X" in section
