@@ -1,0 +1,123 @@
+{
+  "tool": "verify",
+  "status": "ok",
+  "summary": "PASS: 2/2 case(s) match (worst max abs err 0, atol 0)",
+  "evidence": {
+    "mode": "array",
+    "cases": [
+      {
+        "input": "/tmp/tmp.2wblkj0G8O/task/case0.txt",
+        "reference": {
+          "command": "python3 /tmp/tmp.2wblkj0G8O/task/recorded.py /tmp/tmp.2wblkj0G8O/task/case0.txt /tmp/tmp.2wblkj0G8O/out/work/v_sycl/case0_reference.out",
+          "returncode": 0,
+          "duration_s": 0.022758,
+          "stdout": "",
+          "stderr": "",
+          "cwd": "/tmp/tmp.2wblkj0G8O/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "cuda:0"
+          },
+          "output_file": "/tmp/tmp.2wblkj0G8O/out/work/v_sycl/case0_reference.out"
+        },
+        "candidate": {
+          "command": "python3 /tmp/tmp.2wblkj0G8O/task/run_story.py build/sycl /tmp/tmp.2wblkj0G8O/task/case0.txt /tmp/tmp.2wblkj0G8O/out/work/v_sycl/case0_candidate.out",
+          "returncode": 0,
+          "duration_s": 0.444119,
+          "stdout": "{\"story\": \"Once upon a time, there was a little girl named Lily. She loved to play outside in the sunshine. One day, she saw a big, red ball in the sky. It was the sun! She wanted to touch it, but it was too high up. \\nLily asked her mom\"}\n",
+          "stderr": "",
+          "cwd": "/tmp/tmp.2wblkj0G8O/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "cuda:0"
+          },
+          "output_file": "/tmp/tmp.2wblkj0G8O/out/work/v_sycl/case0_candidate.out"
+        },
+        "reference_format": "f32",
+        "candidate_format": "f32",
+        "mode": "array",
+        "stats": {
+          "n_reference": 225,
+          "n_candidate": 225,
+          "atol": 0.0,
+          "rtol": 0.0,
+          "max_ulp_allowed": null,
+          "passed": true,
+          "max_abs_err": 0.0,
+          "rms_err": 0.0,
+          "mean_abs_err": 0.0,
+          "max_rel_err": 0.0,
+          "max_ulp_f32": 0,
+          "median_ulp_f32": 0.0,
+          "exact_matches": 225,
+          "mismatches": 0,
+          "nan_mismatches": 0,
+          "reference_range": [
+            10.0,
+            121.0
+          ],
+          "first_mismatches": []
+        },
+        "passed": true
+      },
+      {
+        "input": "/tmp/tmp.2wblkj0G8O/task/case1.txt",
+        "reference": {
+          "command": "python3 /tmp/tmp.2wblkj0G8O/task/recorded.py /tmp/tmp.2wblkj0G8O/task/case1.txt /tmp/tmp.2wblkj0G8O/out/work/v_sycl/case1_reference.out",
+          "returncode": 0,
+          "duration_s": 0.023569,
+          "stdout": "",
+          "stderr": "",
+          "cwd": "/tmp/tmp.2wblkj0G8O/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "cuda:0"
+          },
+          "output_file": "/tmp/tmp.2wblkj0G8O/out/work/v_sycl/case1_reference.out"
+        },
+        "candidate": {
+          "command": "python3 /tmp/tmp.2wblkj0G8O/task/run_story.py build/sycl /tmp/tmp.2wblkj0G8O/task/case1.txt /tmp/tmp.2wblkj0G8O/out/work/v_sycl/case1_candidate.out",
+          "returncode": 0,
+          "duration_s": 0.451049,
+          "stdout": "{\"story\": \"Tom and his dog went to the park. They liked to play with a ball. Tom threw the ball and his dog ran to get it. They had fun.\\nBut then, a big dog came. The big dog wanted the ball. The big dog barked and growled. Tom and his dog were\"}\n",
+          "stderr": "",
+          "cwd": "/tmp/tmp.2wblkj0G8O/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "cuda:0"
+          },
+          "output_file": "/tmp/tmp.2wblkj0G8O/out/work/v_sycl/case1_candidate.out"
+        },
+        "reference_format": "f32",
+        "candidate_format": "f32",
+        "mode": "array",
+        "stats": {
+          "n_reference": 233,
+          "n_candidate": 233,
+          "atol": 0.0,
+          "rtol": 0.0,
+          "max_ulp_allowed": null,
+          "passed": true,
+          "max_abs_err": 0.0,
+          "rms_err": 0.0,
+          "mean_abs_err": 0.0,
+          "max_rel_err": 0.0,
+          "max_ulp_f32": 0,
+          "median_ulp_f32": 0.0,
+          "exact_matches": 233,
+          "mismatches": 0,
+          "nan_mismatches": 0,
+          "reference_range": [
+            10.0,
+            121.0
+          ],
+          "first_mismatches": []
+        },
+        "passed": true
+      }
+    ],
+    "work_dir": "/tmp/tmp.2wblkj0G8O/out/work/v_sycl",
+    "passed_cases": 2,
+    "total_cases": 2,
+    "worst_max_abs_err": 0.0
+  },
+  "limitations": [
+    "Equivalence is shown only for the inputs tested; other inputs/sizes may behave differently."
+  ]
+}

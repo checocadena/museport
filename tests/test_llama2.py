@@ -14,10 +14,13 @@ import pytest
 
 from museport.llama2 import (
     CASES,
+    GITIGNORE,
     MODEL,
     MODEL_SHA256,
     RECORDED,
     RUN_STORY,
+    SYCL_MAKEFILE,
+    UPSTREAM_COMMIT,
     make_gpu_task,
     make_loop_task,
     make_record_task,
@@ -113,3 +116,15 @@ def test_gpu_task_from_the_committed_port(tmp_path: Path) -> None:
         root / "run1" / "port" / "llama2.cpp").read_bytes()
     assert task["fetch"][0]["sha256"] == MODEL_SHA256 and not (dest / MODEL).exists()
     assert task["benchmark_runs"] == 3
+
+
+def test_llama2_sycl_holds_the_graded_port() -> None:
+    root = Path(__file__).resolve().parents[1]
+    out = root / "llama2-sycl"
+    assert (out / "llama2.cpp").read_bytes() == (
+        root / "evidence" / "j4-llama2" / "run1" / "port" / "llama2.cpp").read_bytes()
+    assert (out / "Makefile").read_text().endswith(SYCL_MAKEFILE)
+    assert (out / ".gitignore").read_text() == GITIGNORE
+    assert not (out / "llama2.cu").exists()
+    prov = json.loads((out / "PROVENANCE.json").read_text())
+    assert prov["upstream_commit"] == UPSTREAM_COMMIT and prov["llama2.cpp"]["helpers"] == 0
