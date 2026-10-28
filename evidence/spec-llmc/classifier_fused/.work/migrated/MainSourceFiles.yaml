@@ -1,0 +1,2904 @@
+---
+MainSourceFile:  '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/MainSrcFiles_placeholder'
+Replacements:
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          637
+    Length:          0
+    ReplacementText: "#define DPCT_PROFILING_ENABLED\n#include <sycl/sycl.hpp>\n#include <dpct/dpct.hpp>\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          695
+    Length:          26
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          721
+    Length:          32
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          753
+    Length:          39
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          1634
+    Length:          11
+    ReplacementText: 'SYCL_EXTERNAL '
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          1731
+    Length:          0
+    ReplacementText: "        /*\n        DPCT1096:35: The right-most dimension of the work-group used in the SYCL kernel that calls this function may be less than \"32\". The function \"dpct::permute_sub_group_by_xor\" may return an unexpected result on the CPU device. Modify the size of the work-group to ensure that the value of the right-most dimension is a multiple of \"32\".\n        */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          1745
+    Length:          52
+    ReplacementText: 'sycl::fmax(val, dpct::permute_sub_group_by_xor(sycl::ext::oneapi::this_work_item::get_sub_group(), val, offset))'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          1981
+    Length:          34
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          2016
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          2057
+    Length:          25
+    ReplacementText: 'sycl::sub_group'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          2736
+    Length:          18
+    ReplacementText: 'sycl::ext::oneapi::this_work_item::get_sub_group().get_local_linear_id()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          2768
+    Length:          11
+    ReplacementText: 'sycl::ext::oneapi::this_work_item::get_sub_group().get_local_linear_range()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          2951
+    Length:          16
+    ReplacementText: 'sycl::fmax(maxval, v)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          2987
+    Length:          27
+    ReplacementText: 'sycl::native::exp((old_maxval - maxval))'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          3034
+    Length:          16
+    ReplacementText: 'sycl::native::exp(v - maxval)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          3152
+    Length:          46
+    ReplacementText: 'sycl::reduce_over_group(sycl::ext::oneapi::this_work_item::get_sub_group(), maxval, sycl::maximum<float>{})'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          3303
+    Length:          30
+    ReplacementText: 'sycl::native::exp((maxval - global_maxval))'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          3429
+    Length:          43
+    ReplacementText: 'sycl::reduce_over_group(sycl::ext::oneapi::this_work_item::get_sub_group(), sumval, sycl::plus<float>{})'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          3601
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          3828
+    Length:          34
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          3867
+    Length:          16
+    ReplacementText: 'sycl::group<3>'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          3892
+    Length:          23
+    ReplacementText: 'sycl::ext::oneapi::this_work_item::get_work_group<3>()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          3921
+    Length:          25
+    ReplacementText: 'sycl::sub_group'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          3954
+    Length:          30
+    ReplacementText: 'sycl::ext::oneapi::this_work_item::get_sub_group()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          4311
+    Length:          10
+    ReplacementText: 'sycl::ext::oneapi::this_work_item::get_nd_item<3>().get_group(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          4324
+    Length:          22
+    ReplacementText: 'sycl::ext::oneapi::this_work_item::get_sub_group().get_group_linear_range()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          4349
+    Length:          22
+    ReplacementText: 'sycl::ext::oneapi::this_work_item::get_sub_group().get_group_linear_id()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          4786
+    Length:          18
+    ReplacementText: 'sycl::ext::oneapi::this_work_item::get_sub_group().get_local_linear_id()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          4871
+    Length:          38
+    ReplacementText: 'sycl::native::exp(logits[idx * P + ix] - sp.Offset)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          4951
+    Length:          10
+    ReplacementText: 'sycl::log(prob)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          5171
+    Length:          18
+    ReplacementText: 'sycl::ext::oneapi::this_work_item::get_sub_group().get_local_linear_id()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          5203
+    Length:          11
+    ReplacementText: 'sycl::ext::oneapi::this_work_item::get_sub_group().get_local_linear_range()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          5239
+    Length:          37
+    ReplacementText: 'sycl::native::exp(logits[idx * P + i] - sp.Offset)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          5536
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          5566
+    Length:          6
+    ReplacementText: 'sycl::float4'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          5651
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          5702
+    Length:          25
+    ReplacementText: 'sycl::sub_group'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          5829
+    Length:          0
+    ReplacementText: ",\n                                                   float *shared_maxval,\n                                                   float *shared_sumval"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          5955
+    Length:          0
+    ReplacementText: "auto item_ct1 = sycl::ext::oneapi::this_work_item::get_nd_item<3>();\n    "
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          5961
+    Length:          6
+    ReplacementText: 'sycl::float4'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          6001
+    Length:          6
+    ReplacementText: 'sycl::float4'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          6275
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          6289
+    Length:          10
+    ReplacementText: 'item_ct1.get_local_range(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          6314
+    Length:          10
+    ReplacementText: 'item_ct1.get_local_range(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          6336
+    Length:          6
+    ReplacementText: 'sycl::float4'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          6598
+    Length:          35
+    ReplacementText: 'sycl::fmax(thread_maxval, vec_at(v4, k))'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          6664
+    Length:          32
+    ReplacementText: 'sycl::native::exp(old_maxval - thread_maxval)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          6727
+    Length:          35
+    ReplacementText: 'sycl::native::exp(vec_at(v4, k) - thread_maxval)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          6993
+    Length:          35
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          7033
+    Length:          35
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          7089
+    Length:          10
+    ReplacementText: 'item_ct1.get_local_range(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          7124
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          7160
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          7241
+    Length:          53
+    ReplacementText: 'sycl::reduce_over_group(sycl::ext::oneapi::this_work_item::get_sub_group(), thread_maxval, sycl::maximum<float>{})'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          7417
+    Length:          15
+    ReplacementText: "/*\n    DPCT1065:20: Consider replacing sycl::nd_item::barrier() with sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better performance if there is no access to global memory.\n    */\n    item_ct1.barrier()"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          7725
+    Length:          51
+    ReplacementText: 'sycl::reduce_over_group(sycl::ext::oneapi::this_work_item::get_sub_group(), warp_maxval, sycl::maximum<float>{})'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          7888
+    Length:          34
+    ReplacementText: 'sycl::native::exp(thread_maxval - block_maxval)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          8035
+    Length:          50
+    ReplacementText: 'sycl::reduce_over_group(sycl::ext::oneapi::this_work_item::get_sub_group(), thread_sumval, sycl::plus<float>{})'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          8155
+    Length:          15
+    ReplacementText: "/*\n    DPCT1065:21: Consider replacing sycl::nd_item::barrier() with sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better performance if there is no access to global memory.\n    */\n    item_ct1.barrier()"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          8323
+    Length:          48
+    ReplacementText: 'sycl::reduce_over_group(sycl::ext::oneapi::this_work_item::get_sub_group(), warp_sumval, sycl::plus<float>{})'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          8751
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          9008
+    Length:          0
+    ReplacementText: ",\n                                         float *shared_maxval,\n                                         float *shared_sumval"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          9016
+    Length:          34
+    ReplacementText: "auto item_ct1 = sycl::ext::oneapi::this_work_item::get_nd_item<3>();\n    "
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          9055
+    Length:          16
+    ReplacementText: 'sycl::group<3>'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          9080
+    Length:          23
+    ReplacementText: 'sycl::ext::oneapi::this_work_item::get_work_group<3>()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          9109
+    Length:          25
+    ReplacementText: 'sycl::sub_group'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          9142
+    Length:          30
+    ReplacementText: 'sycl::ext::oneapi::this_work_item::get_sub_group()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          9192
+    Length:          10
+    ReplacementText: 'item_ct1.get_group(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          9395
+    Length:          0
+    ReplacementText: ', shared_maxval, shared_sumval'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          9488
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          9529
+    Length:          38
+    ReplacementText: 'sycl::native::exp(logits[idx * P + ix] - sp.Offset)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          9603
+    Length:          10
+    ReplacementText: 'sycl::log(prob)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          9932
+    Length:          6
+    ReplacementText: 'sycl::float4'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          9977
+    Length:          6
+    ReplacementText: 'sycl::float4'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          10022
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          10060
+    Length:          10
+    ReplacementText: 'item_ct1.get_local_range(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          10230
+    Length:          0
+    ReplacementText: "        /*\n        DPCT1098:22: The '*' expression is used instead of the __ldcs call. These two expressions do not provide the exact same functionality. Check the generated code for potential precision and/or performance issues.\n        */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          10238
+    Length:          6
+    ReplacementText: 'sycl::float4'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          10250
+    Length:          23
+    ReplacementText: 'logits_vec4[i]'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          10396
+    Length:          31
+    ReplacementText: 'sycl::native::exp(vec_at(v4, k) - sp.Offset)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          10899
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          10959
+    Length:          25
+    ReplacementText: 'sycl::sub_group'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          11095
+    Length:          0
+    ReplacementText: ",\n                                                            float *shared_maxval,\n                                                            float *shared_sumval"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          11185
+    Length:          0
+    ReplacementText: "auto item_ct1 = sycl::ext::oneapi::this_work_item::get_nd_item<3>();\n    "
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          11452
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          11466
+    Length:          10
+    ReplacementText: 'item_ct1.get_local_range(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          11491
+    Length:          10
+    ReplacementText: 'item_ct1.get_local_range(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          11595
+    Length:          23
+    ReplacementText: 'sycl::fmax(thread_maxval, v)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          11645
+    Length:          32
+    ReplacementText: 'sycl::native::exp(old_maxval - thread_maxval)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          11704
+    Length:          23
+    ReplacementText: 'sycl::native::exp(v - thread_maxval)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          11948
+    Length:          35
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          11988
+    Length:          35
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          12044
+    Length:          10
+    ReplacementText: 'item_ct1.get_local_range(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          12079
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          12115
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          12196
+    Length:          53
+    ReplacementText: 'sycl::reduce_over_group(sycl::ext::oneapi::this_work_item::get_sub_group(), thread_maxval, sycl::maximum<float>{})'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          12372
+    Length:          15
+    ReplacementText: "/*\n    DPCT1065:23: Consider replacing sycl::nd_item::barrier() with sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better performance if there is no access to global memory.\n    */\n    item_ct1.barrier()"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          12680
+    Length:          51
+    ReplacementText: 'sycl::reduce_over_group(sycl::ext::oneapi::this_work_item::get_sub_group(), warp_maxval, sycl::maximum<float>{})'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          12843
+    Length:          34
+    ReplacementText: 'sycl::native::exp(thread_maxval - block_maxval)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          12990
+    Length:          50
+    ReplacementText: 'sycl::reduce_over_group(sycl::ext::oneapi::this_work_item::get_sub_group(), thread_sumval, sycl::plus<float>{})'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          13110
+    Length:          15
+    ReplacementText: "/*\n    DPCT1065:24: Consider replacing sycl::nd_item::barrier() with sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better performance if there is no access to global memory.\n    */\n    item_ct1.barrier()"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          13278
+    Length:          48
+    ReplacementText: 'sycl::reduce_over_group(sycl::ext::oneapi::this_work_item::get_sub_group(), warp_sumval, sycl::plus<float>{})'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          13462
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          13719
+    Length:          0
+    ReplacementText: ",\n                                         float *shared_maxval,\n                                         float *shared_sumval"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          13727
+    Length:          34
+    ReplacementText: "auto item_ct1 = sycl::ext::oneapi::this_work_item::get_nd_item<3>();\n    "
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          13766
+    Length:          16
+    ReplacementText: 'sycl::group<3>'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          13791
+    Length:          23
+    ReplacementText: 'sycl::ext::oneapi::this_work_item::get_work_group<3>()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          13820
+    Length:          25
+    ReplacementText: 'sycl::sub_group'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          13853
+    Length:          30
+    ReplacementText: 'sycl::ext::oneapi::this_work_item::get_sub_group()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          13903
+    Length:          10
+    ReplacementText: 'item_ct1.get_group(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          14115
+    Length:          0
+    ReplacementText: ', shared_maxval, shared_sumval'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          14208
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          14249
+    Length:          38
+    ReplacementText: 'sycl::native::exp(logits[idx * P + ix] - sp.Offset)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          14323
+    Length:          10
+    ReplacementText: 'sycl::log(prob)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          14707
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          14732
+    Length:          10
+    ReplacementText: 'item_ct1.get_local_range(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          14902
+    Length:          0
+    ReplacementText: "        /*\n        DPCT1098:25: The '*' expression is used instead of the __ldcs call. These two expressions do not provide the exact same functionality. Check the generated code for potential precision and/or performance issues.\n        */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          14920
+    Length:          22
+    ReplacementText: 'logits_vec[i]'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          14965
+    Length:          19
+    ReplacementText: 'sycl::native::exp(v - sp.Offset)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          15243
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          15339
+    Length:          0
+    ReplacementText: ",\n                                         float *shared_maxval,\n                                         float *shared_sumval"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          15402
+    Length:          0
+    ReplacementText: "auto item_ct1 = sycl::ext::oneapi::this_work_item::get_nd_item<3>();\n    "
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          15692
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          15706
+    Length:          10
+    ReplacementText: 'item_ct1.get_local_range(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          15731
+    Length:          10
+    ReplacementText: 'item_ct1.get_local_range(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          16112
+    Length:          23
+    ReplacementText: 'sycl::fmax(thread_maxval, v)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          16166
+    Length:          32
+    ReplacementText: 'sycl::native::exp(old_maxval - thread_maxval)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          16229
+    Length:          23
+    ReplacementText: 'sycl::native::exp(v - thread_maxval)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          16482
+    Length:          35
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          16522
+    Length:          35
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          16578
+    Length:          10
+    ReplacementText: 'item_ct1.get_local_range(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          16613
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          16649
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          16881
+    Length:          15
+    ReplacementText: "/*\n    DPCT1065:26: Consider replacing sycl::nd_item::barrier() with sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better performance if there is no access to global memory.\n    */\n    item_ct1.barrier()"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          17327
+    Length:          34
+    ReplacementText: 'sycl::native::exp(thread_maxval - block_maxval)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          17627
+    Length:          15
+    ReplacementText: "/*\n    DPCT1065:27: Consider replacing sycl::nd_item::barrier() with sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better performance if there is no access to global memory.\n    */\n    item_ct1.barrier()"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          18005
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          18267
+    Length:          0
+    ReplacementText: ",\n                                         float *shared_maxval,\n                                         float *shared_sumval"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          18275
+    Length:          0
+    ReplacementText: "auto item_ct1 = sycl::ext::oneapi::this_work_item::get_nd_item<3>();\n    "
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          18289
+    Length:          10
+    ReplacementText: 'item_ct1.get_group(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          18487
+    Length:          0
+    ReplacementText: ', shared_maxval, shared_sumval'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          18580
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          18621
+    Length:          45
+    ReplacementText: 'sycl::native::exp((float)logits[idx * P + ix] - sp.Offset)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          18702
+    Length:          10
+    ReplacementText: 'sycl::log(prob)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          19094
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          19142
+    Length:          10
+    ReplacementText: 'item_ct1.get_local_range(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          19764
+    Length:          19
+    ReplacementText: 'sycl::native::exp(v - sp.Offset)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          20272
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          20368
+    Length:          0
+    ReplacementText: ",\n                                         float *shared_val"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          20458
+    Length:          0
+    ReplacementText: "auto item_ct1 = sycl::ext::oneapi::this_work_item::get_nd_item<3>();\n    "
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          20602
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          20616
+    Length:          10
+    ReplacementText: 'item_ct1.get_local_range(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          21140
+    Length:          23
+    ReplacementText: 'sycl::fmax(thread_maxval, v)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          21194
+    Length:          34
+    ReplacementText: 'sycl::native::exp((old_maxval - thread_maxval))'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          21259
+    Length:          23
+    ReplacementText: 'sycl::native::exp(v - thread_maxval)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          21307
+    Length:          10
+    ReplacementText: 'item_ct1.get_local_range(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          21429
+    Length:          10
+    ReplacementText: 'item_ct1.get_local_range(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          21712
+    Length:          23
+    ReplacementText: 'sycl::fmax(thread_maxval, v)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          21766
+    Length:          34
+    ReplacementText: 'sycl::native::exp((old_maxval - thread_maxval))'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          21831
+    Length:          23
+    ReplacementText: 'sycl::native::exp(v - thread_maxval)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          22014
+    Length:          0
+    ReplacementText: ', shared_val'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          22038
+    Length:          34
+    ReplacementText: 'sycl::native::exp(thread_maxval - block_maxval)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          22139
+    Length:          0
+    ReplacementText: ', shared_val'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          22491
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          22507
+    Length:          48
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          22818
+    Length:          0
+    ReplacementText: ",\n                                         float *shared_val"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          22826
+    Length:          0
+    ReplacementText: "auto item_ct1 = sycl::ext::oneapi::this_work_item::get_nd_item<3>();\n    "
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          22840
+    Length:          10
+    ReplacementText: 'item_ct1.get_group(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          23038
+    Length:          0
+    ReplacementText: ', shared_val'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          23131
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          23172
+    Length:          45
+    ReplacementText: 'sycl::native::exp((float)logits[idx * P + ix] - sp.Offset)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          23262
+    Length:          10
+    ReplacementText: 'sycl::log(prob)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          23657
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          23693
+    Length:          10
+    ReplacementText: 'item_ct1.get_local_range(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          24124
+    Length:          45
+    ReplacementText: 'sycl::native::exp((float)packed_logits_vec[k] - sp.Offset)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          25025
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          25091
+    Length:          38
+    ReplacementText: 'sycl::native::exp((float)logits_vec[i] - sp.Offset)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          25270
+    Length:          0
+    ReplacementText: "            /*\n            DPCT1098:28: The '=' expression is used instead of the __stcs call. These two expressions do not provide the exact same functionality. Check the generated code for potential precision and/or performance issues.\n            */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          25282
+    Length:          45
+    ReplacementText: '*(dlogits + idx * P + i) = (floatX)dlogit'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          26078
+    Length:          0
+    ReplacementText: "    /*\n    DPCT1049:1: The work-group size passed to the SYCL kernel may exceed the limit. To get the device limit, query info::device::max_work_group_size. Adjust the work-group size if needed.\n    */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          26082
+    Length:          106
+    ReplacementText: "dpct::get_in_order_queue().parallel_for(\n      sycl::nd_range<3>(sycl::range<3>(1, 1, grid_size) * sycl::range<3>(1, 1, block_size), sycl::range<3>(1, 1, block_size)), \n      [=](sycl::nd_item<3> item_ct1) [[sycl::reqd_sub_group_size(32)]] {\n        fused_classifier_kernel1(dlogits, losses, logits, dlosses, targets, B, T, V, P);\n      });"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: true
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          26188
+    Length:          1
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          26190
+    Length:          0
+    ReplacementText: "    /*\n    DPCT1010:29: SYCL uses exceptions to report errors and does not use the error codes. The cudaGetLastError function call was replaced with 0. You need to rewrite this code.\n    */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          26204
+    Length:          18
+    ReplacementText: '0'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          26489
+    Length:          0
+    ReplacementText: "    /*\n    DPCT1049:2: The work-group size passed to the SYCL kernel may exceed the limit. To get the device limit, query info::device::max_work_group_size. Adjust the work-group size if needed.\n    */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          26493
+    Length:          112
+    ReplacementText: "dpct::get_in_order_queue().submit(\n      [&](sycl::handler &cgh) {\n        sycl::local_accessor<float, 1> shared_maxval_acc_ct1(sycl::range<1>(32), cgh);\n        sycl::local_accessor<float, 1> shared_sumval_acc_ct1(sycl::range<1>(32), cgh);\n\n        cgh.parallel_for(\n          sycl::nd_range<3>(sycl::range<3>(1, 1, grid_size) * sycl::range<3>(1, 1, block_size), sycl::range<3>(1, 1, block_size)), \n          [=](sycl::nd_item<3> item_ct1) [[sycl::reqd_sub_group_size(32)]] {\n            fused_classifier_kernel2(dlogits, losses, NULL, logits, dlosses, targets, B, T, V, P, shared_maxval_acc_ct1.get_multi_ptr<sycl::access::decorated::no>().get(), shared_sumval_acc_ct1.get_multi_ptr<sycl::access::decorated::no>().get());\n          });\n      });"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: true
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          26605
+    Length:          1
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          26607
+    Length:          0
+    ReplacementText: "    /*\n    DPCT1010:30: SYCL uses exceptions to report errors and does not use the error codes. The cudaGetLastError function call was replaced with 0. You need to rewrite this code.\n    */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          26621
+    Length:          18
+    ReplacementText: '0'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          26906
+    Length:          0
+    ReplacementText: "    /*\n    DPCT1049:3: The work-group size passed to the SYCL kernel may exceed the limit. To get the device limit, query info::device::max_work_group_size. Adjust the work-group size if needed.\n    */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          26910
+    Length:          112
+    ReplacementText: "dpct::get_in_order_queue().submit(\n      [&](sycl::handler &cgh) {\n        sycl::local_accessor<float, 1> shared_maxval_acc_ct1(sycl::range<1>(32), cgh);\n        sycl::local_accessor<float, 1> shared_sumval_acc_ct1(sycl::range<1>(32), cgh);\n\n        cgh.parallel_for(\n          sycl::nd_range<3>(sycl::range<3>(1, 1, grid_size) * sycl::range<3>(1, 1, block_size), sycl::range<3>(1, 1, block_size)), \n          [=](sycl::nd_item<3> item_ct1) [[sycl::reqd_sub_group_size(32)]] {\n            fused_classifier_kernel3(dlogits, losses, NULL, logits, dlosses, targets, B, T, V, P, shared_maxval_acc_ct1.get_multi_ptr<sycl::access::decorated::no>().get(), shared_sumval_acc_ct1.get_multi_ptr<sycl::access::decorated::no>().get());\n          });\n      });"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: true
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          27022
+    Length:          1
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          27024
+    Length:          0
+    ReplacementText: "    /*\n    DPCT1010:31: SYCL uses exceptions to report errors and does not use the error codes. The cudaGetLastError function call was replaced with 0. You need to rewrite this code.\n    */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          27038
+    Length:          18
+    ReplacementText: '0'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          27323
+    Length:          0
+    ReplacementText: "    /*\n    DPCT1049:4: The work-group size passed to the SYCL kernel may exceed the limit. To get the device limit, query info::device::max_work_group_size. Adjust the work-group size if needed.\n    */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          27327
+    Length:          148
+    ReplacementText: "dpct::get_in_order_queue().submit(\n      [&](sycl::handler &cgh) {\n        sycl::local_accessor<float, 1> shared_maxval_acc_ct1(sycl::range<1>(32), cgh);\n        sycl::local_accessor<float, 1> shared_sumval_acc_ct1(sycl::range<1>(32), cgh);\n\n        cgh.parallel_for(\n          sycl::nd_range<3>(sycl::range<3>(1, 1, grid_size) * sycl::range<3>(1, 1, block_size), sycl::range<3>(1, 1, block_size)), \n          [=](sycl::nd_item<3> item_ct1) [[sycl::reqd_sub_group_size(32)]] {\n            fused_classifier_kernel4((floatX*)dlogits, (floatX*)losses, NULL, (floatX*)logits, (floatX*)dlosses, targets, B, T, V, P, shared_maxval_acc_ct1.get_multi_ptr<sycl::access::decorated::no>().get(), shared_sumval_acc_ct1.get_multi_ptr<sycl::access::decorated::no>().get());\n          });\n      });"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: true
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          27475
+    Length:          1
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          27477
+    Length:          0
+    ReplacementText: "    /*\n    DPCT1010:32: SYCL uses exceptions to report errors and does not use the error codes. The cudaGetLastError function call was replaced with 0. You need to rewrite this code.\n    */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          27491
+    Length:          18
+    ReplacementText: '0'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          27776
+    Length:          0
+    ReplacementText: "    /*\n    DPCT1049:5: The work-group size passed to the SYCL kernel may exceed the limit. To get the device limit, query info::device::max_work_group_size. Adjust the work-group size if needed.\n    */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          27780
+    Length:          160
+    ReplacementText: "dpct::get_in_order_queue().submit(\n      [&](sycl::handler &cgh) {\n        /*\n        DPCT1101:37: 'WARP_SIZE' expression was replaced with a value. Modify the code to use the original expression, provided in comments, if it is correct.\n        */\n        sycl::local_accessor<float, 1> shared_val_acc_ct1(sycl::range<1>(32/*WARP_SIZE*/), cgh);\n\n        cgh.parallel_for(\n          sycl::nd_range<3>(sycl::range<3>(1, 1, grid_size) * sycl::range<3>(1, 1, block_size), sycl::range<3>(1, 1, block_size)), \n          [=](sycl::nd_item<3> item_ct1) [[sycl::reqd_sub_group_size(32)]] {\n            fused_classifier_kernel5<true, false>((floatX*)dlogits, (floatX*)losses, NULL, (floatX*)logits, (floatX*)dlosses, targets, B, T, V, P, shared_val_acc_ct1.get_multi_ptr<sycl::access::decorated::no>().get());\n          });\n      });"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: true
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          27940
+    Length:          1
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          27942
+    Length:          0
+    ReplacementText: "    /*\n    DPCT1010:33: SYCL uses exceptions to report errors and does not use the error codes. The cudaGetLastError function call was replaced with 0. You need to rewrite this code.\n    */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          27956
+    Length:          18
+    ReplacementText: '0'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          30622
+    Length:          54
+    ReplacementText: 'DPCT_CHECK_ERROR(d_logits = sycl::malloc_device<float>((size_t)(B*T*V), dpct::get_in_order_queue()))'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          30693
+    Length:          85
+    ReplacementText: 'DPCT_CHECK_ERROR(dpct::get_in_order_queue().memcpy(d_logits, logits, sizeof(float) * (size_t)(B*T*V)).wait())'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          30817
+    Length:          53
+    ReplacementText: 'DPCT_CHECK_ERROR(d_dlosses = sycl::malloc_device<float>((size_t)(B*T), dpct::get_in_order_queue()))'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          30887
+    Length:          85
+    ReplacementText: 'DPCT_CHECK_ERROR(dpct::get_in_order_queue().memcpy(d_dlosses, dlosses, sizeof(float) * (size_t)(B*T)).wait())'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          31009
+    Length:          51
+    ReplacementText: 'DPCT_CHECK_ERROR(d_targets = sycl::malloc_device<int>((size_t)(B*T), dpct::get_in_order_queue()))'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          31077
+    Length:          83
+    ReplacementText: 'DPCT_CHECK_ERROR(dpct::get_in_order_queue().memcpy(d_targets, targets, sizeof(int) * (size_t)(B*T)).wait())'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          31265
+    Length:          52
+    ReplacementText: 'DPCT_CHECK_ERROR(d_losses = sycl::malloc_device<float>((size_t)(B*T), dpct::get_in_order_queue()))'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          31426
+    Length:          55
+    ReplacementText: 'DPCT_CHECK_ERROR(d_dlogits = sycl::malloc_device<float>((size_t)(B*T*V), dpct::get_in_order_queue()))'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          31619
+    Length:          10
+    ReplacementText: 'DPCT_CHECK_ERROR(dpct::get_in_order_queue().memset'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          31673
+    Length:          0
+    ReplacementText: '.wait())'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          31694
+    Length:          10
+    ReplacementText: 'DPCT_CHECK_ERROR(dpct::get_in_order_queue().memset'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          31751
+    Length:          0
+    ReplacementText: '.wait())'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          31853
+    Length:          0
+    ReplacementText: "        /*\n        DPCT1010:34: SYCL uses exceptions to report errors and does not use the error codes. The cudaGetLastError function call was replaced with 0. You need to rewrite this code.\n        */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          31871
+    Length:          18
+    ReplacementText: '0'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          31910
+    Length:          23
+    ReplacementText: 'DPCT_CHECK_ERROR(dpct::get_current_device().queues_wait_and_throw())'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          31954
+    Length:          83
+    ReplacementText: 'DPCT_CHECK_ERROR(dpct::get_in_order_queue().memcpy(losses, d_losses, sizeof(float) * (size_t)(B*T)).wait())'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Offset:          32118
+    Length:          87
+    ReplacementText: 'DPCT_CHECK_ERROR(dpct::get_in_order_queue().memcpy(dlogits, d_dlogits, sizeof(float) * (size_t)(B*T*V)).wait())'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          0
+    Length:          0
+    ReplacementText: "#define DPCT_COMPAT_RT_MAJOR_VERSION 12\n#define DPCT_PROFILING_ENABLED\n#include <sycl/sycl.hpp>\n#include <dpct/dpct.hpp>\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          39
+    Length:          26
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          83
+    Length:          0
+    ReplacementText: "\n#include <cmath>\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          114
+    Length:          14
+    ReplacementText: 'dpct::device_info'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          160
+    Length:          9
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          169
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          264
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          361
+    Length:          0
+    ReplacementText: "        /*\n        DPCT1096:36: The right-most dimension of the work-group used in the SYCL kernel that calls this function may be less than \"32\". The function \"dpct::permute_sub_group_by_xor\" may return an unexpected result on the CPU device. Modify the size of the work-group to ensure that the value of the right-most dimension is a multiple of \"32\".\n        */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          376
+    Length:          40
+    ReplacementText: 'dpct::permute_sub_group_by_xor(sycl::ext::oneapi::this_work_item::get_sub_group(), val, offset)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          914
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          997
+    Length:          0
+    ReplacementText: ",\n                         float *shared_val"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          1139
+    Length:          39
+    ReplacementText: "auto item_ct1 = sycl::ext::oneapi::this_work_item::get_nd_item<3>();\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          1203
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          1252
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          1303
+    Length:          10
+    ReplacementText: 'item_ct1.get_local_range(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          1432
+    Length:          15
+    ReplacementText: "/*\n    DPCT1065:6: Consider replacing sycl::nd_item::barrier() with sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better performance if there is no access to global memory.\n    */\n    item_ct1.barrier()"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          1596
+    Length:          0
+    ReplacementText: "        /*\n        DPCT1118:0: SYCL group functions and algorithms must be encountered in converged control flow. You may need to adjust the code.\n        */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          1604
+    Length:          15
+    ReplacementText: "/*\n        DPCT1065:7: Consider replacing sycl::nd_item::barrier() with sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better performance if there is no access to global memory.\n        */\n        item_ct1.barrier()"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          1824
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          1869
+    Length:          0
+    ReplacementText: ', float *shared_val'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          1928
+    Length:          0
+    ReplacementText: ', shared_val'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          2072
+    Length:          11
+    ReplacementText: 'dpct::err0'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          2125
+    Length:          168
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          3071
+    Length:          13
+    ReplacementText: DPCT_COMPATIBILITY_TEMP
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          3095
+    Length:          13
+    ReplacementText: DPCT_COMPATIBILITY_TEMP
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          3761
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          3791
+    Length:          4
+    ReplacementText: 'sycl::int4'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          3936
+    Length:          12
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          4144
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          4221
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          4297
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          4386
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          4487
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          4498
+    Length:          4
+    ReplacementText: 'sycl::int4'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          4530
+    Length:          4
+    ReplacementText: 'sycl::int4'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          4903
+    Length:          4
+    ReplacementText: 'sycl::int4'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          5100
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          5230
+    Length:          4
+    ReplacementText: 'sycl::int4'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          5355
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          5429
+    Length:          0
+    ReplacementText: "    /*\n    DPCT1098:9: The '*' expression is used instead of the __ldcs call. These two expressions do not provide the exact same functionality. Check the generated code for potential precision and/or performance issues.\n    */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          5463
+    Length:          46
+    ReplacementText: '*(reinterpret_cast<const sycl::int4*>(address))'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          5592
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          5692
+    Length:          4
+    ReplacementText: 'sycl::int4'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          5833
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          5913
+    Length:          0
+    ReplacementText: "    /*\n    DPCT1098:10: The '=' expression is used instead of the __stcs call. These two expressions do not provide the exact same functionality. Check the generated code for potential precision and/or performance issues.\n    */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          5917
+    Length:          57
+    ReplacementText: '*(reinterpret_cast<sycl::int4*>(target)) = value.get_bits()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          6093
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          6173
+    Length:          0
+    ReplacementText: "    /*\n    DPCT1098:11: The '=' expression is used instead of the __stcg call. These two expressions do not provide the exact same functionality. Check the generated code for potential precision and/or performance issues.\n    */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          6177
+    Length:          57
+    ReplacementText: '*(reinterpret_cast<sycl::int4*>(target)) = value.get_bits()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          7185
+    Length:          20
+    ReplacementText: DPCT_COMPAT_RT_MAJOR_VERSION
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          7218
+    Length:          13
+    ReplacementText: DPCT_COMPATIBILITY_TEMP
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          7252
+    Length:          13
+    ReplacementText: DPCT_COMPATIBILITY_TEMP
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          8802
+    Length:          11
+    ReplacementText: 'dpct::err0'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          9108
+    Length:          11
+    ReplacementText: 'dpct::err0'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          9129
+    Length:          80
+    ReplacementText: 'DPCT_CHECK_ERROR(dpct::get_in_order_queue().memcpy(d_ptr, converted, count * sizeof(TargetType)).wait())'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          9554
+    Length:          0
+    ReplacementText: "    /*\n    DPCT1093:12: The \"deviceIdx\" device may be not the one intended for use. Adjust the selected device if needed.\n    */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          9568
+    Length:          13
+    ReplacementText: 'DPCT_CHECK_ERROR(dpct::select_device'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          9592
+    Length:          0
+    ReplacementText: ')'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          9599
+    Length:          14
+    ReplacementText: 'dpct::device_info'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          9630
+    Length:          47
+    ReplacementText: 'dpct::get_device(deviceIdx).get_device_info(deviceProp)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          9709
+    Length:          19
+    ReplacementText: 'get_max_compute_units()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          9767
+    Length:          27
+    ReplacementText: 'get_max_work_items_per_compute_unit()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          9796
+    Length:          0
+    ReplacementText: "    /*\n    DPCT1005:13: The SYCL device version is different from CUDA Compute Compatibility. You may need to rewrite this code.\n    */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          9829
+    Length:          5
+    ReplacementText: 'get_major_version()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          9836
+    Length:          0
+    ReplacementText: "    /*\n    DPCT1005:14: The SYCL device version is different from CUDA Compute Compatibility. You may need to rewrite this code.\n    */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          9869
+    Length:          5
+    ReplacementText: 'get_minor_version()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          10171
+    Length:          84
+    ReplacementText: 'DPCT_CHECK_ERROR(dpct::get_in_order_queue().memcpy(out_gpu, device_result, num_elements * sizeof(D)).wait())'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          11457
+    Length:          11
+    ReplacementText: 'dpct::event_ptr'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          11766
+    Length:          0
+    ReplacementText: "    /*\n    DPCT1093:15: The \"deviceIdx\" device may be not the one intended for use. Adjust the selected device if needed.\n    */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          11780
+    Length:          13
+    ReplacementText: 'DPCT_CHECK_ERROR(dpct::select_device'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          11804
+    Length:          0
+    ReplacementText: ')'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          11811
+    Length:          14
+    ReplacementText: 'dpct::device_info'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          11852
+    Length:          47
+    ReplacementText: 'DPCT_CHECK_ERROR(dpct::get_device(deviceIdx).get_device_info(deviceProp))'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          11926
+    Length:          0
+    ReplacementText: "    /*\n    DPCT1051:16: SYCL does not support a device property functionally compatible with l2CacheSize. It was migrated to global_mem_cache_size. You may need to adjust the value of global_mem_cache_size for the specific device.\n    */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          11940
+    Length:          49
+    ReplacementText: 'DPCT_CHECK_ERROR(flush_buffer = (void *)sycl::malloc_device(deviceProp.get_global_mem_cache_size(), dpct::get_in_order_queue()))'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          12007
+    Length:          23
+    ReplacementText: 'DPCT_CHECK_ERROR(start = new sycl::event())'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          12047
+    Length:          22
+    ReplacementText: 'DPCT_CHECK_ERROR(stop = new sycl::event())'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          12162
+    Length:          0
+    ReplacementText: "        /*\n        DPCT1051:17: SYCL does not support a device property functionally compatible with l2CacheSize. It was migrated to global_mem_cache_size. You may need to adjust the value of global_mem_cache_size for the specific device.\n        */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          12180
+    Length:          10
+    ReplacementText: 'DPCT_CHECK_ERROR(dpct::get_in_order_queue().memset'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          12219
+    Length:          11
+    ReplacementText: 'get_global_mem_cache_size()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          12231
+    Length:          0
+    ReplacementText: '.wait())'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          12297
+    Length:          0
+    ReplacementText: "        /*\n        DPCT1024:18: The original code returned the error code that was further consumed by the program logic. This original code was replaced with 0. You may need to rewrite the program logic consuming the error code.\n        */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          12315
+    Length:          15
+    ReplacementText: 'DPCT_CHECK_ERROR(dpct::sync_barrier'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          12338
+    Length:          7
+    ReplacementText: '&dpct::get_in_order_queue()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          12346
+    Length:          0
+    ReplacementText: ')'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          12407
+    Length:          0
+    ReplacementText: "        /*\n        DPCT1024:19: The original code returned the error code that was further consumed by the program logic. This original code was replaced with 0. You may need to rewrite the program logic consuming the error code.\n        */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          12425
+    Length:          15
+    ReplacementText: 'DPCT_CHECK_ERROR(dpct::sync_barrier'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          12447
+    Length:          7
+    ReplacementText: '&dpct::get_in_order_queue()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          12455
+    Length:          0
+    ReplacementText: ')'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          12476
+    Length:          27
+    ReplacementText: 'DPCT_CHECK_ERROR(start->wait_and_throw())'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          12524
+    Length:          26
+    ReplacementText: 'DPCT_CHECK_ERROR(stop->wait_and_throw())'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          12598
+    Length:          47
+    ReplacementText: 'DPCT_CHECK_ERROR(single_call = (stop->get_profiling_info<sycl::info::event_profiling::command_end>() - start->get_profiling_info<sycl::info::event_profiling::command_start>()) / 1000000.0f)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/common.h'
+    Offset:          12706
+    Length:          22
+    ReplacementText: 'DPCT_CHECK_ERROR(dpct::dpct_free(flush_buffer, dpct::get_in_order_queue()))'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+MainSourceFilesDigest:
+  - MainSourceFile:  '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task/classifier_fused_harness.cu'
+    Digest:          542ff5fba292774240c65a0d76404e3f
+    HasCUDASyntax:   true
+DpctVersion:     21.0.0
+SDKVersionMajor: '12'
+SDKVersionMinor: '3'
+MainHelperFileName: ''
+USMLevel:        ''
+FeatureMap:      {}
+CompileTargets:  {}
+OptionMap:
+  AnalysisScopePath:
+    Value:           ''
+    ValueVec:
+      - '/home/user/museport-hackathon/evidence/spec-llmc/classifier_fused/task'
+    Specified:       false
+  AsyncHandler:
+    Value:           'false'
+    Specified:       false
+  BuildScript:
+    Value:           '0'
+    Specified:       false
+  CodePinEnabled:
+    Value:           'false'
+    Specified:       false
+  CommentsEnabled:
+    Value:           'false'
+    Specified:       false
+  CtadEnabled:
+    Value:           'false'
+    Specified:       false
+  EnablepProfiling:
+    Value:           'false'
+    Specified:       false
+  ExperimentalFlag:
+    Value:           '0'
+    Specified:       false
+  ExplicitNamespace:
+    Value:           '20'
+    Specified:       false
+  ExtensionDDFlag:
+    Value:           '0'
+    Specified:       false
+  ExtensionDEFlag:
+    Value:           '4294967295'
+    Specified:       false
+  HelperFuncPreferenceFlag:
+    Value:           '0'
+    Specified:       false
+  NDRangeDim:
+    Value:           '3'
+    Specified:       false
+  NoDRYPattern:
+    Value:           'false'
+    Specified:       false
+  OptimizeMigration:
+    Value:           'false'
+    Specified:       false
+  ProcessAll:
+    Value:           'false'
+    Specified:       false
+  RuleFile:
+    Value:           ''
+    Specified:       false
+  SyclNamedLambda:
+    Value:           'false'
+    Specified:       false
+  UseSYCLCompat:
+    Value:           'false'
+    Specified:       false
+  UsmLevel:
+    Value:           '1'
+    Specified:       false
+...
