@@ -225,7 +225,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                 print("museport: --llmc is required for assemble", file=sys.stderr)
                 return 2
             r = assemble(Path(args.evidence), Path(args.llmc), Path(args.out))
-            print(f"[llmc-sycl] {len(r['kernels'])} kernel ports in {args.out}/dev/sycl",
+            print(f"[llmc-sycl] {len(r['kernels'])} kernel ports in {args.out}/dev/sycl; "
+                  f"{', '.join(r['programs'])}, Makefile and .gitignore in {args.out}",
                   file=sys.stderr)
             return 0
         with tempfile.TemporaryDirectory() as tmp:

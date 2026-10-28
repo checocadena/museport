@@ -61,6 +61,21 @@ On a GPU it is meant to run as llm.c's trainer does.
 - **`dev/download_starter_pack.sh`:** llm.c's data script, unchanged.
 - **`LICENSE`:** llm.c's (MIT).
 
+## How this folder is put together
+
+`museport llmc-sycl assemble --llmc <an llm.c checkout>` writes every file here except this
+README. A test checks that its output matches the committed folder, byte for byte.
+
+- **Kernels:** it copies each kernel port from its graded run.
+- **Programs:** it copies the trainer and the test from the run that wrote the test. It first
+  checks that this trainer is the graded J3 trainer plus only the two `#ifndef TESTING` guard
+  lines.
+- **The rest:** it copies llm.c's own files, and writes both Makefiles and the `.gitignore`
+  files.
+
+The Makefiles are templates written by hand for llm.c, not converted by Muse. The command works
+for llm.c only: the list of kernels and runs is part of the code.
+
 ## Notes and limits
 
 - **fp32 only.** llm.c's bf16 production trainer (`train_gpt2.cu`: cuBLASLt, cuDNN,
