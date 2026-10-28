@@ -1,0 +1,104 @@
+{
+  "tool": "gpu_test",
+  "status": "ok",
+  "summary": "recorded 1 output(s) of the original CUDA on NVIDIA RTX A4500 (nvidia); two runs identical: PASS: 1/1 case(s) match (worst max abs err 0, atol 0)",
+  "evidence": {
+    "task": "llmc_softmax_forward_a2",
+    "device": {
+      "backend": "cuda",
+      "device_type": "gpu",
+      "index": 0,
+      "platform": "NVIDIA CUDA BACKEND",
+      "name": "NVIDIA RTX A4500",
+      "description": "NVIDIA CUDA BACKEND, NVIDIA RTX A4500 8.6 [CUDA 13.2]",
+      "selector": "cuda:0"
+    },
+    "vendor": "nvidia",
+    "recorded": [
+      {
+        "case": 0,
+        "input": "input.bin",
+        "file": "recorded/case0.out",
+        "bytes": 3670016,
+        "sha256": "341c7a669d183b0c649b0e734e567217bb17bada5bb04c0dddf937f0dd986548"
+      }
+    ],
+    "deterministic": true,
+    "repeat": {
+      "mode": "array",
+      "cases": [
+        {
+          "input": "/tmp/tmp.nWSX9BlLcN/task/input.bin",
+          "reference": {
+            "command": "build/native /tmp/tmp.nWSX9BlLcN/task/input.bin /tmp/tmp.nWSX9BlLcN/out/work/v_record/case0_reference.out 2 32 2048",
+            "returncode": 0,
+            "duration_s": 0.395126,
+            "stdout": "",
+            "stderr": "",
+            "cwd": "/tmp/tmp.nWSX9BlLcN/out/work",
+            "output_file": "/tmp/tmp.nWSX9BlLcN/out/work/v_record/case0_reference.out"
+          },
+          "candidate": {
+            "command": "build/native /tmp/tmp.nWSX9BlLcN/task/input.bin /tmp/tmp.nWSX9BlLcN/out/work/v_record/case0_candidate.out 2 32 2048",
+            "returncode": 0,
+            "duration_s": 0.373801,
+            "stdout": "",
+            "stderr": "",
+            "cwd": "/tmp/tmp.nWSX9BlLcN/out/work",
+            "output_file": "/tmp/tmp.nWSX9BlLcN/out/work/v_record/case0_candidate.out"
+          },
+          "reference_format": "f32",
+          "candidate_format": "f32",
+          "mode": "array",
+          "stats": {
+            "n_reference": 917504,
+            "n_candidate": 917504,
+            "atol": 0.0,
+            "rtol": 0.0,
+            "max_ulp_allowed": null,
+            "passed": true,
+            "max_abs_err": 0.0,
+            "rms_err": 0.0,
+            "mean_abs_err": 0.0,
+            "max_rel_err": 0.0,
+            "max_ulp_f32": 0,
+            "median_ulp_f32": 0.0,
+            "exact_matches": 917504,
+            "mismatches": 0,
+            "nan_mismatches": 0,
+            "reference_range": [
+              9.490374193229915e-17,
+              0.9999933242797852
+            ],
+            "first_mismatches": []
+          },
+          "passed": true
+        }
+      ],
+      "work_dir": "/tmp/tmp.nWSX9BlLcN/out/work/v_record",
+      "passed_cases": 1,
+      "total_cases": 1,
+      "worst_max_abs_err": 0.0
+    },
+    "steps": [
+      {
+        "step": "reference_build",
+        "status": "ok",
+        "summary": "exit 0: true"
+      },
+      {
+        "step": "native_build",
+        "status": "ok",
+        "summary": "exit 0: /usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.nWSX9BlLcN/task /tmp/tmp.nWSX9BlLcN/task/softmax_forward_harness.cu -o build/native"
+      },
+      {
+        "step": "native_repeat",
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 0)"
+      }
+    ]
+  },
+  "limitations": [
+    "A recorded reference is the original program's own output on one GPU: it is only as right as that program, and a non-deterministic program needs a tolerance at least as wide as its run-to-run difference."
+  ]
+}
