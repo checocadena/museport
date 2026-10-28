@@ -41,18 +41,23 @@ capture on the laptop; every other shot is a rendered clip from `demo/out/`.
 Before recording, re-check every spoken number against `demo/data.json`, then re-run
 `make_data.py` and `render.mjs` once the evidence changes.
 
-**Oct 28: the voiceover above is updated, the rendered clips are not.** These shots still show
-older numbers until `make_data.py` and `render.mjs` are re-run:
-- `gpus` (9) and `numbers` (11): AMD now passes 15 of 15, and GPT-2 training runs on AMD
-  (`evidence/gpt2-stage3/gpu/AMD.md`).
-- Today's new results have no rendered clip:
-  - J1's recorded-CUDA checks (`evidence/diff-llmc-tier1`);
-  - J2's Muse-written checks (`evidence/spec-llmc`, `evidence/spec-llmc-fp32`);
-  - J3's `llm.c-sycl` (`evidence/j3-*`).
+**Oct 28 (evening): the clips match the evidence again.** `make_data.py` and `render.mjs` were
+re-run for `gpus` (9) and `numbers` (11):
+- **`gpus`:** it adds rows for GPT-2 training and llm.c's own test (`llm.c-sycl`), each on NVIDIA
+  against llm.c's CUDA and on the AMD MI350X.
+- **`numbers`:** it shows 15 ports on AMD, and GPT-2 matching PyTorch on the CPU, an NVIDIA GPU
+  and an AMD GPU.
 
-  The report shows all three, so the report recording (shot 10) can cover them: "Differential
-  checks", "Hidden checks written by Muse" and "llm.c-sycl". J3 also gets its own recording,
-  shot 12.
+`demo/out/` is not in git, so re-render it on the editing machine.
+
+Three new results have no rendered clip of their own:
+- J1's recorded-CUDA checks (`evidence/diff-llmc-tier1`);
+- J2's Muse-written checks (`evidence/spec-llmc`, `evidence/spec-llmc-fp32`);
+- J3's `llm.c-sycl` (`evidence/j3-*`).
+
+The report shows all three, so the report recording (shot 10) can cover them: "Differential
+checks", "Hidden checks written by Muse" and "llm.c-sycl". J3 also gets its own recording,
+shot 12.
 
 ## Shots that need the author
 

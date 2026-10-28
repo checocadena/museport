@@ -104,6 +104,10 @@ def main(evidence: Path) -> dict[str, object]:
         if nomigrate.is_file() else None,
         "native_exp_check": json.loads(
             (evidence / "gpt2-stage1/native-exp-check.json").read_text()),
+        "j3": [{"label": p["label"], "target": p["target"],
+                "gpu": [{"device": g["device"], "vendor": g["vendor"], "pass": g["status"] == "ok",
+                         "vs_native": g["vs_native"]} for g in p["gpu"]]}
+               for p in (data["j3"] or {}).get("programs", [])],
     }
 
 
