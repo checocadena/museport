@@ -1,0 +1,91 @@
+{
+  "cpu_call": "matmul_backward_cpu(dinp, dweight, dbias, dout, inp, weight, B, T, C, OC)",
+  "cpu_functions": [
+    "matmul_backward_cpu"
+  ],
+  "dropped_variants": [],
+  "extra_includes": [],
+  "gpu_call": "matmul_backward(k, d_dinp, d_dweight, d_dbias, d_dout, d_inp, d_weight, d_ones, B, T, C, OC)",
+  "gpu_prelude": "cublasCheck(cublasSetMathMode(cublas_handle, CUBLAS_DEFAULT_MATH));",
+  "host_prep": "",
+  "inputs": [
+    {
+      "count": "B*T*OC",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "uniform",
+      "name": "dout"
+    },
+    {
+      "count": "B*T*C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "uniform",
+      "name": "inp"
+    },
+    {
+      "count": "OC*C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "uniform",
+      "name": "weight"
+    },
+    {
+      "count": "OC",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "one",
+      "name": "ones"
+    }
+  ],
+  "keep_cublas": true,
+  "keep_cublaslt": false,
+  "keep_in_harness": [],
+  "note": "B=2, T=128 (llm.c: B=8, T=1024); C=256, OC=1024 (llm.c: C=768, OC=3072, kept OC=4*C) to reduce O(B*T*C*OC) CPU reference from ~19B to ~134M ops and buffers to ~1MB.",
+  "output_post": "",
+  "outputs": [
+    {
+      "count": "B*T*C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "zeros",
+      "name": "dinp"
+    },
+    {
+      "count": "OC*C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "zeros",
+      "name": "dweight"
+    },
+    {
+      "count": "OC",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "zeros",
+      "name": "dbias"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "B",
+      "value": 2
+    },
+    {
+      "name": "T",
+      "value": 128
+    },
+    {
+      "name": "C",
+      "value": 256
+    },
+    {
+      "name": "OC",
+      "value": 1024
+    }
+  ],
+  "tol": 0.001,
+  "variants": [
+    1
+  ]
+}
