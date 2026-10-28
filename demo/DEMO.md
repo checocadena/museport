@@ -30,16 +30,24 @@ capture on the laptop; every other shot is a rendered clip from `demo/out/`.
 | 6 | 0:40-0:59 | `replay` | "This is Muse porting GPT-2's training, llm.c's real code with the real 124-million-parameter weights: forward, backward and the AdamW update. It reads the source and writes 907 lines of SYCL in one go. The hidden check fails: the losses are off. Muse finds its own matrix-transpose mistake, fixes it, and all 10 training steps match PyTorch." |
 | 7 | 0:59-1:11 | `check` | "The check compares against PyTorch's own numbers, at llm.c's tolerance. It is strict: SYCLomatic's fast-math output fails on 14 rows, and the precise version passes." |
 | 8 | 1:11-1:19 | `fixes` | "We improved the loop itself. Same 19 kernels: loop success from 8 to 15, correct from 17 to 18, and cost down a third." |
-| 9 | 1:19-1:27 | `gpus` | "And the same SYCL source runs on both vendors: NVIDIA, checked against llm.c's own CUDA, and an AMD MI350X. GPT-2's training port runs on an NVIDIA GPU too, and matches llm.c's CUDA step for step." |
+| 9 | 1:19-1:27 | `gpus` | "And the same SYCL source runs on both vendors: NVIDIA, checked against llm.c's own CUDA, and an AMD MI350X. GPT-2's training port runs on both too: it matches llm.c's CUDA step for step on NVIDIA, and PyTorch on AMD." |
 | 10 | 1:27-1:52 | **(rec)** the report site | Scroll the overview, open one port page and its turn-by-turn replay. "Every result is in a report built only from committed evidence." |
-| 11 | 1:52-1:58 | `numbers` | "18 of 19 kernel files correct, 15 on NVIDIA against CUDA, 10 of 10 on AMD, and GPT-2 training ported for about three dollars, matching PyTorch on an NVIDIA GPU." |
+| 11 | 1:52-1:58 | `numbers` | "18 of 19 kernel files correct, the same 15 passing on NVIDIA and on AMD, and GPT-2 training ported for about three dollars, on a CPU, an NVIDIA GPU and an AMD GPU." |
 | 12 | 1:58-2:40 | *(optional)* **(rec)** a live `museport loop` on one kernel, sped up | "And it runs live: about 10 cents per kernel." |
-| 13 | 2:40-2:55 | limits card (text on screen) | "Limits: fp32, reduced sizes, one run per item. GPT-2's backward pass is next." |
+| 13 | 2:40-2:55 | limits card (text on screen) | "Limits: fp32, reduced sizes, one run per item. Next: Muse now writes the hidden checks too, 16 of 17 proven. Then a whole ported llm.c that builds and passes llm.c's own test." |
 | 14 | 2:55-3:00 | `end` | "github.com/checocadena/museport." |
 
 Before recording, re-check every spoken number against `demo/data.json`, then re-run
-`make_data.py` and `render.mjs` once the evidence changes: for example, GPT-2 stage 2 adds a
-line to shots 6 and 11.
+`make_data.py` and `render.mjs` once the evidence changes.
+
+**Oct 28: the voiceover above is updated, the rendered clips are not.** These shots still show
+older numbers until `make_data.py` and `render.mjs` are re-run:
+- `gpus` (9) and `numbers` (11): AMD now passes 15 of 15, and GPT-2 training runs on AMD
+  (`evidence/gpt2-stage3/gpu/AMD.md`).
+- Today's two new results have no clip yet: J1's recorded-CUDA checks
+  (`evidence/diff-llmc-tier1`) and J2's Muse-written checks (`evidence/spec-llmc`,
+  `evidence/spec-llmc-fp32`). The report's "Differential checks" and "Hidden checks written
+  by Muse" sections can be shown in the report recording (shot 10).
 
 ## Shots that need the author
 

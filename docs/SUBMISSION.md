@@ -11,7 +11,7 @@ README before pasting.
 
 Muse Port has Meta's Muse Spark plan and port a real CUDA codebase (Karpathy's llm.c) to the
 open SYCL standard. A port counts as done only when a check the model never sees agrees. The
-ports then run on NVIDIA and AMD GPUs.
+ports then run on NVIDIA and AMD GPUs, including GPT-2 training.
 
 ## Opening line of the 3-minute video (required)
 
@@ -57,10 +57,12 @@ ports then run on NVIDIA and AMD GPUs.
 **llm.c kernels, with the fixed agent loop** (one run per file):
 - 19 kernel files ported.
 - **18 correct with 0 helpers**, by the hidden check; 15 also met the loop's stricter rule.
-- **15 pass on NVIDIA** against llm.c's own CUDA; the 10 Tier 1 ports also pass on an
-  **AMD MI350X**.
+- **15 pass on NVIDIA** against llm.c's own CUDA, and the same **15 pass on an AMD MI350X**
+  against the reference.
 - $3.75 in total ([README table](../README.md#results-llmc-devcuda-muse-spark-13)).
-- Open issue, reported: `softmax_forward` fails the hidden check.
+- `softmax_forward` failed the hidden check in this run. A rerun with a stricter goal, 30 turns
+  and a $3 cap passes, on NVIDIA and AMD too, for $0.91
+  ([evidence](../evidence/port-llmc-softmax-rerun-2/README.md)).
 
 **The first runs** (same tasks and checks, before the loop fixes) got 17 correct, 8 loop
 successes and 14 on NVIDIA for $5.51. They spent their turns clearing SYCLomatic's output file
@@ -75,10 +77,11 @@ file with warp-level CUDA got correct but plain kernels
 
 **GPUs:** 15 ports pass on **NVIDIA** GPUs (RTX 2000 Ada, RTX A4500, L4, RTX 4090) against
 both the reference and llm.c's own CUDA ([Tier 1](../evidence/port-llmc-tier1-run2/gpu/NVIDIA.md),
-[Tiers 2-3](../evidence/port-llmc-tier23-run2/gpu/NVIDIA.md)). The 10 Tier 1 ports also pass
-on an **AMD Instinct MI350X** against the reference
-([AMD](../evidence/port-llmc-tier1-run2/gpu/AMD.md)). Ports that call oneMath are verified on
-the CPU device.
+[Tiers 2-3](../evidence/port-llmc-tier23-run2/gpu/NVIDIA.md)). The same 15 pass on an
+**AMD Instinct MI350X** against the reference ([Tier 1](../evidence/port-llmc-tier1-run2/gpu/AMD.md),
+[Tiers 2-3](../evidence/port-llmc-tier23-run2/gpu/AMD.md)). Tiers 2-3 ran from the cloud
+session, through a public-TLS mode added to the toolkit this week. The 3 kernel ports that
+call oneMath are verified on the CPU device.
 
 **GPT-2, llm.c's real training code with the GPT-2 124M weights:**
 - **Stage 1, the forward pass:** Muse wrote a 463-line SYCL port that matches PyTorch's logits
@@ -96,6 +99,23 @@ the CPU device.
 - **On an NVIDIA GPU:** the stage 3 port, unchanged, trains on an RTX 4000 Ada with oneMath
   on cuBLAS. Its 10 losses match PyTorch's (worst error 0.000135) and llm.c's own CUDA build
   (worst 0.0000059) ([GPU evidence](../evidence/gpt2-stage3/gpu/NVIDIA.md)).
+- **On an AMD GPU:** the same port, unchanged, trains on an AMD Instinct MI350X with oneMath on
+  rocBLAS. Its 10 losses match PyTorch's (worst error 0.0000246). The same source trains GPT-2
+  on a CPU, an NVIDIA GPU and an AMD GPU ([AMD evidence](../evidence/gpt2-stage3/gpu/AMD.md)).
+
+**Hidden checks without hand-written code:**
+- **The original CUDA as the reference:** llm.c's CUDA is recorded on an NVIDIA GPU, and the
+  recording becomes the hidden reference. All 10 Tier 1 kernels were recorded for $0.034;
+  each program's two runs were bit-identical. The recordings agree with llm.c's CPU references,
+  and Muse's ports pass against them, 10 of 10. A planted bug fails
+  ([evidence](../evidence/diff-llmc-tier1/README.md)).
+- **Muse writes the checks:** each hidden check is built from a short spec (CPU reference,
+  variants, inputs, sizes, tolerance). Muse wrote the spec for 17 llm.c files from the CUDA
+  alone. **16 are proven**: llm.c's GPU and CPU code must agree under the spec, through
+  SYCLomatic on the CPU, or on an NVIDIA GPU where SYCLomatic fails. All 16 are as strict as
+  llm.c's own check, once the prompt states the build is fp32. `trimat_forward` is not proven:
+  the proof caught its masked-triangle mistake. About $1.64-1.82 of Muse
+  ([evidence](../evidence/spec-llmc/README.md), [fp32 rerun](../evidence/spec-llmc-fp32/README.md)).
 
 ## Technical depth
 
@@ -108,21 +128,24 @@ the CPU device.
 - **Variant check:** it catches a port that copies one implementation into several kernel
   variants.
 - **Grounded planning:** every claim in Muse's plan is checked against a deterministic scan.
-- **Toolkit changes made this week:** five pull requests in the pre-existing toolkit, each
+- **Toolkit changes made this week:** eight pull requests in the pre-existing toolkit, each
   logged in `docs/CHANGES-TO-TOOLKIT.md`:
   - Meta API alignment;
   - `native_flags`;
   - `delete_file` and `read_file` line ranges;
   - AMD header hipify;
-  - reading included headers.
+  - reading included headers;
+  - large-file `fetch` and a `gpu_setup` script for GPU tasks;
+  - `remote-test --public-tls`, so DigitalOcean AMD runs work from the cloud;
+  - `record_native`, which records the original CUDA's outputs.
 
 ## Limits
 
 - fp32 only, at reduced sizes for most kernels; one run per item.
 - AMD is checked against the reference only: llm.c's CUDA doesn't convert to HIP
   automatically (errors quoted in the evidence).
-- GPT-2 stages 1 and 2 ran on the CPU device only; stage 3 also on one NVIDIA GPU. AMD was
-  not run for GPT-2.
+- GPT-2 stages 1 and 2 ran on the CPU device only; stage 3 also on one NVIDIA and one AMD
+  GPU.
 - Muse's GPT-2 ports are lean rewrites with simple kernels, not llm.c's tuned kernels.
   Performance was not compared.
 

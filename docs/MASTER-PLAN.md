@@ -67,7 +67,8 @@ See the README's results table.
   *Cost: $0. Done when the pages build from the committed evidence with no hand-written
   numbers, and tests cover the generator.*
 - [ ] **B2. Publish it** (an artifact page or GitHub Pages) and link it from the README and
-  the submission. *Cost: $0.*
+  the submission. *Cost: $0.* *(Oct 28: published as a private claude.ai artifact, version 13,
+  built from main. Still to do: the author shares it, and the README and submission link it.)*
 
 ## C. Finish and harden the current results (cheap; removes caveats)
 
@@ -112,7 +113,7 @@ See the README's results table.
 
   *About $0.12-0.20 per port, about $2 for all. Done when the README and video can say
   NVIDIA and AMD.*
-- [ ] **D2. oneMath on the GPU** *(Oct 27: done for GPT-2 stage 3 through the toolkit's new task `gpu_setup`, which builds oneMath with cuBLAS on the NVIDIA machine; the 3 Tier 3 ports still to run)* for the 3 Tier 3 ports that call it: build oneMath with its
+- [ ] **D2. oneMath on the GPU** *(Oct 27-28: done for GPT-2 stage 3 through the toolkit's task `gpu_setup`, which builds oneMath with cuBLAS on NVIDIA and with rocBLAS on AMD; the 3 Tier 3 ports that call oneMath still to run)* for the 3 Tier 3 ports that call it: build oneMath with its
   cuBLAS backend on the NVIDIA host. This means a GPU-bundle option in the toolkit or a
   prebuilt tarball, logged as a toolkit change. *GPU minutes, about $0.50, plus build time.*
 - [ ] **D3. Performance pass (optional).**
@@ -123,19 +124,23 @@ See the README's results table.
 
   *About $1-2.*
 
-- [ ] **D4. GPU runs from the cloud session, not the author's laptop.** DigitalOcean (and
+- [x] **D4. GPU runs from the cloud session, not the author's laptop.** *Done Oct 28:
+  `remote-test --public-tls` (toolkit #25). softmax_forward on an MI350X passed for $0.143, the
+  first DigitalOcean run made from the cloud.* DigitalOcean (and
   Vultr, Vast) droplets are reached on a bare IP with a self-signed, pinned certificate, which
   the session's egress proxy cannot pass (it re-checks TLS and does not support pinning).
   - Fix: give each droplet a hostname (an `sslip.io` name for its IP) and a Let's Encrypt
     certificate at boot; the runner then connects to an ordinary HTTPS host, no pinning.
-  - *Oct 28: blocked before any code. The session's safety checks deny probing or reaching
-    rented machines by IP ("containment escape"). The author decides: allow it (a permission
-    rule in the session settings), or keep AMD on the laptop.* *About $0.10 to test.*
+  - *Earlier on Oct 28 this was blocked by the session's safety checks; the author changed the
+    session's permission mode, and it was built and tested the same day.*
 - [ ] **D5. Intel GPUs: the third vendor.** oneAPI's native target. Intel Tiber AI Cloud has
   Data Center GPU Max and Arc machines (often free for developers). The runner already knows
   Level Zero (`level_zero:gpu`). Run the Tier 1-3 ports and GPT-2 stage 3. *Needs the author
   to sign up; cost depends on the tier.*
-- [ ] **D6. AMD for the rest.** The 6 Tier 2-3 ports without oneMath calls (4 Tier 2, the
+- [x] **D6. AMD for the rest.** *Done Oct 28, from the cloud: the 5 Tier 2-3 ports and the
+  softmax_forward fix pass on an MI350X ($0.72); GPT-2 stage 3 trains with oneMath on rocBLAS,
+  10 losses within 0.0000246 of PyTorch's (five runs, $0.65). AMD now matches NVIDIA: 15 of 15
+  (`evidence/gpt2-stage3/gpu/AMD.md`).* The 6 Tier 2-3 ports without oneMath calls (4 Tier 2, the
   `softmax_forward` fix, `matmul_backward_bias`), and GPT-2 stage 3 with a `gpu_setup` that
   builds oneMath's rocBLAS backend. *About $2; from the laptop unless D4 lands.*
 
@@ -266,24 +271,26 @@ file. This section removes both limits.
 
 ---
 
-## Suggested schedule (revised Oct 28)
+## Suggested schedule (revised Oct 28, night)
 
-Done by Oct 28: A1-A2, B1, C1-C3, D1, D2 (GPT-2), E3, G1, G3 on CPU and NVIDIA, the post-fix
-reruns, E1 (one run each), the demo clips and the submission draft.
+Done by Oct 28: A1-A2, B1, C1-C3, D1, D2 (GPT-2, NVIDIA and AMD), D4, D6, E3, G1, G3 on CPU,
+NVIDIA and AMD, J1, J2 (with the fp32 rerun), the post-fix reruns, E1 (one run each), the
+demo clips and the submission draft. J1 and J2 were planned for Oct 29-31, so the schedule is a
+day ahead.
 
 | Day | Items |
 |---|---|
-| Oct 28 (evening) | D4 if allowed; D6 (AMD, laptop otherwise); the author reviews the demo clips |
-| Oct 29-31 | J1, J2, J3 (`llm.c-sycl`) |
-| Nov 1 | K1 (loss curves on every vendor we have); D5 if Intel access arrives |
-| Nov 2 | J4 (a second CUDA repo); F2 if Baseten access arrives |
+| Oct 29-30 | J3 (`llm.c-sycl`), after its scope and cost are agreed (see `docs/J3-PLAN.md`) |
+| Oct 31 | K1 (loss curves on CPU, NVIDIA and AMD); D5 if Intel access arrives |
+| Nov 1 | J4 (a second CUDA repo); C6 or E1 runs if the budget allows |
+| Nov 2 | F2 if Baseten access arrives; refresh SUBMISSION and DEMO with every new result |
 | Nov 3 | I1-I5: script, record, submission text, posts |
 | Nov 4 | I6, submit by midday |
 
 **Decisions needed from the author:**
-- D4: allow this session to reach rented GPU machines by IP, or keep AMD on the laptop;
-- caps for J and K: about $45 for comparison runs (now $30), $15 for GPUs (now $10), and the
-  GPT-2 cap for K1 (now $7, $4.45 used);
+- caps for J3, J4 and K1: comparison runs have about $7.6-7.8 left of $30, and J3 alone is
+  estimated at several dollars; GPUs have about $5.90 left of $10; the GPT-2 cap for K1 is $7,
+  with $4.45 used;
 - Intel Tiber AI Cloud sign-up (D5);
 - Baseten or Modal access (F1);
 - sharing the report (B2).
