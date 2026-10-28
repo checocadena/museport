@@ -1,6 +1,7 @@
 # J4: a second, unseen CUDA repo, end to end (plan, Oct 28)
 
-**Done Oct 28:** every step below succeeded on its first try. Muse cost $0.48 and GPU $0.137;
+**Done Oct 28:** Muse's port succeeded on its first run, and the check moved from 128 to 64
+steps before any model ran (see the evidence). Muse cost $0.48 and GPU $0.137;
 results in [`evidence/j4-llama2`](../evidence/j4-llama2/README.md).
 
 **Goal:** the J1-J3 pipeline on a CUDA repo it has never seen, with no hand-written hidden check
