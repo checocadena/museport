@@ -34,9 +34,9 @@ capture on the laptop; every other shot is a rendered clip from `demo/out/`.
 | 10 | 1:27-1:52 | **(rec)** the report site | Scroll the overview, open one port page and its turn-by-turn replay. "Every result is in a report built only from committed evidence." |
 | 11 | 1:52-1:58 | `numbers` | "18 of 19 kernel files correct, 17 passing on NVIDIA and 18 on AMD, and GPT-2 training ported for about three dollars, on a CPU, an NVIDIA GPU and an AMD GPU." |
 | 12 | 1:58-2:14 | **(rec)** `llm.c-sycl`: `make && ./test_gpt2fp32sycl`, sped up, ending on `overall okay: 1` | "Then the pieces go back together as llm.c-sycl: the kernels, llm.c's trainer, and llm.c's own test, which Muse ported too. One `make`, and llm.c's test prints 'overall okay' on a CPU, an NVIDIA GPU and an AMD GPU." |
-| 13 | 2:14-2:40 | *(optional)* **(rec)** a live `museport loop` on one kernel, sped up | "And it runs live: about 10 cents per kernel." |
-| 14 | 2:40-2:55 | limits card (text on screen) | "Limits: fp32, reduced sizes, one run per item, short training runs. Muse now writes the hidden checks too, 16 of 17 proven. Next: a second CUDA repo, end to end, and longer training." |
-| 15 | 2:55-3:00 | `end` | "github.com/checocadena/museport." |
+| 13 | 2:14-2:37 | **(rec)** `llama2-sycl`: `make llama2 && ./llama2 stories15M.bin 0.0 64 "Once upon a time"`, the story streaming out | "Then a repo it had never seen: llama2.cu, Llama 2 inference in one 772-line CUDA file. Muse planned it and ported it in one run, 20 turns, 45 cents. The story it writes is llama2.cu's own, byte for byte, on a CPU, an NVIDIA GPU and an AMD GPU." |
+| 14 | 2:37-2:54 | limits card (text on screen) | "Limits: fp32 for llm.c, reduced sizes, one run per item, short training runs; llama2.cu is one file, checked on two prompts. Muse now writes the hidden checks too, 16 of 17 proven. Next: bigger repos and longer training." |
+| 15 | 2:54-3:00 | `end` | "github.com/checocadena/museport." |
 
 Before recording, re-check every spoken number against `demo/data.json`, then re-run
 `make_data.py` and `render.mjs` once the evidence changes.
@@ -49,6 +49,11 @@ re-run for `gpus` (9) and `numbers` (11):
   matching PyTorch on the CPU, an NVIDIA GPU and an AMD GPU.
 
 `demo/out/` is not in git, so re-render it on the editing machine.
+
+**J4 (Oct 28): shot 13 is now the `llama2-sycl` recording.** It replaces the optional live
+`museport loop`; `timeline.json` moves the limits card to 2:37. Its spoken numbers are in
+`data.json` under `j4`: 1 CUDA file of 772 lines, 20 turns, $0.45, identical on the CPU, the RTX
+2000 Ada (also against llama2.cu itself) and the MI350X, and from a fresh clone.
 
 Three new results have no rendered clip of their own:
 - J1's recorded-CUDA checks (`evidence/diff-llmc-tier1`);
@@ -67,6 +72,12 @@ shot 12.
   beforehand (10 s), then record `make && ./test_gpt2fp32sycl`. On the CPU device that takes
   about a minute in all (`make` 26 s, test 34 s: `evidence/j3-fresh-clone`), so speed it up.
   End on `overall okay: 1`. The NVIDIA and AMD results are in the report, not in this recording.
-- **A live run (13):** `museport loop` on a Tier 1 task with a $0.50 cap. Speed it up 4-8×
-  in the edit.
+- **`llama2-sycl` (13):** in a fresh clone, run `cd llama2-sycl && wget
+  https://huggingface.co/karpathy/tinyllamas/resolve/main/stories15M.bin` beforehand, then
+  record `make llama2 && ./llama2 stories15M.bin 0.0 64 "Once upon a time"`. On the CPU device
+  `make llama2` took 7 s and the run under half a second (`evidence/j4-fresh-clone`), so it
+  needs no speed-up. End on the story. The GPU results are in the report, not in this
+  recording.
+- **A live run (dropped for J4):** `museport loop` on a Tier 1 task with a $0.50 cap, sped up
+  4-8×. If time allows, it can replace part of shot 10.
 - **Voiceover:** the author's voice. Record it per shot so the edit can slip each clip to fit.

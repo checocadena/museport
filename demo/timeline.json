@@ -91,18 +91,18 @@
    "duration_s": 16
   },
   {
-   "name": "live loop (optional)",
+   "name": "llama2-sycl run",
    "kind": "record",
    "file": null,
    "start_s": 134,
-   "duration_s": 25
+   "duration_s": 23
   },
   {
    "name": "limits card",
    "kind": "title",
    "file": null,
-   "start_s": 159,
-   "duration_s": 15
+   "start_s": 157,
+   "duration_s": 17
   },
   {
    "name": "end",

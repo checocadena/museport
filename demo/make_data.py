@@ -108,7 +108,25 @@ def main(evidence: Path) -> dict[str, object]:
                 "gpu": [{"device": g["device"], "vendor": g["vendor"], "pass": g["status"] == "ok",
                          "vs_native": g["vs_native"]} for g in p["gpu"]]}
                for p in (data["j3"] or {}).get("programs", [])],
+        "j4": _j4(data["j4"], evidence),
     }
+
+
+def _j4(j4: dict[str, object] | None, evidence: Path) -> dict[str, object] | None:
+    """J4, llama2.cu: the plan, Muse's port run and where its stories came out identical."""
+    if not j4:
+        return None
+    run = j4["runs"][-1]  # type: ignore[index]
+    cuda = sorted((evidence / "j4-llama2" / "task").glob("*.cu"))
+    return {"cuda_files": len(cuda), "cuda_lines": sum(len(f.read_text().splitlines())
+                                                      for f in cuda),
+            "plan_items": j4["plan_items"],
+            "plan_cost": j4["plan_cost"], "port_lines": j4["port_lines"],
+            "turns": run["iterations"], "cost": run["cost_usd"],
+            "verify": run["evaluation"]["verify_summary"], "helpers": run["evaluation"]["helpers"],
+            "gpu": [{"device": g["device"], "vendor": g["vendor"], "pass": g["status"] == "ok",
+                     "vs_native": g["vs_native"]} for g in j4["gpu"]],  # type: ignore[attr-defined]
+            "fresh_clone_identical": j4["fresh_ok"]}
 
 
 if __name__ == "__main__":

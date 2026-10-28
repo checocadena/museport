@@ -1285,5 +1285,31 @@
     }
    ]
   }
- ]
+ ],
+ "j4": {
+  "cuda_files": 1,
+  "cuda_lines": 772,
+  "plan_items": 1,
+  "plan_cost": 0.028614,
+  "port_lines": 737,
+  "turns": 20,
+  "cost": 0.45001759999999996,
+  "verify": "PASS: 2/2 case(s) match (worst max abs err 0, atol 0)",
+  "helpers": 0,
+  "gpu": [
+   {
+    "device": "AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85]",
+    "vendor": "amd",
+    "pass": true,
+    "vs_native": false
+   },
+   {
+    "device": "NVIDIA RTX 2000 Ada Generation",
+    "vendor": "nvidia",
+    "pass": true,
+    "vs_native": true
+   }
+  ],
+  "fresh_clone_identical": true
+ }
 }
