@@ -277,3 +277,14 @@ def test_gpu_task_for_a_onemath_port_builds_onemath_for_the_vendor(tmp_path):
     plain = make_gpu_task(root / "evidence" / "port-llmc-tier1-run2" / "t1-gelu-forward",
                           tmp_path / "plain", "muse-spark-1.3")
     assert "gpu_setup" not in json.loads(plain.read_text())
+
+
+def test_onemath_goal_asks_for_column_major():
+    # oneMath's cuBLAS backend does not implement row_major: matmul_backward's first port
+    # passed on the CPU and aborted on NVIDIA (evidence/d2-onemath-gpu)
+    from museport.llmc import SPECS
+    from museport.port import goal
+
+    g = goal(SPECS["matmul_backward.cu"], "matmul_backward_harness.cu")
+    assert "oneapi::math::blas::column_major" in g and "does not implement row_major" in g
+    assert "column_major" not in goal(SPECS["gelu_forward.cu"], "gelu_forward_harness.cu")

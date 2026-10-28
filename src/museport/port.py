@@ -291,7 +291,10 @@ def goal(spec: KernelSpec, harness: str, *, strict: bool = False,
            "own port is done. migrate's output can be long: read it in parts (read_file "
            "offset/limit) or work from the CUDA harness.")
         + (" cuBLAS calls go to oneMath (oneapi::math::blas, #include <oneapi/math.hpp>; the "
-           "compile flags already link -lonemath), not to oneapi::mkl product APIs."
+           "compile flags already link -lonemath), not to oneapi::mkl product APIs. Use "
+           "oneapi::math::blas::column_major, as cuBLAS itself is column-major (swap the operands "
+           "for row-major data): oneMath's cuBLAS backend does not implement row_major, so a "
+           "row_major call aborts on NVIDIA GPUs even though it runs on the CPU."
            if spec.keep_cublas else "")
         + (STRICT_GOAL if strict else "")
     )
