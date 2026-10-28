@@ -1,7 +1,7 @@
 {
   "tool": "gpu_test",
   "status": "ok",
-  "summary": "recorded 1 output(s) of the original CUDA on NVIDIA L4 (nvidia); two runs identical: PASS: 1/1 case(s) match (worst max abs err 0, atol 0)",
+  "summary": "recorded 1 output(s) of the original CUDA on NVIDIA RTX A5000 (nvidia); two runs identical: PASS: 1/1 case(s) match (worst max abs err 0, atol 0)",
   "evidence": {
     "task": "llmc_trimat_forward",
     "device": {
@@ -9,8 +9,8 @@
       "device_type": "gpu",
       "index": 0,
       "platform": "NVIDIA CUDA BACKEND",
-      "name": "NVIDIA L4",
-      "description": "NVIDIA CUDA BACKEND, NVIDIA L4 8.9 [CUDA 13.2]",
+      "name": "NVIDIA RTX A5000",
+      "description": "NVIDIA CUDA BACKEND, NVIDIA RTX A5000 8.6 [CUDA 13.2]",
       "selector": "cuda:0"
     },
     "vendor": "nvidia",
@@ -19,8 +19,8 @@
         "case": 0,
         "input": "input.bin",
         "file": "recorded/case0.out",
-        "bytes": 31457280,
-        "sha256": "ffa7f53b0b03c29e9f550ef950396584d90354dcb2d17c2fbcda41f59fb1c256"
+        "bytes": 15728640,
+        "sha256": "8e7f7120da27138238323cc6ab168b99aef6dd2c26621c025e082d86575638b4"
       }
     ],
     "deterministic": true,
@@ -28,31 +28,31 @@
       "mode": "array",
       "cases": [
         {
-          "input": "/tmp/tmp.p1av6hWVjR/task/input.bin",
+          "input": "/tmp/tmp.FJqVj0lnUO/task/input.bin",
           "reference": {
-            "command": "build/native /tmp/tmp.p1av6hWVjR/task/input.bin /tmp/tmp.p1av6hWVjR/out/work/v_record/case0_reference.out 2 256 768 12",
+            "command": "build/native /tmp/tmp.FJqVj0lnUO/task/input.bin /tmp/tmp.FJqVj0lnUO/out/work/v_record/case0_reference.out 4 128 768 12",
             "returncode": 0,
-            "duration_s": 0.790871,
+            "duration_s": 0.631419,
             "stdout": "",
             "stderr": "",
-            "cwd": "/tmp/tmp.p1av6hWVjR/out/work",
-            "output_file": "/tmp/tmp.p1av6hWVjR/out/work/v_record/case0_reference.out"
+            "cwd": "/tmp/tmp.FJqVj0lnUO/out/work",
+            "output_file": "/tmp/tmp.FJqVj0lnUO/out/work/v_record/case0_reference.out"
           },
           "candidate": {
-            "command": "build/native /tmp/tmp.p1av6hWVjR/task/input.bin /tmp/tmp.p1av6hWVjR/out/work/v_record/case0_candidate.out 2 256 768 12",
+            "command": "build/native /tmp/tmp.FJqVj0lnUO/task/input.bin /tmp/tmp.FJqVj0lnUO/out/work/v_record/case0_candidate.out 4 128 768 12",
             "returncode": 0,
-            "duration_s": 0.343007,
+            "duration_s": 0.457122,
             "stdout": "",
             "stderr": "",
-            "cwd": "/tmp/tmp.p1av6hWVjR/out/work",
-            "output_file": "/tmp/tmp.p1av6hWVjR/out/work/v_record/case0_candidate.out"
+            "cwd": "/tmp/tmp.FJqVj0lnUO/out/work",
+            "output_file": "/tmp/tmp.FJqVj0lnUO/out/work/v_record/case0_candidate.out"
           },
           "reference_format": "f32",
           "candidate_format": "f32",
           "mode": "array",
           "stats": {
-            "n_reference": 7864320,
-            "n_candidate": 7864320,
+            "n_reference": 3932160,
+            "n_candidate": 3932160,
             "atol": 0.0,
             "rtol": 0.0,
             "max_ulp_allowed": null,
@@ -63,19 +63,19 @@
             "max_rel_err": 0.0,
             "max_ulp_f32": 0,
             "median_ulp_f32": 0.0,
-            "exact_matches": 7864320,
+            "exact_matches": 3932160,
             "mismatches": 0,
             "nan_mismatches": 0,
             "reference_range": [
               -1.6067343950271606,
-              1.7035402059555054
+              1.6516941785812378
             ],
             "first_mismatches": []
           },
           "passed": true
         }
       ],
-      "work_dir": "/tmp/tmp.p1av6hWVjR/out/work/v_record",
+      "work_dir": "/tmp/tmp.FJqVj0lnUO/out/work/v_record",
       "passed_cases": 1,
       "total_cases": 1,
       "worst_max_abs_err": 0.0
@@ -89,7 +89,7 @@
       {
         "step": "native_build",
         "status": "ok",
-        "summary": "exit 0: /usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.p1av6hWVjR/task /tmp/tmp.p1av6hWVjR/task/trimat_forward_harness.cu -lcublas -o build/native"
+        "summary": "exit 0: /usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.FJqVj0lnUO/task /tmp/tmp.FJqVj0lnUO/task/trimat_forward_harness.cu -lcublas -o build/native"
       },
       {
         "step": "native_repeat",

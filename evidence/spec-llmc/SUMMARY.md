@@ -1,6 +1,6 @@
 # Harness specs written by Muse and proven
 
-Model `muse-spark-1.3`, spent $1.0535 (GPU proofs $0.014). Worked examples shown to Muse (not graded): gelu_forward.cu, global_norm.cu.
+Model `muse-spark-1.3`, spent $1.1330 (GPU proofs $0.010). Worked examples shown to Muse (not graded): gelu_forward.cu, global_norm.cu.
 
 | file | proven | attempts | variants | same as hand-written: variants / CPU functions / sizes / tol | cost |
 |---|---|---|---|---|---|
@@ -19,5 +19,5 @@ Model `muse-spark-1.3`, spent $1.0535 (GPU proofs $0.014). Worked examples shown
 | layernorm_backward.cu | yes (CPU) | 3 | [1, 2, 3, 5, 6, 7, 8, 9, 10] | yes / no / no / yes | $0.2026 |
 | matmul_forward.cu | yes (GPU) | 1 | [1, 2, 3, 4] | yes / yes / no / yes | $0.0320 |
 | matmul_backward.cu | yes (CPU) | 1 | [1] | yes / yes / no / yes | $0.0352 |
-| trimat_forward.cu | no | 2 |  |  | $0.1195 |
+| trimat_forward.cu | no | 3 |  |  | $0.1990 |
 | matmul_backward_bias.cu | yes (GPU) | 1 | [1, 2, 3, 4, 7, 8, 9] | no / yes / no / no | $0.0499 |

@@ -155,6 +155,19 @@ check replaces it with **the original CUDA's own output**, recorded on an NVIDIA
 - **Planted bugs:** a dropped-digit typo in gelu fails. A typo smaller than the tolerance passes
   both references; that is the limit of any tolerance-based check.
 
+### Hidden checks written by Muse
+
+The specs those checks are built from (CPU reference, variants, inputs, sizes, tolerance) were
+written by hand. Muse now writes them from the CUDA file alone, and each one is proven
+([evidence](evidence/spec-llmc/README.md)):
+- **Proof:** llm.c's own GPU code and CPU code must agree under the spec, checked through
+  SYCLomatic on the CPU, or on an NVIDIA GPU where SYCLomatic fails.
+- **Proven:** 16 of llm.c's 17 files (2 were worked examples, not graded). 13 of the 16 are as
+  strict as llm.c's own check. The other 3 took llm.c's bf16 tolerance instead of the fp32 one,
+  and one also dropped an fp32 variant.
+- **Not proven:** `trimat_forward`. The GPU proof caught its masked-triangle mistake.
+- **Cost:** about $1.34–1.52 of Muse and $0.03 of GPU.
+
 **Limits of all results:** fp32 only, reduced sizes for the kernels, one run per item.
 
 ## How we got here: the first runs

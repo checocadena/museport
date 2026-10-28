@@ -1,13 +1,13 @@
 # GPU test: llmc_trimat_forward
 
-- **Result:** `ok`: recorded 1 output(s) of the original CUDA on NVIDIA L4 (nvidia); two runs identical: PASS: 1/1 case(s) match (worst max abs err 0, atol 0)
-- **Device:** NVIDIA L4 (`cuda:0`), vendor `nvidia`
+- **Result:** `ok`: recorded 1 output(s) of the original CUDA on NVIDIA RTX A5000 (nvidia); two runs identical: PASS: 1/1 case(s) match (worst max abs err 0, atol 0)
+- **Device:** NVIDIA RTX A5000 (`cuda:0`), vendor `nvidia`
 - **SYCL target flags:** `(JIT)`
 
 | step | status | summary |
 |---|---|---|
 | reference_build | `ok` | exit 0: true |
-| native_build | `ok` | exit 0: /usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.p1av6hWVjR/task /tmp/tmp.p1av6hWVjR/task/trimat_forward_harness.cu -lcublas -o build/native |
+| native_build | `ok` | exit 0: /usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.FJqVj0lnUO/task /tmp/tmp.FJqVj0lnUO/task/trimat_forward_harness.cu -lcublas -o build/native |
 | native_repeat | `ok` | PASS: 1/1 case(s) match (worst max abs err 0, atol 0) |
 
 Limitations:
