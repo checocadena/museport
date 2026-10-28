@@ -33,9 +33,10 @@ capture on the laptop; every other shot is a rendered clip from `demo/out/`.
 | 9 | 1:19-1:27 | `gpus` | "And the same SYCL source runs on both vendors: NVIDIA, checked against llm.c's own CUDA, and an AMD MI350X. GPT-2's training port runs on both too: it matches llm.c's CUDA step for step on NVIDIA, and PyTorch on AMD." |
 | 10 | 1:27-1:52 | **(rec)** the report site | Scroll the overview, open one port page and its turn-by-turn replay. "Every result is in a report built only from committed evidence." |
 | 11 | 1:52-1:58 | `numbers` | "18 of 19 kernel files correct, the same 15 passing on NVIDIA and on AMD, and GPT-2 training ported for about three dollars, on a CPU, an NVIDIA GPU and an AMD GPU." |
-| 12 | 1:58-2:40 | *(optional)* **(rec)** a live `museport loop` on one kernel, sped up | "And it runs live: about 10 cents per kernel." |
-| 13 | 2:40-2:55 | limits card (text on screen) | "Limits: fp32, reduced sizes, one run per item. Next: Muse now writes the hidden checks too, 16 of 17 proven. Then a whole ported llm.c that builds and passes llm.c's own test." |
-| 14 | 2:55-3:00 | `end` | "github.com/checocadena/museport." |
+| 12 | 1:58-2:14 | **(rec)** `llm.c-sycl`: `make && ./test_gpt2fp32sycl`, sped up, ending on `overall okay: 1` | "Then the pieces go back together as llm.c-sycl: the kernels, llm.c's trainer, and llm.c's own test, which Muse ported too. One `make`, and llm.c's test prints 'overall okay' on a CPU, an NVIDIA GPU and an AMD GPU." |
+| 13 | 2:14-2:40 | *(optional)* **(rec)** a live `museport loop` on one kernel, sped up | "And it runs live: about 10 cents per kernel." |
+| 14 | 2:40-2:55 | limits card (text on screen) | "Limits: fp32, reduced sizes, one run per item, short training runs. Muse now writes the hidden checks too, 16 of 17 proven. Next: a second CUDA repo, end to end, and longer training." |
+| 15 | 2:55-3:00 | `end` | "github.com/checocadena/museport." |
 
 Before recording, re-check every spoken number against `demo/data.json`, then re-run
 `make_data.py` and `render.mjs` once the evidence changes.
@@ -44,15 +45,23 @@ Before recording, re-check every spoken number against `demo/data.json`, then re
 older numbers until `make_data.py` and `render.mjs` are re-run:
 - `gpus` (9) and `numbers` (11): AMD now passes 15 of 15, and GPT-2 training runs on AMD
   (`evidence/gpt2-stage3/gpu/AMD.md`).
-- Today's two new results have no clip yet: J1's recorded-CUDA checks
-  (`evidence/diff-llmc-tier1`) and J2's Muse-written checks (`evidence/spec-llmc`,
-  `evidence/spec-llmc-fp32`). The report's "Differential checks" and "Hidden checks written
-  by Muse" sections can be shown in the report recording (shot 10).
+- Today's new results have no rendered clip:
+  - J1's recorded-CUDA checks (`evidence/diff-llmc-tier1`);
+  - J2's Muse-written checks (`evidence/spec-llmc`, `evidence/spec-llmc-fp32`);
+  - J3's `llm.c-sycl` (`evidence/j3-*`).
+
+  The report shows all three, so the report recording (shot 10) can cover them: "Differential
+  checks", "Hidden checks written by Muse" and "llm.c-sycl". J3 also gets its own recording,
+  shot 12.
 
 ## Shots that need the author
 
 - **The report site (10):** a screen recording of the published report. It must be shared
   publicly first.
-- **A live run (12):** `museport loop` on a Tier 1 task with a $0.50 cap. Speed it up 4-8×
+- **`llm.c-sycl` (12):** in a fresh clone, run `cd llm.c-sycl && ./dev/download_starter_pack.sh`
+  beforehand (10 s), then record `make && ./test_gpt2fp32sycl`. On the CPU device that takes
+  about a minute in all (`make` 26 s, test 34 s: `evidence/j3-fresh-clone`), so speed it up.
+  End on `overall okay: 1`. The NVIDIA and AMD results are in the report, not in this recording.
+- **A live run (13):** `museport loop` on a Tier 1 task with a $0.50 cap. Speed it up 4-8×
   in the edit.
 - **Voiceover:** the author's voice. Record it per shot so the edit can slip each clip to fit.
