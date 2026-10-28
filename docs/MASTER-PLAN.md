@@ -72,7 +72,7 @@ See the README's results table.
   *Cost: $0. Done when the pages build from the committed evidence with no hand-written
   numbers, and tests cover the generator.*
 - [ ] **B2. Publish it** (an artifact page or GitHub Pages) and link it from the README and
-  the submission. *Cost: $0.* *(Oct 28: published as a private claude.ai artifact, now version 16,
+  the submission. *Cost: $0.* *(Oct 28: published as a private claude.ai artifact, now version 17,
   built from main, with every result including J3. `docs/SUBMISSION.md` links it. Still to do:
   the author shares it publicly, then the README links it.)*
 
