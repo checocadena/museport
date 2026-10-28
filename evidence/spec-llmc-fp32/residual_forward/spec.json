@@ -1,0 +1,60 @@
+{
+  "cpu_call": "residual_forward_cpu(out, inp1, inp2, B * T * C)",
+  "cpu_functions": [
+    "residual_forward_cpu"
+  ],
+  "dropped_variants": [],
+  "extra_includes": [],
+  "gpu_call": "residual_forward(k, d_out, d_inp1, d_inp2, B * T * C, 256)",
+  "gpu_prelude": "",
+  "host_prep": "",
+  "inputs": [
+    {
+      "count": "B*T*C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "uniform",
+      "name": "inp1"
+    },
+    {
+      "count": "B*T*C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "uniform",
+      "name": "inp2"
+    }
+  ],
+  "keep_cublas": false,
+  "keep_cublaslt": false,
+  "keep_in_harness": [],
+  "note": "B=4, T=256 (llm.c: B=8, T=1024); C=768 as in llm.c.",
+  "output_post": "",
+  "outputs": [
+    {
+      "count": "B*T*C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "zeros",
+      "name": "out"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "B",
+      "value": 4
+    },
+    {
+      "name": "T",
+      "value": 256
+    },
+    {
+      "name": "C",
+      "value": 768
+    }
+  ],
+  "tol": 1e-05,
+  "variants": [
+    1,
+    2
+  ]
+}

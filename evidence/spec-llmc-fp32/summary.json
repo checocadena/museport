@@ -1,6 +1,6 @@
 {
   "model": "muse-spark-1.3",
-  "spent_usd": 0.0229,
+  "spent_usd": 0.0469,
   "gpu_usd": 0.0,
   "examples": [
     "gelu_forward.cu",
@@ -13,6 +13,30 @@
       "proven_by": "cpu",
       "attempts": 1,
       "cost_usd": 0.022855,
+      "gpu_usd": 0.0,
+      "compare": {
+        "variants": true,
+        "cpu_functions": true,
+        "sizes": true,
+        "tol": true,
+        "hand_variants": [
+          1,
+          2
+        ],
+        "hand_tol": 1e-05
+      },
+      "variants": [
+        1,
+        2
+      ],
+      "dropped_variants": []
+    },
+    {
+      "file": "residual_forward.cu",
+      "proven": true,
+      "proven_by": "cpu",
+      "attempts": 1,
+      "cost_usd": 0.024018,
       "gpu_usd": 0.0,
       "compare": {
         "variants": true,
