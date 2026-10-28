@@ -105,3 +105,14 @@ def test_gpt2_stages_get_pages_and_an_overview_row(tmp_path):
     assert 'href="gpt2/gpt2-stage3.html"' in index and "RTX 4000 Ada" in index
     stage3 = (tmp_path / "site" / "gpt2" / "gpt2-stage3.html").read_text()
     assert "TURN 16" in stage3 and "gpt2_train.cpp" in stage3 and "sycl_verify_vs_native" in stage3
+
+
+def test_differential_checks_get_a_section(tmp_path):
+    build(ROOT / "evidence", tmp_path / "site")
+    index = (tmp_path / "site" / "index.html").read_text()
+    section = index[index.index('<section id="diff">'):]
+    section = section[:section.index("</section>")]
+    assert section.count("<tr><td><code>t1-") == 10
+    assert section.count("pill ok\">pass") == 2 * 10 + 2  # 10 x (recording, port) + subtle bug
+    assert "pill bad\">fail" in section and "worst 1.43e-06" in section
+    assert 'href="#diff"' in index and "MI350X VF" in index[index.index('id="gpt2"'):]

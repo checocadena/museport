@@ -85,7 +85,19 @@ def load(evidence: Path) -> dict[str, Any]:
                               gpu.get(task.get("name", ""), [])))
     plan_file = evidence / PLAN_DIR / "plan.json"
     plan = json.loads(plan_file.read_text()) if plan_file.exists() else None
-    return {"items": items, "batches": batches, "plan": plan, "gpt2": load_gpt2(evidence)}
+    return {"items": items, "batches": batches, "plan": plan, "gpt2": load_gpt2(evidence),
+            "diff": load_diff(evidence)}
+
+
+def load_diff(evidence: Path) -> list[dict[str, Any]]:
+    """Differential checks (evidence/diff-*/, written by ``museport diff-check``)."""
+    out = []
+    for summary in sorted(evidence.glob("diff-*/summary.json")):
+        d = summary.parent
+        planted = d / "planted" / "planted.json"
+        out.append({"dir": d.name, **json.loads(summary.read_text()),
+                    "planted": json.loads(planted.read_text()) if planted.exists() else {}})
+    return out
 
 
 @dataclass
@@ -330,6 +342,11 @@ def variant_pill(it: Item) -> str:
     return pill(f"{n} variant{'s' if n != 1 else ''} kept", "ok")
 
 
+def short_device(name: str) -> str:
+    name = name.replace("NVIDIA ", "").replace(" Generation", "")
+    return name.replace("AMD Instinct ", "").split(" gfx")[0]
+
+
 def gpu_pill(it: Item) -> str:
     if not it.gpu:
         if any("onemath" in f.lower() for f in it.task.get("base_flags", [])):
@@ -337,8 +354,7 @@ def gpu_pill(it: Item) -> str:
         return pill("not run", "none")
     pills = []
     for g in it.gpu:
-        name = g["device"].replace("NVIDIA ", "").replace(" Generation", "")
-        name = name.replace("AMD Instinct ", "").split(" gfx")[0]
+        name = short_device(g["device"])
         if g["status"] != "ok":
             pills.append(pill(f"fail: {name}", "bad"))
         else:
@@ -387,7 +403,8 @@ def render_index(data: dict[str, Any]) -> str:
         "run on NVIDIA GPUs against llm.c's own CUDA, and on an AMD GPU against the "
         "reference.</p>"
         '<nav class="crumb"><a href="plan.html">The plan</a><a href="#items">Every item</a>'
-        '<a href="#gpt2">GPT-2</a><a href="#first-runs">The first runs</a>'
+        '<a href="#gpt2">GPT-2</a><a href="#diff">Differential checks</a>'
+        '<a href="#first-runs">The first runs</a>'
         f'<a href="{REPO}">Repository</a></nav></header>',
         '<section><h2>Results with the fixed loop</h2>' + _tier_head(True)
         + _tier_rows(current_table(items), True) + "</tbody></table></div>"
@@ -399,6 +416,7 @@ def render_index(data: dict[str, Any]) -> str:
         "the reference on an AMD GPU. One run per item, after the loop fixes (delete_file, "
         "ranged read_file, 32k output per turn); the first runs are below.</p></section>",
         _gpt2_section(data.get("gpt2", [])),
+        _diff_section(data.get("diff", [])),
         '<section id="items"><h2>Every item</h2>' + _item_table(current, compare=firsts)
         + "</section>",
         '<section id="first-runs"><h2>The first runs</h2><p class="note">The same tasks and '
@@ -434,12 +452,67 @@ def render_index(data: dict[str, Any]) -> str:
     return page("Muse Port Evidence", "\n".join(body))
 
 
+def _check_cell(res: dict[str, Any] | None) -> str:
+    """A verify result as a pill plus its worst error."""
+    res = res or {}
+    status = res.get("status") or res.get("verify_status")
+    summary = res.get("summary") or res.get("verify_summary") or res.get("note") or ""
+    m = re.search(r"worst max abs err ([0-9.e+-]+)", summary)
+    bad = re.search(r"(\d+) of (\d+) element", summary)
+    detail = (f"worst {m.group(1)}" if m else
+              f"{int(bad.group(1)):,} of {int(bad.group(2)):,} values out of tolerance" if bad
+              else summary)
+    return (pill("pass" if status == "ok" else "fail", "ok" if status == "ok" else "bad")
+            + f' <span class="note">{esc(detail)}</span>')
+
+
+def _diff_section(diffs: list[dict[str, Any]]) -> str:
+    if not diffs:
+        return ""
+    parts = [
+        '<section id="diff"><h2>Differential checks: the original CUDA as the reference</h2>'
+        '<p class="note">The hidden references above are C++ programs written from llm.c\'s '
+        "CPU code. A differential check needs none: the original CUDA is built with "
+        "<code>nvcc</code> on an NVIDIA GPU and its outputs are recorded, run twice to show "
+        "they repeat. The recording then grades the port with the same steps as the hidden "
+        "grade.</p>"]
+    for d in diffs:
+        rows = "".join(
+            f"<tr><td><code>{esc(r['item'])}</code></td>"
+            + (f"<td>{esc(short_device(r.get('device') or ''))}</td>"
+               f"<td>{pill('yes', 'ok') if r.get('deterministic') else pill('no', 'warn')}</td>"
+               f"<td>{_check_cell(r.get('recording_vs_cpu_reference'))}</td>"
+               f"<td>{_check_cell(r.get('differential_grade'))}</td>"
+               if r.get("recorded") else '<td colspan=4><span class="note">not recorded'
+               "</span></td>") + "</tr>"
+            for r in d["items"])
+        planted = "".join(
+            f"<tr><td>{esc(bug)}</td><td>{_check_cell(g.get('cpu_reference'))}</td>"
+            f"<td>{_check_cell(g.get('recorded_cuda'))}</td></tr>"
+            for bug, g in d.get("planted", {}).items())
+        parts.append(
+            f'<p class="note">Evidence: <a href="{REPO}/tree/main/evidence/{esc(d["dir"])}">'
+            f'evidence/{esc(d["dir"])}</a>, ports from <code>{esc(d.get("port_run", ""))}'
+            "</code>.</p><div class=\"scroll\"><table><thead><tr><th>Item</th>"
+            "<th>Recorded on</th><th>Two runs identical</th><th>Recording vs CPU reference</th>"
+            "<th>Muse's port vs recording</th></tr></thead><tbody>" + rows
+            + "</tbody></table></div>")
+        if planted:
+            parts.append(
+                '<h3>Planted bugs</h3><div class="scroll"><table><thead><tr><th>Bug</th>'
+                "<th>vs CPU reference</th><th>vs recording</th></tr></thead><tbody>" + planted
+                + '</tbody></table></div><p class="note">A bug whose error is below the '
+                "tolerance passes both references: that is the limit of any tolerance-based "
+                "check.</p>")
+    return "".join(parts) + "</section>"
+
+
 def _gpt2_gpu_cell(st: Gpt2Stage) -> str:
     if not st.gpu:
         return '<span class="note">CPU device only</span>'
     return "<br>".join(
         pill("pass" if g["status"] == "ok" else g["status"], "ok" if g["status"] == "ok" else "bad")
-        + f" {esc(g['device'].replace('NVIDIA ', ''))}<br><span class=\"note\">vs PyTorch"
+        + f" {esc(short_device(g['device']))}<br><span class=\"note\">vs PyTorch"
         + (" and llm.c's CUDA" if g["vs_native"] else "") + "</span>" for g in st.gpu)
 
 
