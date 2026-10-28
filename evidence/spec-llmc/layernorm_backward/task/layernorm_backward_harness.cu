@@ -1439,7 +1439,7 @@ int main(int argc, char** argv) {
     float* d_dbias;
     cudaCheck(cudaMalloc(&d_dbias, sizeof(float) * (size_t)(C)));
     floatX *d_mean; floatX *d_rstd; float *d_scratch; cudaCheck(cudaMalloc(&d_mean, (size_t)B * T * sizeof(floatX))); cudaCheck(cudaMalloc(&d_rstd, (size_t)B * T * sizeof(floatX))); cudaCheck(memcpy_convert(d_mean, mean, (size_t)B * T)); cudaCheck(memcpy_convert(d_rstd, rstd, (size_t)B * T)); cudaCheck(cudaMalloc(&d_scratch, (size_t)(1024/32) * (size_t)cuda_num_SMs * (size_t)(2*C+1) * sizeof(float)));
-    const int variants[] = {2, 3, 4, 5, 6, 7, 8, 9, 10};
+    const int variants[] = {1, 2, 3, 5, 6, 7, 8, 9, 10};
     for (int vi = 0; vi < 9; vi++) {
         const int k = variants[vi];
         cudaCheck(cudaMemset(d_dinp, 0, sizeof(float) * (size_t)(B*T*C)));

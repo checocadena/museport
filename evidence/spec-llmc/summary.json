@@ -1,6 +1,6 @@
 {
   "model": "muse-spark-1.3",
-  "spent_usd": 0.6143,
+  "spent_usd": 0.8169,
   "examples": [
     "gelu_forward.cu",
     "global_norm.cu"
@@ -249,6 +249,47 @@
       "proven": false,
       "attempts": 3,
       "cost_usd": 0.19415
+    },
+    {
+      "file": "layernorm_backward.cu",
+      "proven": true,
+      "attempts": 3,
+      "cost_usd": 0.20256,
+      "compare": {
+        "variants": true,
+        "cpu_functions": false,
+        "sizes": false,
+        "tol": true,
+        "hand_variants": [
+          1,
+          2,
+          3,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "hand_tol": 0.001
+      },
+      "variants": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "dropped_variants": [
+        {
+          "reason": "bf16-only: guarded by #if defined(ENABLE_BF16) and uses __nv_bfloat162 atomics, absent in fp32 build",
+          "variant": 4
+        }
+      ]
     }
   ]
 }
