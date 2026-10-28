@@ -1,0 +1,36 @@
+{
+  "name": "llmc_adamw",
+  "goal": "Port adamw_harness.cu (llm.c dev/cuda/adamw.cu, fp32 build) to idiomatic SYCL 2020 with zero dpct helpers. Keep every kernel variant k in [1, 2] as its own SYCL kernel, computed on the SYCL device, and keep the program's contract: `build/candidate <input> <output> N` reads the inputs and writes each variant's outputs in order as raw float32, exactly as the CUDA main does. A hidden reference checks the output (atol 0.0001 + rtol FLT_EPSILON*|ref|, llm.c's own fp32 rule). Success requires compile, verify and a zero-helper scan_helpers of the whole work directory (path '.') on the same sources: migrate's output under migrated/ counts, so delete it (delete_file) once your own port is done. migrate's output can be long: read it in parts (read_file offset/limit) or work from the CUDA harness.",
+  "cuda_path": "adamw_harness.cu",
+  "include_dirs": [
+    "."
+  ],
+  "reference_build": [
+    "g++",
+    "-O2",
+    "-std=c++17",
+    "{task_dir}/adamw_ref.cpp",
+    "-o",
+    "build/reference"
+  ],
+  "reference_cmd": "build/reference {input} {output} 1048576",
+  "candidate_cmd": "build/candidate {input} {output} 1048576",
+  "inputs": [
+    "input.bin"
+  ],
+  "mode": "array",
+  "output_format": "f32",
+  "tolerance": 0.0001,
+  "rtol": 1.1920929e-07,
+  "museport": {
+    "source": "karpathy/llm.c dev/cuda/adamw.cu",
+    "variants": [
+      1,
+      2
+    ],
+    "sizes": {
+      "N": 1048576
+    },
+    "note": "llm.c's sizes (1048576 parameters, step t=10, default hyperparameters); tolerance 1e-4 is validate_result's default, which adamw uses."
+  }
+}

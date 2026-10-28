@@ -1,0 +1,17 @@
+{
+  "source_hash": "ce475dc1cee2b619",
+  "reference_build_rc": 0,
+  "last_compile_input": {
+    "add_dpct_include": false,
+    "sources": [
+      "gpt2_train.cpp"
+    ]
+  },
+  "compile": [
+    "ok",
+    "compiled 1 source(s) -> <scratch>/regrade/work/build/candidate (0 warning(s))"
+  ],
+  "verify_status": "ok",
+  "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0.00149, atol 0.01)",
+  "helpers": 0
+}

@@ -657,22 +657,37 @@ def render_summary(summary: dict[str, Any]) -> str:
 # ----------------------------------------------------------------------------- variant check
 
 
+def _block(src: str, start: int) -> int:
+    """The index just past the brace block (or parenthesised list) opening at ``start``."""
+    pairs = {"{": "}", "(": ")"}
+    o, c = src[start], pairs[src[start]]
+    depth, k = 0, start
+    while k < len(src):
+        depth += 1 if src[k] == o else -1 if src[k] == c else 0
+        k += 1
+        if depth == 0:
+            break
+    return k
+
+
 def kernel_bodies(src: str) -> list[str]:
-    """The body of every ``parallel_for`` kernel lambda in ``src``, comments and whitespace
-    dropped and numbered kernel/variant names replaced, so copies compare equal."""
+    """The body of every ``parallel_for`` kernel in ``src`` (a lambda, or the struct of a
+    functor passed by name), comments and whitespace dropped and numbered kernel/variant names
+    replaced, so copies compare equal."""
     out = []
     for m in re.finditer(r"parallel_for\s*(?:<[^>]*>)?\s*\(", src):
-        lam = src.find("[=]", m.end())
-        start = src.find("{", lam) if lam >= 0 else -1
-        if start < 0:
+        args = src[m.end() - 1:_block(src, m.end() - 1)]
+        lam = re.search(r"\[[=&]\]", args)
+        if lam:
+            start = args.find("{", lam.end())
+            body = args[start:_block(args, start)] if start >= 0 else ""
+        else:  # a functor: parallel_for(range, Name{...}) or Name(...)
+            fn = re.search(r",\s*(\w+)\s*[{(]", args)
+            d = re.search(rf"\b(?:struct|class)\s+{fn.group(1)}\b[^{{;]*\{{", src) if fn else None
+            body = src[d.end() - 1:_block(src, d.end() - 1)] if d else ""
+        if not body:
             continue
-        depth, k = 0, start
-        while k < len(src):
-            depth += {"{": 1, "}": -1}.get(src[k], 0)
-            k += 1
-            if depth == 0:
-                break
-        body = re.sub(r"//.*", "", src[start:k])
+        body = re.sub(r"//.*", "", body)
         body = re.sub(r"\b\w*(?:[Kk]ernel|[Vv]ariant|_v|V)\d+\w*\b", "X", body)
         out.append(re.sub(r"\s+", " ", body))
     return out

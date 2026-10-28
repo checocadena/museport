@@ -106,17 +106,33 @@ llm.c's CPU code and to fail a planted bug.
 - **Limits:** the ports are lean rewrites with simple kernels, not llm.c's tuned kernels.
   Stages 1 and 2 ran on the CPU device only, and kernel performance was not compared.
 
-### How much SYCLomatic helps
+### How much the tooling helps, and Muse as a reviewer
 
-The same 10 Tier 1 files, with the `migrate` tool (SYCLomatic) taken away
-(`museport port --no-migrate`), so Muse writes each port from the CUDA source
-([evidence](evidence/port-llmc-tier1-nomigrate/README.md)):
+Three experiments take a piece away, or add a second agent. Each is one run per item.
 
-- **10 of 10** met the loop's success rule and are correct with 0 helpers, in 5.3 turns per
-  item, for **$0.48** (with SYCLomatic: 9 of 10, 8.2 turns, $1.01).
-- On these simple kernels SYCLomatic did not help. The one file with warp-level CUDA
-  (`fused_residual_forward`) got correct but plain kernels, without its shared-memory and warp
-  structure.
+- **Without SYCLomatic** (`museport port --no-migrate`, the 10 Tier 1 files,
+  [evidence](evidence/port-llmc-tier1-nomigrate/README.md)):
+  - **10 of 10** met the loop's success rule and are correct with 0 helpers, in 5.3 turns per
+    item, for **$0.48** (with SYCLomatic: 9 of 10, 8.2 turns, $1.01).
+  - On these simple kernels SYCLomatic did not help. The one file with warp-level CUDA
+    (`fused_residual_forward`) got correct but plain kernels, without its shared-memory and
+    warp structure.
+- **Without feedback** (`--baseline`: no `verify`, `scan_helpers` or `benchmark`; Muse never
+  runs its port, and the hidden grade checks it after):
+  - **Tier 1:** 10 of 10 still correct with 0 helpers, for $1.18; one port copies a variant,
+    which none did with feedback ([evidence](evidence/port-llmc-tier1-baseline/README.md)).
+  - **GPT-2 training (stage 3):** the port passes (worst error 0.00149), for $1.34. With
+    feedback, Muse's first version had a transpose bug that only the check caught; this time
+    its first version was right ([evidence](evidence/gpt2-stage3-baseline/README.md)).
+- **Muse as a reviewer** (`museport review`): a second Muse call reviews each of 20 finished
+  ports from the code alone, with no test results, for $0.59
+  ([evidence](evidence/review-muse/README.md)).
+  - It caught both ports that copy variants, and flagged no other.
+  - It judged the one failing port "likely correct": a code review is not a correctness check.
+  - It found a real latent bug the tests miss: divergent `group_barrier`s in the passing
+    `softmax_forward` fix, at sizes the hidden check does not use.
+  - It flagged 4 correct ports whose variants drop the CUDA variant's parallel structure,
+    which neither check can see.
 
 **Limits of all results:** fp32 only, reduced sizes for the kernels, one run per item.
 
