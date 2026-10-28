@@ -142,3 +142,27 @@ def make_loop_task(repo: Path, recorded: Path, model: Path, dest: Path) -> Path:
                          "reference": "llama2.cu's own CUDA output, recorded on an NVIDIA GPU"}}
     (dest / "task.json").write_text(json.dumps(task, indent=2) + "\n")
     return dest / "task.json"
+
+
+def make_gpu_task(evidence_dir: Path, dest: Path, model: str, run: str = "run1") -> Path:
+    """A ``remote-test`` task for the J4 port (``evidence/j4-llama2``): its task (wrapper,
+    recording), Muse's port as last compiled, and the model fetched on the machine with its
+    sha256. gpu-test pins the SYCL device to the GPU. On NVIDIA the native build is llama2.cu
+    itself, run through the same wrapper."""
+    from .port import last_compiled_sources
+
+    srcs = last_compiled_sources(evidence_dir / run / "trace.jsonl")
+    if not srcs:
+        raise ValueError(f"{evidence_dir}: the model never compiled")
+    if dest.exists():
+        shutil.rmtree(dest)
+    shutil.copytree(evidence_dir / "task", dest, ignore=shutil.ignore_patterns(MODEL))
+    shutil.copytree(evidence_dir / run / "port", dest / "agent_port")
+    task = json.loads((dest / "task.json").read_text())
+    task["sycl_sources"] = [f"agent_port/{s}" for s in srcs]
+    task["benchmark_runs"] = 3
+    task["fetch"] = [{"path": MODEL, "url": MODEL_URL + "?download=true", "sha256": MODEL_SHA256}]
+    task["port_origin"] = (f"agent-made: {model} via museport loop, {evidence_dir.name}/{run}; "
+                           "sources as last compiled by the agent, unchanged")
+    (dest / "task.json").write_text(json.dumps(task, indent=2) + "\n")
+    return dest / "task.json"

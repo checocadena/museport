@@ -18,6 +18,7 @@ from museport.llama2 import (
     MODEL_SHA256,
     RECORDED,
     RUN_STORY,
+    make_gpu_task,
     make_loop_task,
     make_record_task,
 )
@@ -101,3 +102,14 @@ def test_loop_task_links_the_model_and_hides_the_recording(tmp_path: Path) -> No
     assert "{task_dir}/recorded.py" in task["reference_cmd"]
     assert "{task_dir}/run_story.py" in task["candidate_cmd"]
     assert task["tolerance"] == 0.0 and "sycl::half" in task["goal"]
+
+
+def test_gpu_task_from_the_committed_port(tmp_path: Path) -> None:
+    root = Path(__file__).resolve().parents[1] / "evidence" / "j4-llama2"
+    dest = tmp_path / "gpu"
+    task = json.loads(make_gpu_task(root, dest, "muse-spark-1.3").read_text())
+    assert task["sycl_sources"] == ["agent_port/llama2.cpp"]
+    assert (dest / "agent_port" / "llama2.cpp").read_bytes() == (
+        root / "run1" / "port" / "llama2.cpp").read_bytes()
+    assert task["fetch"][0]["sha256"] == MODEL_SHA256 and not (dest / MODEL).exists()
+    assert task["benchmark_runs"] == 3
