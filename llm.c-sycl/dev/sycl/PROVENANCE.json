@@ -1,0 +1,211 @@
+[
+  {
+    "kernel": "gelu_forward",
+    "sources": [
+      "gelu_forward_sycl.cpp"
+    ],
+    "evidence": "evidence/port-llmc-tier1-run2/t1-gelu-forward",
+    "onemath": false,
+    "hidden_grade": "PASS: 1/1 case(s) match (worst max abs err 1.19e-07, atol 1e-05)",
+    "turns": 7,
+    "cost_usd": 0.08991360000000001
+  },
+  {
+    "kernel": "gelu_backward",
+    "sources": [
+      "gelu_backward.cpp"
+    ],
+    "evidence": "evidence/port-llmc-tier1-run2/t1-gelu-backward",
+    "onemath": false,
+    "hidden_grade": "PASS: 1/1 case(s) match (worst max abs err 2.38e-07, atol 1e-05)",
+    "turns": 11,
+    "cost_usd": 0.1502467
+  },
+  {
+    "kernel": "residual_forward",
+    "sources": [
+      "residual_forward.cpp"
+    ],
+    "evidence": "evidence/port-llmc-tier1-run2/t1-residual-forward",
+    "onemath": false,
+    "hidden_grade": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)",
+    "turns": 9,
+    "cost_usd": 0.0886836
+  },
+  {
+    "kernel": "permute",
+    "sources": [
+      "permute.cpp"
+    ],
+    "evidence": "evidence/port-llmc-tier1-run2/t1-permute",
+    "onemath": false,
+    "hidden_grade": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)",
+    "turns": 7,
+    "cost_usd": 0.05264205
+  },
+  {
+    "kernel": "crossentropy_forward",
+    "sources": [
+      "crossentropy_forward_sycl.cpp"
+    ],
+    "evidence": "evidence/port-llmc-tier1-run2/t1-crossentropy-forward",
+    "onemath": false,
+    "hidden_grade": "PASS: 1/1 case(s) match (worst max abs err 5.96e-08, atol 1e-05)",
+    "turns": 9,
+    "cost_usd": 0.09035805000000001
+  },
+  {
+    "kernel": "crossentropy_softmax_backward",
+    "sources": [
+      "crossentropy_softmax_backward.cpp"
+    ],
+    "evidence": "evidence/port-llmc-tier1-run2/t1-crossentropy-softmax-backward",
+    "onemath": false,
+    "hidden_grade": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)",
+    "turns": 6,
+    "cost_usd": 0.0654416
+  },
+  {
+    "kernel": "encoder_forward",
+    "sources": [
+      "encoder_forward.cpp"
+    ],
+    "evidence": "evidence/port-llmc-tier1-run2/t1-encoder-forward",
+    "onemath": false,
+    "hidden_grade": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)",
+    "turns": 7,
+    "cost_usd": 0.084159
+  },
+  {
+    "kernel": "encoder_backward",
+    "sources": [
+      "encoder_backward.cpp"
+    ],
+    "evidence": "evidence/port-llmc-tier1-run2/t1-encoder-backward",
+    "onemath": false,
+    "hidden_grade": "PASS: 1/1 case(s) match (worst max abs err 4.77e-07, atol 1e-05)",
+    "turns": 7,
+    "cost_usd": 0.07822605
+  },
+  {
+    "kernel": "adamw",
+    "sources": [
+      "adamw_sycl.cpp"
+    ],
+    "evidence": "evidence/port-llmc-tier1-run2/t1-adamw",
+    "onemath": false,
+    "hidden_grade": "PASS: 1/1 case(s) match (worst max abs err 1.79e-07, atol 0.0001)",
+    "turns": 7,
+    "cost_usd": 0.0832383
+  },
+  {
+    "kernel": "fused_residual_forward",
+    "sources": [
+      "fused_residual_forward.cpp"
+    ],
+    "evidence": "evidence/port-llmc-tier1-run2/t1-fused-residual-forward",
+    "onemath": false,
+    "hidden_grade": "PASS: 1/1 case(s) match (worst max abs err 5.96e-07, atol 1e-05)",
+    "turns": 12,
+    "cost_usd": 0.22347655
+  },
+  {
+    "kernel": "global_norm",
+    "sources": [
+      "global_norm.cpp"
+    ],
+    "evidence": "evidence/port-llmc-tier23-run2/t2-global-norm",
+    "onemath": false,
+    "hidden_grade": "PASS: 1/1 case(s) match (worst max abs err 1.31e-06, atol 0.01)",
+    "turns": 16,
+    "cost_usd": 0.32303459999999995
+  },
+  {
+    "kernel": "layernorm_forward",
+    "sources": [
+      "layernorm.cpp"
+    ],
+    "evidence": "evidence/port-llmc-tier23-run2/t2-layernorm-forward",
+    "onemath": false,
+    "hidden_grade": "PASS: 1/1 case(s) match (worst max abs err 1.07e-06, atol 1e-05)",
+    "turns": 7,
+    "cost_usd": 0.152431
+  },
+  {
+    "kernel": "classifier_fused",
+    "sources": [
+      "classifier_fused.cpp"
+    ],
+    "evidence": "evidence/port-llmc-tier23-run2/t2-classifier-fused",
+    "onemath": false,
+    "hidden_grade": "PASS: 1/1 case(s) match (worst max abs err 3.81e-06, atol 0.0001)",
+    "turns": 7,
+    "cost_usd": 0.13970315
+  },
+  {
+    "kernel": "layernorm_backward",
+    "sources": [
+      "layernorm_backward_sycl.cpp"
+    ],
+    "evidence": "evidence/port-llmc-tier23-run2/t2-layernorm-backward",
+    "onemath": false,
+    "hidden_grade": "PASS: 1/1 case(s) match (worst max abs err 1.91e-05, atol 0.001)",
+    "turns": 14,
+    "cost_usd": 0.4847741
+  },
+  {
+    "kernel": "matmul_forward",
+    "sources": [
+      "matmul_forward.cpp"
+    ],
+    "evidence": "evidence/port-llmc-tier23-run2/t3-matmul-forward",
+    "onemath": true,
+    "hidden_grade": "PASS: 1/1 case(s) match (worst max abs err 5.72e-05, atol 0.1)",
+    "turns": 12,
+    "cost_usd": 0.24492275
+  },
+  {
+    "kernel": "matmul_backward",
+    "sources": [
+      "matmul_backward.cpp"
+    ],
+    "evidence": "evidence/port-llmc-tier23-run2/t3-matmul-backward",
+    "onemath": true,
+    "hidden_grade": "PASS: 1/1 case(s) match (worst max abs err 0.00021, atol 0.001)",
+    "turns": 8,
+    "cost_usd": 0.11083865
+  },
+  {
+    "kernel": "trimat_forward",
+    "sources": [
+      "trimat_forward.cpp"
+    ],
+    "evidence": "evidence/port-llmc-tier23-run2/t3-trimat-forward",
+    "onemath": true,
+    "hidden_grade": "PASS: 1/1 case(s) match (worst max abs err 7.15e-07, atol 0.0001)",
+    "turns": 16,
+    "cost_usd": 0.37404305
+  },
+  {
+    "kernel": "matmul_backward_bias",
+    "sources": [
+      "matmul_backward_bias.cpp"
+    ],
+    "evidence": "evidence/port-llmc-tier23-run2/t3-matmul-backward-bias",
+    "onemath": false,
+    "hidden_grade": "PASS: 1/1 case(s) match (worst max abs err 7.63e-06, atol 0.005)",
+    "turns": 13,
+    "cost_usd": 0.32783225
+  },
+  {
+    "kernel": "softmax_forward",
+    "sources": [
+      "softmax_forward.cpp"
+    ],
+    "evidence": "evidence/port-llmc-softmax-rerun-2/t2-softmax-forward",
+    "onemath": false,
+    "hidden_grade": "PASS: 1/1 case(s) match (worst max abs err 2.86e-05, atol 0.0001)",
+    "turns": 23,
+    "cost_usd": 0.9063352
+  }
+]

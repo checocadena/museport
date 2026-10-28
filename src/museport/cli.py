@@ -142,6 +142,13 @@ def build_parser() -> argparse.ArgumentParser:
                     help="when SYCLomatic's output fails the CPU proof, prove the spec with "
                          "llm.c's CUDA on a rented NVIDIA GPU (Runpod, about $0.003 each)")
 
+    ls = sub.add_parser("llmc-sycl", help="assemble llm.c-sycl from the evidence (J3), or "
+                                          "grade its dev/sycl ports on the CPU")
+    ls.add_argument("action", choices=["assemble", "check"])
+    ls.add_argument("--llmc", default="", help="the llm.c checkout (assemble)")
+    ls.add_argument("--out", default="llm.c-sycl")
+    ls.add_argument("--evidence", default="evidence")
+
     rv = sub.add_parser("review", help="Muse reviews each finished port from the code alone "
                                        "(no test results); verdicts compared with the hidden "
                                        "grade and the variant check")
@@ -206,6 +213,29 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"[spec] {proven}/{len(files)} proven, spent ${summary['spent_usd']:.4f}",
               file=sys.stderr)
         return 0
+    if args.cmd == "llmc-sycl":
+        import tempfile
+        from pathlib import Path
+
+        from .assemble import assemble, check
+
+        if args.action == "assemble":
+            if not args.llmc:
+                print("museport: --llmc is required for assemble", file=sys.stderr)
+                return 2
+            r = assemble(Path(args.evidence), Path(args.llmc), Path(args.out))
+            print(f"[llmc-sycl] {len(r['kernels'])} kernel ports in {args.out}/dev/sycl",
+                  file=sys.stderr)
+            return 0
+        with tempfile.TemporaryDirectory() as tmp:
+            results = check(Path(args.evidence), Path(args.out), Path(tmp))
+        for r in results:
+            print(f"{r['kernel']}: {r.get('verify_summary') or r.get('note')}; "
+                  f"helpers {r.get('helpers')}", file=sys.stderr)
+        bad = [r["kernel"] for r in results if r.get("verify_status") != "ok"
+               or r.get("helpers") != 0]
+        print(f"[llmc-sycl] {len(results) - len(bad)}/{len(results)} pass", file=sys.stderr)
+        return 1 if bad else 0
     if args.cmd == "gpt2-gpu-task":
         from pathlib import Path
 
