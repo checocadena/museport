@@ -127,3 +127,17 @@ def test_muse_written_specs_get_a_section(tmp_path):
     assert ">16 of 17<" in section and ">16 of 16<" in section
     assert section.count("not proven") == 1 and "trimat_forward" in section
     assert "gpu, after the run" in section and 'href="#specs"' in index
+
+
+def test_j3_gets_a_section(tmp_path):
+    build(ROOT / "evidence", tmp_path / "site")
+    index = (tmp_path / "site" / "index.html").read_text()
+    section = index[index.index('<section id="j3">'):]
+    section = section[:section.index("</section>")]
+    assert ">19 of 19<" in section and 'href="#j3"' in index
+    # two programs x (CPU, NVIDIA, AMD, NVIDIA vs llm.c's CUDA) + 2 known-good proofs
+    assert section.count('pill ok">pass') == 2 * 4 + 2
+    assert section.count('pill bad">fail') == 3  # the planted bugs
+    assert "worst 7.03e-06" in section and "MI350X VF" in section
+    # the GELU bug fails on "overall okay" alone: its losses stay within tolerance
+    assert "overall okay 0, 0 of 10 losses out of tolerance" in section

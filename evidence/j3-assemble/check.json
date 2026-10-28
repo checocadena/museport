@@ -1,0 +1,158 @@
+{
+ "passed": 19,
+ "total": 19,
+ "results": [
+  {
+   "kernel": "gelu_forward",
+   "compiled": true,
+   "verify_status": "ok",
+   "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.19e-07, atol 1e-05)",
+   "helpers": 0,
+   "graded": "after the run, by museport grade_run"
+  },
+  {
+   "kernel": "gelu_backward",
+   "compiled": true,
+   "verify_status": "ok",
+   "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 2.38e-07, atol 1e-05)",
+   "helpers": 0,
+   "graded": "after the run, by museport grade_run"
+  },
+  {
+   "kernel": "residual_forward",
+   "compiled": true,
+   "verify_status": "ok",
+   "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)",
+   "helpers": 0,
+   "graded": "after the run, by museport grade_run"
+  },
+  {
+   "kernel": "permute",
+   "compiled": true,
+   "verify_status": "ok",
+   "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)",
+   "helpers": 0,
+   "graded": "after the run, by museport grade_run"
+  },
+  {
+   "kernel": "crossentropy_forward",
+   "compiled": true,
+   "verify_status": "ok",
+   "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 5.96e-08, atol 1e-05)",
+   "helpers": 0,
+   "graded": "after the run, by museport grade_run"
+  },
+  {
+   "kernel": "crossentropy_softmax_backward",
+   "compiled": true,
+   "verify_status": "ok",
+   "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)",
+   "helpers": 0,
+   "graded": "after the run, by museport grade_run"
+  },
+  {
+   "kernel": "encoder_forward",
+   "compiled": true,
+   "verify_status": "ok",
+   "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)",
+   "helpers": 0,
+   "graded": "after the run, by museport grade_run"
+  },
+  {
+   "kernel": "encoder_backward",
+   "compiled": true,
+   "verify_status": "ok",
+   "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 4.77e-07, atol 1e-05)",
+   "helpers": 0,
+   "graded": "after the run, by museport grade_run"
+  },
+  {
+   "kernel": "adamw",
+   "compiled": true,
+   "verify_status": "ok",
+   "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.79e-07, atol 0.0001)",
+   "helpers": 0,
+   "graded": "after the run, by museport grade_run"
+  },
+  {
+   "kernel": "fused_residual_forward",
+   "compiled": true,
+   "verify_status": "ok",
+   "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 5.96e-07, atol 1e-05)",
+   "helpers": 0,
+   "graded": "after the run, by museport grade_run"
+  },
+  {
+   "kernel": "global_norm",
+   "compiled": true,
+   "verify_status": "ok",
+   "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 8.34e-07, atol 0.01)",
+   "helpers": 0,
+   "graded": "after the run, by museport grade_run"
+  },
+  {
+   "kernel": "layernorm_forward",
+   "compiled": true,
+   "verify_status": "ok",
+   "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.07e-06, atol 1e-05)",
+   "helpers": 0,
+   "graded": "after the run, by museport grade_run"
+  },
+  {
+   "kernel": "classifier_fused",
+   "compiled": true,
+   "verify_status": "ok",
+   "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 3.81e-06, atol 0.0001)",
+   "helpers": 0,
+   "graded": "after the run, by museport grade_run"
+  },
+  {
+   "kernel": "layernorm_backward",
+   "compiled": true,
+   "verify_status": "ok",
+   "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.91e-05, atol 0.001)",
+   "helpers": 0,
+   "graded": "after the run, by museport grade_run"
+  },
+  {
+   "kernel": "matmul_forward",
+   "compiled": true,
+   "verify_status": "ok",
+   "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 5.72e-05, atol 0.1)",
+   "helpers": 0,
+   "graded": "after the run, by museport grade_run"
+  },
+  {
+   "kernel": "matmul_backward",
+   "compiled": true,
+   "verify_status": "ok",
+   "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0.00021, atol 0.001)",
+   "helpers": 0,
+   "graded": "after the run, by museport grade_run"
+  },
+  {
+   "kernel": "trimat_forward",
+   "compiled": true,
+   "verify_status": "ok",
+   "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 7.15e-07, atol 0.0001)",
+   "helpers": 0,
+   "graded": "after the run, by museport grade_run"
+  },
+  {
+   "kernel": "matmul_backward_bias",
+   "compiled": true,
+   "verify_status": "ok",
+   "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 7.63e-06, atol 0.005)",
+   "helpers": 0,
+   "graded": "after the run, by museport grade_run"
+  },
+  {
+   "kernel": "softmax_forward",
+   "compiled": true,
+   "verify_status": "ok",
+   "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 2.86e-05, atol 0.0001)",
+   "helpers": 0,
+   "graded": "after the run, by museport grade_run"
+  }
+ ]
+}

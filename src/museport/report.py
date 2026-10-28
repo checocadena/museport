@@ -86,7 +86,7 @@ def load(evidence: Path) -> dict[str, Any]:
     plan_file = evidence / PLAN_DIR / "plan.json"
     plan = json.loads(plan_file.read_text()) if plan_file.exists() else None
     return {"items": items, "batches": batches, "plan": plan, "gpt2": load_gpt2(evidence),
-            "diff": load_diff(evidence), "specs": load_specs(evidence)}
+            "diff": load_diff(evidence), "specs": load_specs(evidence), "j3": load_j3(evidence)}
 
 
 def load_diff(evidence: Path) -> list[dict[str, Any]]:
@@ -128,6 +128,33 @@ def load_specs(evidence: Path) -> list[dict[str, Any]]:
             rows[r["file"]] = row
     order = {f: i for i, f in enumerate(SPECS)}
     return sorted(rows.values(), key=lambda r: order.get(r["file"], len(order)))
+
+
+# J3's two programs: evidence dir, the label, and the program's name in llm.c-sycl
+J3_PROGRAMS = (("j3-trainer", "llm.c's fp32 trainer", "train_gpt2fp32sycl"),
+               ("j3-test", "llm.c's own test", "test_gpt2fp32sycl"))
+
+
+def load_j3(evidence: Path) -> dict[str, Any] | None:
+    """J3, the reassembled llm.c-sycl repo: the dev/sycl check (evidence/j3-assemble) and, per
+    program, its Muse runs (run1, run2, ...; the last is the one graded), its check proof and
+    its GPU results."""
+    check = evidence / "j3-assemble" / "check.json"
+    programs = []
+    for name, label, target in J3_PROGRAMS:
+        d = evidence / name
+        runs = [json.loads(f.read_text()) | {"run": f.parent.name}
+                for f in sorted(d.glob("run*/outcome.json"))]
+        if not runs:
+            continue
+        proof = d / "check-proof.json"
+        programs.append({"dir": name, "label": label, "target": target, "runs": runs,
+                         "proof": json.loads(proof.read_text()) if proof.exists() else {},
+                         "gpu": [g for gs in _gpu_results(d).values() for g in gs]})
+    if not programs:
+        return None
+    return {"check": json.loads(check.read_text()) if check.exists() else None,
+            "programs": programs}
 
 
 @dataclass
@@ -434,7 +461,7 @@ def render_index(data: dict[str, Any]) -> str:
         "reference.</p>"
         '<nav class="crumb"><a href="plan.html">The plan</a><a href="#items">Every item</a>'
         '<a href="#gpt2">GPT-2</a><a href="#diff">Differential checks</a>'
-        '<a href="#specs">Specs by Muse</a>'
+        '<a href="#specs">Specs by Muse</a><a href="#j3">llm.c-sycl</a>'
         '<a href="#first-runs">The first runs</a>'
         f'<a href="{REPO}">Repository</a></nav></header>',
         '<section><h2>Results with the fixed loop</h2>' + _tier_head(True)
@@ -449,6 +476,7 @@ def render_index(data: dict[str, Any]) -> str:
         _gpt2_section(data.get("gpt2", [])),
         _diff_section(data.get("diff", [])),
         _spec_section(data.get("specs", [])),
+        _j3_section(data.get("j3")),
         '<section id="items"><h2>Every item</h2>' + _item_table(current, compare=firsts)
         + "</section>",
         '<section id="first-runs"><h2>The first runs</h2><p class="note">The same tasks and '
@@ -572,6 +600,93 @@ def _spec_section(rows: list[dict[str, Any]]) -> str:
         "<th>Run</th></tr></thead><tbody>" + body + "</tbody></table></div>"
         '<p class="note">Each file\'s latest run is shown; spec-llmc-fp32 reran four files with '
         "the fp32 build stated in the prompt. The cost column is that run's.</p></section>")
+
+
+def _proof_rows(proof: dict[str, Any]) -> list[tuple[str, str]]:
+    """A check proof as (candidate, result): the test's ``rows`` list, or the trainer's
+    named entries."""
+    if "rows" in proof:
+        ref, atol = proof["reference_values"][1:], proof["atol"]
+
+        def losses_off(r: dict[str, Any]) -> int:  # values[0] is the "overall okay" flag
+            return sum(abs(a - b) > atol for a, b in zip(r["values"][1:], ref, strict=True))
+
+        return [(r["candidate"], f"{r['result']}: overall okay {r['overall_okay']:g}, "
+                 f"{losses_off(r)} of {len(ref)} losses out of tolerance")
+                for r in proof["rows"] if not r["candidate"].startswith("Muse")]
+    return [(v["what"], v["result"]) for k, v in proof.items()
+            if k != "reference" and "result" in v]
+
+
+def _j3_gpu_cell(prog: dict[str, Any], vendor: str) -> str:
+    gs = [g for g in prog["gpu"] if g["vendor"] == vendor]
+    if not gs:
+        return '<span class="note">not run</span>'
+    g = gs[-1]
+    steps = {s.get("step"): s for s in g["steps"]}
+    native = steps.get("sycl_verify_vs_native")
+    return (_check_cell(steps.get("sycl_verify_vs_reference") or {"status": g["status"]})
+            + f'<br><span class="note">{esc(short_device(g["device"]))}</span>'
+            + (f"<br>vs llm.c's CUDA: {_check_cell(native)}" if native else ""))
+
+
+def _j3_run_line(r: dict[str, Any]) -> str:
+    ok = r.get("stop_reason") == "success"
+    return (f"{esc(r['run'])}: " + pill("success" if ok else "no success", "ok" if ok else "warn")
+            + f" {esc(r.get('iterations'))} turns, {money(r.get('cost_usd'))}")
+
+
+def _j3_section(j3: dict[str, Any] | None) -> str:
+    if not j3:
+        return ""
+    progs = j3["programs"]
+    muse = sum(r.get("cost_usd") or 0.0 for p in progs for r in p["runs"])
+    check = j3.get("check")
+    facts = (
+        (f'<div><span class="eyebrow">dev/sycl kernels</span><span class="v">{check["passed"]} '
+         f'of {check["total"]}</span><span class="d">pass their hidden checks, 0 helpers'
+         "</span></div>" if check else "")
+        + '<div><span class="eyebrow">trainer and test</span><span class="v">'
+        + f'{min(sum(g["status"] == "ok" for g in p["gpu"]) + 1 for p in progs)} targets each'
+        + '</span><span class="d">pass: CPU, NVIDIA, AMD</span></div>'
+        + f'<div><span class="eyebrow">Muse</span><span class="v">{money(muse)}</span>'
+        f'<span class="d">{sum(len(p["runs"]) for p in progs)} loop runs</span></div>')
+    rows = "".join(
+        f"<tr><td>{esc(p['label'])}<br><code>{esc(p['target'])}</code></td>"
+        f"<td>{_check_cell(p['runs'][-1].get('evaluation'))}</td>"
+        f"<td>{_j3_gpu_cell(p, 'nvidia')}</td><td>{_j3_gpu_cell(p, 'amd')}</td>"
+        f"<td>" + "<br>".join(map(_j3_run_line, p["runs"]))
+        + f'</td><td><a href="{REPO}/tree/main/evidence/{esc(p["dir"])}">evidence/'
+        f'{esc(p["dir"])}</a></td></tr>' for p in progs)
+    proofs = "".join(
+        f"<tr><td>{esc(p['label'])}</td><td>{esc(what)}</td><td>"
+        + pill("pass" if res.startswith("PASS") else "fail",
+               "ok" if res.startswith("PASS") else "bad")
+        + f' <span class="note">{esc(res.split(": ", 1)[-1])}</span></td></tr>'
+        for p in progs for what, res in _proof_rows(p["proof"]))
+    return (
+        '<section id="j3"><h2>llm.c-sycl: the ports put back together</h2><p class="note">'
+        f'<a href="{REPO}/tree/main/llm.c-sycl">llm.c-sycl</a> is llm.c laid out as llm.c is, '
+        "in SYCL, built with <code>make</code> and <code>icpx -fsycl</code> for a CPU, an "
+        "NVIDIA GPU or an AMD GPU. It holds the kernel ports in <code>dev/sycl</code>, and two "
+        "programs that Muse wrote on top of its proven GPT-2 port: llm.c's fp32 trainer, with "
+        "its real <code>main</code>, and llm.c's own test, which checks logits, loss and every "
+        "gradient against PyTorch, then 10 training steps.</p>"
+        f'<div class="facts">{facts}</div>'
+        '<div class="scroll"><table><thead><tr><th>Program</th><th>CPU (hidden grade)</th>'
+        "<th>NVIDIA</th><th>AMD</th><th>Muse runs</th><th>Evidence</th></tr></thead><tbody>"
+        + rows + "</tbody></table></div>"
+        '<p class="note"><b>Hidden grade</b>: the trainer\'s validation and training losses '
+        "against llm.c's own CPU trainer; the test's <code>overall okay</code> and its 10 "
+        "losses against PyTorch's; both at llm.c's tolerance, 1e-2. The GPU runs build the "
+        "sources Muse last compiled, unchanged. llm.c's CUDA does not hipify into something "
+        "that builds, so on AMD there is no comparison with it.</p>"
+        "<h3>Each check, proven first</h3><div class=\"scroll\"><table><thead><tr><th>Program"
+        "</th><th>Candidate</th><th>Result</th></tr></thead><tbody>" + proofs
+        + "</tbody></table></div><p class=\"note\">llm.c's own CPU programs must pass and "
+        "planted bugs must fail before a check grades Muse. A bug can keep every loss within "
+        "1e-2 yet fail llm.c's test, so the test check also needs <code>overall okay: 1</code>."
+        "</p></section>")
 
 
 def _gpt2_gpu_cell(st: Gpt2Stage) -> str:

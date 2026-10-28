@@ -148,6 +148,7 @@ def build_parser() -> argparse.ArgumentParser:
     ls.add_argument("--llmc", default="", help="the llm.c checkout (assemble)")
     ls.add_argument("--out", default="llm.c-sycl")
     ls.add_argument("--evidence", default="evidence")
+    ls.add_argument("--json", default="", help="check: also write the results to this file")
 
     rv = sub.add_parser("review", help="Muse reviews each finished port from the code alone "
                                        "(no test results); verdicts compared with the hidden "
@@ -234,6 +235,11 @@ def main(argv: Sequence[str] | None = None) -> int:
                   f"helpers {r.get('helpers')}", file=sys.stderr)
         bad = [r["kernel"] for r in results if r.get("verify_status") != "ok"
                or r.get("helpers") != 0]
+        if args.json:
+            Path(args.json).parent.mkdir(parents=True, exist_ok=True)
+            Path(args.json).write_text(json.dumps(
+                {"passed": len(results) - len(bad), "total": len(results), "results": results},
+                indent=1) + "\n")
         print(f"[llmc-sycl] {len(results) - len(bad)}/{len(results)} pass", file=sys.stderr)
         return 1 if bad else 0
     if args.cmd == "gpt2-gpu-task":
