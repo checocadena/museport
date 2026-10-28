@@ -138,6 +138,9 @@ def build_parser() -> argparse.ArgumentParser:
     sp.add_argument("--model", default=DEFAULT_MODEL)
     sp.add_argument("--total-cap", type=float, default=2.0, help="USD cap for the whole run")
     sp.add_argument("--file-cap", type=float, default=0.4, help="USD cap per file")
+    sp.add_argument("--gpu-proof", action="store_true",
+                    help="when SYCLomatic's output fails the CPU proof, prove the spec with "
+                         "llm.c's CUDA on a rented NVIDIA GPU (Runpod, about $0.003 each)")
 
     rv = sub.add_parser("review", help="Muse reviews each finished port from the code alone "
                                        "(no test results); verdicts compared with the hidden "
@@ -192,11 +195,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         from pathlib import Path
 
         from .llmc import SPECS
-        from .spec import EXAMPLES, run_specs
+        from .spec import EXAMPLES, gpu_proof, run_specs
 
         files = args.files or [f for f in SPECS if f not in EXAMPLES]
         summary = run_specs(files, Path(args.cuda_dir), Path(args.out), model=args.model,
                             total_cap_usd=args.total_cap, file_cap_usd=args.file_cap,
+                            prove_on_gpu=gpu_proof if args.gpu_proof else None,
                             log=lambda m: print(m, file=sys.stderr))
         proven = sum(r["proven"] for r in summary["files"])
         print(f"[spec] {proven}/{len(files)} proven, spent ${summary['spent_usd']:.4f}",

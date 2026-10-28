@@ -13,8 +13,12 @@ from the CUDA file alone, and nothing it writes is trusted until it is checked:
    generated CUDA harness, icpx compiles the raw output, and it must match the reference
    built from llm.c's own CPU functions. llm.c's GPU code and its CPU code must agree on the
    generated inputs.
+3. When SYCLomatic's output does not migrate, compile or match (it fails on 5 of llm.c's 19
+   files even with the hand-written specs), the GPU proof (``gpu_proof``, opt-in): llm.c's
+   harness built with ``nvcc`` on a rented NVIDIA GPU, its outputs recorded (plan item J1)
+   and compared here with the same CPU reference. Only when both fail is the spec wrong.
 
-A failed step goes back to Muse as feedback, for a few attempts. The result is compared with
+A failed proof goes back to Muse as feedback, for a few attempts. The result is compared with
 the hand-written spec where one exists.
 """
 
@@ -24,7 +28,8 @@ import ast
 import json
 import re
 import shutil
-from collections.abc import Mapping
+import subprocess
+from collections.abc import Callable, Mapping
 from dataclasses import asdict
 from pathlib import Path
 from typing import Any
@@ -267,7 +272,18 @@ def compare_with_hand(spec: KernelSpec, hand: KernelSpec | None) -> dict[str, An
             "hand_variants": list(hand.variants), "hand_tol": hand.tol}
 
 
-def _feedback(static: list[str], check: dict[str, Any] | None) -> str:
+def _keep_gpu_evidence(work: Path, dest: Path) -> None:
+    """The GPU proof's logs and results, without the recorded outputs (large; sha256 kept)."""
+    dest.mkdir(parents=True, exist_ok=True)
+    if (work / "remote-test.log").exists():
+        shutil.copyfile(work / "remote-test.log", dest / "remote-test.log")
+    for f in sorted((work / "res").glob("*/*/*")):
+        if f.is_file():
+            shutil.copyfile(f, dest / f.name)
+
+
+def _feedback(static: list[str], check: dict[str, Any] | None,
+              gpu: dict[str, Any] | None = None) -> str:
     if static:
         return "The spec fails these checks:\n- " + "\n- ".join(static) + \
                "\nReturn a corrected spec."
@@ -278,11 +294,54 @@ def _feedback(static: list[str], check: dict[str, Any] | None) -> str:
     ev = check.get("evidence", "")
     return (f"The proof failed at step {step!r}: {str(text)[:1500]}\n"
             + (f"Details: {ev[:2500]}\n" if ev else "")
+            + (f"llm.c's CUDA built with nvcc on an NVIDIA GPU also failed, at {gpu['step']}: "
+               f"{gpu['summary'][:1500]}\n" if gpu else "")
             + "Return a corrected spec.")
 
 
+# CPU-proof failures that SYCLomatic itself can cause, so the GPU proof is tried before
+# telling the model its spec is wrong
+GPU_PROOF_STEPS = ("migrate", "compile", "verify")
+GpuProof = Callable[[Path, Path], dict[str, Any]]
+
+
+def gpu_proof(task_dir: Path, work: Path, *, max_usd: float = 0.10,
+              runner: Any = subprocess.run) -> dict[str, Any]:
+    """llm.c's CUDA harness built with ``nvcc`` on a rented NVIDIA GPU (Runpod), its outputs
+    recorded twice, and compared here with the CPU reference built from llm.c's own CPU code.
+    Needs the task's ``input.bin`` and the GPU provider's key."""
+    from .record import check_recording, differential_task, recording_task
+
+    if work.exists():
+        shutil.rmtree(work)
+    rec = recording_task(task_dir, work / "rec")
+    name = json.loads(rec.read_text())["name"]
+    proc = runner(["oneapi-agent", "remote-test", "task.json", "--provider", "runpod",
+                   "--vendor", "nvidia", "--max-usd", str(max_usd), "--max-minutes", "20",
+                   "--into", str(work / "res")], cwd=str(rec.parent), capture_output=True,
+                  text=True, timeout=1800)
+    text = (proc.stdout or "") + (proc.stderr or "")
+    (work / "remote-test.log").write_text(text)
+    costs = re.findall(r'"est_cost_usd":\s*([0-9.]+)', text)
+    out: dict[str, Any] = {"ok": False, "cost_usd": float(costs[-1]) if costs else max_usd}
+    found = sorted((work / "res").glob(f"*/{name}/summary.json"))
+    if not found:
+        return {**out, "step": "record", "summary": text[-1500:]}
+    summary = json.loads(found[-1].read_text())
+    ev = summary.get("evidence") or {}
+    out.update(device=(ev.get("device") or {}).get("name"), deterministic=ev.get("deterministic"),
+               results=str(found[-1].parent))
+    try:
+        differential_task(task_dir, found[-1].parent, work / "diff")
+    except ValueError:
+        steps = "; ".join(f"{s['step']}: {s['summary']}" for s in ev.get("steps", []))
+        return {**out, "step": "record", "summary": f"{summary.get('summary')} ({steps})"[:2000]}
+    r = check_recording(task_dir, work / "diff", work / "cpu")
+    return {**out, "ok": r["status"] == "ok", "step": "compare", "summary": r["summary"]}
+
+
 def write_spec(file: str, cuda_dir: Path, out: Path, *, model: str, provider: str = "meta",
-               transport: Any = None, cap_usd: float = 0.5,
+               transport: Any = None, cap_usd: float = 0.5, prove_on_gpu: GpuProof | None = None,
                log: Any = print) -> dict[str, Any]:
     """Muse writes ``file``'s spec, which is checked and proven; up to MAX_ATTEMPTS answers."""
     # absolute paths: the toolkit refuses tool paths that resolve outside a relative work dir
@@ -296,7 +355,7 @@ def write_spec(file: str, cuda_dir: Path, out: Path, *, model: str, provider: st
     msgs = messages_for(file, src, (cuda_dir / "common.h").read_text())
     p = model_pricing(model)
     attempts: list[dict[str, Any]] = []
-    spent, final = 0.0, None
+    spent, gpu_spent, final, proven_by = 0.0, 0.0, None, None
     for n in range(1, MAX_ATTEMPTS + 1):
         worst = worst_case_usd(model, msgs)
         if spent + worst > cap_usd:
@@ -315,26 +374,34 @@ def write_spec(file: str, cuda_dir: Path, out: Path, *, model: str, provider: st
                  + usage["cache_read_input_tokens"] * p.cache_read) / 1e6 if usage else worst)
         spent += cost
         static = static_errors(ans, src)
-        check = None
+        check = gpu = None
         if not static:
             spec = to_kernel_spec(file, ans, src)
             task = make_task(spec, cuda_dir, item / "task")
             check = check_harness(task, item / ".work")
+            if not check["ok"] and check.get("failed") in GPU_PROOF_STEPS and prove_on_gpu:
+                gpu = prove_on_gpu(item / "task", item / ".gpu")
+                gpu_spent += gpu["cost_usd"]
+                _keep_gpu_evidence(item / ".gpu", item / "gpu-proof" / f"attempt{n}")
         attempts.append({"attempt": n, "answer": ans, "usage": usage, "cost_usd": round(cost, 6),
-                         "static_errors": static, "check": check})
-        ok = not static and check is not None and check["ok"]
+                         "static_errors": static, "check": check, "gpu_proof": gpu})
+        by = ("cpu" if check and check["ok"] else "gpu" if gpu and gpu["ok"] else None)
         log(f"[spec] {file}: attempt {n}: "
-            + ("proven" if ok else f"static: {static}" if static else
-               f"proof failed at {check and check.get('failed')}") + f", ${cost:.4f}")
-        if ok:
-            final = ans
+            + (f"proven ({by.upper()})" if by else f"static: {static}" if static else
+               f"proof failed at {check and check.get('failed')}"
+               + (f"; GPU proof failed at {gpu['step']}" if gpu else ""))
+            + f", ${cost:.4f}" + (f" + GPU ${gpu['cost_usd']:.3f}" if gpu else ""))
+        if by:
+            final, proven_by = ans, by
             break
         msgs = [*msgs, {"role": "assistant", "content": json.dumps(ans)},
-                {"role": "user", "content": _feedback(static, check)}]
+                {"role": "user", "content": _feedback(static, check, gpu)}]
     shutil.rmtree(item / ".work", ignore_errors=True)
+    shutil.rmtree(item / ".gpu", ignore_errors=True)
     (item / "task" / "input.bin").unlink(missing_ok=True)  # regenerated from the spec
-    row: dict[str, Any] = {"file": file, "proven": final is not None, "attempts": len(attempts),
-                           "cost_usd": round(spent, 6)}
+    row: dict[str, Any] = {"file": file, "proven": final is not None, "proven_by": proven_by,
+                           "attempts": len(attempts), "cost_usd": round(spent, 6),
+                           "gpu_usd": round(gpu_spent, 4)}
     if final is not None:
         spec = to_kernel_spec(file, final, src)
         (item / "spec.json").write_text(json.dumps(final, indent=2) + "\n")
@@ -349,9 +416,12 @@ def write_spec(file: str, cuda_dir: Path, out: Path, *, model: str, provider: st
 
 def run_specs(files: list[str], cuda_dir: Path, out: Path, *, model: str,
               provider: str = "meta", total_cap_usd: float = 2.0, file_cap_usd: float = 0.4,
-              transport: Any = None, log: Any = print) -> dict[str, Any]:
+              prove_on_gpu: GpuProof | None = None, transport: Any = None,
+              log: Any = print) -> dict[str, Any]:
     out.mkdir(parents=True, exist_ok=True)
-    rows: list[dict[str, Any]] = []
+    prev = out / "summary.json"
+    rows: list[dict[str, Any]] = ([r for r in json.loads(prev.read_text())["files"]
+                                   if r["file"] not in files] if prev.exists() else [])
     spent = 0.0
     for f in files:
         cap = min(file_cap_usd, total_cap_usd - spent)
@@ -359,16 +429,19 @@ def run_specs(files: list[str], cuda_dir: Path, out: Path, *, model: str,
             rows.append({"file": f, "proven": False, "skipped": "total cap"})
             continue
         row = write_spec(f, cuda_dir, out, model=model, provider=provider, transport=transport,
-                         cap_usd=cap, log=log)
+                         cap_usd=cap, prove_on_gpu=prove_on_gpu, log=log)
         spent += row["cost_usd"]
         rows.append(row)
-        _write(out, model, rows, spent)
-    return _write(out, model, rows, spent)
+        _write(out, model, rows)
+    return _write(out, model, rows)
 
 
-def _write(out: Path, model: str, rows: list[dict[str, Any]], spent: float) -> dict[str, Any]:
-    summary = {"model": model, "spent_usd": round(spent, 4), "examples": list(EXAMPLES),
-               "files": rows}
+def _write(out: Path, model: str, rows: list[dict[str, Any]]) -> dict[str, Any]:
+    order = {f: i for i, f in enumerate(SPECS)}
+    rows = sorted(rows, key=lambda r: order.get(r["file"], len(order)))
+    summary = {"model": model, "spent_usd": round(sum(r.get("cost_usd", 0) for r in rows), 4),
+               "gpu_usd": round(sum(r.get("gpu_usd", 0) for r in rows), 4),
+               "examples": list(EXAMPLES), "files": rows}
     (out / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     (out / "SUMMARY.md").write_text(render_summary(summary))
     return summary
@@ -376,7 +449,8 @@ def _write(out: Path, model: str, rows: list[dict[str, Any]], spent: float) -> d
 
 def render_summary(summary: dict[str, Any]) -> str:
     md = ["# Harness specs written by Muse and proven", "",
-          f"Model `{summary['model']}`, spent ${summary['spent_usd']:.4f}. Worked examples shown "
+          f"Model `{summary['model']}`, spent ${summary['spent_usd']:.4f} (GPU proofs "
+          f"${summary.get('gpu_usd', 0):.3f}). Worked examples shown "
           f"to Muse (not graded): {', '.join(summary['examples'])}.", "",
           "| file | proven | attempts | variants | same as hand-written: variants / CPU functions "
           "/ sizes / tol | cost |", "|---|---|---|---|---|---|"]
@@ -385,7 +459,8 @@ def render_summary(summary: dict[str, Any]) -> str:
         same = (" / ".join("yes" if c[k] else "no" for k in ("variants", "cpu_functions",
                                                               "sizes", "tol"))
                 if c else "no hand-written spec")
-        md.append(f"| {r['file']} | {'yes' if r['proven'] else 'no'} | {r.get('attempts', 0)} "
+        proven = f"yes ({(r.get('proven_by') or 'cpu').upper()})" if r["proven"] else "no"
+        md.append(f"| {r['file']} | {proven} | {r.get('attempts', 0)} "
                   f"| {r.get('variants', '')} | {same if r['proven'] else ''} "
                   f"| ${r.get('cost_usd', 0):.4f} |")
     return "\n".join(md) + "\n"

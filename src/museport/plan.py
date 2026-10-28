@@ -158,6 +158,25 @@ def estimate_cost_usd(model: str, messages: list[dict[str, str]], max_output_tok
     return (tokens_in * p.input + max_output_tokens * p.output) / 1e6
 
 
+def json_object(content: str) -> Any:
+    """The answer's JSON. Structured output should be JSON alone, but Muse has prefixed a
+    sentence ("Dropping the cooperative-groups kernel ... {...}"): take the first object that
+    decodes from a '{' on."""
+    try:
+        return json.loads(content)
+    except json.JSONDecodeError as first:
+        dec = json.JSONDecoder()
+        for i, ch in enumerate(content):
+            if ch == "{":
+                try:
+                    obj, _ = dec.raw_decode(content, i)
+                except json.JSONDecodeError:
+                    continue
+                if isinstance(obj, dict):
+                    return obj
+        raise first
+
+
 def call_model(messages: list[dict[str, str]], *, model: str, provider: str,
                max_output_tokens: int, transport: Transport | None = None,
                environ: Mapping[str, str] | None = None, schema_name: str = "port_plan",
@@ -196,7 +215,7 @@ def call_model(messages: list[dict[str, str]], *, model: str, provider: str,
             "): the output budget was probably spent on reasoning; raise --max-output "
             "or lower ONEAPI_AGENT_EFFORT")
     try:
-        plan = json.loads(content)
+        plan = json_object(content)
     except json.JSONDecodeError as e:
         raise RuntimeError(f"the model's answer is not JSON: {e}; first 200 chars: "
                            f"{content[:200]!r}") from None
