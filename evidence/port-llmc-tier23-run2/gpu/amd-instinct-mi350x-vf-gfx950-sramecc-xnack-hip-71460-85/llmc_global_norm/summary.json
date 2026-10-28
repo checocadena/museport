@@ -1,0 +1,57 @@
+{
+  "tool": "gpu_test",
+  "status": "ok",
+  "summary": "PASS on AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85] (hip:0, amd): sycl_verify_vs_reference: PASS: 1/1 case(s) match (worst max abs err 5.96e-07, atol 0.01)",
+  "evidence": {
+    "task": "llmc_global_norm",
+    "device": {
+      "backend": "hip",
+      "device_type": "gpu",
+      "index": 0,
+      "platform": "AMD HIP BACKEND",
+      "name": "AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85]",
+      "description": "AMD HIP BACKEND, AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85]",
+      "selector": "hip:0"
+    },
+    "vendor": "amd",
+    "amd_arch": "gfx950",
+    "cuda_arch": null,
+    "target_flags": [
+      "-fsycl-targets=amdgcn-amd-amdhsa",
+      "-Xsycl-target-backend=amdgcn-amd-amdhsa",
+      "--offload-arch=gfx950"
+    ],
+    "selector": "hip:0",
+    "steps": [
+      {
+        "step": "reference_build",
+        "status": "ok",
+        "summary": "exit 0: g++ -O2 -std=c++17 /tmp/tmp.SVBXErUha5/task/global_norm_ref.cpp -o build/reference"
+      },
+      {
+        "step": "native_build",
+        "status": "fail",
+        "summary": "exit 1: /opt/rocm/bin/hipcc -O2 -std=c++17 --offload-arch=gfx950 -I/tmp/tmp.SVBXErUha5/task /tmp/tmp.SVBXErUha5/out/work/global_norm_harness.hip.cpp -o build/native"
+      },
+      {
+        "step": "sycl_compile",
+        "status": "ok",
+        "summary": "compiled 1 source(s) -> /tmp/tmp.SVBXErUha5/out/work/build/sycl (0 warning(s))"
+      },
+      {
+        "step": "sycl_verify_vs_reference",
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 5.96e-07, atol 0.01)"
+      },
+      {
+        "step": "sycl_benchmark",
+        "status": "ok",
+        "summary": "10 run(s) each; hip:0: median 154.51 ms, p95 156.19 ms"
+      }
+    ],
+    "results_dir": "/tmp/tmp.SVBXErUha5/out/results"
+  },
+  "limitations": [
+    "Benchmarks are single-process wall times plus program-reported kernel times; treat them as rough."
+  ]
+}

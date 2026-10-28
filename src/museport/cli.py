@@ -107,6 +107,8 @@ def build_parser() -> argparse.ArgumentParser:
     g3.add_argument("stage_dir", help="e.g. evidence/gpt2-stage3")
     g3.add_argument("--out", required=True, help="task directory to write")
     g3.add_argument("--model", default=DEFAULT_MODEL)
+    g3.add_argument("--vendor", choices=["nvidia", "amd"], default="nvidia",
+                    help="oneMath backend to build on the machine: cuBLAS or rocBLAS")
 
     rc = sub.add_parser("record-tasks", help="remote-test tasks that record the original CUDA's "
                                              "outputs on an NVIDIA GPU (no port involved)")
@@ -180,7 +182,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         from .gpt2 import make_gpu_task
 
-        print(make_gpu_task(Path(args.stage_dir), Path(args.out), args.model))
+        print(make_gpu_task(Path(args.stage_dir), Path(args.out), args.model, args.vendor))
         return 0
     return 2
 

@@ -1,0 +1,70 @@
+{
+  "tool": "verify",
+  "status": "ok",
+  "summary": "PASS: 1/1 case(s) match (worst max abs err 2.46e-05, atol 0.01)",
+  "evidence": {
+    "mode": "array",
+    "cases": [
+      {
+        "input": "/tmp/tmp.AaelljUYfa/task/gpt2_124M_debug_state.bin",
+        "reference": {
+          "command": "build/reference /tmp/tmp.AaelljUYfa/task/gpt2_124M_debug_state.bin /tmp/tmp.AaelljUYfa/out/work/v_sycl/case0_reference.out build/gpt2_124M.bin",
+          "returncode": 0,
+          "duration_s": 0.000568,
+          "stdout": "",
+          "stderr": "",
+          "cwd": "/tmp/tmp.AaelljUYfa/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "hip:0"
+          },
+          "output_file": "/tmp/tmp.AaelljUYfa/out/work/v_sycl/case0_reference.out"
+        },
+        "candidate": {
+          "command": "build/sycl /tmp/tmp.AaelljUYfa/task/gpt2_124M_debug_state.bin /tmp/tmp.AaelljUYfa/out/work/v_sycl/case0_candidate.out build/gpt2_124M.bin",
+          "returncode": 0,
+          "duration_s": 0.961509,
+          "stdout": "device: AMD Instinct MI350X VF\nstep 1 loss 5.270008\nstep 2 loss 4.059695\nstep 3 loss 3.375109\nstep 4 loss 2.800758\nstep 5 loss 2.315370\nstep 6 loss 1.849021\nstep 7 loss 1.394643\nstep 8 loss 0.999133\nstep 9 loss 0.624087\nstep 10 loss 0.376519\n",
+          "stderr": "",
+          "cwd": "/tmp/tmp.AaelljUYfa/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "hip:0"
+          },
+          "output_file": "/tmp/tmp.AaelljUYfa/out/work/v_sycl/case0_candidate.out"
+        },
+        "reference_format": "f32",
+        "candidate_format": "f32",
+        "mode": "array",
+        "stats": {
+          "n_reference": 10,
+          "n_candidate": 10,
+          "atol": 0.01,
+          "rtol": 0.0,
+          "max_ulp_allowed": null,
+          "passed": true,
+          "max_abs_err": 2.4557113647460938e-05,
+          "rms_err": 1.2631379560049516e-05,
+          "mean_abs_err": 1.11311674118042e-05,
+          "max_rel_err": 2.113409846685176e-05,
+          "max_ulp_f32": 267,
+          "median_ulp_f32": 84.0,
+          "exact_matches": 0,
+          "mismatches": 0,
+          "nan_mismatches": 0,
+          "reference_range": [
+            0.37651097774505615,
+            5.270007133483887
+          ],
+          "first_mismatches": []
+        },
+        "passed": true
+      }
+    ],
+    "work_dir": "/tmp/tmp.AaelljUYfa/out/work/v_sycl",
+    "passed_cases": 1,
+    "total_cases": 1,
+    "worst_max_abs_err": 2.4557113647460938e-05
+  },
+  "limitations": [
+    "Equivalence is shown only for the inputs tested; other inputs/sizes may behave differently."
+  ]
+}

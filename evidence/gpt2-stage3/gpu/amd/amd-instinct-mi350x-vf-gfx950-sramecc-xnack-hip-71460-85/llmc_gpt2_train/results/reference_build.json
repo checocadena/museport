@@ -1,0 +1,8 @@
+{
+  "command": "bash -c 'mkdir -p build && ln -sf /tmp/tmp.AaelljUYfa/task/gpt2_124M.bin build/gpt2_124M.bin && g++ -O2 -std=c++17 /tmp/tmp.AaelljUYfa/task/gpt2_ref.cpp -o build/reference'",
+  "returncode": 0,
+  "duration_s": 0.059643,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.AaelljUYfa/out/work"
+}

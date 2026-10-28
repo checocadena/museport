@@ -98,3 +98,26 @@ def test_gpu_task_fetches_the_data_and_builds_onemath_on_the_machine(tmp_path):
     assert task["native_flags"] == ["-lcublas"]
     setup = (gpu / task["gpu_setup"]).read_text()
     assert "-DENABLE_CUBLAS_BACKEND=ON" in setup and "export ONEMATH_PREFIX" in setup
+
+
+def test_amd_gpu_task_builds_onemath_with_rocblas():
+    from museport.gpt2 import onemath_gpu_setup
+
+    amd, nv = onemath_gpu_setup("amd"), onemath_gpu_setup("nvidia")
+    assert "-DENABLE_ROCBLAS_BACKEND=ON" in amd and 'HIP_TARGETS="$HIP_ARCH"' in amd
+    assert "rocm_agent_enumerator" in amd and "onemath-rocblas" in amd
+    assert "-DENABLE_CUBLAS_BACKEND=ON" in nv and "ROCBLAS" not in nv
+
+
+def test_gpu_setup_leaves_the_toolkit_runners_variables_alone():
+    # the toolkit sources gpu_setup in its runner; a stray D= deleted the results (AMD, Oct 28)
+    import re
+
+    from oneapi_agent.bundle import RUNNER
+
+    from museport.gpt2 import onemath_gpu_setup
+
+    runner = set(re.findall(r"^\s*([A-Za-z_][A-Za-z0-9_]*)=", RUNNER, re.M))
+    for vendor in ("nvidia", "amd"):
+        ours = set(re.findall(r"(?:^|[\s;(])([A-Za-z_][A-Za-z0-9_]*)=", onemath_gpu_setup(vendor)))
+        assert not ours & runner, (vendor, ours & runner)

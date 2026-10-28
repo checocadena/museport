@@ -1,0 +1,8 @@
+{
+  "command": "g++ -O2 -std=c++17 /tmp/tmp.SVBXErUha5/task/global_norm_ref.cpp -o build/reference",
+  "returncode": 0,
+  "duration_s": 0.119923,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.SVBXErUha5/out/work"
+}

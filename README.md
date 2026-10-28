@@ -45,7 +45,7 @@ graded by a hidden check built from llm.c's own CPU code and tolerance.
 | Correct with 0 helpers (hidden grade) | 10 | 4 | 4 | **18** |
 | Also met the loop's strict success rule | 9 | 3 | 3 | 15 |
 | Pass on an NVIDIA GPU (vs reference and llm.c's CUDA) | 10 | 4 | 1 (3 call oneMath: CPU-verified) | **15** |
-| Pass on an AMD GPU (vs reference) | 10 | 0 (not run) | 0 (not run) | **10** |
+| Pass on an AMD GPU (vs reference) | 10 | 4 | 1 (3 call oneMath: CPU-verified) | **15** |
 | Muse cost | $1.01 | $1.69 | $1.06 | **$3.75** |
 
 - **Evidence:** [Tier 1](evidence/port-llmc-tier1-run2/README.md),
@@ -73,9 +73,12 @@ graded by a hidden check built from llm.c's own CPU code and tolerance.
     llm.c's own CUDA built with `nvcc`
     ([Tier 1](evidence/port-llmc-tier1-run2/gpu/NVIDIA.md),
     [Tiers 2 and 3](evidence/port-llmc-tier23-run2/gpu/NVIDIA.md)).
-  - **AMD:** the 10 Tier 1 ports pass on an AMD Instinct MI350X against the hidden reference
-    ([evidence](evidence/port-llmc-tier1-run2/gpu/AMD.md)). They ran on DigitalOcean droplets
-    started from the author's laptop. AMD's automatic CUDA-to-HIP conversion can't build
+  - **AMD:** the same 15 ports pass on an AMD Instinct MI350X against the hidden reference
+    ([Tier 1](evidence/port-llmc-tier1-run2/gpu/AMD.md),
+    [Tiers 2 and 3](evidence/port-llmc-tier23-run2/gpu/AMD.md)), and so does the
+    `softmax_forward` rerun ([evidence](evidence/port-llmc-softmax-rerun-2/gpu/AMD.md)). Tier 1
+    ran on DigitalOcean droplets started from the author's laptop; Tiers 2 and 3 ran from the
+    cloud session, once `remote-test --public-tls` made that possible ($0.72). AMD's automatic CUDA-to-HIP conversion can't build
     llm.c's own CUDA (`__ldcs`, a host `memset`, 32-bit warp masks), so the comparison with
     llm.c's CUDA was done on NVIDIA.
   - Ports that call oneMath are verified on the CPU device: oneMath is not built for the GPU
@@ -103,6 +106,11 @@ llm.c's CPU code and to fail a planted bug.
 - **On an NVIDIA GPU:** stage 3's port, unchanged, trains on an RTX 4000 Ada with oneMath on
   cuBLAS. Its 10 losses match PyTorch's (worst error 0.000135) and llm.c's own CUDA build
   (worst 0.0000059), for $0.01 of GPU time ([evidence](evidence/gpt2-stage3/gpu/NVIDIA.md)).
+- **On an AMD GPU:** the same port, unchanged, trains on an AMD Instinct MI350X with oneMath on
+  rocBLAS. Its 10 losses match PyTorch's (worst error 0.0000246). It took five runs ($0.65)
+  to supply the development files the cloud image lacked
+  ([evidence](evidence/gpt2-stage3/gpu/AMD.md)). One source now trains GPT-2 on a CPU, an
+  NVIDIA GPU and an AMD GPU.
 - **Limits:** the ports are lean rewrites with simple kernels, not llm.c's tuned kernels.
   Stages 1 and 2 ran on the CPU device only, and kernel performance was not compared.
 

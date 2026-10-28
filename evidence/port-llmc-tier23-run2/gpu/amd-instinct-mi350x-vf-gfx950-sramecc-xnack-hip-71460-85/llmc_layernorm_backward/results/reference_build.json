@@ -1,0 +1,8 @@
+{
+  "command": "g++ -O2 -std=c++17 /tmp/tmp.kXJ8nfsuzd/task/layernorm_backward_ref.cpp -o build/reference",
+  "returncode": 0,
+  "duration_s": 0.143876,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.kXJ8nfsuzd/out/work"
+}

@@ -1,0 +1,44 @@
+{
+  "tool": "benchmark",
+  "status": "ok",
+  "summary": "10 run(s) each; hip:0: median 731.89 ms, p95 740.36 ms",
+  "evidence": {
+    "command": "build/sycl /tmp/tmp.AaelljUYfa/task/gpt2_124M_debug_state.bin /tmp/tmp.AaelljUYfa/out/work/bench_out.wav build/gpt2_124M.bin",
+    "runs": 10,
+    "warmup": 1,
+    "results": [
+      {
+        "selector": "hip:0",
+        "status": "ok",
+        "wall_time_s": {
+          "n": 10,
+          "min": 0.7215124319999973,
+          "median": 0.7318925989999983,
+          "p95": 0.7403600456499972,
+          "max": 0.741652024000004,
+          "mean": 0.7312506003999971,
+          "stdev": 0.007832983225359219
+        },
+        "samples_s": [
+          0.72601,
+          0.737977,
+          0.722073,
+          0.734085,
+          0.722499,
+          0.738781,
+          0.721512,
+          0.738216,
+          0.7297,
+          0.741652
+        ],
+        "reported": null,
+        "reported_samples": [],
+        "reported_note": "regex matched 0/10 runs"
+      }
+    ]
+  },
+  "limitations": [
+    "Wall-clock time of the whole process (includes start-up, JIT compilation of SYCL kernels on first use, I/O). Use report_regex for in-program kernel timings.",
+    "Device selection uses ONEAPI_DEVICE_SELECTOR; it only takes effect if the program uses a default/selector-based sycl::queue."
+  ]
+}
