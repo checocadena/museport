@@ -1,0 +1,8 @@
+created digitalocean machine 613431196 (gpu-mi350x1-288gb-spot, $3.0/h)
+waiting for the agent (HTTP no answer)
+bundle uploaded; waiting for the run
+agent phase: setup
+agent phase: ready
+agent phase: running
+agent phase: done
+deleted digitalocean machine 613431196: confirmed
