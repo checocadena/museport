@@ -1,0 +1,56 @@
+{
+  "cpu_call": "permute_cpu(matrix, permuted_matrix, dim1, dim2, dim3, dim4)",
+  "cpu_functions": [
+    "permute_cpu"
+  ],
+  "dropped_variants": [],
+  "extra_includes": [],
+  "gpu_call": "(void)k; int _total = dim1*dim2*dim3*dim4; int _grid = (_total + 256 - 1) / 256; permute_kernel<<<_grid, 256>>>(d_matrix, d_permuted_matrix, dim1, dim2, dim3, dim4)",
+  "gpu_prelude": "",
+  "host_prep": "",
+  "inputs": [
+    {
+      "count": "dim1*dim2*dim3*dim4",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "uniform",
+      "name": "matrix"
+    }
+  ],
+  "keep_cublas": false,
+  "keep_cublaslt": false,
+  "keep_in_harness": [],
+  "note": "Dims unchanged from permute.cu main: 24,42,20,32 (~645K elements, ~2.6MB per buffer); CPU reference already finishes in milliseconds.",
+  "output_post": "",
+  "outputs": [
+    {
+      "count": "dim1*dim2*dim3*dim4",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "zeros",
+      "name": "permuted_matrix"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "dim1",
+      "value": 24
+    },
+    {
+      "name": "dim2",
+      "value": 42
+    },
+    {
+      "name": "dim3",
+      "value": 20
+    },
+    {
+      "name": "dim4",
+      "value": 32
+    }
+  ],
+  "tol": 1e-05,
+  "variants": [
+    1
+  ]
+}
