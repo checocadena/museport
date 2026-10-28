@@ -1,0 +1,11 @@
+--- run.c	2026-10-28 22:37:16.267860478 +0000
++++ run_scale.c	2026-10-28 22:40:21.957145211 +0000
+@@ -276,7 +276,7 @@
+                 for (int i = 0; i < head_size; i++) {
+                     score += q[i] * k[i];
+                 }
+-                score /= sqrtf(head_size);
++                score /= sqrtf(2.0f * head_size);
+                 // save the score to the attention buffer
+                 att[t] = score;
+             }

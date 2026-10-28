@@ -1,0 +1,69 @@
+{
+  "root": "/home/user/ankan-ban/llama2.cu",
+  "totals": {
+    "files": 1,
+    "lines": 772,
+    "kernels": 8,
+    "by_tier": {
+      "3": 1
+    }
+  },
+  "libraries": [
+    {
+      "name": "CUB",
+      "uses": 5,
+      "oneapi": "oneDPL / SYCL group algorithms",
+      "note": "",
+      "files": [
+        "llama2.cu"
+      ]
+    }
+  ],
+  "constructs": [
+    {
+      "name": "shared_memory",
+      "uses": 6,
+      "severity": "mechanical",
+      "sycl": "sycl::local_accessor",
+      "files": [
+        "llama2.cu"
+      ]
+    },
+    {
+      "name": "fp16",
+      "uses": 1,
+      "severity": "mechanical",
+      "sycl": "sycl::half",
+      "files": [
+        "llama2.cu"
+      ]
+    }
+  ],
+  "files": [
+    {
+      "path": "llama2.cu",
+      "lines": 772,
+      "kernels": [
+        "MultiHeadAttention_kernel",
+        "RoPERotation_kernel",
+        "convert_fp16_to_fp32",
+        "convert_fp32_to_fp16",
+        "element_wise_add_kernel",
+        "mat_vec_kernel",
+        "rmsnorm_kernel",
+        "silu_element_wise_mul_kernel"
+      ],
+      "libraries": {
+        "CUB": 5
+      },
+      "constructs": {
+        "fp16": 1,
+        "shared_memory": 6
+      },
+      "includes": [],
+      "inherited_libraries": {},
+      "inherited_constructs": {},
+      "tier": 3
+    }
+  ]
+}

@@ -152,6 +152,13 @@ def build_parser() -> argparse.ArgumentParser:
     ls.add_argument("--evidence", default="evidence")
     ls.add_argument("--json", default="", help="check: also write the results to this file")
 
+    l2 = sub.add_parser("llama2-sycl", help="assemble llama2-sycl from the J4 evidence: "
+                                            "llama2.cu's repo with Muse's SYCL port")
+    l2.add_argument("action", choices=["assemble"])
+    l2.add_argument("--upstream", required=True, help="the ankan-ban/llama2.cu checkout")
+    l2.add_argument("--out", default="llama2-sycl")
+    l2.add_argument("--evidence", default="evidence/j4-llama2")
+
     rv = sub.add_parser("review", help="Muse reviews each finished port from the code alone "
                                        "(no test results); verdicts compared with the hidden "
                                        "grade and the variant check")
@@ -245,6 +252,15 @@ def main(argv: Sequence[str] | None = None) -> int:
                 indent=1) + "\n")
         print(f"[llmc-sycl] {len(results) - len(bad)}/{len(results)} pass", file=sys.stderr)
         return 1 if bad else 0
+    if args.cmd == "llama2-sycl":
+        from pathlib import Path
+
+        from .llama2 import assemble as assemble_llama2
+
+        prov = assemble_llama2(Path(args.evidence), Path(args.upstream), Path(args.out))
+        print(f"[llama2-sycl] {args.out}: {prov['upstream']} at {prov['upstream_commit']}, "
+              "llama2.cu replaced by Muse's llama2.cpp", file=sys.stderr)
+        return 0
     if args.cmd == "gpt2-gpu-task":
         from pathlib import Path
 

@@ -1,0 +1,8 @@
+{
+  "command": "/usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.yEtVWqGaGK/task /tmp/tmp.yEtVWqGaGK/task/llama2.cu -o build/native",
+  "returncode": 0,
+  "duration_s": 5.945239,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.yEtVWqGaGK/out/work"
+}

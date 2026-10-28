@@ -1,0 +1,4 @@
+run
+llama2
+# models: wget https://huggingface.co/karpathy/tinyllamas/resolve/main/stories15M.bin
+stories*.bin

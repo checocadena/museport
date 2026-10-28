@@ -1,0 +1,26 @@
+{
+  "name": "llama2_story",
+  "cuda_path": "llama2.cu",
+  "include_dirs": [
+    "."
+  ],
+  "reference_build": [
+    "true"
+  ],
+  "reference_cmd": "python3 {task_dir}/recorded.py {input} {output}",
+  "candidate_cmd": "python3 {task_dir}/run_story.py build/candidate {input} {output}",
+  "inputs": [
+    "case0.txt",
+    "case1.txt"
+  ],
+  "mode": "array",
+  "output_format": "f32",
+  "tolerance": 0.0,
+  "rtol": 0.0,
+  "goal": "Port llama2.cu (Llama 2 inference: a CUDA port of llama2.c, one file) to one SYCL 2020 program, llama2.cpp, with zero dpct helpers and the model computed on the SYCL device. Keep its command line (<checkpoint> [temperature] [steps] [prompt]), its loading of the checkpoint and of tokenizer.bin from the working directory, and its printout: '<s>' on its own line, then each token's text as it is generated, then the '\\nachieved tok/s: ...' line. Keep its fp16 storage (CUDA half -> sycl::half) and its fp32 accumulation; CUB block and warp reductions become SYCL group algorithms (sycl::reduce_over_group). A hidden check runs your program with temperature 0 (greedy) on fixed prompts with the stories15M model and compares the generated story byte for byte with llama2.cu's own output on an NVIDIA GPU. Compile with sources [llama2.cpp]. Success requires compile, verify and a zero-helper scan_helpers of the whole work directory (path '.') on the same sources; delete migrate's output (delete_file) once your port is done.",
+  "museport": {
+    "item": "J4",
+    "repo": "ankan-ban/llama2.cu",
+    "reference": "llama2.cu's own CUDA output, recorded on an NVIDIA GPU"
+  }
+}

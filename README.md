@@ -30,8 +30,9 @@ original CUDA, and on an AMD MI350X against the hidden reference.
   [`pre_hackathon`](https://github.com/checocadena/oneapi-agent-toolkit/tree/pre_hackathon).
   Changes made to it during the event are listed in
   [`docs/CHANGES-TO-TOOLKIT.md`](docs/CHANGES-TO-TOOLKIT.md) and live in that repository.
-- **Third-party:** the kernels ported are from
-  [karpathy/llm.c](https://github.com/karpathy/llm.c) (MIT); see
+- **Third-party:** the code ported is from
+  [karpathy/llm.c](https://github.com/karpathy/llm.c) and
+  [ankan-ban/llama2.cu](https://github.com/ankan-ban/llama2.cu) (both MIT); see
   [`THIRD_PARTY.md`](THIRD_PARTY.md).
 
 ## Results (llm.c `dev/cuda`, `muse-spark-1.3`)
@@ -147,6 +148,25 @@ On NVIDIA, both also match llm.c's own CUDA programs: 7.03e-06 for the test and 
 trainer. The checks were first proven on llm.c's own CPU programs and on planted bugs: a
 learning-rate bug and an unshuffled dataloader fail the trainer check, and a GELU-constant bug
 fails the test. Muse cost $2.33, and the GPU runs $0.43.
+
+### A second CUDA repo (one 772-line file), end to end: `llama2-sycl`
+
+[ankan-ban/llama2.cu](https://github.com/ankan-ban/llama2.cu), Llama 2 inference in one CUDA
+file (772 lines, 8 kernels, fp16, CUB reductions; the rest of the repo is C and Python, not
+CUDA), went through the same pipeline. Only the check's wrapper and a Makefile target were
+written by hand for it ([evidence](evidence/j4-llama2/README.md)):
+
+- **Plan:** Muse planned it as one item, grounded against the scan, for $0.029.
+- **Check:** greedy stories from the `stories15M` model (two prompts, 64 steps) must match
+  llama2.cu's own output byte for byte. The reference is llama2.cu, recorded on an NVIDIA GPU.
+  Proven first: llama2.c's `run.c` passes, and two planted bugs fail.
+- **Port:** Muse wrote a 737-line SYCL `llama2.cpp` in one run of 20 turns, for $0.45: 2 of 2
+  stories identical, 0 helpers.
+- **GPUs:** identical on an NVIDIA RTX 2000 Ada, against the recording and against llama2.cu run
+  live on the same GPU, and on an AMD MI350X against the recording. GPU cost $0.13.
+- **Repo:** [`llama2-sycl/`](llama2-sycl/README.md) is llama2.cu's repo with the port in place
+  of `llama2.cu`. From a fresh clone, `make llama2` and the run reproduce both stories on the
+  CPU ([evidence](evidence/j4-fresh-clone/README.md)).
 
 ### How much the tooling helps, and Muse as a reviewer
 

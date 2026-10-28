@@ -9,8 +9,8 @@ README before pasting.
 
 ## One line
 
-Muse Port has Meta's Muse Spark plan and port a real CUDA codebase (Karpathy's llm.c) to the
-open SYCL standard. A port counts as done only when a check the model never sees agrees. The
+Muse Port has Meta's Muse Spark plan and port real CUDA codebases (Karpathy's llm.c, and
+llama2.cu, Llama 2 inference) to the open SYCL standard. A port counts as done only when a check the model never sees agrees. The
 ports then run on NVIDIA and AMD GPUs, including GPT-2 training, and go back together as a
 repo whose build passes llm.c's own test on a CPU, an NVIDIA GPU and an AMD GPU.
 
@@ -131,6 +131,22 @@ file with warp-level CUDA got correct but plain kernels
 - **The test took three runs.** It succeeded once the toolkit gained an `edit_file` tool
   ([trainer](../evidence/j3-trainer/README.md), [test](../evidence/j3-test/README.md)).
 
+**A second CUDA repo (one 772-line file), end to end: `llama2-sycl`**
+([`llama2-sycl/`](../llama2-sycl/README.md), [evidence](../evidence/j4-llama2/README.md)).
+[ankan-ban/llama2.cu](https://github.com/ankan-ban/llama2.cu) is Llama 2 inference in one CUDA
+file (772 lines, 8 kernels), with fp16 and CUB reductions; the rest of the repo is C and
+Python, not CUDA. Muse Port had never run on it. It is much smaller than llm.c.
+- **Plan:** Muse planned it as one item, grounded, for $0.029.
+- **Check:** greedy stories from the `stories15M` model must match llama2.cu's own output,
+  recorded on an NVIDIA GPU, byte for byte. llama2.c's `run.c` passes it, and two planted bugs
+  fail it.
+- **Port:** Muse wrote a 737-line SYCL port in one run of 20 turns, for $0.45. Both stories are
+  identical, with 0 helpers.
+- **GPUs:** identical on an NVIDIA RTX 2000 Ada (against the recording and against llama2.cu
+  run live on the same GPU) and on an AMD MI350X (against the recording), for $0.13 of GPU.
+- **Repo:** `llama2-sycl` is llama2.cu's repo with the port in place of `llama2.cu`. From a
+  fresh clone, `make llama2` and the run reproduce both stories on the CPU.
+
 **Hidden checks without hand-written code:**
 - **The original CUDA as the reference:** llm.c's CUDA is recorded on an NVIDIA GPU, and the
   recording becomes the hidden reference. All 10 Tier 1 kernels were recorded for $0.034;
@@ -178,9 +194,10 @@ file with warp-level CUDA got correct but plain kernels
   one NVIDIA and one AMD GPU. The trainer was checked on 10 short steps, not a long run.
 - Muse's GPT-2 ports are lean rewrites with simple kernels, not llm.c's tuned kernels.
   Performance was not compared.
-- `llm.c-sycl`'s Makefiles are templates written by hand for llm.c; Muse did not convert the
-  build. `museport llmc-sycl assemble` works for llm.c only. A second, unseen CUDA repo end to
-  end is the next step.
+- `llm.c-sycl`'s and `llama2-sycl`'s Makefiles were written by hand; Muse did not convert the
+  builds. Each repo has its own assembler (`museport llmc-sycl` and `llama2-sycl assemble`).
+- `llama2-sycl` is checked on two prompts of 64 greedy steps with the 15M model; its Makefile's
+  GPU targets have not been run.
 
 ## Links
 

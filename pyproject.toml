@@ -29,6 +29,8 @@ where = ["src"]
 [tool.ruff]
 line-length = 100
 target-version = "py311"
+# llama2-sycl/ holds llama2.cu's upstream Python files, unchanged (THIRD_PARTY.md)
+extend-exclude = ["llama2-sycl"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "UP", "B"]
