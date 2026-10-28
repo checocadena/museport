@@ -1,0 +1,2 @@
+case0: 225 bytes; identical to llama2.cu's recording: True
+case1: 233 bytes; identical to llama2.cu's recording: True

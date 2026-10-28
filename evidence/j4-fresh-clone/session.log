@@ -1,0 +1,41 @@
+$ git clone -b j4-llama2 https://github.com/checocadena/museport
+60b4e1f J4: llama2-sycl assembled (llama2.cu's repo with Muse's port); NVIDIA GPU evidence
+$ cd llama2-sycl
+$ wget https://huggingface.co/karpathy/tinyllamas/resolve/main/stories15M.bin
+wget exit 0
+cd590644d963867a2b6e5a1107f51fad663c41d79c149fbecbbb1f95fa81f49a  stories15M.bin
+$ make llama2
+icpx -fsycl -O2  llama2.cpp -o llama2
+make exit 0 in 7 s
+$ ./llama2 stories15M.bin 0.0 64 "Once upon a time"
+exit 0
+
+Model params:- 
+dim: 288 
+hidden_dim: 768
+n_heads: 6
+n_kv_heads: 6
+n_layers: 6
+seq_len: 256
+vocab_size: 32000
+
+<s>
+Once upon a time, there was a little girl named Lily. She loved to play outside in the sunshine. One day, she saw a big, red ball in the sky. It was the sun! She wanted to touch it, but it was too high up. 
+Lily asked her mom
+achieved tok/s: 173.553719. Tokens: 63, seconds: 0.363
+$ ./llama2 stories15M.bin 0.0 64 "Tom and his dog went to the park"
+exit 0
+
+Model params:- 
+dim: 288 
+hidden_dim: 768
+n_heads: 6
+n_kv_heads: 6
+n_layers: 6
+seq_len: 256
+vocab_size: 32000
+
+<s>
+Tom and his dog went to the park. They liked to play with a ball. Tom threw the ball and his dog ran to get it. They had fun.
+But then, a big dog came. The big dog wanted the ball. The big dog barked and growled. Tom and his dog were
+achieved tok/s: 195.652174. Tokens: 63, seconds: 0.322

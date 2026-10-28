@@ -1,0 +1,8 @@
+{
+  "command": "/opt/rocm/bin/hipcc -O2 -std=c++17 --offload-arch=gfx950 -I/tmp/tmp.IjTFChEluA/task /tmp/tmp.IjTFChEluA/out/work/llama2.hip.cpp -o build/native",
+  "returncode": 1,
+  "duration_s": 0.373682,
+  "stdout": "",
+  "stderr": "/tmp/tmp.IjTFChEluA/out/work/llama2.hip.cpp:2:1: error: unexpected character <U+FEFF>\n    2 | <U+FEFF>/*\n      | ^~~~~~~~\n/tmp/tmp.IjTFChEluA/out/work/llama2.hip.cpp:15:10: fatal error: 'hipcub/hipcub.hpp' file not found\n   15 | #include <hipcub/hipcub.hpp>\n      |          ^~~~~~~~~~~~~~~~~~~\n2 errors generated when compiling for gfx950.\nfailed to execute:/opt/rocm/core-7.14/lib/llvm/bin/clang++  --offload-arch=gfx950 --driver-mode=g++ --hip-link  -O2 -std=c++17 -I/tmp/tmp.IjTFChEluA/task -x hip /tmp/tmp.IjTFChEluA/out/work/llama2.hip.cpp -o \"build/native\"\n",
+  "cwd": "/tmp/tmp.IjTFChEluA/out/work"
+}

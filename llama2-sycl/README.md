@@ -17,7 +17,7 @@ prompts. The generated story must match llama2.cu's byte for byte.
 |---|---|---|
 | CPU (in Muse's loop) | 2 of 2 stories identical | |
 | NVIDIA RTX 2000 Ada | 2 of 2 identical | 2 of 2 identical |
-| AMD Instinct MI350X | AMD_RESULT | (llama2.cu doesn't run on AMD) |
+| AMD Instinct MI350X | 2 of 2 identical | not run: llama2.cu's automatic HIP conversion did not build |
 
 - **Muse's port:** 737 lines of SYCL 2020. It keeps llama2.cu's fp16 storage (`sycl::half`) and
   turns its CUB reductions into SYCL group algorithms. It uses 0 SYCLomatic helpers.
@@ -38,7 +38,10 @@ make llama2                          # the CPU device; or: make llama2 TARGET=nv
 ./llama2 stories15M.bin 0.0 64 "Once upon a time"
 ```
 
-`make` alone still builds llama2.c's `run.c`, as upstream. FRESH_CLONE
+`make` alone still builds llama2.c's `run.c`, as upstream. From a fresh clone on the CPU device,
+`make llama2` took 7 s and both checked stories came out identical to llama2.cu's
+([evidence](../evidence/j4-fresh-clone/README.md)). The Makefile's GPU targets have not been
+run; the GPU results above come from the toolkit's own build of the same source.
 
 ## What is here
 
