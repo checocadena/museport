@@ -149,3 +149,18 @@ def test_no_migrate_loop_hides_and_refuses_migrate(tmp_path):
     box = NoMigrateToolbox.__new__(NoMigrateToolbox)
     r = box("migrate", {})
     assert r.status == "error" and "not available" in r.summary
+
+
+def test_baseline_arm_drops_feedback_and_says_so(tmp_path):
+    import json
+
+    from museport.loop import BASELINE_NOTE, build
+
+    (tmp_path / "k.cu").write_text("// cuda")
+    task = tmp_path / "task.json"
+    task.write_text(json.dumps({"goal": "Port k.cu.", "cuda_path": "k.cu",
+                                "reference_cmd": "r", "candidate_cmd": "c"}))
+    cfg, _ = build(task, model="muse-spark-1.3", baseline=True, transport=lambda *a, **k: {})
+    assert cfg.baseline and cfg.evaluate and cfg.goal == "Port k.cu." + BASELINE_NOTE
+    cfg2, _ = build(task, model="muse-spark-1.3", transport=lambda *a, **k: {})
+    assert not cfg2.baseline and cfg2.goal == "Port k.cu."

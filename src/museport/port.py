@@ -454,7 +454,8 @@ def run_items(plan: dict[str, Any], cuda_dir: Path, out: Path, *, model: str,
               runs_dir: Path = Path("runs/port"), tasks_only: bool = False,
               check: bool = False, tier: int = 1, strict_goal: bool = False,
               max_output_tokens: int | None = None, max_total_tokens: int | None = None,
-              no_migrate: bool = False, log: Any = print) -> dict[str, Any]:
+              no_migrate: bool = False, baseline: bool = False,
+              log: Any = print) -> dict[str, Any]:
     """Port each selected item (``items`` of any tier, else all of ``tier``) with Muse. A run
     starts only if the spend so far plus its own cap stays within ``total_cap_usd``.
     ``no_migrate`` runs without SYCLomatic (no migrate tool, and a goal that says so)."""
@@ -468,7 +469,8 @@ def run_items(plan: dict[str, Any], cuda_dir: Path, out: Path, *, model: str,
         if items and iid not in items:
             continue
         row: dict[str, Any] = {"item": iid, "file": (it.get("files") or ["?"])[0],
-                               **({"no_migrate": True} if no_migrate else {})}
+                               **({"no_migrate": True} if no_migrate else {}),
+                               **({"baseline": True} if baseline else {})}
         results.append(row)
         if spec is None:
             row["status"] = "no_harness_spec"
@@ -498,7 +500,7 @@ def run_items(plan: dict[str, Any], cuda_dir: Path, out: Path, *, model: str,
                                max_cost_usd=max_cost_usd, runs_dir=runs_dir / iid,
                                max_output_tokens=max_output_tokens or MAX_OUTPUT_TOKENS,
                                max_total_tokens=max_total_tokens or MAX_TOTAL_TOKENS,
-                               no_migrate=no_migrate)
+                               no_migrate=no_migrate, baseline=baseline)
         except Exception as e:  # noqa: BLE001 - one item must not end the batch
             partial = trace_spend(runs_dir / iid, model)
             known = partial["cost_usd"] is not None

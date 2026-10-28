@@ -29,14 +29,28 @@ MAX_OUTPUT_TOKENS = 32_000
 MAX_TOTAL_TOKENS = 2_000_000
 
 
+# Added to the goal in the toolkit's baseline arm (`--baseline`): the goal still names verify
+# and scan_helpers, which that arm takes away.
+BASELINE_NOTE = (
+    " In this run you have no verify, scan_helpers or benchmark tool, so you cannot test the "
+    "output yourself; the loop does not check success either. Call finish when you believe the "
+    "port is complete and correct: a hidden reference then grades your final sources against "
+    "the same requirements."
+)
+
+
 def build(task_file: str | Path, *, model: str, provider: str = "meta",
           max_iterations: int = 8, max_cost_usd: float = 1.0,
           max_output_tokens: int = MAX_OUTPUT_TOKENS, max_total_tokens: int = MAX_TOTAL_TOKENS,
+          baseline: bool = False,
           transport: Transport | None = None) -> tuple[LoopConfig, OpenAICompatModel]:
     # evaluate: after the run, the toolkit grades the final sources with a hidden compile,
     # verify and whole-tree helper scan (harness-side; the model never sees it).
     cfg = LoopConfig.from_task_file(task_file, max_iterations=max_iterations,
-                                    max_cost_usd=max_cost_usd, model=model, evaluate=True)
+                                    max_cost_usd=max_cost_usd, model=model, evaluate=True,
+                                    baseline=baseline)
+    if baseline:
+        cfg.goal += BASELINE_NOTE
     cfg.provider = provider
     cfg.max_total_tokens = max_total_tokens
     client = OpenAICompatModel(model, provider=provider, max_tokens=max_output_tokens,
@@ -116,13 +130,15 @@ def turn_overshoot_usd(model: str, input_tokens: int = 50_000,
 def run(task_file: str | Path, *, model: str, provider: str = "meta", max_iterations: int = 8,
         max_cost_usd: float = 1.0, runs_dir: str | Path = "runs",
         max_output_tokens: int = MAX_OUTPUT_TOKENS,
-        max_total_tokens: int = MAX_TOTAL_TOKENS, no_migrate: bool = False) -> dict[str, Any]:
-    """``no_migrate``: the ablation without SYCLomatic (see NoMigrateLoop)."""
+        max_total_tokens: int = MAX_TOTAL_TOKENS, no_migrate: bool = False,
+        baseline: bool = False) -> dict[str, Any]:
+    """``no_migrate``: the ablation without SYCLomatic (see NoMigrateLoop). ``baseline``: the
+    toolkit's arm without feedback (no verify, scan_helpers or benchmark; ends on finish)."""
     preflight_real_model(model, provider=provider)
     cfg, client = build(task_file, model=model, provider=provider,
                         max_iterations=max_iterations, max_cost_usd=max_cost_usd,
                         max_output_tokens=max_output_tokens,
-                        max_total_tokens=max_total_tokens)
+                        max_total_tokens=max_total_tokens, baseline=baseline)
     if no_migrate:
         return NoMigrateLoop(cfg, client, runs_dir=runs_dir,
                              toolbox_factory=NoMigrateToolbox).run()
