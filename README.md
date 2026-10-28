@@ -149,10 +149,11 @@ trainer. The checks were first proven on llm.c's own CPU programs and on planted
 learning-rate bug and an unshuffled dataloader fail the trainer check, and a GELU-constant bug
 fails the test. Muse cost $2.33, and the GPU runs $0.43.
 
-### A second CUDA repo, end to end: `llama2-sycl`
+### A second CUDA repo (one 772-line file), end to end: `llama2-sycl`
 
 [ankan-ban/llama2.cu](https://github.com/ankan-ban/llama2.cu), Llama 2 inference in one CUDA
-file (fp16, CUB reductions), went through the same pipeline with nothing hand-written for it
+file (772 lines, 8 kernels, fp16, CUB reductions; the rest of the repo is C and Python, not
+CUDA), went through the same pipeline with nothing hand-written for it
 but the check's wrapper ([evidence](evidence/j4-llama2/README.md)):
 
 - **Plan:** Muse planned it as one item, grounded against the scan, for $0.029.

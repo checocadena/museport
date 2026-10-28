@@ -131,10 +131,11 @@ file with warp-level CUDA got correct but plain kernels
 - **The test took three runs.** It succeeded once the toolkit gained an `edit_file` tool
   ([trainer](../evidence/j3-trainer/README.md), [test](../evidence/j3-test/README.md)).
 
-**A second CUDA repo, end to end: `llama2-sycl`**
+**A second CUDA repo (one 772-line file), end to end: `llama2-sycl`**
 ([`llama2-sycl/`](../llama2-sycl/README.md), [evidence](../evidence/j4-llama2/README.md)).
 [ankan-ban/llama2.cu](https://github.com/ankan-ban/llama2.cu) is Llama 2 inference in one CUDA
-file, with fp16 and CUB reductions. Muse Port had never run on it.
+file (772 lines, 8 kernels), with fp16 and CUB reductions; the rest of the repo is C and
+Python, not CUDA. Muse Port had never run on it. It is much smaller than llm.c.
 - **Plan:** Muse planned it as one item, grounded, for $0.029.
 - **Check:** greedy stories from the `stories15M` model must match llama2.cu's own output,
   recorded on an NVIDIA GPU, byte for byte. llama2.c's `run.c` passes it, and two planted bugs

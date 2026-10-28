@@ -1,4 +1,4 @@
-# J4: a second, unseen CUDA repo, end to end: llama2.cu
+# J4: a second, unseen CUDA repo (one 772-line file), end to end: llama2.cu
 
 [ankan-ban/llama2.cu](https://github.com/ankan-ban/llama2.cu) (MIT) at `cb0c6fa`: a CUDA port
 of Karpathy's llama2.c, Llama 2 inference in one file, `llama2.cu` (772 lines, 8 kernels, fp16,

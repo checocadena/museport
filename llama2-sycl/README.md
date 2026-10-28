@@ -5,8 +5,10 @@ port of Karpathy's llama2.c), with its one CUDA file ported to SYCL 2020 by Meta
 `muse-spark-1.3` with [Muse Port](../README.md). The repo is llama2.cu's own at `cb0c6fa`;
 only `llama2.cu` is replaced, by Muse's `llama2.cpp`.
 
-This is the second CUDA repo Muse Port took end to end, after llm.c. Nothing in it was written by hand for
-this repo except the hidden check's wrapper. Muse planned the migration from a scan, the
+This is the second CUDA repo Muse Port took end to end, after llm.c, and a much smaller one: its
+only CUDA is `llama2.cu`, 772 lines with 8 kernels. The rest of the repo is llama2.c's C program
+and Python scripts, kept as they are. For this repo, only the hidden check's wrapper and the
+Makefile's `llama2` target were written by hand. Muse planned the migration from a scan, the
 check's reference is llama2.cu's own output, recorded on an NVIDIA GPU, and Muse wrote the port
 against it. ([evidence](../evidence/j4-llama2/README.md))
 
