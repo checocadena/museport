@@ -1,6 +1,6 @@
 {
   "model": "muse-spark-1.3",
-  "spent_usd": 0.2913,
+  "spent_usd": 0.4202,
   "examples": [
     "gelu_forward.cu",
     "global_norm.cu"
@@ -237,6 +237,12 @@
         6
       ],
       "dropped_variants": []
+    },
+    {
+      "file": "softmax_forward.cu",
+      "proven": false,
+      "attempts": 3,
+      "cost_usd": 0.128876
     }
   ]
 }
