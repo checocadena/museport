@@ -1,0 +1,71 @@
+{
+  "model": "muse-spark-1.3",
+  "provider": "meta",
+  "usage": {
+    "input_tokens": 9519,
+    "output_tokens": 3933,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0
+  },
+  "cost_usd": 0.028614,
+  "plan": {
+    "items": [
+      {
+        "approach": "Migrate llama2.cu whole-file to SYCL 2020 with USM: replace cudaMalloc/cudaFree with sycl::malloc_device/sycl::free, cudaMemcpyAsync/DeviceToDevice/HostToDevice/DeviceToHost with q.memcpy + events, <<<>>> launches with q.parallel_for(sycl::nd_range) . Replace half with sycl::half, __shared__ with sycl::local_accessor + sycl::group_barrier. Replace cub::BlockReduce<float,1024>::Sum/Reduce+Max in rmsnorm_kernel and softmax_gpu and cub::WarpReduce<float>::Sum in mat_vec_kernel with sycl::reduce_over_group / sycl::joint_reduce with sycl::plus<float> and sycl::maximum<float>, querying sub-group size via sycl::nd_range sub_group extension and not assuming 32. Keep nd-range sizes portable: check info::device::max_work_group_size for 1024-wide groups, keep mat_vec 32x4 2D range as 1D flattened (d*32) with sub-group reduction, keep MAX_SEQ_LEN 8192 local float att as local_accessor<float,1>(8192). Port softmax_gpu __device__ to SYCL device inline function. Build with Intel DPC++ targeting NVIDIA/AMD/Intel GPUs via single SYCL source; verify simple elementwise/convert kernels first as smoke test before reduction/attention.",
+        "depends_on": [],
+        "files": [
+          "llama2.cu"
+        ],
+        "id": "item-01-llama2-full-sycl",
+        "kernels": [
+          "MultiHeadAttention_kernel",
+          "RoPERotation_kernel",
+          "convert_fp16_to_fp32",
+          "convert_fp32_to_fp16",
+          "element_wise_add_kernel",
+          "mat_vec_kernel",
+          "rmsnorm_kernel",
+          "silu_element_wise_mul_kernel"
+        ],
+        "library_mappings": [
+          {
+            "from": "CUB",
+            "notes": "5 uses: cub::BlockReduce<float,1024> Sum in rmsnorm_kernel and softmax_gpu, Reduce+Max in softmax_gpu, cub::WarpReduce<float> Sum in mat_vec_kernel with TempStorage. No direct one-to-one: rewrite with SYCL group algorithms (sycl::reduce_over_group/joint_reduce) and oneDPL reduce/max. TempStorage idiom removed; use sycl::local_accessor scratch + group_barrier. Max+Sum two-phase softmax must be split into two reductions with barrier.",
+            "to": "oneDPL"
+          }
+        ],
+        "risks": [
+          "shared_memory 6 uses -> sycl::local_accessor + sycl::group_barrier instead of __shared__+__syncthreads; includes BlockReduce TempStorage, shared_ss/shared_val, att[MAX_SEQ_LEN] 8192 floats (32KB local) may exceed Intel iGPU local mem, need device query and fallback to global scratch",
+          "fp16 1 tracked use (pervasive half buffers) -> sycl::half; explicit (float)/(half) casts and expf/sqrtf stay in float, verify half rounding vs cuda_fp16.h on all GPUs",
+          "CUB BlockReduce<float,1024> and WarpReduce<float> -> sycl::reduce_over_group/joint_reduce; do not assume sub-group size 32 (mat_vec_kernel uses i*32+threadIdx.x and WarpReduce); query sycl::ext::oneapi::sub_group size and make numSerialElements/serial reduction portable",
+          "fixed launch sizes: rmsnorm_kernel<<<1,1024>>>, MultiHeadAttention_kernel<<<num_heads,1024>>>, mat_vec dim3(32,4), RoPERotation head_size/2 threads, convert kernels assume 256 stride -> must check max_work_group_size and sub-group divisible sizing for AMD/Intel; keep logical mapping but allow work-group coarsening",
+          "__syncthreads and single-block assumptions in rmsnorm/softmax/attention -> sycl::group_barrier(group); single-block rmsnorm noted as 1% time but still needs correctness across backends"
+        ],
+        "tier": 3,
+        "title": "Port llama2.cu Llama-2 inference to SYCL 2020",
+        "verification": "No existing unit tests in repo; create standalone host harness comparing SYCL vs CPU reference per kernel with fixed seeds: element_wise_add, convert_fp32_to_fp16/fp16_to_fp32 bit-exact/1-ulp, silu_element_wise_mul and RoPERotation tol 1e-2 half, rmsnorm tol 1e-3 float vs sequential CPU, mat_vec vs CPU SGEMV tol 1e-2 half, MultiHeadAttention+softmax_gpu vs CPU softmax+attention tol 1e-3 float/2e-2 half on small dim/head_size/seq_len (e.g. dim 64-512, seq_len 8-128). End-to-end: run transformer() for pos 0..8 with synthetic weights and compare logits_temp vs original CUDA binary CPU-copied logits within half tolerance; if model.bin/tokenizer.bin available run main steps with temperature 0.0 greedy to check deterministic token IDs match."
+      }
+    ],
+    "out_of_scope": [],
+    "summary": "Single-item port of llama2.cu (8 kernels) to SYCL 2020 for NVIDIA/AMD/Intel GPUs: prove pipeline on mechanical elementwise/convert/RoPE kernels first, then replace CUB BlockReduce/WarpReduce and shared-memory reductions with portable group algorithms without assuming sub-group 32 or 1024 work-group support, verified by per-kernel CPU-reference harnesses and deterministic end-to-end transformer check."
+  },
+  "grounding": {
+    "grounded": true,
+    "coverage": {
+      "files": 1,
+      "covered": 1,
+      "planned": 1
+    },
+    "items": 1,
+    "unknown_files": [],
+    "unknown_kernels": [],
+    "uncovered_files": [],
+    "duplicate_files": [],
+    "missing_library_mappings": [],
+    "unmentioned_constructs": [],
+    "tier_mismatches": [],
+    "bad_dependencies": [],
+    "duplicate_ids": [],
+    "issues": 0
+  }
+}
