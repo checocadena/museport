@@ -11,7 +11,8 @@ README before pasting.
 
 Muse Port has Meta's Muse Spark plan and port a real CUDA codebase (Karpathy's llm.c) to the
 open SYCL standard. A port counts as done only when a check the model never sees agrees. The
-ports then run on NVIDIA and AMD GPUs, including GPT-2 training.
+ports then run on NVIDIA and AMD GPUs, including GPT-2 training, and go back together as a
+repo whose build passes llm.c's own test on a CPU, an NVIDIA GPU and an AMD GPU.
 
 ## Opening line of the 3-minute video (required)
 
@@ -35,7 +36,10 @@ ports then run on NVIDIA and AMD GPUs, including GPT-2 training.
    - **NVIDIA:** checked against the reference and against llm.c's original CUDA built with
      `nvcc`.
    - **AMD:** checked against the reference.
-5. **`museport report`:** a static site built only from the committed evidence: results,
+5. **`museport llmc-sycl assemble`** puts the graded ports back together as `llm.c-sycl`, in
+   llm.c's layout, with Makefiles. A test checks that it regenerates the committed folder byte
+   for byte.
+6. **`museport report`:** a static site built only from the committed evidence: results,
    every port, and a turn-by-turn replay of Muse's work.
 
 ## How Meta's models are used
@@ -105,14 +109,19 @@ call oneMath are verified on the CPU device.
 
 **`llm.c-sycl`, the ports put back together as a repo**
 ([`llm.c-sycl/`](../llm.c-sycl/README.md)): llm.c's layout in SYCL, built with `make` and
-`icpx -fsycl`. From a fresh clone, its test prints `overall okay: 1` on the CPU.
+`icpx -fsycl`.
+- **From a fresh clone,** following its Quick start, its test prints `overall okay: 1` on the
+  CPU ([evidence](../evidence/j3-fresh-clone/README.md)).
+- **Its own Makefile** builds it on an NVIDIA RTX 2000 Ada (`TARGET=nvidia`) and an AMD MI350X
+  (`TARGET=amd`), and the test passes on both
+  ([evidence](../evidence/j3-makefile-gpu/README.md)).
 - **Kernels:** its 19 `dev/sycl` kernel ports pass 19 of 19 hidden checks.
 - **Programs:** Muse wrote llm.c's fp32 trainer, with its real `main`, on top of the proven
   GPT-2 port, and ported llm.c's own test.
 - **Results:** the test prints `overall okay: 1`, and the trainer's losses match llm.c's CPU
   trainer, on a CPU, an NVIDIA RTX 2000 Ada and an AMD MI350X. On NVIDIA both also match llm.c's
   own CUDA.
-- **Cost:** Muse $2.33, GPU $0.43.
+- **Cost:** Muse $2.33, GPU $0.63, including the Makefile runs and one failed AMD setup.
 - **The test took three runs.** It succeeded once the toolkit gained an `edit_file` tool
   ([trainer](../evidence/j3-trainer/README.md), [test](../evidence/j3-test/README.md)).
 
@@ -163,6 +172,9 @@ call oneMath are verified on the CPU device.
   one NVIDIA and one AMD GPU. The trainer was checked on 10 short steps, not a long run.
 - Muse's GPT-2 ports are lean rewrites with simple kernels, not llm.c's tuned kernels.
   Performance was not compared.
+- `llm.c-sycl`'s Makefiles are templates written by hand for llm.c; Muse did not convert the
+  build. `museport llmc-sycl assemble` works for llm.c only. A second, unseen CUDA repo end to
+  end is the next step.
 
 ## Links
 

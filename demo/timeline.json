@@ -84,11 +84,18 @@
    "duration_s": 6
   },
   {
-   "name": "live loop (optional)",
+   "name": "llm.c-sycl test",
    "kind": "record",
    "file": null,
    "start_s": 118,
-   "duration_s": 41
+   "duration_s": 16
+  },
+  {
+   "name": "live loop (optional)",
+   "kind": "record",
+   "file": null,
+   "start_s": 134,
+   "duration_s": 25
   },
   {
    "name": "limits card",
