@@ -38,7 +38,7 @@ repo whose build passes llm.c's own test on a CPU, an NVIDIA GPU and an AMD GPU.
    - **AMD:** checked against the reference.
 5. **`museport llmc-sycl assemble`** puts the graded ports back together as `llm.c-sycl`, in
    llm.c's layout, with Makefiles. A test checks that it regenerates the committed folder byte
-   for byte.
+   for byte. `museport llama2-sycl assemble` does the same for llama2.cu, a second repo.
 6. **`museport report`:** a static site built only from the committed evidence: results,
    every port, and a turn-by-turn replay of Muse's work.
 
@@ -152,7 +152,8 @@ Python, not CUDA. Muse Port had never run on it. It is much smaller than llm.c.
   recording becomes the hidden reference. All 10 Tier 1 kernels were recorded for $0.034;
   each program's two runs were bit-identical. The recordings agree with llm.c's CPU references,
   and Muse's ports pass against them, 10 of 10. A planted bug fails
-  ([evidence](../evidence/diff-llmc-tier1/README.md)).
+  ([evidence](../evidence/diff-llmc-tier1/README.md)). llama2.cu's check works the same way, on the
+  whole program's output.
 - **Muse writes the checks:** each hidden check is built from a short spec (CPU reference,
   variants, inputs, sizes, tolerance). Muse wrote the spec for 17 llm.c files from the CUDA
   alone. **16 are proven**: llm.c's GPU and CPU code must agree under the spec, through

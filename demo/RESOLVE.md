@@ -21,7 +21,7 @@ node demo/render.mjs demo/out                # renders every shot; or name shots
 1. **Project:** a new project at 1920×1080, 30 fps.
 2. **Media:** import `demo/out/*.mp4` into the Media Pool.
 3. **Timeline:** drag the clips onto one track in the order of `demo/timeline.json`. Leave
-   gaps for the recorded shots (report site, `llm.c-sycl` test, live loop) and the limits title.
+   gaps for the recorded shots (report site, `llm.c-sycl` test, `llama2-sycl` run) and the limits title.
 4. **Voiceover:** record it per shot (Fairlight → ADR, or any mic recording) and lay it on
    audio track 1. Trim each clip to its line.
 5. **Music:** optional, a quiet bed under it, around −24 dB.
