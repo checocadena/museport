@@ -646,9 +646,9 @@ def _j3_section(j3: dict[str, Any] | None) -> str:
         (f'<div><span class="eyebrow">dev/sycl kernels</span><span class="v">{check["passed"]} '
          f'of {check["total"]}</span><span class="d">pass their hidden checks, 0 helpers'
          "</span></div>" if check else "")
-        + "".join(f'<div><span class="eyebrow">{esc(p["target"])}</span><span class="v">'
-                  f'{sum(g["status"] == "ok" for g in p["gpu"]) + 1} targets</span>'
-                  '<span class="d">CPU, then GPUs</span></div>' for p in progs)
+        + '<div><span class="eyebrow">trainer and test</span><span class="v">'
+        + f'{min(sum(g["status"] == "ok" for g in p["gpu"]) + 1 for p in progs)} targets each'
+        + '</span><span class="d">pass: CPU, NVIDIA, AMD</span></div>'
         + f'<div><span class="eyebrow">Muse</span><span class="v">{money(muse)}</span>'
         f'<span class="d">{sum(len(p["runs"]) for p in progs)} loop runs</span></div>')
     rows = "".join(
