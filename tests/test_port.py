@@ -239,3 +239,18 @@ def test_gpu_task_regenerates_missing_inputs(tmp_path, monkeypatch):
     task = json.loads(P.make_gpu_task(item, tmp_path / "gpu", "m").read_text())
     assert (tmp_path / "gpu" / "input.bin").read_bytes() == original
     assert task["sycl_sources"] == ["agent_port/scale.cpp"]
+
+
+def test_kernel_bodies_reads_functor_kernels():
+    from museport.port import kernel_bodies
+
+    src = """
+struct AddK1 { float *x; void operator()(sycl::id<1> i) const { x[i] += 1; } };
+struct AddK2 { float *x; void operator()(sycl::id<1> i) const { x[i] *= 2; } };
+void a(sycl::queue &q, float *x) { q.parallel_for(sycl::nd_range<1>(64, 32), AddK1{x}); }
+void b(sycl::queue &q, float *x) { q.parallel_for(sycl::nd_range<1>(64, 32), AddK2{x}); }
+void c(sycl::queue &q, float *x) { q.parallel_for(sycl::range<1>(8), [=](auto i) { x[i] = 0; }); }
+"""
+    bodies = kernel_bodies(src)
+    assert len(bodies) == 3 and len(set(bodies)) == 3
+    assert "*= 2" in bodies[1] and "x[i] = 0" in bodies[2]

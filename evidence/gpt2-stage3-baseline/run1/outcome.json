@@ -1,0 +1,27 @@
+{
+  "stop_reason": "model_finished",
+  "stop_detail": "model called finish (baseline: no loop-side success check)",
+  "iterations": 29,
+  "usage": {
+    "input_tokens": 518062,
+    "output_tokens": 116057,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1319064
+  },
+  "cost_usd": 1.33867935,
+  "best": null,
+  "run_dir": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/runs-gpt2-s3-baseline/20261028T004405054310Z",
+  "trace": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/runs-gpt2-s3-baseline/20261028T004405054310Z/trace.jsonl",
+  "report": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/runs-gpt2-s3-baseline/20261028T004405054310Z/report.md",
+  "model": "muse-spark-1.3",
+  "baseline": true,
+  "shell": false,
+  "evaluation": {
+    "source_hash": "ce475dc1cee2b619",
+    "compiled": true,
+    "verify_status": "error",
+    "verify_summary": "input(s) not found: ['/home/user/museport-hackathon/evidence/gpt2-stage3/task/gpt2_124M_debug_state.bin']",
+    "helpers": 0,
+    "advisories": []
+  }
+}

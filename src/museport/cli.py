@@ -49,6 +49,9 @@ def build_parser() -> argparse.ArgumentParser:
                     help="stop once the run's cost exceeds this many USD (default 1.0); "
                          "checked between turns")
     lp.add_argument("--runs-dir", default="runs")
+    lp.add_argument("--baseline", action="store_true",
+                    help="ablation: the toolkit's arm without feedback (no verify, scan_helpers "
+                         "or benchmark; the run ends on finish; graded afterwards)")
 
     po = sub.add_parser("port", help="Muse ports each plan item of a tier with the toolkit's "
                                      "loop; a hidden reference checks every result")
@@ -78,6 +81,8 @@ def build_parser() -> argparse.ArgumentParser:
     po.add_argument("--strict-goal", action="store_true",
                     help="tell Muse to clear SYCLomatic's output early and to keep each "
                          "variant's own algorithm (for reruns)")
+    po.add_argument("--baseline", action="store_true",
+                    help="ablation: no verify, scan_helpers or benchmark; ends on finish")
     po.add_argument("--no-migrate", action="store_true",
                     help="ablation: run without SYCLomatic (no migrate tool; Muse writes the "
                          "port from the CUDA harness)")
@@ -101,6 +106,14 @@ def build_parser() -> argparse.ArgumentParser:
     g3.add_argument("stage_dir", help="e.g. evidence/gpt2-stage3")
     g3.add_argument("--out", required=True, help="task directory to write")
     g3.add_argument("--model", default=DEFAULT_MODEL)
+
+    rv = sub.add_parser("review", help="Muse reviews each finished port from the code alone "
+                                       "(no test results); verdicts compared with the hidden "
+                                       "grade and the variant check")
+    rv.add_argument("evidence", nargs="?", default="evidence")
+    rv.add_argument("--out", default="evidence/review-muse")
+    rv.add_argument("--model", default=DEFAULT_MODEL)
+    rv.add_argument("--total-cap", type=float, default=1.5, help="USD cap for all reviews")
 
     rp = sub.add_parser("report", help="a static site built only from the committed evidence "
                                        "(overview, plan, one page per item with a replay)")
@@ -131,6 +144,16 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _report(args)
     if args.cmd == "gpt2-task":
         return _gpt2_task(args)
+    if args.cmd == "review":
+        from pathlib import Path
+
+        from .review import run_reviews
+
+        summary = run_reviews(Path(args.evidence), Path(args.out), model=args.model,
+                              total_cap_usd=args.total_cap,
+                              log=lambda m: print(m, file=sys.stderr))
+        print(f"[review] spent ${summary['spent_usd']:.4f}", file=sys.stderr)
+        return 0
     if args.cmd == "gpt2-gpu-task":
         from pathlib import Path
 
@@ -210,6 +233,7 @@ def _port(args: argparse.Namespace) -> int:
                         tasks_only=args.tasks_only, check=args.check, tier=args.tier,
                         strict_goal=args.strict_goal, max_output_tokens=args.max_output,
                         max_total_tokens=args.max_total_tokens, no_migrate=args.no_migrate,
+                        baseline=args.baseline,
                         log=lambda m: print(m, file=sys.stderr))
     print(json.dumps(summary, indent=2))
     bad = {"harness_check_failed", "error"}
@@ -225,12 +249,12 @@ def _loop(args: argparse.Namespace) -> int:
     try:
         outcome = run(args.task, model=args.model, provider=args.provider,
                       max_iterations=args.max_iterations, max_cost_usd=args.max_cost,
-                      runs_dir=args.runs_dir)
+                      runs_dir=args.runs_dir, baseline=args.baseline)
     except RuntimeError as e:
         print(f"museport: {e}", file=sys.stderr)
         return 2
     print(json.dumps(outcome, indent=2))
-    return 0 if outcome["stop_reason"] == "success" else 1
+    return 0 if outcome["stop_reason"] in ("success", "model_finished") else 1
 
 
 def _plan(args: argparse.Namespace) -> int:
