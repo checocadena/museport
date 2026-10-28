@@ -1,0 +1,8 @@
+{
+  "command": "g++ -O2 -std=c++17 /tmp/tmp.9Oy3YKylD1/task/matmul_backward_ref.cpp -o build/reference",
+  "returncode": 0,
+  "duration_s": 0.123845,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.9Oy3YKylD1/out/work"
+}

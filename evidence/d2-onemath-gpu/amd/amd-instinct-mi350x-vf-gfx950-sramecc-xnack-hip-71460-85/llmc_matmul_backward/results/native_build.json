@@ -1,0 +1,8 @@
+{
+  "command": "/opt/rocm/bin/hipcc -O2 -std=c++17 --offload-arch=gfx950 -I/tmp/tmp.9Oy3YKylD1/task /tmp/tmp.9Oy3YKylD1/out/work/matmul_backward_harness.hip.cpp -o build/native",
+  "returncode": 1,
+  "duration_s": 0.294312,
+  "stdout": "",
+  "stderr": "/tmp/tmp.9Oy3YKylD1/out/work/matmul_backward_harness.hip.cpp:13:10: fatal error: 'hipblas.h' file not found\n   13 | #include <hipblas.h>\n      |          ^~~~~~~~~~~\n1 error generated when compiling for gfx950.\nfailed to execute:/opt/rocm/core-7.14/lib/llvm/bin/clang++  --offload-arch=gfx950 --driver-mode=g++ --hip-link  -O2 -std=c++17 -I/tmp/tmp.9Oy3YKylD1/task -x hip /tmp/tmp.9Oy3YKylD1/out/work/matmul_backward_harness.hip.cpp -o \"build/native\"\n",
+  "cwd": "/tmp/tmp.9Oy3YKylD1/out/work"
+}

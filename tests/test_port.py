@@ -254,3 +254,37 @@ void c(sycl::queue &q, float *x) { q.parallel_for(sycl::range<1>(8), [=](auto i)
     bodies = kernel_bodies(src)
     assert len(bodies) == 3 and len(set(bodies)) == 3
     assert "*= 2" in bodies[1] and "x[i] = 0" in bodies[2]
+
+
+def test_gpu_task_for_a_onemath_port_builds_onemath_for_the_vendor(tmp_path):
+    import json
+
+    import pytest
+
+    from museport.port import make_gpu_task
+
+    root = Path(__file__).resolve().parents[1]
+    item = root / "evidence" / "port-llmc-tier23-run2" / "t3-matmul-forward"
+    with pytest.raises(ValueError, match="name the GPU vendor"):
+        make_gpu_task(item, tmp_path / "x", "muse-spark-1.3")
+    for vendor, backend in (("nvidia", "cublas"), ("amd", "rocblas")):
+        path = make_gpu_task(item, tmp_path / vendor, "muse-spark-1.3", vendor)
+        task = json.loads(path.read_text())
+        assert task["gpu_setup"] == f"onemath_{backend}_setup.sh"
+        setup = (path.parent / task["gpu_setup"]).read_text()
+        assert f"-DENABLE_{backend.upper()}_BACKEND=ON" in setup
+    # a port without oneMath needs no vendor and gets no setup
+    plain = make_gpu_task(root / "evidence" / "port-llmc-tier1-run2" / "t1-gelu-forward",
+                          tmp_path / "plain", "muse-spark-1.3")
+    assert "gpu_setup" not in json.loads(plain.read_text())
+
+
+def test_onemath_goal_asks_for_column_major():
+    # oneMath's cuBLAS backend does not implement row_major: matmul_backward's first port
+    # passed on the CPU and aborted on NVIDIA (evidence/d2-onemath-gpu)
+    from museport.llmc import SPECS
+    from museport.port import goal
+
+    g = goal(SPECS["matmul_backward.cu"], "matmul_backward_harness.cu")
+    assert "oneapi::math::blas::column_major" in g and "does not implement row_major" in g
+    assert "column_major" not in goal(SPECS["gelu_forward.cu"], "gelu_forward_harness.cu")

@@ -1,0 +1,47 @@
+{
+  "model": "muse-spark-1.3",
+  "spent_usd": 0.0943,
+  "items": [
+    {
+      "item": "t3-matmul-backward",
+      "file": "matmul_backward.cu",
+      "task": "t3-matmul-backward/task/task.json",
+      "run_id": "20261028T185101220882Z",
+      "status": "success",
+      "detail": "verify passed and zero dpct helpers on the current compiled sources",
+      "iterations": 7,
+      "usage": {
+        "input_tokens": 39128,
+        "output_tokens": 8643,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 57397
+      },
+      "cost_usd": 0.0942523,
+      "best": {
+        "iteration": 7,
+        "source_hash": "03c7a773ccc2f4a5",
+        "helpers": 0,
+        "path": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/mbruns/t3-matmul-backward/20261028T185101220882Z/best",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0.00021, atol 0.001)"
+      },
+      "evaluation": {
+        "source_hash": "03c7a773ccc2f4a5",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0.00021, atol 0.001)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "matmul_backward_sycl.cpp"
+      ],
+      "variant_check": {
+        "variants": 1,
+        "kernels": 2,
+        "distinct_kernel_bodies": 2,
+        "onemath_calls": 2,
+        "duplicated_variants": false
+      }
+    }
+  ]
+}

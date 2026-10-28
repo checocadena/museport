@@ -1,0 +1,6 @@
+created runpod machine dgwrvu2h0ll1u4 (NVIDIA RTX A4500, $0.25/h)
+waiting for the agent (HTTP 404)
+bundle uploaded; waiting for the run
+agent phase: running
+agent phase: done
+deleted runpod machine dgwrvu2h0ll1u4: confirmed

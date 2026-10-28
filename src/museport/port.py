@@ -291,7 +291,10 @@ def goal(spec: KernelSpec, harness: str, *, strict: bool = False,
            "own port is done. migrate's output can be long: read it in parts (read_file "
            "offset/limit) or work from the CUDA harness.")
         + (" cuBLAS calls go to oneMath (oneapi::math::blas, #include <oneapi/math.hpp>; the "
-           "compile flags already link -lonemath), not to oneapi::mkl product APIs."
+           "compile flags already link -lonemath), not to oneapi::mkl product APIs. Use "
+           "oneapi::math::blas::column_major, as cuBLAS itself is column-major (swap the operands "
+           "for row-major data): oneMath's cuBLAS backend does not implement row_major, so a "
+           "row_major call aborts on NVIDIA GPUs even though it runs on the CPU."
            if spec.keep_cublas else "")
         + (STRICT_GOAL if strict else "")
     )
@@ -720,9 +723,11 @@ def last_compiled_sources(trace: Path) -> list[str]:
     return last
 
 
-def make_gpu_task(item_dir: Path, dest: Path, model: str) -> Path:
+def make_gpu_task(item_dir: Path, dest: Path, model: str, vendor: str | None = None) -> Path:
     """A ``remote-test`` task for a finished port: the item's task (harness, hidden reference,
-    inputs) plus ``sycl_sources`` pointing at the agent's last compiled sources, unchanged."""
+    inputs) plus ``sycl_sources`` pointing at the agent's last compiled sources, unchanged. A port
+    that calls oneMath also gets a ``gpu_setup`` that builds oneMath on the GPU machine for
+    ``vendor`` (cuBLAS on NVIDIA, rocBLAS on AMD), as the GPT-2 GPU tasks do."""
     srcs = last_compiled_sources(item_dir / "trace.jsonl")
     if not srcs:
         raise ValueError(f"{item_dir.name}: the model never compiled")
@@ -740,6 +745,15 @@ def make_gpu_task(item_dir: Path, dest: Path, model: str) -> Path:
                              f"{source!r}")
         write_inputs(SPECS[source], dest / "input.bin")
     task["sycl_sources"] = [f"agent_port/{s}" for s in srcs]
+    if any("onemath" in f.lower() for f in task.get("base_flags", [])):
+        from .gpt2 import ONEMATH_BACKENDS, onemath_gpu_setup
+
+        if vendor not in ONEMATH_BACKENDS:
+            raise ValueError(f"{item_dir.name} calls oneMath: name the GPU vendor "
+                             f"({', '.join(ONEMATH_BACKENDS)}) so oneMath is built for it")
+        setup = f"onemath_{ONEMATH_BACKENDS[vendor]['backend']}_setup.sh"
+        (dest / setup).write_text(onemath_gpu_setup(vendor))
+        task["gpu_setup"] = setup
     task["port_origin"] = (f"agent-made: {model} via museport port, item {item_dir.name}; "
                            "sources as last compiled by the agent, unchanged")
     (dest / "task.json").write_text(json.dumps(task, indent=2) + "\n")

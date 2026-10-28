@@ -1,0 +1,70 @@
+{
+  "tool": "gpu_test",
+  "status": "fail",
+  "summary": "FAIL on NVIDIA RTX A4500 (cuda:0, nvidia): sycl_verify_vs_reference: candidate exited with code -6; sycl_verify_vs_native: candidate exited with code -6",
+  "evidence": {
+    "task": "llmc_matmul_backward",
+    "device": {
+      "backend": "cuda",
+      "device_type": "gpu",
+      "index": 0,
+      "platform": "NVIDIA CUDA BACKEND",
+      "name": "NVIDIA RTX A4500",
+      "description": "NVIDIA CUDA BACKEND, NVIDIA RTX A4500 8.6 [CUDA 13.2]",
+      "selector": "cuda:0"
+    },
+    "vendor": "nvidia",
+    "amd_arch": null,
+    "cuda_arch": "86",
+    "target_flags": [
+      "-fsycl-targets=nvidia_gpu_sm_86"
+    ],
+    "selector": "cuda:0",
+    "steps": [
+      {
+        "step": "reference_build",
+        "status": "ok",
+        "summary": "exit 0: g++ -O2 -std=c++17 /tmp/tmp.uO5ucYofHN/task/matmul_backward_ref.cpp -o build/reference"
+      },
+      {
+        "step": "native_build",
+        "status": "ok",
+        "summary": "exit 0: /usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.uO5ucYofHN/task /tmp/tmp.uO5ucYofHN/task/matmul_backward_harness.cu -lcublas -o build/native"
+      },
+      {
+        "step": "native_verify_vs_reference",
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 0.00021, atol 0.001)"
+      },
+      {
+        "step": "sycl_compile",
+        "status": "ok",
+        "summary": "compiled 1 source(s) -> /tmp/tmp.uO5ucYofHN/out/work/build/sycl (0 warning(s))"
+      },
+      {
+        "step": "sycl_verify_vs_reference",
+        "status": "fail",
+        "summary": "candidate exited with code -6"
+      },
+      {
+        "step": "sycl_verify_vs_native",
+        "status": "fail",
+        "summary": "candidate exited with code -6"
+      },
+      {
+        "step": "sycl_benchmark",
+        "status": "fail",
+        "summary": "command failed on all 1 device(s)"
+      },
+      {
+        "step": "native_benchmark",
+        "status": "ok",
+        "summary": "10 run(s) each; none: median 521.63 ms, p95 546.94 ms"
+      }
+    ],
+    "results_dir": "/tmp/tmp.uO5ucYofHN/out/results"
+  },
+  "limitations": [
+    "Benchmarks are single-process wall times plus program-reported kernel times; treat them as rough."
+  ]
+}

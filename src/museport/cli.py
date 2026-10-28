@@ -93,6 +93,8 @@ def build_parser() -> argparse.ArgumentParser:
                                           "grade (run them with `oneapi-agent remote-test`)")
     gp.add_argument("port_dir", help="the --out directory of `museport port`")
     gp.add_argument("--out", help="where to write the tasks (default: <port_dir>/gpu-tasks)")
+    gp.add_argument("--vendor", choices=["nvidia", "amd"],
+                    help="the GPU vendor; ports that call oneMath get a setup that builds it")
     g2 = sub.add_parser("gpt2-task", help="write a GPT-2 training port stage's task (forward or "
                                           "backward pass) and prove its hidden check on the CPU")
     g2.add_argument("--llmc", required=True, help="the llm.c checkout")
@@ -322,11 +324,11 @@ def _gpu_tasks(args: argparse.Namespace) -> int:
             print(f"[gpu-tasks] {r['item']}: skipped (hidden grade not passed)", file=sys.stderr)
             continue
         task = json.loads((root / r["item"] / "task" / "task.json").read_text())
-        if any("onemath" in f.lower() for f in task.get("base_flags", [])):
-            print(f"[gpu-tasks] {r['item']}: skipped (the port calls oneMath, which the GPU "
-                  "hosts do not have)", file=sys.stderr)
+        if any("onemath" in f.lower() for f in task.get("base_flags", [])) and not args.vendor:
+            print(f"[gpu-tasks] {r['item']}: skipped (the port calls oneMath: pass --vendor so "
+                  "the task builds oneMath on the GPU machine)", file=sys.stderr)
             continue
-        path = make_gpu_task(root / r["item"], out / r["item"], summary["model"])
+        path = make_gpu_task(root / r["item"], out / r["item"], summary["model"], args.vendor)
         print(f"[gpu-tasks] {r['item']}: {path}", file=sys.stderr)
     return 0
 
