@@ -9,6 +9,8 @@ cap is fixed at $5. This wrapper changes neither: it hands the toolkit's ``Agent
 
 from __future__ import annotations
 
+import json
+import shutil
 from collections.abc import Iterator
 from contextlib import contextmanager
 from pathlib import Path
@@ -139,7 +141,26 @@ def run(task_file: str | Path, *, model: str, provider: str = "meta", max_iterat
                         max_iterations=max_iterations, max_cost_usd=max_cost_usd,
                         max_output_tokens=max_output_tokens,
                         max_total_tokens=max_total_tokens, baseline=baseline)
-    if no_migrate:
-        return NoMigrateLoop(cfg, client, runs_dir=runs_dir,
-                             toolbox_factory=NoMigrateToolbox).run()
-    return AgentLoop(cfg, client, runs_dir=runs_dir, toolbox_factory=SafeToolbox).run()
+    agent = (NoMigrateLoop(cfg, client, runs_dir=runs_dir, toolbox_factory=NoMigrateToolbox)
+             if no_migrate else
+             AgentLoop(cfg, client, runs_dir=runs_dir, toolbox_factory=SafeToolbox))
+    seed_work(task_file, agent.work)
+    return agent.run()
+
+
+def seed_work(task_file: str | Path, work: Path) -> list[str]:
+    """Copy the task's ``museport.seed`` folder (relative to the task dir) into the work dir:
+    files the model starts from, e.g. its own earlier, proven port (J3)."""
+    task_file = Path(task_file)
+    seed = json.loads(task_file.read_text()).get("museport", {}).get("seed")
+    if not seed:
+        return []
+    src = task_file.parent / seed
+    copied = []
+    for f in sorted(src.rglob("*")):
+        if f.is_file():
+            dest = work / f.relative_to(src)
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(f, dest)
+            copied.append(str(f.relative_to(src)))
+    return copied
