@@ -1,0 +1,71 @@
+{
+  "cpu_call": "encoder_backward_cpu(dwte, dwpe, dout, inp, B, T, C)",
+  "cpu_functions": [
+    "encoder_backward_cpu"
+  ],
+  "dropped_variants": [],
+  "extra_includes": [],
+  "gpu_call": "encoder_backward(k, d_dwte, d_dwpe, d_dout, d_inp, B, T, C, 256)",
+  "gpu_prelude": "",
+  "host_prep": "",
+  "inputs": [
+    {
+      "count": "B*T*C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "uniform",
+      "name": "dout"
+    },
+    {
+      "count": "B*T",
+      "device_count": "",
+      "dtype": "i32",
+      "init": "int:V",
+      "name": "inp"
+    }
+  ],
+  "keep_cublas": false,
+  "keep_cublaslt": false,
+  "keep_in_harness": [],
+  "note": "B=4, T=256 (llm.c: B=8, T=1024); V=8192 (llm.c: 50257); C=768 as in llm.c.",
+  "output_post": "",
+  "outputs": [
+    {
+      "count": "V*C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "zeros",
+      "name": "dwte"
+    },
+    {
+      "count": "T*C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "zeros",
+      "name": "dwpe"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "B",
+      "value": 4
+    },
+    {
+      "name": "T",
+      "value": 256
+    },
+    {
+      "name": "C",
+      "value": 768
+    },
+    {
+      "name": "V",
+      "value": 8192
+    }
+  ],
+  "tol": 1e-05,
+  "variants": [
+    1,
+    2
+  ]
+}
