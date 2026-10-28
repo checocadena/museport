@@ -20,8 +20,8 @@ Rules for every item:
 
 Budget so far:
 - **Development:** about $0.55 of $5, plus the first failed plan run (at most $1.15).
-- **Comparison runs:** about $24.61 of $40, at most $24.79, with J3's $2.33 below and D2's
-  matmul_backward rerun ($0.094). The author
+- **Comparison runs:** about $25.09 of $40, at most $25.27, with J3's $2.33 below, D2's
+  matmul_backward rerun ($0.094) and J4's $0.48 (of its $8 cap). The author
   raised this cap from $30 to $40 on Oct 28; the per-run cap stays $3. Before J3: $22.19,
   at most $22.37 (after the C1-C3 reruns, Tier 1 run 2,
   the run without SYCLomatic, GPT-2 stages 1-3, Tiers 2-3 run 2, two softmax_forward reruns, E1,
@@ -29,11 +29,11 @@ Budget so far:
   the per-run cap from $1 to $3 on Oct 27, and this cap from $20 to $30 on Oct 27.
   The author set a $7 cap for GPT-2 (G3); $4.45 used, including E1's GPT-2 run.
   J3 adds $2.33 of its $4 Muse cap: the trainer ($0.71) and three test-port runs ($1.62).
-- **GPUs:** about $5.35 (Runpod NVIDIA about $0.39, DigitalOcean AMD about $4.96), of a $10 cap
+- **GPUs:** about $5.49 (Runpod NVIDIA about $0.40, DigitalOcean AMD about $5.09), of a $10 cap
   the author set on Oct 27. Oct 28 added the J1 recordings ($0.034), Tiers 2-3 and softmax on
   AMD ($0.72), GPT-2 stage 3 on AMD (five runs, $0.65), J2's GPU proofs ($0.041) and J3's
   four GPU runs plus one failed AMD setup ($0.43), the Makefile's two GPU runs ($0.20), K1's
-  three runs ($0.17) and D2's seven ($0.45).
+  three runs ($0.17), D2's seven ($0.45) and J4's four ($0.137).
 **The author sets their caps before they start.**
 
 ## Status at the start (Oct 26)
@@ -255,8 +255,12 @@ file. This section removes both limits.
     llm.c-specific (generalizing it is J4).
   - The Makefile's GPU targets, Oct 28: `make TARGET=nvidia` and `TARGET=amd` build on an RTX
     2000 Ada and an MI350X, and the test passes on both (`evidence/j3-makefile-gpu`, $0.20).
-- [ ] **J4. A second, unseen CUDA repo, end to end** with J1-J3: scan, plan, port, check,
-  reassemble. Replaces H1.
+- [x] **J4. A second, unseen CUDA repo, end to end** with J1-J3: scan, plan, port, check,
+  reassemble. Replaces H1. *(Oct 28: ankan-ban/llama2.cu. Muse's plan $0.029; llama2.cu
+  recorded on NVIDIA, and the check proven; Muse's port succeeded in one run of 20 turns for
+  $0.45, with the stories identical byte for byte; passes on an RTX 2000 Ada, against the
+  recording and llama2.cu live, and on an MI350X; `llama2-sycl/` assembled, and it works from a
+  fresh clone on the CPU. Muse $0.48 of the $8 cap, GPU $0.137. `evidence/j4-llama2`.)*
 
 ## K. Beyond the GPT-2 port (added Oct 28)
 
@@ -321,15 +325,13 @@ planned for Oct 29-30, so the schedule is about two days ahead.
 | Day | Items |
 |---|---|
 | Oct 29 | (K1 and D2 done Oct 28) E1/C6 repeat runs, or J4 prep |
-| Oct 30-Nov 1 | J4 (a second, unseen CUDA repo, end to end), once its cap is set; D5 if Intel access arrives |
+| Oct 30-Nov 1 | (J4 done Oct 28) D5 if Intel access arrives |
 | Nov 1 | C6 or E1 repeat runs, if the budget allows |
 | Nov 2 | F2 if Baseten access arrives; refresh SUBMISSION and DEMO with every new result |
 | Nov 3 | I1-I5: script, record, submission text, posts |
 | Nov 4 | I6, submit by midday |
 
 **Decisions needed from the author:**
-- a cap for J4 within the budgets: comparison runs have about $15.20-15.40 left of $40
-  (raised from $30 on Oct 28), and GPUs about $4.65 left of $10;
 - Intel Tiber AI Cloud sign-up (D5);
 - Baseten or Modal access (F1);
 - sharing the report (B2).

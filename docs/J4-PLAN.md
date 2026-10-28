@@ -1,5 +1,8 @@
 # J4: a second, unseen CUDA repo, end to end (plan, Oct 28)
 
+**Done Oct 28:** every step below succeeded on its first try. Muse cost $0.48 and GPU $0.137;
+results in [`evidence/j4-llama2`](../evidence/j4-llama2/README.md).
+
 **Goal:** the J1-J3 pipeline on a CUDA repo it has never seen, with no hand-written hidden check
 and a reassembled SYCL repo at the end. The steps are scan, Muse's plan, a recorded check, Muse's
 port, GPU runs, and reassembly.

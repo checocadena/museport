@@ -28,6 +28,17 @@ code:
 - The test fixture `tests/fixtures/llmc_mini/` is not llm.c code: it was written for museport's
   tests in llm.c's layout.
 
+## Third-party: llama2.cu (MIT)
+
+[ankan-ban/llama2.cu](https://github.com/ankan-ban/llama2.cu) at commit `cb0c6fa`, a CUDA port
+of Karpathy's llama2.c, MIT License ("Copyright (c) 2023 Andrej")
+([`llama2-sycl/LICENSE`](llama2-sycl/LICENSE)). It is used in:
+- `llama2-sycl/`: the upstream repo's files, unchanged, except `llama2.cu`, which is replaced
+  by Muse's port `llama2.cpp`. Its Makefile has a `llama2` target appended, and its README is
+  kept as `README-llama2.c.md`.
+- `evidence/j4-llama2/task/`: `llama2.cu` and `tokenizer.bin`, unchanged.
+- `evidence/j4-llama2/planted/`: two one-line changes to llama2.c's `run.c`, as diffs.
+
 ## Everything else
 
 Everything else in this repository was written during the hackathon:
