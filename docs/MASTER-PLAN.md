@@ -26,10 +26,10 @@ Budget so far:
   the per-run cap from $1 to $3 on Oct 27, and this cap from $20 to $30 on Oct 27.
   The author set a $7 cap for GPT-2 (G3); $4.45 used, including E1's GPT-2 run.
   J3 adds $2.33 of its $4 Muse cap: the trainer ($0.71) and three test-port runs ($1.62).
-- **GPUs:** about $4.53 (Runpod NVIDIA about $0.33, DigitalOcean AMD about $4.20), of a $10 cap
+- **GPUs:** about $4.73 (Runpod NVIDIA about $0.34, DigitalOcean AMD about $4.39), of a $10 cap
   the author set on Oct 27. Oct 28 added the J1 recordings ($0.034), Tiers 2-3 and softmax on
   AMD ($0.72), GPT-2 stage 3 on AMD (five runs, $0.65), J2's GPU proofs ($0.041) and J3's
-  four GPU runs plus one failed AMD setup ($0.43).
+  four GPU runs plus one failed AMD setup ($0.43), and the Makefile's two GPU runs ($0.20).
 **The author sets their caps before they start.**
 
 ## Status at the start (Oct 26)
@@ -230,10 +230,11 @@ file. This section removes both limits.
   - Done on the CPU, Oct 28: the 19 `dev/sycl` ports (19/19 pass), llm.c's fp32 trainer
     (`evidence/j3-trainer`) and llm.c's own test, `overall okay: 1` (`evidence/j3-test`).
   - Done on GPUs, Oct 28: the test and the trainer pass on an NVIDIA RTX 2000 Ada and an AMD
-    MI350X ($0.43 of the $1 J3 GPU cap).
+    MI350X ($0.43 of the $1 J3 GPU cap; $0.63 with the Makefile runs).
   - Published, Oct 28: `llm.c-sycl/` in this repo (the author's choice), with a Quick start
     that works from a fresh clone (`evidence/j3-fresh-clone`), and a J3 section in the report.
-  - Not yet run: the Makefile's GPU targets on a GPU (the GPU results came from `gpu-test`).
+  - The Makefile's GPU targets, Oct 28: `make TARGET=nvidia` and `TARGET=amd` build on an RTX
+    2000 Ada and an MI350X, and the test passes on both (`evidence/j3-makefile-gpu`, $0.20).
 - [ ] **J4. A second, unseen CUDA repo, end to end** with J1-J3: scan, plan, port, check,
   reassemble. Replaces H1.
 
