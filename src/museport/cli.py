@@ -4,7 +4,8 @@ Commands: scan (CUDA inventory, no model), plan (Muse writes a grounded porting 
 toolkit's agent loop on one task, driven by Muse), port (Muse ports a plan's items against
 hidden references), gpu-tasks (remote-test tasks for the ports that pass), report (a static
 site built from the committed evidence), gpt2-task (the GPT-2 training port's stage-1
-task)."""
+task), record-tasks and diff-task (differential checks: the original CUDA's recorded output as
+the hidden reference)."""
 
 from __future__ import annotations
 
@@ -107,6 +108,24 @@ def build_parser() -> argparse.ArgumentParser:
     g3.add_argument("--out", required=True, help="task directory to write")
     g3.add_argument("--model", default=DEFAULT_MODEL)
 
+    rc = sub.add_parser("record-tasks", help="remote-test tasks that record the original CUDA's "
+                                             "outputs on an NVIDIA GPU (no port involved)")
+    rc.add_argument("port_dir", help="the --out directory of `museport port`")
+    rc.add_argument("--out", required=True, help="where to write the tasks")
+    dt = sub.add_parser("diff-task", help="a task whose hidden reference is the original CUDA's "
+                                          "recorded output (from a record-tasks run)")
+    dt.add_argument("task_dir", help="the item's task directory")
+    dt.add_argument("recorded", help="the remote-test result directory of its recording")
+    dt.add_argument("--out", required=True, help="task directory to write")
+
+    dc = sub.add_parser("diff-check", help="grade a port run's items against their recorded "
+                                           "CUDA outputs and check each recording against the "
+                                           "CPU reference (no model, no GPU)")
+    dc.add_argument("port_dir", help="the --out directory of `museport port`")
+    dc.add_argument("recordings", help="the --into directory of the recording runs")
+    dc.add_argument("--out", required=True, help="evidence directory to write")
+    dc.add_argument("--tasks", required=True, help="where to write the differential tasks")
+
     rv = sub.add_parser("review", help="Muse reviews each finished port from the code alone "
                                        "(no test results); verdicts compared with the hidden "
                                        "grade and the variant check")
@@ -154,6 +173,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                               log=lambda m: print(m, file=sys.stderr))
         print(f"[review] spent ${summary['spent_usd']:.4f}", file=sys.stderr)
         return 0
+    if args.cmd in ("record-tasks", "diff-task", "diff-check"):
+        return _record(args)
     if args.cmd == "gpt2-gpu-task":
         from pathlib import Path
 
@@ -193,6 +214,29 @@ def _report(args: argparse.Namespace) -> int:
 
     result = build(Path(args.evidence), Path(args.out))
     print(f"[report] wrote {len(result['pages'])} page(s) to {args.out}/", file=sys.stderr)
+    return 0
+
+
+def _record(args: argparse.Namespace) -> int:
+    from pathlib import Path
+
+    from .record import diff_check, differential_task, recording_task
+
+    if args.cmd == "diff-check":
+        s = diff_check(Path(args.port_dir), Path(args.recordings), Path(args.out),
+                       Path(args.tasks))
+        bad = [r["item"] for r in s["items"] if r["recorded"]
+               and r["differential_grade"].get("verify_status") != "ok"]
+        print(f"[diff-check] {len(s['items'])} item(s); not passing: {bad or 'none'}",
+              file=sys.stderr)
+        return 0
+    if args.cmd == "diff-task":
+        print(differential_task(Path(args.task_dir), Path(args.recorded), Path(args.out)))
+        return 0
+    root = Path(args.port_dir)
+    for item in sorted(p.parent.parent for p in root.glob("*/task/task.json")):
+        path = recording_task(item / "task", Path(args.out) / item.name)
+        print(f"[record-tasks] {item.name}: {path}", file=sys.stderr)
     return 0
 
 
