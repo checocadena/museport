@@ -260,6 +260,22 @@ TEST_GOAL = (
     "compile, verify and a zero-helper scan_helpers of the whole work directory (path '.') on "
     "the same sources; delete migrate's output (delete_file) once your port is done.")
 
+# Run 1 of the test port spent all 20 turns reading the 1,117-line trainer in slices and never
+# wrote the test. Run 2 adds what the CUDA test uses from it (read off test_gpt2_fp32.cu and
+# the trainer's own declarations), and asks for the file early.
+TEST_API_HINT = (
+    " What the test needs from train_gpt2_fp32.cpp: the device queue is the global "
+    "`static sycl::queue *g_q` (the trainer's main sets it: `sycl::queue q{ "
+    "sycl::property::queue::in_order{} }; g_q = &q;`; `qq()` returns it); the model's tensors "
+    "are device USM (sycl::malloc_device), so copy with qq().memcpy(dst, src, bytes).wait(); "
+    "the functions are gpt2_build_from_checkpoint(GPT2*, path), gpt2_forward(GPT2*, int* "
+    "inputs, int* targets, B, T), gpt2_zero_grad(GPT2*), gpt2_backward(GPT2*), "
+    "gpt2_update(GPT2*, lr, beta1, beta2, eps, weight_decay, t) and gpt2_free(GPT2*); the "
+    "fields are model.acts.output, model.grads.<tensor>, model.grads_memory, model.mean_loss, "
+    "model.config.*, model.param_sizes and model.num_parameters. You do not need to read the "
+    "whole trainer: write test_gpt2_fp32.cpp within your first few turns, then compile and "
+    "verify, and fix what the compiler and verify report.")
+
 
 def expected_losses(test_source: str) -> list[float]:
     """PyTorch's 10 losses, as written into llm.c's test."""
@@ -274,7 +290,8 @@ def expected_losses(test_source: str) -> list[float]:
     return vals
 
 
-def make_test_task(llmc: Path, data: Path, trainer_cpp: Path, out: Path) -> Path:
+def make_test_task(llmc: Path, data: Path, trainer_cpp: Path, out: Path, *,
+                   api_hint: bool = True) -> Path:
     """Write the J3 test task: llm.c's test_gpt2_fp32.cu, ported on top of the proven trainer
     ``trainer_cpp``; ``data`` holds gpt2_124M.bin and gpt2_124M_debug_state.bin."""
     if out.exists():
@@ -295,7 +312,7 @@ def make_test_task(llmc: Path, data: Path, trainer_cpp: Path, out: Path) -> Path
     (out / "reference.out").write_bytes(struct.pack(f"<{len(ref)}f", *ref))
     task = {
         "name": "llmc_test_gpt2_fp32",
-        "goal": TEST_GOAL,
+        "goal": TEST_GOAL + (TEST_API_HINT if api_hint else ""),
         "cuda_path": "test_gpt2_fp32.cu",
         "include_dirs": ["."],
         "reference_build": ["true"],
