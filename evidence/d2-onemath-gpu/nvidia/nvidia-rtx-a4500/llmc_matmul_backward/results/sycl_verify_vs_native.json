@@ -1,0 +1,43 @@
+{
+  "tool": "verify",
+  "status": "fail",
+  "summary": "candidate exited with code -6",
+  "evidence": {
+    "mode": "array",
+    "cases": [
+      {
+        "input": "/tmp/tmp.uO5ucYofHN/task/input.bin",
+        "reference": {
+          "command": "build/native /tmp/tmp.uO5ucYofHN/task/input.bin /tmp/tmp.uO5ucYofHN/out/work/v_sycl_native/case0_reference.out 2 64 768 3072",
+          "returncode": 0,
+          "duration_s": 0.587121,
+          "stdout": "",
+          "stderr": "",
+          "cwd": "/tmp/tmp.uO5ucYofHN/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "cuda:0"
+          },
+          "output_file": "/tmp/tmp.uO5ucYofHN/out/work/v_sycl_native/case0_reference.out"
+        },
+        "candidate": {
+          "command": "build/sycl /tmp/tmp.uO5ucYofHN/task/input.bin /tmp/tmp.uO5ucYofHN/out/work/v_sycl_native/case0_candidate.out 2 64 768 3072",
+          "returncode": -6,
+          "duration_s": 0.477095,
+          "stdout": "",
+          "stderr": "terminate called after throwing an instance of 'oneapi::math::unimplemented'\n  what():  oneMath: blas/gemm: function is not implemented for row_major layout\n",
+          "cwd": "/tmp/tmp.uO5ucYofHN/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "cuda:0"
+          },
+          "output_file": "/tmp/tmp.uO5ucYofHN/out/work/v_sycl_native/case0_candidate.out"
+        },
+        "passed": false,
+        "reason": "candidate exited with code -6"
+      }
+    ],
+    "work_dir": "/tmp/tmp.uO5ucYofHN/out/work/v_sycl_native"
+  },
+  "limitations": [
+    "Equivalence is shown only for the inputs tested; other inputs/sizes may behave differently."
+  ]
+}

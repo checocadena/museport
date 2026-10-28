@@ -1,0 +1,1 @@
+[gpu_test] fail: FAIL on NVIDIA RTX A4500 (cuda:0, nvidia): sycl_verify_vs_reference: candidate exited with code -6; sycl_verify_vs_native: candidate exited with code -6
