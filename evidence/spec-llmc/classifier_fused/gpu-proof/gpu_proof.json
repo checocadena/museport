@@ -1,0 +1,12 @@
+{
+  "classifier_fused-a1": {
+    "device": "NVIDIA RTX 2000 Ada Generation",
+    "status": "ok",
+    "summary": "PASS: 1/1 case(s) match (worst max abs err 1.91e-06, atol 0.0001)"
+  },
+  "classifier_fused-a2": {
+    "device": "NVIDIA RTX A4500",
+    "status": "ok",
+    "summary": "PASS: 1/1 case(s) match (worst max abs err 1.91e-06, atol 0.0001)"
+  }
+}

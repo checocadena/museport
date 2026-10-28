@@ -1,0 +1,84 @@
+{
+  "cpu_call": "adamw_cpu(params_memory, grads_memory, m_memory, v_memory, T, (long)N)",
+  "cpu_functions": [
+    "adamw_cpu"
+  ],
+  "dropped_variants": [],
+  "extra_includes": [],
+  "gpu_call": "adamw(k, d_params_memory, d_grads_memory, d_m_memory, d_v_memory, T, (long)N)",
+  "gpu_prelude": "",
+  "host_prep": "",
+  "inputs": [
+    {
+      "count": "N",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "uniform",
+      "name": "params_init"
+    },
+    {
+      "count": "N",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "uniform",
+      "name": "grads_memory"
+    },
+    {
+      "count": "N",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "uniform",
+      "name": "m_init"
+    },
+    {
+      "count": "N",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "unit",
+      "name": "v_init"
+    }
+  ],
+  "keep_cublas": false,
+  "keep_cublaslt": false,
+  "keep_in_harness": [],
+  "note": "N=1048576, T=10 as in llm.c; kept full size (4x4MB inputs, 3x4MB outputs, well under 200MB and fast on CPU). Defaults for lr/betas/eps/weight_decay as in main.",
+  "output_post": "",
+  "outputs": [
+    {
+      "count": "N",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "input:params_init",
+      "name": "params_memory"
+    },
+    {
+      "count": "N",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "input:m_init",
+      "name": "m_memory"
+    },
+    {
+      "count": "N",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "input:v_init",
+      "name": "v_memory"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "N",
+      "value": 1048576
+    },
+    {
+      "name": "T",
+      "value": 10
+    }
+  ],
+  "tol": 0.0001,
+  "variants": [
+    1,
+    2
+  ]
+}

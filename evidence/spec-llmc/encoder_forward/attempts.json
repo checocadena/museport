@@ -1,0 +1,106 @@
+[
+  {
+    "attempt": 1,
+    "answer": {
+      "cpu_call": "encoder_forward_cpu(out, inp, wte, wpe, B, T, C)",
+      "cpu_functions": [
+        "encoder_forward_cpu"
+      ],
+      "dropped_variants": [],
+      "extra_includes": [],
+      "gpu_call": "encoder_forward(k, d_out, d_inp, d_wte, d_wpe, B, T, C, 256)",
+      "gpu_prelude": "",
+      "host_prep": "",
+      "inputs": [
+        {
+          "count": "B*T",
+          "device_count": "",
+          "dtype": "i32",
+          "init": "int:V",
+          "name": "inp"
+        },
+        {
+          "count": "V*C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "uniform",
+          "name": "wte"
+        },
+        {
+          "count": "T*C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "uniform",
+          "name": "wpe"
+        }
+      ],
+      "keep_cublas": false,
+      "keep_cublaslt": false,
+      "keep_in_harness": [],
+      "note": "B=4, T=256 (llm.c: B=8, T=1024); V=8192 (llm.c: V=50257); C=768 as in llm.c to keep C % 4 == 0 for kernel 3.",
+      "output_post": "",
+      "outputs": [
+        {
+          "count": "B*T*C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "zeros",
+          "name": "out"
+        }
+      ],
+      "sizes": [
+        {
+          "name": "B",
+          "value": 4
+        },
+        {
+          "name": "T",
+          "value": 256
+        },
+        {
+          "name": "C",
+          "value": 768
+        },
+        {
+          "name": "V",
+          "value": 8192
+        }
+      ],
+      "tol": 1e-05,
+      "variants": [
+        1,
+        2,
+        3
+      ]
+    },
+    "usage": {
+      "input_tokens": 7797,
+      "output_tokens": 4970,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0
+    },
+    "cost_usd": 0.030869,
+    "static_errors": [],
+    "check": {
+      "ok": true,
+      "steps": {
+        "reference_build": {
+          "returncode": 0,
+          "stderr": ""
+        },
+        "migrate": {
+          "status": "ok",
+          "summary": "migrated 1 CUDA file(s) -> 2 file(s); 22 DPCT warning(s) (DPCT1005x2, DPCT1009x1, DPCT1010x4, DPCT1024x2, DPCT1049x3, DPCT1051x2, DPCT1065x2, DPCT1093x2, DPCT1098x3, DPCT1118x1)"
+        },
+        "compile": {
+          "status": "ok",
+          "summary": "compiled 1 source(s) -> /home/user/museport-hackathon/evidence/spec-llmc/encoder_forward/.work/build/candidate (206 warning(s))"
+        },
+        "verify": {
+          "status": "ok",
+          "summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)"
+        }
+      }
+    }
+  }
+]

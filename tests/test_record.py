@@ -66,3 +66,29 @@ def test_differential_task_refuses_a_failed_recording(tmp_path):
     with pytest.raises(ValueError, match="not a successful recording"):
         differential_task(_task(tmp_path / "task"), _recording(tmp_path / "r", b"x", "error"),
                           tmp_path / "diff")
+
+
+def test_check_recording_uses_the_tasks_own_inputs(tmp_path, monkeypatch):
+    # a spec other than museport's hand-written one makes different inputs: they must not be
+    # regenerated from the hand-written spec (this crashed classifier_fused's reference)
+    import museport.record as rec
+
+    task = _task(tmp_path / "task")
+    (task / "input.bin").write_bytes(b"own inputs")
+    seen = {}
+
+    def fake_verify(ref, cand, inputs, *a, cwd, **k):
+        seen["input"] = (Path(cwd) / inputs[0]).read_bytes()
+        from oneapi_agent.result import ToolResult
+        return ToolResult("verify", "ok", "PASS")
+
+    import sys
+
+    import oneapi_agent.tools.verify  # noqa: F401 - the package re-exports a function by this name
+
+    monkeypatch.setattr(sys.modules["oneapi_agent.tools.verify"], "verify", fake_verify)
+    monkeypatch.setattr("oneapi_agent.toolchain.run_command",
+                        lambda *a, **k: type("R", (), {"returncode": 0})())
+    diff = differential_task(task, _recording(tmp_path / "r", b"x"), tmp_path / "diff")
+    assert rec.check_recording(task, diff.parent, tmp_path / "w")["status"] == "ok"
+    assert seen["input"] == b"own inputs"

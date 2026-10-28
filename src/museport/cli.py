@@ -5,7 +5,8 @@ toolkit's agent loop on one task, driven by Muse), port (Muse ports a plan's ite
 hidden references), gpu-tasks (remote-test tasks for the ports that pass), report (a static
 site built from the committed evidence), gpt2-task (the GPT-2 training port's stage-1
 task), record-tasks and diff-task (differential checks: the original CUDA's recorded output as
-the hidden reference)."""
+the hidden reference), spec (Muse writes a file's harness spec, which is then
+proven)."""
 
 from __future__ import annotations
 
@@ -128,6 +129,19 @@ def build_parser() -> argparse.ArgumentParser:
     dc.add_argument("--out", required=True, help="evidence directory to write")
     dc.add_argument("--tasks", required=True, help="where to write the differential tasks")
 
+    sp = sub.add_parser("spec", help="Muse writes each CUDA file's harness spec; each is checked "
+                                     "and proven (SYCLomatic + icpx vs the CPU reference)")
+    sp.add_argument("--cuda-dir", required=True, help="llm.c's dev/cuda directory")
+    sp.add_argument("files", nargs="*", help="files to spec (default: every file museport has a "
+                                             "hand-written spec for, except the examples)")
+    sp.add_argument("--out", default="evidence/spec-llmc")
+    sp.add_argument("--model", default=DEFAULT_MODEL)
+    sp.add_argument("--total-cap", type=float, default=2.0, help="USD cap for the whole run")
+    sp.add_argument("--file-cap", type=float, default=0.4, help="USD cap per file")
+    sp.add_argument("--gpu-proof", action="store_true",
+                    help="when SYCLomatic's output fails the CPU proof, prove the spec with "
+                         "llm.c's CUDA on a rented NVIDIA GPU (Runpod, about $0.003 each)")
+
     rv = sub.add_parser("review", help="Muse reviews each finished port from the code alone "
                                        "(no test results); verdicts compared with the hidden "
                                        "grade and the variant check")
@@ -177,6 +191,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0
     if args.cmd in ("record-tasks", "diff-task", "diff-check"):
         return _record(args)
+    if args.cmd == "spec":
+        from pathlib import Path
+
+        from .llmc import SPECS
+        from .spec import EXAMPLES, gpu_proof, run_specs
+
+        files = args.files or [f for f in SPECS if f not in EXAMPLES]
+        summary = run_specs(files, Path(args.cuda_dir), Path(args.out), model=args.model,
+                            total_cap_usd=args.total_cap, file_cap_usd=args.file_cap,
+                            prove_on_gpu=gpu_proof if args.gpu_proof else None,
+                            log=lambda m: print(m, file=sys.stderr))
+        proven = sum(r["proven"] for r in summary["files"] if r["file"] in files)
+        print(f"[spec] {proven}/{len(files)} proven, spent ${summary['spent_usd']:.4f}",
+              file=sys.stderr)
+        return 0
     if args.cmd == "gpt2-gpu-task":
         from pathlib import Path
 

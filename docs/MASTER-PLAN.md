@@ -20,13 +20,14 @@ Rules for every item:
 
 Budget so far:
 - **Development:** about $0.55 of $5, plus the first failed plan run (at most $1.15).
-- **Comparison runs:** $20.55 of $30 (after the C1-C3 reruns, Tier 1 run 2, the run without SYCLomatic,
-  GPT-2 stages 1-3, Tiers 2-3 run 2, two softmax_forward reruns, E1 and E3). The author raised
+- **Comparison runs:** about $21.89 of $30, at most $22.07 (after the C1-C3 reruns, Tier 1 run 2,
+  the run without SYCLomatic, GPT-2 stages 1-3, Tiers 2-3 run 2, two softmax_forward reruns, E1,
+  E3 and J2's Muse specs, about $1.34-1.52). The author raised
   the per-run cap from $1 to $3 on Oct 27, and this cap from $20 to $30 on Oct 27.
   The author set a $7 cap for GPT-2 (G3); $4.45 used, including E1's GPT-2 run.
-- **GPUs:** about $4.06 (Runpod NVIDIA about $0.27, DigitalOcean AMD about $3.79), of a $10 cap
+- **GPUs:** about $4.09 (Runpod NVIDIA about $0.30, DigitalOcean AMD about $3.79), of a $10 cap
   the author set on Oct 27. Oct 28 added the J1 recordings ($0.034), Tiers 2-3 and softmax on
-  AMD ($0.72) and GPT-2 stage 3 on AMD (five runs, $0.65).
+  AMD ($0.72), GPT-2 stage 3 on AMD (five runs, $0.65) and J2's GPU proofs ($0.034).
 **The author sets their caps before they start.**
 
 ## Status at the start (Oct 26)
@@ -209,9 +210,13 @@ file. This section removes both limits.
   bit-identical repeat runs. The recordings match llm.c's CPU references 10/10, Muse's ports
   pass against them 10/10, and a planted dropped-digit bug fails. Not yet done: using the
   repo's own tests.
-- [ ] **J2. Automatic harness.** Generate each file's harness (inputs, sizes, the contract
+- [x] **J2. Automatic harness.** Generate each file's harness (inputs, sizes, the contract
   `main`) from the CUDA source and its own `main`/tests, by tool or by Muse, proven like
-  today: the original CUDA must pass it. Replaces H2.
+  today: the original CUDA must pass it. Replaces H2. **Done Oct 28** (`evidence/spec-llmc`):
+  Muse wrote the spec for 17 llm.c files, and 16 are proven (CPU proof, or J1's GPU proof when
+  SYCLomatic fails). 13 of the 16 are as strict as llm.c's own check. The other 3 took the bf16
+  tolerance from `#if ENABLE_BF16`, and one dropped an fp32 variant. `trimat_forward` is not
+  proven. Next: tell Muse the build is fp32, and rerun.
 - [ ] **J3. A reassembled repo: `llm.c-sycl`.** Every ported file, the build converted
   (`Makefile` to `icpx -fsycl`), one project that builds, passes llm.c's own `test_gpt2`
   and trains, on CPU, NVIDIA and AMD. *About $5-10 of Muse.*

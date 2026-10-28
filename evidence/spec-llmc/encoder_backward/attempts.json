@@ -1,0 +1,105 @@
+[
+  {
+    "attempt": 1,
+    "answer": {
+      "cpu_call": "encoder_backward_cpu(dwte, dwpe, dout, inp, B, T, C)",
+      "cpu_functions": [
+        "encoder_backward_cpu"
+      ],
+      "dropped_variants": [],
+      "extra_includes": [],
+      "gpu_call": "encoder_backward(k, d_dwte, d_dwpe, d_dout, d_inp, B, T, C, 256)",
+      "gpu_prelude": "",
+      "host_prep": "",
+      "inputs": [
+        {
+          "count": "B*T*C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "uniform",
+          "name": "dout"
+        },
+        {
+          "count": "B*T",
+          "device_count": "",
+          "dtype": "i32",
+          "init": "int:V",
+          "name": "inp"
+        }
+      ],
+      "keep_cublas": false,
+      "keep_cublaslt": false,
+      "keep_in_harness": [],
+      "note": "B=4, T=256 (llm.c: B=8, T=1024); V=8192 (llm.c: 50257); C=768 as in llm.c.",
+      "output_post": "",
+      "outputs": [
+        {
+          "count": "V*C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "zeros",
+          "name": "dwte"
+        },
+        {
+          "count": "T*C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "zeros",
+          "name": "dwpe"
+        }
+      ],
+      "sizes": [
+        {
+          "name": "B",
+          "value": 4
+        },
+        {
+          "name": "T",
+          "value": 256
+        },
+        {
+          "name": "C",
+          "value": 768
+        },
+        {
+          "name": "V",
+          "value": 8192
+        }
+      ],
+      "tol": 1e-05,
+      "variants": [
+        1,
+        2
+      ]
+    },
+    "usage": {
+      "input_tokens": 7201,
+      "output_tokens": 2678,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0
+    },
+    "cost_usd": 0.020383,
+    "static_errors": [],
+    "check": {
+      "ok": true,
+      "steps": {
+        "reference_build": {
+          "returncode": 0,
+          "stderr": ""
+        },
+        "migrate": {
+          "status": "ok",
+          "summary": "migrated 1 CUDA file(s) -> 2 file(s); 20 DPCT warning(s) (DPCT1005x2, DPCT1009x1, DPCT1010x3, DPCT1024x2, DPCT1049x2, DPCT1051x2, DPCT1065x2, DPCT1093x2, DPCT1098x3, DPCT1118x1)"
+        },
+        "compile": {
+          "status": "ok",
+          "summary": "compiled 1 source(s) -> /home/user/museport-hackathon/evidence/spec-llmc/encoder_backward/.work/build/candidate (206 warning(s))"
+        },
+        "verify": {
+          "status": "ok",
+          "summary": "PASS: 1/1 case(s) match (worst max abs err 4.77e-07, atol 1e-05)"
+        }
+      }
+    }
+  }
+]

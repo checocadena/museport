@@ -1,0 +1,118 @@
+[
+  {
+    "attempt": 1,
+    "answer": {
+      "cpu_call": "adamw_cpu(params_memory, grads_memory, m_memory, v_memory, T, (long)N)",
+      "cpu_functions": [
+        "adamw_cpu"
+      ],
+      "dropped_variants": [],
+      "extra_includes": [],
+      "gpu_call": "adamw(k, d_params_memory, d_grads_memory, d_m_memory, d_v_memory, T, (long)N)",
+      "gpu_prelude": "",
+      "host_prep": "",
+      "inputs": [
+        {
+          "count": "N",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "uniform",
+          "name": "params_init"
+        },
+        {
+          "count": "N",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "uniform",
+          "name": "grads_memory"
+        },
+        {
+          "count": "N",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "uniform",
+          "name": "m_init"
+        },
+        {
+          "count": "N",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "unit",
+          "name": "v_init"
+        }
+      ],
+      "keep_cublas": false,
+      "keep_cublaslt": false,
+      "keep_in_harness": [],
+      "note": "N=1048576, T=10 as in llm.c; kept full size (4x4MB inputs, 3x4MB outputs, well under 200MB and fast on CPU). Defaults for lr/betas/eps/weight_decay as in main.",
+      "output_post": "",
+      "outputs": [
+        {
+          "count": "N",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "input:params_init",
+          "name": "params_memory"
+        },
+        {
+          "count": "N",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "input:m_init",
+          "name": "m_memory"
+        },
+        {
+          "count": "N",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "input:v_init",
+          "name": "v_memory"
+        }
+      ],
+      "sizes": [
+        {
+          "name": "N",
+          "value": 1048576
+        },
+        {
+          "name": "T",
+          "value": 10
+        }
+      ],
+      "tol": 0.0001,
+      "variants": [
+        1,
+        2
+      ]
+    },
+    "usage": {
+      "input_tokens": 7844,
+      "output_tokens": 7412,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0
+    },
+    "cost_usd": 0.041306,
+    "static_errors": [],
+    "check": {
+      "ok": true,
+      "steps": {
+        "reference_build": {
+          "returncode": 0,
+          "stderr": ""
+        },
+        "migrate": {
+          "status": "ok",
+          "summary": "migrated 1 CUDA file(s) -> 2 file(s); 20 DPCT warning(s) (DPCT1005x2, DPCT1009x1, DPCT1010x3, DPCT1024x2, DPCT1049x2, DPCT1051x2, DPCT1065x2, DPCT1093x2, DPCT1098x3, DPCT1118x1)"
+        },
+        "compile": {
+          "status": "ok",
+          "summary": "compiled 1 source(s) -> /home/user/museport-hackathon/evidence/spec-llmc/adamw/.work/build/candidate (206 warning(s))"
+        },
+        "verify": {
+          "status": "ok",
+          "summary": "PASS: 1/1 case(s) match (worst max abs err 1.79e-07, atol 0.0001)"
+        }
+      }
+    }
+  }
+]

@@ -1,0 +1,93 @@
+[
+  {
+    "attempt": 1,
+    "answer": {
+      "cpu_call": "crossentropy_forward_cpu(losses, probs, targets, B, T, V)",
+      "cpu_functions": [
+        "crossentropy_forward_cpu"
+      ],
+      "dropped_variants": [],
+      "extra_includes": [],
+      "gpu_call": "crossentropy_forward(k, d_losses, d_probs, d_targets, B, T, V, 256)",
+      "gpu_prelude": "",
+      "host_prep": "",
+      "inputs": [
+        {
+          "count": "B*T*V",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "unit",
+          "name": "probs"
+        },
+        {
+          "count": "B*T",
+          "device_count": "",
+          "dtype": "i32",
+          "init": "int:V",
+          "name": "targets"
+        }
+      ],
+      "keep_cublas": false,
+      "keep_cublaslt": false,
+      "keep_in_harness": [],
+      "note": "B=4, T=64 (llm.c: B=8, T=1024); V=50257 as in llm.c. probs ~51MB, under 200MB.",
+      "output_post": "",
+      "outputs": [
+        {
+          "count": "B*T",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "zeros",
+          "name": "losses"
+        }
+      ],
+      "sizes": [
+        {
+          "name": "B",
+          "value": 4
+        },
+        {
+          "name": "T",
+          "value": 64
+        },
+        {
+          "name": "V",
+          "value": 50257
+        }
+      ],
+      "tol": 1e-05,
+      "variants": [
+        1
+      ]
+    },
+    "usage": {
+      "input_tokens": 6632,
+      "output_tokens": 3118,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0
+    },
+    "cost_usd": 0.021542,
+    "static_errors": [],
+    "check": {
+      "ok": true,
+      "steps": {
+        "reference_build": {
+          "returncode": 0,
+          "stderr": ""
+        },
+        "migrate": {
+          "status": "ok",
+          "summary": "migrated 1 CUDA file(s) -> 2 file(s); 18 DPCT warning(s) (DPCT1005x2, DPCT1009x1, DPCT1010x2, DPCT1024x2, DPCT1049x1, DPCT1051x2, DPCT1065x2, DPCT1093x2, DPCT1098x3, DPCT1118x1)"
+        },
+        "compile": {
+          "status": "ok",
+          "summary": "compiled 1 source(s) -> /home/user/museport-hackathon/evidence/spec-llmc/crossentropy_forward/.work/build/candidate (206 warning(s))"
+        },
+        "verify": {
+          "status": "ok",
+          "summary": "PASS: 1/1 case(s) match (worst max abs err 7.45e-09, atol 1e-05)"
+        }
+      }
+    }
+  }
+]

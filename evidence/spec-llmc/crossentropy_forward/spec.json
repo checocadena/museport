@@ -1,0 +1,59 @@
+{
+  "cpu_call": "crossentropy_forward_cpu(losses, probs, targets, B, T, V)",
+  "cpu_functions": [
+    "crossentropy_forward_cpu"
+  ],
+  "dropped_variants": [],
+  "extra_includes": [],
+  "gpu_call": "crossentropy_forward(k, d_losses, d_probs, d_targets, B, T, V, 256)",
+  "gpu_prelude": "",
+  "host_prep": "",
+  "inputs": [
+    {
+      "count": "B*T*V",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "unit",
+      "name": "probs"
+    },
+    {
+      "count": "B*T",
+      "device_count": "",
+      "dtype": "i32",
+      "init": "int:V",
+      "name": "targets"
+    }
+  ],
+  "keep_cublas": false,
+  "keep_cublaslt": false,
+  "keep_in_harness": [],
+  "note": "B=4, T=64 (llm.c: B=8, T=1024); V=50257 as in llm.c. probs ~51MB, under 200MB.",
+  "output_post": "",
+  "outputs": [
+    {
+      "count": "B*T",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "zeros",
+      "name": "losses"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "B",
+      "value": 4
+    },
+    {
+      "name": "T",
+      "value": 64
+    },
+    {
+      "name": "V",
+      "value": 50257
+    }
+  ],
+  "tol": 1e-05,
+  "variants": [
+    1
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "cpu_call": "encoder_forward_cpu(out, inp, wte, wpe, B, T, C)",
+  "cpu_functions": [
+    "encoder_forward_cpu"
+  ],
+  "dropped_variants": [],
+  "extra_includes": [],
+  "gpu_call": "encoder_forward(k, d_out, d_inp, d_wte, d_wpe, B, T, C, 256)",
+  "gpu_prelude": "",
+  "host_prep": "",
+  "inputs": [
+    {
+      "count": "B*T",
+      "device_count": "",
+      "dtype": "i32",
+      "init": "int:V",
+      "name": "inp"
+    },
+    {
+      "count": "V*C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "uniform",
+      "name": "wte"
+    },
+    {
+      "count": "T*C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "uniform",
+      "name": "wpe"
+    }
+  ],
+  "keep_cublas": false,
+  "keep_cublaslt": false,
+  "keep_in_harness": [],
+  "note": "B=4, T=256 (llm.c: B=8, T=1024); V=8192 (llm.c: V=50257); C=768 as in llm.c to keep C % 4 == 0 for kernel 3.",
+  "output_post": "",
+  "outputs": [
+    {
+      "count": "B*T*C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "zeros",
+      "name": "out"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "B",
+      "value": 4
+    },
+    {
+      "name": "T",
+      "value": 256
+    },
+    {
+      "name": "C",
+      "value": 768
+    },
+    {
+      "name": "V",
+      "value": 8192
+    }
+  ],
+  "tol": 1e-05,
+  "variants": [
+    1,
+    2,
+    3
+  ]
+}

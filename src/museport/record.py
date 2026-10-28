@@ -107,7 +107,10 @@ def check_recording(task_dir: Path, diff_dir: Path, work: Path) -> dict[str, Any
     if work.exists():
         shutil.rmtree(work)
     (work / "build").mkdir(parents=True)
-    _ensure_inputs(task, work)
+    for name in task.get("inputs", []):  # the task's own inputs: the recording used them
+        if (task_dir / name).exists():
+            shutil.copyfile(task_dir / name, work / name)
+    _ensure_inputs(task, work)  # only what the task dir lacks (uncommitted Tier 1 inputs)
     build = [a.replace("{task_dir}", str(task_dir.resolve())) for a in task["reference_build"]]
     rc = run_command(build, cwd=str(work), timeout=600).returncode
     if rc != 0:

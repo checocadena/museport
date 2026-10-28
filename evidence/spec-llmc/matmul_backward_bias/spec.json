@@ -1,0 +1,67 @@
+{
+  "cpu_call": "matmul_backward_bias_cpu(NULL, NULL, dbias, dout, NULL, NULL, B, T, C, OC)",
+  "cpu_functions": [
+    "matmul_backward_bias_cpu"
+  ],
+  "dropped_variants": [
+    {
+      "reason": "fp32-only (guarded by #ifndef ENABLE_BF16)",
+      "variant": 5
+    }
+  ],
+  "extra_includes": [],
+  "gpu_call": "matmul_backward_bias(k, d_dbias, d_dout, B, T, OC, 256)",
+  "gpu_prelude": "cudaCheck(cudaMalloc(&dbias_buffer, (size_t)OC * 256 * sizeof(float)));",
+  "host_prep": "",
+  "inputs": [
+    {
+      "count": "B*T*OC",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "uniform",
+      "name": "dout"
+    }
+  ],
+  "keep_cublas": false,
+  "keep_cublaslt": false,
+  "keep_in_harness": [],
+  "note": "B=4, T=256, OC=1024 (llm.c: B=8, T=1024, OC=3072); C=768 as in llm.c (unused in bias reduction); OC kept multiple of 256/32/8 for kernels 4,7-9; tol 1.0 matches bf16 branch in llm.c main.",
+  "output_post": "",
+  "outputs": [
+    {
+      "count": "OC",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "zeros",
+      "name": "dbias"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "B",
+      "value": 4
+    },
+    {
+      "name": "T",
+      "value": 256
+    },
+    {
+      "name": "C",
+      "value": 768
+    },
+    {
+      "name": "OC",
+      "value": 1024
+    }
+  ],
+  "tol": 1.0,
+  "variants": [
+    1,
+    2,
+    3,
+    4,
+    7,
+    8,
+    9
+  ]
+}

@@ -1,0 +1,377 @@
+[
+  {
+    "attempt": 1,
+    "answer": {
+      "cpu_call": "layernorm_backward_cpu(dinp, dweight, dbias, dout, inp, weight, mean, rstd, B, T, C)",
+      "cpu_functions": [
+        "layernorm_backward_cpu"
+      ],
+      "dropped_variants": [
+        {
+          "reason": "float-only kernel1 disabled by internal ENABLE_BF16",
+          "variant": 1
+        }
+      ],
+      "extra_includes": [],
+      "gpu_call": "layernorm_backward(k, d_dinp, d_dweight, d_dbias, d_scratch, d_dout, d_inp, d_weight, d_mean, d_rstd, B, T, C, 256)",
+      "gpu_prelude": "floatX *d_mean; floatX *d_rstd; float *d_scratch; cudaCheck(cudaMalloc(&d_mean, (size_t)B * T * sizeof(floatX))); cudaCheck(cudaMalloc(&d_rstd, (size_t)B * T * sizeof(floatX))); cudaCheck(memcpy_convert(d_mean, mean, (size_t)B * T)); cudaCheck(memcpy_convert(d_rstd, rstd, (size_t)B * T)); cudaCheck(cudaMalloc(&d_scratch, (size_t)(1024/32) * (size_t)cuda_num_SMs * (size_t)(2*C+1) * sizeof(float)));",
+      "host_prep": "float *mean = (float*)malloc((size_t)B * T * sizeof(float)); float *rstd = (float*)malloc((size_t)B * T * sizeof(float)); for (int b = 0; b < B; ++b) { for (int t = 0; t < T; ++t) { const float *x = inp + (size_t)b * T * C + (size_t)t * C; float m = 0.0f; for (int i = 0; i < C; ++i) { m += x[i]; } m /= C; float v = 0.0f; for (int i = 0; i < C; ++i) { float d = x[i] - m; v += d * d; } v /= C; float s = 1.0f / sqrtf(v + 1e-5f); mean[(size_t)b * T + t] = m; rstd[(size_t)b * T + t] = s; } }",
+      "inputs": [
+        {
+          "count": "B*T*C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "uniform",
+          "name": "inp"
+        },
+        {
+          "count": "C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "uniform",
+          "name": "weight"
+        },
+        {
+          "count": "B*T*C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "uniform",
+          "name": "dout"
+        }
+      ],
+      "keep_cublas": false,
+      "keep_cublaslt": false,
+      "keep_in_harness": [],
+      "note": "B=2,T=256 (llm.c: B=8,T=1024); C=1024 (llm.c: C=1600) to keep B*T*C ~0.5M (~2MB) and satisfy C%(32*x128::size)==0 (256 with BF16 x128::size=8) required by kernels 8/9; mean/rstd computed in host_prep from inp via forward formula (llm.c uses layernorm_forward_cpu) and copied to device in gpu_prelude with scratch sized as in llm.c main; tol 0.5 matches dweight/dbias BF16 threshold (dinp 1e-1); kernel1 dropped.",
+      "output_post": "",
+      "outputs": [
+        {
+          "count": "B*T*C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "zeros",
+          "name": "dinp"
+        },
+        {
+          "count": "C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "zeros",
+          "name": "dweight"
+        },
+        {
+          "count": "C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "zeros",
+          "name": "dbias"
+        }
+      ],
+      "sizes": [
+        {
+          "name": "B",
+          "value": 2
+        },
+        {
+          "name": "T",
+          "value": 256
+        },
+        {
+          "name": "C",
+          "value": 1024
+        }
+      ],
+      "tol": 0.5,
+      "variants": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    "usage": {
+      "input_tokens": 25287,
+      "output_tokens": 13855,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0
+    },
+    "cost_usd": 0.090493,
+    "static_errors": [],
+    "check": {
+      "ok": false,
+      "failed": "migrate",
+      "steps": {
+        "reference_build": {
+          "returncode": 0,
+          "stderr": ""
+        },
+        "migrate": {
+          "status": "fail",
+          "summary": "migration incomplete: 20 parse error(s), first: unknown type name '__nv_bfloat162'; did you mean '__nv_bfloat16'?"
+        }
+      },
+      "evidence": "{\"run\": {\"command\": \"/opt/syclomatic/bin/c2s --in-root=/home/user/museport-hackathon/evidence/spec-llmc/layernorm_backward/task --out-root=/home/user/museport-hackathon/evidence/spec-llmc/layernorm_backward/.work/migrated --cuda-include-path=/opt/cuda-headers/targets/x86_64-linux/include --extra-arg=-I/home/user/museport-hackathon/evidence/spec-llmc/layernorm_backward/task /home/user/museport-hackathon/evidence/spec-llmc/layernorm_backward/task/layernorm_backward_harness.cu\", \"returncode\": 0, \"duration_s\": 8.891702, \"stdout\": \"NOTE: Could not auto-detect compilation database for file 'layernorm_backward_harness.cu' in '/home/user/museport-hackathon/evidence/spec-llmc/layernorm_backward/task' or any parent directory.\\nParsing: /home/user/museport-hackathon/evidence/spec-llmc/layernorm_backward/task/layernorm_backward_harness.cu\\nAnalyzing: /home/user/museport-hackathon/evidence/spec-llmc/layernorm_backward/task/layernorm_backward_harness.cu\\nMigrating: /home/user/museport-hackathon/evidence/spec-llmc/layernorm_backward/task/layernorm_backward_harness.cu\\nProcessed 2 file(s) in -in-root folder \\\"/home/user/museport-hackathon/evidence/spec-llmc/layernorm_backward/task\\\"\\n\\nSee Diagnostics Reference to resolve warnings and complete the migration:\\nhttps://oneapi-src.github.io/SYCLomatic/dev_guide/reference/diagnostics-reference.html\\n\", \"stderr\": \"/home/user/museport-hackathon/evidence/spec-llmc/layernorm_backward/task/layernorm_backward_harness.cu:373:5: error: unknown type name '__nv_bfloat162'; did you mean '__nv_bfloat16'?\\n  373 |     __nv_bfloat162* dbiasVec2 = reinterpret_cast<__nv_bfloat162*>(dbias);\\n      |     ^~~~~~~~~~~~~~\\n      |     __nv_bfloat16\\n/opt/cuda-headers/targets/x86_64-linux/include/cuda_fp16.h:4192:8: note: '__nv_bfloat16' declared here\\n 4192 | struct __nv_bfloat16;\\n      |        ^\\n/home/user/museport-hackathon/evidence/spec-llmc/layernorm_backward/task/layernorm_backward_harness.cu:373:50: error: unknown type name '__nv_bfloat162'; did you mean '__nv_bfloat16'?\\n  373 |     __nv_bfloat162* dbiasVec2 = reinterpret_cast<__nv_bfloat162*>(dbias);\\n      |                                                  ^~~~~~~~~~~~~~\\n      |                                                  __nv_bfloat16\\n/opt/cuda-headers/targets/x86_64-linux/include/cuda_fp16.h:4192:8: note: '__nv_bfloat16' declared here\\n 4192 | struct __nv_bfloat16;\\n      |        ^\\n/home/user/museport-hackathon/evidence/spec-llmc/layernorm_backward/task/layernorm_backward_harness.cu:374:5: error: unknown type name '__nv_bfloat162'; did you mean '__nv_bfloat16'?\\n  374 |     __nv_bfloat162* dweightVec2 = reinterpret_cast<__nv_bfloat162*>(dweight);\\n      |     ^~~~~~~~~~~~~~\\n      |     __nv_bfloat16\\n/opt/cuda-headers/targets/x86_64-linux/include/cuda_fp16.h:4192:8: note: '__nv_bfloat16' declared here\\n 4192 | struct __nv_bfloat16;\\n      |        ^\\n/home/user/museport-hackathon/evidence/spec-llmc/layernorm_backward/task/layernorm_backward_harness.cu:374:52: err"
+    }
+  },
+  {
+    "attempt": 2,
+    "answer": {
+      "cpu_call": "layernorm_backward_cpu(dinp, dweight, dbias, dout, inp, weight, mean, rstd, B, T, C)",
+      "cpu_functions": [
+        "layernorm_backward_cpu"
+      ],
+      "dropped_variants": [
+        {
+          "reason": "float-only kernel1 disabled by internal ENABLE_BF16",
+          "variant": 1
+        }
+      ],
+      "extra_includes": [
+        "<cuda_bf16.h>"
+      ],
+      "gpu_call": "layernorm_backward(k, d_dinp, d_dweight, d_dbias, d_scratch, d_dout, d_inp, d_weight, d_mean, d_rstd, B, T, C, 256)",
+      "gpu_prelude": "floatX *d_mean; floatX *d_rstd; float *d_scratch; cudaCheck(cudaMalloc(&d_mean, (size_t)B * T * sizeof(floatX))); cudaCheck(cudaMalloc(&d_rstd, (size_t)B * T * sizeof(floatX))); cudaCheck(memcpy_convert(d_mean, mean, (size_t)B * T)); cudaCheck(memcpy_convert(d_rstd, rstd, (size_t)B * T)); cudaCheck(cudaMalloc(&d_scratch, (size_t)(1024/32) * (size_t)cuda_num_SMs * (size_t)(2*C+1) * sizeof(float)));",
+      "host_prep": "float *mean = (float*)malloc((size_t)B * T * sizeof(float)); float *rstd = (float*)malloc((size_t)B * T * sizeof(float)); for (int b = 0; b < B; ++b) { for (int t = 0; t < T; ++t) { const float *x = inp + (size_t)b * T * C + (size_t)t * C; float m = 0.0f; for (int i = 0; i < C; ++i) { m += x[i]; } m /= C; float v = 0.0f; for (int i = 0; i < C; ++i) { float d = x[i] - m; v += d * d; } v /= C; float s = 1.0f / sqrtf(v + 1e-5f); mean[(size_t)b * T + t] = m; rstd[(size_t)b * T + t] = s; } }",
+      "inputs": [
+        {
+          "count": "B*T*C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "uniform",
+          "name": "inp"
+        },
+        {
+          "count": "C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "uniform",
+          "name": "weight"
+        },
+        {
+          "count": "B*T*C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "uniform",
+          "name": "dout"
+        }
+      ],
+      "keep_cublas": false,
+      "keep_cublaslt": false,
+      "keep_in_harness": [],
+      "note": "B=2,T=256 (llm.c: B=8,T=1024); C=1024 (llm.c: C=1600) to keep B*T*C ~0.5M (~2MB) and satisfy C%(32*x128::size)==0 (256 with BF16 x128::size=8) required by kernels 8/9; mean/rstd computed in host_prep from inp via forward formula (llm.c uses layernorm_forward_cpu) and copied to device in gpu_prelude with scratch sized as in llm.c main; tol 0.5 matches dweight/dbias BF16 threshold (dinp 1e-1); kernel1 dropped.",
+      "output_post": "",
+      "outputs": [
+        {
+          "count": "B*T*C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "zeros",
+          "name": "dinp"
+        },
+        {
+          "count": "C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "zeros",
+          "name": "dweight"
+        },
+        {
+          "count": "C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "zeros",
+          "name": "dbias"
+        }
+      ],
+      "sizes": [
+        {
+          "name": "B",
+          "value": 2
+        },
+        {
+          "name": "T",
+          "value": 256
+        },
+        {
+          "name": "C",
+          "value": 1024
+        }
+      ],
+      "tol": 0.5,
+      "variants": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    "usage": {
+      "input_tokens": 1815,
+      "output_tokens": 7920,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 25201
+    },
+    "cost_usd": 0.039709,
+    "static_errors": [],
+    "check": {
+      "ok": false,
+      "failed": "verify",
+      "steps": {
+        "reference_build": {
+          "returncode": 0,
+          "stderr": ""
+        },
+        "migrate": {
+          "status": "ok",
+          "summary": "migrated 1 CUDA file(s) -> 2 file(s); 89 DPCT warning(s) (DPCT1005x2, DPCT1009x1, DPCT1010x3, DPCT1024x2, DPCT1049x11, DPCT1051x2, DPCT1065x24, DPCT1078x1, DPCT1083x9, DPCT1093x2, DPCT1096x1, DPCT1098x15, DPCT1110x9, DPCT1118x7)"
+        },
+        "compile": {
+          "status": "ok",
+          "summary": "compiled 1 source(s) -> /home/user/museport-hackathon/evidence/spec-llmc/layernorm_backward/.work/build/candidate (302 warning(s))"
+        },
+        "verify": {
+          "status": "fail",
+          "summary": "candidate exited with code 1"
+        }
+      },
+      "evidence": "{\"mode\": \"array\", \"cases\": [{\"input\": \"/home/user/museport-hackathon/evidence/spec-llmc/layernorm_backward/task/input.bin\", \"reference\": {\"command\": \"build/reference /home/user/museport-hackathon/evidence/spec-llmc/layernorm_backward/task/input.bin /home/user/museport-hackathon/evidence/spec-llmc/layernorm_backward/.work/verify_out/case0_reference.out 2 256 1024\", \"returncode\": 0, \"duration_s\": 0.020216, \"stdout\": \"\", \"stderr\": \"\", \"cwd\": \"/home/user/museport-hackathon/evidence/spec-llmc/layernorm_backward/.work\", \"output_file\": \"/home/user/museport-hackathon/evidence/spec-llmc/layernorm_backward/.work/verify_out/case0_reference.out\"}, \"candidate\": {\"command\": \"build/candidate /home/user/museport-hackathon/evidence/spec-llmc/layernorm_backward/task/input.bin /home/user/museport-hackathon/evidence/spec-llmc/layernorm_backward/.work/verify_out/case0_candidate.out 2 256 1024\", \"returncode\": 1, \"duration_s\": 6.309947, \"stdout\": \"Invalid kernel number\\n\", \"stderr\": \"\", \"cwd\": \"/home/user/museport-hackathon/evidence/spec-llmc/layernorm_backward/.work\", \"output_file\": \"/home/user/museport-hackathon/evidence/spec-llmc/layernorm_backward/.work/verify_out/case0_candidate.out\"}, \"passed\": false, \"reason\": \"candidate exited with code 1\"}], \"work_dir\": \"/home/user/museport-hackathon/evidence/spec-llmc/layernorm_backward/.work/verify_out\"}"
+    }
+  },
+  {
+    "attempt": 3,
+    "answer": {
+      "cpu_call": "layernorm_backward_cpu(dinp, dweight, dbias, dout, inp, weight, mean, rstd, B, T, C)",
+      "cpu_functions": [
+        "layernorm_backward_cpu"
+      ],
+      "dropped_variants": [
+        {
+          "reason": "bf16-only: guarded by #if defined(ENABLE_BF16) and uses __nv_bfloat162 atomics, absent in fp32 build",
+          "variant": 4
+        }
+      ],
+      "extra_includes": [
+        "<cuda_bf16.h>"
+      ],
+      "gpu_call": "layernorm_backward(k, d_dinp, d_dweight, d_dbias, d_scratch, d_dout, d_inp, d_weight, d_mean, d_rstd, B, T, C, 256)",
+      "gpu_prelude": "floatX *d_mean; floatX *d_rstd; float *d_scratch; cudaCheck(cudaMalloc(&d_mean, (size_t)B * T * sizeof(floatX))); cudaCheck(cudaMalloc(&d_rstd, (size_t)B * T * sizeof(floatX))); cudaCheck(memcpy_convert(d_mean, mean, (size_t)B * T)); cudaCheck(memcpy_convert(d_rstd, rstd, (size_t)B * T)); cudaCheck(cudaMalloc(&d_scratch, (size_t)(1024/32) * (size_t)cuda_num_SMs * (size_t)(2*C+1) * sizeof(float)));",
+      "host_prep": "float *mean = (float*)malloc((size_t)B * T * sizeof(float)); float *rstd = (float*)malloc((size_t)B * T * sizeof(float)); for (int b = 0; b < B; ++b) { for (int t = 0; t < T; ++t) { const float *x = inp + (size_t)b * T * C + (size_t)t * C; float m = 0.0f; for (int i = 0; i < C; ++i) { m += x[i]; } m /= C; float v = 0.0f; for (int i = 0; i < C; ++i) { float d = x[i] - m; v += d * d; } v /= C; float s = 1.0f / sqrtf(v + 1e-5f); mean[(size_t)b * T + t] = m; rstd[(size_t)b * T + t] = s; } }",
+      "inputs": [
+        {
+          "count": "B*T*C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "uniform",
+          "name": "inp"
+        },
+        {
+          "count": "C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "uniform",
+          "name": "weight"
+        },
+        {
+          "count": "B*T*C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "uniform",
+          "name": "dout"
+        }
+      ],
+      "keep_cublas": false,
+      "keep_cublaslt": false,
+      "keep_in_harness": [],
+      "note": "B=2,T=256 (llm.c: B=8,T=1024); C=1024 (llm.c: C=1600) to keep B*T*C ~0.5M and satisfy C%(32*x128::size)==0 for kernels 8/9 (128 in fp32, 256 in bf16); mean/rstd computed in host_prep from inp via forward formula and copied in gpu_prelude with scratch sized as in llm.c main; fp32 variants only, kernel4 dropped as bf16-only; extra cuda_bf16.h needed to parse kernel4 for SYCLomatic.",
+      "output_post": "",
+      "outputs": [
+        {
+          "count": "B*T*C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "zeros",
+          "name": "dinp"
+        },
+        {
+          "count": "C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "zeros",
+          "name": "dweight"
+        },
+        {
+          "count": "C",
+          "device_count": "",
+          "dtype": "f32",
+          "init": "zeros",
+          "name": "dbias"
+        }
+      ],
+      "sizes": [
+        {
+          "name": "B",
+          "value": 2
+        },
+        {
+          "name": "T",
+          "value": 256
+        },
+        {
+          "name": "C",
+          "value": 1024
+        }
+      ],
+      "tol": 0.001,
+      "variants": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    "usage": {
+      "input_tokens": 28416,
+      "output_tokens": 8668,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0
+    },
+    "cost_usd": 0.072359,
+    "static_errors": [],
+    "check": {
+      "ok": true,
+      "steps": {
+        "reference_build": {
+          "returncode": 0,
+          "stderr": ""
+        },
+        "migrate": {
+          "status": "ok",
+          "summary": "migrated 1 CUDA file(s) -> 2 file(s); 89 DPCT warning(s) (DPCT1005x2, DPCT1009x1, DPCT1010x3, DPCT1024x2, DPCT1049x11, DPCT1051x2, DPCT1065x24, DPCT1078x1, DPCT1083x9, DPCT1093x2, DPCT1096x1, DPCT1098x15, DPCT1110x9, DPCT1118x7)"
+        },
+        "compile": {
+          "status": "ok",
+          "summary": "compiled 1 source(s) -> /home/user/museport-hackathon/evidence/spec-llmc/layernorm_backward/.work/build/candidate (302 warning(s))"
+        },
+        "verify": {
+          "status": "ok",
+          "summary": "PASS: 1/1 case(s) match (worst max abs err 4.2e-05, atol 0.001)"
+        }
+      }
+    }
+  }
+]

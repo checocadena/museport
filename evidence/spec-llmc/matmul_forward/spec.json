@@ -1,0 +1,73 @@
+{
+  "cpu_call": "matmul_forward_cpu(out, inp, weight, bias, B, T, C, OC)",
+  "cpu_functions": [
+    "matmul_forward_cpu"
+  ],
+  "dropped_variants": [],
+  "extra_includes": [],
+  "gpu_call": "matmul_forward(k, d_out, d_inp, d_weight, d_bias, B, T, C, OC, 16)",
+  "gpu_prelude": "",
+  "host_prep": "",
+  "inputs": [
+    {
+      "count": "B*T*C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "uniform",
+      "name": "inp"
+    },
+    {
+      "count": "OC*C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "uniform",
+      "name": "weight"
+    },
+    {
+      "count": "OC",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "uniform",
+      "name": "bias"
+    }
+  ],
+  "keep_cublas": true,
+  "keep_cublaslt": true,
+  "keep_in_harness": [],
+  "note": "B=2,T=64 (llm.c B=32,T=1024); C=64 (llm.c 768); OC=256 (llm.c 3072, preserves OC=4*C). B*T=128 multiple of 128, OC multiple of 128, C multiple of 32 for kernel4 128x128 tiling and float4 accesses; sqrt_block_size 16 for all variants.",
+  "output_post": "",
+  "outputs": [
+    {
+      "count": "B*T*OC",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "zeros",
+      "name": "out"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "B",
+      "value": 2
+    },
+    {
+      "name": "T",
+      "value": 64
+    },
+    {
+      "name": "C",
+      "value": 64
+    },
+    {
+      "name": "OC",
+      "value": 256
+    }
+  ],
+  "tol": 0.1,
+  "variants": [
+    1,
+    2,
+    3,
+    4
+  ]
+}

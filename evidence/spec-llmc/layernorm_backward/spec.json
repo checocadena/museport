@@ -1,0 +1,95 @@
+{
+  "cpu_call": "layernorm_backward_cpu(dinp, dweight, dbias, dout, inp, weight, mean, rstd, B, T, C)",
+  "cpu_functions": [
+    "layernorm_backward_cpu"
+  ],
+  "dropped_variants": [
+    {
+      "reason": "bf16-only: guarded by #if defined(ENABLE_BF16) and uses __nv_bfloat162 atomics, absent in fp32 build",
+      "variant": 4
+    }
+  ],
+  "extra_includes": [
+    "<cuda_bf16.h>"
+  ],
+  "gpu_call": "layernorm_backward(k, d_dinp, d_dweight, d_dbias, d_scratch, d_dout, d_inp, d_weight, d_mean, d_rstd, B, T, C, 256)",
+  "gpu_prelude": "floatX *d_mean; floatX *d_rstd; float *d_scratch; cudaCheck(cudaMalloc(&d_mean, (size_t)B * T * sizeof(floatX))); cudaCheck(cudaMalloc(&d_rstd, (size_t)B * T * sizeof(floatX))); cudaCheck(memcpy_convert(d_mean, mean, (size_t)B * T)); cudaCheck(memcpy_convert(d_rstd, rstd, (size_t)B * T)); cudaCheck(cudaMalloc(&d_scratch, (size_t)(1024/32) * (size_t)cuda_num_SMs * (size_t)(2*C+1) * sizeof(float)));",
+  "host_prep": "float *mean = (float*)malloc((size_t)B * T * sizeof(float)); float *rstd = (float*)malloc((size_t)B * T * sizeof(float)); for (int b = 0; b < B; ++b) { for (int t = 0; t < T; ++t) { const float *x = inp + (size_t)b * T * C + (size_t)t * C; float m = 0.0f; for (int i = 0; i < C; ++i) { m += x[i]; } m /= C; float v = 0.0f; for (int i = 0; i < C; ++i) { float d = x[i] - m; v += d * d; } v /= C; float s = 1.0f / sqrtf(v + 1e-5f); mean[(size_t)b * T + t] = m; rstd[(size_t)b * T + t] = s; } }",
+  "inputs": [
+    {
+      "count": "B*T*C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "uniform",
+      "name": "inp"
+    },
+    {
+      "count": "C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "uniform",
+      "name": "weight"
+    },
+    {
+      "count": "B*T*C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "uniform",
+      "name": "dout"
+    }
+  ],
+  "keep_cublas": false,
+  "keep_cublaslt": false,
+  "keep_in_harness": [],
+  "note": "B=2,T=256 (llm.c: B=8,T=1024); C=1024 (llm.c: C=1600) to keep B*T*C ~0.5M and satisfy C%(32*x128::size)==0 for kernels 8/9 (128 in fp32, 256 in bf16); mean/rstd computed in host_prep from inp via forward formula and copied in gpu_prelude with scratch sized as in llm.c main; fp32 variants only, kernel4 dropped as bf16-only; extra cuda_bf16.h needed to parse kernel4 for SYCLomatic.",
+  "output_post": "",
+  "outputs": [
+    {
+      "count": "B*T*C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "zeros",
+      "name": "dinp"
+    },
+    {
+      "count": "C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "zeros",
+      "name": "dweight"
+    },
+    {
+      "count": "C",
+      "device_count": "",
+      "dtype": "f32",
+      "init": "zeros",
+      "name": "dbias"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "B",
+      "value": 2
+    },
+    {
+      "name": "T",
+      "value": 256
+    },
+    {
+      "name": "C",
+      "value": 1024
+    }
+  ],
+  "tol": 0.001,
+  "variants": [
+    1,
+    2,
+    3,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ]
+}
