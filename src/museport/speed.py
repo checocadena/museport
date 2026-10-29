@@ -135,7 +135,7 @@ def profile():
     print("=== profile (" + binary.name + ", " + tool + ", 10 steps): " + str(len(rows))
           + " kernels, " + str(round(total, 1)) + " ms of GPU time; top 15:")
     for pct, ms, n, name in rows[:15]:
-        print(f"{pct:5.1f}%  {ms:9.1f} ms  x{n:>6}  {name[:110]}")
+        print(f"{pct:5.1f}%  {ms:9.1f} ms  x{n:>6}  {name.replace('Typeinfo name for ', '')[:110]}")
 
 
 with tempfile.TemporaryDirectory() as run:
