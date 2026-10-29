@@ -20,7 +20,7 @@ Rules for every item:
 
 Budget so far:
 - **Development:** about $0.55 of $5, plus the first failed plan run (at most $1.15).
-- **Comparison runs:** about $25.09 of $40, at most $25.27, with J3's $2.33 below, D2's
+- **Comparison runs:** about $29.46 of $40, at most $29.64, with E1/C6's repeats ($4.37), J3's $2.33 below, D2's
   matmul_backward rerun ($0.094) and J4's $0.48 (of its $8 cap). The author
   raised this cap from $30 to $40 on Oct 28; the per-run cap stays $3. Before J3: $22.19,
   at most $22.37 (after the C1-C3 reruns, Tier 1 run 2,
@@ -103,8 +103,9 @@ See the README's results table.
 
   bf16 is llm.c's default precision. *About $2. Done when the checks are proven first (c2s or
   native CUDA on a GPU).*
-- [ ] **C6. More runs for robustness:** 2 more runs of each Tier 1 item, so each result has a
-  success rate, not one sample. *About $3.*
+- [x] **C6. More runs for robustness:** 2 more runs of each Tier 1 item, so each result has a
+  success rate, not one sample. *About $3.* *(Oct 29: runs 3 and 4, $1.97: 29 of 30 correct
+  over three runs; the one miss is `fused_residual_forward`. `evidence/e1-c6-repeats`.)*
   *Oct 27: one more run done, with the loop fixes (`evidence/port-llmc-tier1-run2`, $1.01);
   repeats with the same setup are still needed for a success rate.*
 
@@ -160,7 +161,7 @@ See the README's results table.
 
 ## E. Measure what the method is worth (Use of Meta AI tooling, Technical depth)
 
-- [ ] **E1. Comparison: Muse with the hidden checks against Muse without them.** *(Oct 28: one run each, Tier 1 and GPT-2 stage 3, `evidence/port-llmc-tier1-baseline`, `evidence/gpt2-stage3-baseline`; 3 runs per item per arm still to do.)* Use the
+- [ ] **E1. Comparison: Muse with the hidden checks against Muse without them.** *(Oct 28: one run each, Tier 1 and GPT-2 stage 3, `evidence/port-llmc-tier1-baseline`, `evidence/gpt2-stage3-baseline`. Oct 29: Tier 1 at 3 runs per item per arm, 29 of 30 correct with feedback and 28 of 30 without, $4.37 with C6, `evidence/e1-c6-repeats`. GPT-2 stage 3 is still one run per arm.)* Use the
   toolkit's `--baseline` arm on about 8 kernels, 3 runs per item per arm. Grade every final
   port with the same hidden evaluate.
 

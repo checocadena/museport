@@ -181,8 +181,12 @@ Three experiments take a piece away, or add a second agent. Each is one run per 
     warp structure.
 - **Without feedback** (`--baseline`: no `verify`, `scan_helpers` or `benchmark`; Muse never
   runs its port, and the hidden grade checks it after):
-  - **Tier 1:** 10 of 10 still correct with 0 helpers, for $1.18; one port copies a variant,
-    which none did with feedback ([evidence](evidence/port-llmc-tier1-baseline/README.md)).
+  - **Tier 1, three runs per item in each arm:** 28 of 30 correct with 0 helpers without
+    feedback, against 29 of 30 with it. Every miss is `fused_residual_forward` running out of
+    turns with dpct helpers left (2 of 3 runs without feedback, 1 of 3 with). The other 9 files
+    are correct in every run of both arms. Without feedback, runs take 9.2 turns per item
+    against 7.8, and cost $3.57 against $2.98 for the three runs
+    ([evidence](evidence/e1-c6-repeats/README.md)).
   - **GPT-2 training (stage 3):** the port passes (worst error 0.00149), for $1.34. With
     feedback, Muse's first version had a transpose bug that only the check caught; this time
     its first version was right ([evidence](evidence/gpt2-stage3-baseline/README.md)).

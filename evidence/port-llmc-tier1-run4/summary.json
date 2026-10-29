@@ -1,0 +1,446 @@
+{
+  "model": "muse-spark-1.3",
+  "spent_usd": 1.0642,
+  "items": [
+    {
+      "item": "t1-crossentropy-forward",
+      "file": "crossentropy_forward.cu",
+      "task": "t1-crossentropy-forward/task/task.json",
+      "run_id": "20261029T005030777736Z",
+      "status": "success",
+      "detail": "verify passed and zero dpct helpers on the current compiled sources",
+      "iterations": 7,
+      "usage": {
+        "input_tokens": 42419,
+        "output_tokens": 2693,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 29237
+      },
+      "cost_usd": 0.06885455,
+      "best": {
+        "iteration": 7,
+        "source_hash": "c80075081df62479",
+        "helpers": 0,
+        "path": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/runs-tier1-run4/t1-crossentropy-forward/20261029T005030777736Z/best",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 5.96e-08, atol 1e-05)"
+      },
+      "evaluation": {
+        "source_hash": "c80075081df62479",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 5.96e-08, atol 1e-05)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "crossentropy_forward.cpp"
+      ],
+      "variant_check": {
+        "variants": 1,
+        "kernels": 1,
+        "distinct_kernel_bodies": 1,
+        "onemath_calls": 0,
+        "duplicated_variants": false
+      }
+    },
+    {
+      "item": "t1-crossentropy-softmax-backward",
+      "file": "crossentropy_softmax_backward.cu",
+      "task": "t1-crossentropy-softmax-backward/task/task.json",
+      "run_id": "20261029T005053477642Z",
+      "status": "success",
+      "detail": "verify passed and zero dpct helpers on the current compiled sources",
+      "iterations": 6,
+      "usage": {
+        "input_tokens": 38190,
+        "output_tokens": 2701,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 24915
+      },
+      "cost_usd": 0.062954,
+      "best": {
+        "iteration": 6,
+        "source_hash": "ab782220c8c6600f",
+        "helpers": 0,
+        "path": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/runs-tier1-run4/t1-crossentropy-softmax-backward/20261029T005053477642Z/best",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)"
+      },
+      "evaluation": {
+        "source_hash": "ab782220c8c6600f",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "crossentropy_softmax_backward.cpp"
+      ],
+      "variant_check": {
+        "variants": 1,
+        "kernels": 1,
+        "distinct_kernel_bodies": 1,
+        "onemath_calls": 0,
+        "duplicated_variants": false
+      }
+    },
+    {
+      "item": "t1-permute",
+      "file": "permute.cu",
+      "task": "t1-permute/task/task.json",
+      "run_id": "20261029T005117128133Z",
+      "status": "success",
+      "detail": "verify passed and zero dpct helpers on the current compiled sources",
+      "iterations": 7,
+      "usage": {
+        "input_tokens": 35338,
+        "output_tokens": 2921,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 36533
+      },
+      "cost_usd": 0.062066699999999995,
+      "best": {
+        "iteration": 7,
+        "source_hash": "d71a8704d13a51ef",
+        "helpers": 0,
+        "path": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/runs-tier1-run4/t1-permute/20261029T005117128133Z/best",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)"
+      },
+      "evaluation": {
+        "source_hash": "d71a8704d13a51ef",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "permute.cpp"
+      ],
+      "variant_check": {
+        "variants": 1,
+        "kernels": 1,
+        "distinct_kernel_bodies": 1,
+        "onemath_calls": 0,
+        "duplicated_variants": false
+      }
+    },
+    {
+      "item": "t1-residual-forward",
+      "file": "residual_forward.cu",
+      "task": "t1-residual-forward/task/task.json",
+      "run_id": "20261029T005139759790Z",
+      "status": "success",
+      "detail": "verify passed and zero dpct helpers on the current compiled sources",
+      "iterations": 7,
+      "usage": {
+        "input_tokens": 28931,
+        "output_tokens": 3195,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 50741
+      },
+      "cost_usd": 0.05735365,
+      "best": {
+        "iteration": 7,
+        "source_hash": "ba9f08b5e35232bd",
+        "helpers": 0,
+        "path": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/runs-tier1-run4/t1-residual-forward/20261029T005139759790Z/best",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)"
+      },
+      "evaluation": {
+        "source_hash": "ba9f08b5e35232bd",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "residual_forward.cpp"
+      ],
+      "variant_check": {
+        "variants": 2,
+        "kernels": 3,
+        "distinct_kernel_bodies": 3,
+        "onemath_calls": 0,
+        "duplicated_variants": false
+      }
+    },
+    {
+      "item": "t1-gelu-forward",
+      "file": "gelu_forward.cu",
+      "task": "t1-gelu-forward/task/task.json",
+      "run_id": "20261029T005210765677Z",
+      "status": "success",
+      "detail": "verify passed and zero dpct helpers on the current compiled sources",
+      "iterations": 11,
+      "usage": {
+        "input_tokens": 72837,
+        "output_tokens": 4847,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 85113
+      },
+      "cost_usd": 0.12441295,
+      "best": {
+        "iteration": 11,
+        "source_hash": "c60f31281272a7c2",
+        "helpers": 0,
+        "path": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/runs-tier1-run4/t1-gelu-forward/20261029T005210765677Z/best",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.19e-07, atol 1e-05)"
+      },
+      "evaluation": {
+        "source_hash": "c60f31281272a7c2",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.19e-07, atol 1e-05)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "gelu_forward.cpp"
+      ],
+      "variant_check": {
+        "variants": 2,
+        "kernels": 2,
+        "distinct_kernel_bodies": 2,
+        "onemath_calls": 0,
+        "duplicated_variants": false
+      }
+    },
+    {
+      "item": "t1-gelu-backward",
+      "file": "gelu_backward.cu",
+      "task": "t1-gelu-backward/task/task.json",
+      "run_id": "20261029T005250450599Z",
+      "status": "success",
+      "detail": "verify passed and zero dpct helpers on the current compiled sources",
+      "iterations": 9,
+      "usage": {
+        "input_tokens": 64893,
+        "output_tokens": 5138,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 59302
+      },
+      "cost_usd": 0.11184805,
+      "best": {
+        "iteration": 9,
+        "source_hash": "ce4c236d7ac11c75",
+        "helpers": 0,
+        "path": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/runs-tier1-run4/t1-gelu-backward/20261029T005250450599Z/best",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 2.38e-07, atol 1e-05)"
+      },
+      "evaluation": {
+        "source_hash": "ce4c236d7ac11c75",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 2.38e-07, atol 1e-05)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "gelu_backward.cpp"
+      ],
+      "variant_check": {
+        "variants": 2,
+        "kernels": 2,
+        "distinct_kernel_bodies": 2,
+        "onemath_calls": 0,
+        "duplicated_variants": false
+      }
+    },
+    {
+      "item": "t1-encoder-forward",
+      "file": "encoder_forward.cu",
+      "task": "t1-encoder-forward/task/task.json",
+      "run_id": "20261029T005326405404Z",
+      "status": "success",
+      "detail": "verify passed and zero dpct helpers on the current compiled sources",
+      "iterations": 9,
+      "usage": {
+        "input_tokens": 81926,
+        "output_tokens": 9389,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 64038
+      },
+      "cost_usd": 0.15191645,
+      "best": {
+        "iteration": 9,
+        "source_hash": "4558a5c27ead7382",
+        "helpers": 0,
+        "path": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/runs-tier1-run4/t1-encoder-forward/20261029T005326405404Z/best",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)"
+      },
+      "evaluation": {
+        "source_hash": "4558a5c27ead7382",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "encoder_forward.cpp"
+      ],
+      "variant_check": {
+        "variants": 3,
+        "kernels": 3,
+        "distinct_kernel_bodies": 3,
+        "onemath_calls": 0,
+        "duplicated_variants": false
+      }
+    },
+    {
+      "item": "t1-encoder-backward",
+      "file": "encoder_backward.cu",
+      "task": "t1-encoder-backward/task/task.json",
+      "run_id": "20261029T005427876191Z",
+      "status": "success",
+      "detail": "verify passed and zero dpct helpers on the current compiled sources",
+      "iterations": 6,
+      "usage": {
+        "input_tokens": 30022,
+        "output_tokens": 3409,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 39492
+      },
+      "cost_usd": 0.057939550000000006,
+      "best": {
+        "iteration": 6,
+        "source_hash": "c406cd1b0fa1d56e",
+        "helpers": 0,
+        "path": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/runs-tier1-run4/t1-encoder-backward/20261029T005427876191Z/best",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 4.77e-07, atol 1e-05)"
+      },
+      "evaluation": {
+        "source_hash": "c406cd1b0fa1d56e",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 2.38e-07, atol 1e-05)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "encoder_backward.cpp"
+      ],
+      "variant_check": {
+        "variants": 2,
+        "kernels": 2,
+        "distinct_kernel_bodies": 2,
+        "onemath_calls": 0,
+        "duplicated_variants": false
+      }
+    },
+    {
+      "item": "t1-adamw",
+      "file": "adamw.cu",
+      "task": "t1-adamw/task/task.json",
+      "run_id": "20261029T005453116353Z",
+      "status": "success",
+      "detail": "verify passed and zero dpct helpers on the current compiled sources",
+      "iterations": 6,
+      "usage": {
+        "input_tokens": 43578,
+        "output_tokens": 3498,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 33589
+      },
+      "cost_usd": 0.07437735000000001,
+      "best": {
+        "iteration": 6,
+        "source_hash": "3dee3826b88403cd",
+        "helpers": 0,
+        "path": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/runs-tier1-run4/t1-adamw/20261029T005453116353Z/best",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.79e-07, atol 0.0001)"
+      },
+      "evaluation": {
+        "source_hash": "3dee3826b88403cd",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.79e-07, atol 0.0001)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "adamw_sycl.cpp"
+      ],
+      "variant_check": {
+        "variants": 2,
+        "kernels": 2,
+        "distinct_kernel_bodies": 2,
+        "onemath_calls": 0,
+        "duplicated_variants": false
+      }
+    },
+    {
+      "item": "t1-fused-residual-forward",
+      "file": "fused_residual_forward.cu",
+      "task": "t1-fused-residual-forward/task/task.json",
+      "run_id": "20261029T005523762260Z",
+      "status": "max_iterations",
+      "detail": "reached 12 iterations without meeting success conditions",
+      "iterations": 12,
+      "usage": {
+        "input_tokens": 122945,
+        "output_tokens": 24856,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 221290
+      },
+      "cost_usd": 0.29251275,
+      "best": null,
+      "evaluation": {
+        "source_hash": "b443c133a24fb9af",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.43e-06, atol 1e-05)",
+        "helpers": 98,
+        "advisories": [
+          "free_function_item_query",
+          "hardcoded_subgroup_32",
+          "hardcoded_subgroup_32",
+          "hardcoded_subgroup_32",
+          "hardcoded_subgroup_32",
+          "hardcoded_subgroup_32",
+          "hardcoded_subgroup_32",
+          "nd_item3_for_1d",
+          "nd_item3_for_1d",
+          "nd_item3_for_1d",
+          "nd_item3_for_1d",
+          "nd_item3_for_1d",
+          "nd_item3_for_1d",
+          "nd_item3_for_1d",
+          "nd_item3_for_1d",
+          "nd_item3_for_1d",
+          "nd_item3_for_1d",
+          "nd_item3_for_1d",
+          "nd_item3_for_1d",
+          "nd_item3_for_1d",
+          "nd_item3_for_1d",
+          "nd_item3_for_1d",
+          "free_function_item_query",
+          "free_function_item_query",
+          "free_function_item_query",
+          "free_function_item_query",
+          "free_function_item_query",
+          "free_function_item_query",
+          "free_function_item_query",
+          "free_function_item_query",
+          "free_function_item_query",
+          "free_function_item_query",
+          "free_function_item_query"
+        ]
+      },
+      "sources": [
+        "fused_residual_forward.cpp",
+        "migrated/common.h",
+        "migrated/fused_residual_forward_harness.dp.cpp"
+      ],
+      "variant_check": {
+        "variants": 6,
+        "kernels": 7,
+        "distinct_kernel_bodies": 7,
+        "onemath_calls": 0,
+        "duplicated_variants": false
+      }
+    }
+  ]
+}

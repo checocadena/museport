@@ -1,0 +1,570 @@
+{
+ "arms": {
+  "feedback": [
+   {
+    "batch": "port-llmc-tier1-run2",
+    "spent_usd": 1.0064,
+    "items": 10,
+    "correct": 10,
+    "loop_success": 9,
+    "copied_variant": [],
+    "mean_turns": 8.2,
+    "retried_after_api_error": [],
+    "by_item": {
+     "t1-crossentropy-forward": {
+      "correct": true,
+      "status": "success",
+      "turns": 9,
+      "cost_usd": 0.09035805000000001,
+      "helpers": 0
+     },
+     "t1-crossentropy-softmax-backward": {
+      "correct": true,
+      "status": "success",
+      "turns": 6,
+      "cost_usd": 0.0654416,
+      "helpers": 0
+     },
+     "t1-permute": {
+      "correct": true,
+      "status": "success",
+      "turns": 7,
+      "cost_usd": 0.05264205,
+      "helpers": 0
+     },
+     "t1-residual-forward": {
+      "correct": true,
+      "status": "success",
+      "turns": 9,
+      "cost_usd": 0.0886836,
+      "helpers": 0
+     },
+     "t1-gelu-forward": {
+      "correct": true,
+      "status": "success",
+      "turns": 7,
+      "cost_usd": 0.08991360000000001,
+      "helpers": 0
+     },
+     "t1-gelu-backward": {
+      "correct": true,
+      "status": "success",
+      "turns": 11,
+      "cost_usd": 0.1502467,
+      "helpers": 0
+     },
+     "t1-encoder-forward": {
+      "correct": true,
+      "status": "success",
+      "turns": 7,
+      "cost_usd": 0.084159,
+      "helpers": 0
+     },
+     "t1-encoder-backward": {
+      "correct": true,
+      "status": "success",
+      "turns": 7,
+      "cost_usd": 0.07822605,
+      "helpers": 0
+     },
+     "t1-adamw": {
+      "correct": true,
+      "status": "success",
+      "turns": 7,
+      "cost_usd": 0.0832383,
+      "helpers": 0
+     },
+     "t1-fused-residual-forward": {
+      "correct": true,
+      "status": "max_iterations",
+      "turns": 12,
+      "cost_usd": 0.22347655,
+      "helpers": 0
+     }
+    }
+   },
+   {
+    "batch": "port-llmc-tier1-run3",
+    "spent_usd": 0.91,
+    "items": 10,
+    "correct": 10,
+    "loop_success": 10,
+    "copied_variant": [
+     "t1-fused-residual-forward"
+    ],
+    "mean_turns": 7.1,
+    "retried_after_api_error": [],
+    "by_item": {
+     "t1-crossentropy-forward": {
+      "correct": true,
+      "status": "success",
+      "turns": 7,
+      "cost_usd": 0.0662685,
+      "helpers": 0
+     },
+     "t1-crossentropy-softmax-backward": {
+      "correct": true,
+      "status": "success",
+      "turns": 6,
+      "cost_usd": 0.06550415,
+      "helpers": 0
+     },
+     "t1-permute": {
+      "correct": true,
+      "status": "success",
+      "turns": 7,
+      "cost_usd": 0.05515955,
+      "helpers": 0
+     },
+     "t1-residual-forward": {
+      "correct": true,
+      "status": "success",
+      "turns": 6,
+      "cost_usd": 0.06147665,
+      "helpers": 0
+     },
+     "t1-gelu-forward": {
+      "correct": true,
+      "status": "success",
+      "turns": 8,
+      "cost_usd": 0.0895193,
+      "helpers": 0
+     },
+     "t1-gelu-backward": {
+      "correct": true,
+      "status": "success",
+      "turns": 6,
+      "cost_usd": 0.07786985,
+      "helpers": 0
+     },
+     "t1-encoder-forward": {
+      "correct": true,
+      "status": "success",
+      "turns": 7,
+      "cost_usd": 0.09326025,
+      "helpers": 0
+     },
+     "t1-encoder-backward": {
+      "correct": true,
+      "status": "success",
+      "turns": 9,
+      "cost_usd": 0.13481695000000002,
+      "helpers": 0
+     },
+     "t1-adamw": {
+      "correct": true,
+      "status": "success",
+      "turns": 8,
+      "cost_usd": 0.1037897,
+      "helpers": 0
+     },
+     "t1-fused-residual-forward": {
+      "correct": true,
+      "status": "success",
+      "turns": 7,
+      "cost_usd": 0.16229965,
+      "helpers": 0
+     }
+    }
+   },
+   {
+    "batch": "port-llmc-tier1-run4",
+    "spent_usd": 1.0642,
+    "items": 10,
+    "correct": 9,
+    "loop_success": 9,
+    "copied_variant": [],
+    "mean_turns": 8,
+    "retried_after_api_error": [],
+    "by_item": {
+     "t1-crossentropy-forward": {
+      "correct": true,
+      "status": "success",
+      "turns": 7,
+      "cost_usd": 0.06885455,
+      "helpers": 0
+     },
+     "t1-crossentropy-softmax-backward": {
+      "correct": true,
+      "status": "success",
+      "turns": 6,
+      "cost_usd": 0.062954,
+      "helpers": 0
+     },
+     "t1-permute": {
+      "correct": true,
+      "status": "success",
+      "turns": 7,
+      "cost_usd": 0.062066699999999995,
+      "helpers": 0
+     },
+     "t1-residual-forward": {
+      "correct": true,
+      "status": "success",
+      "turns": 7,
+      "cost_usd": 0.05735365,
+      "helpers": 0
+     },
+     "t1-gelu-forward": {
+      "correct": true,
+      "status": "success",
+      "turns": 11,
+      "cost_usd": 0.12441295,
+      "helpers": 0
+     },
+     "t1-gelu-backward": {
+      "correct": true,
+      "status": "success",
+      "turns": 9,
+      "cost_usd": 0.11184805,
+      "helpers": 0
+     },
+     "t1-encoder-forward": {
+      "correct": true,
+      "status": "success",
+      "turns": 9,
+      "cost_usd": 0.15191645,
+      "helpers": 0
+     },
+     "t1-encoder-backward": {
+      "correct": true,
+      "status": "success",
+      "turns": 6,
+      "cost_usd": 0.057939550000000006,
+      "helpers": 0
+     },
+     "t1-adamw": {
+      "correct": true,
+      "status": "success",
+      "turns": 6,
+      "cost_usd": 0.07437735000000001,
+      "helpers": 0
+     },
+     "t1-fused-residual-forward": {
+      "correct": false,
+      "status": "max_iterations",
+      "turns": 12,
+      "cost_usd": 0.29251275,
+      "helpers": 98
+     }
+    }
+   }
+  ],
+  "baseline": [
+   {
+    "batch": "port-llmc-tier1-baseline",
+    "spent_usd": 1.1803,
+    "items": 10,
+    "correct": 10,
+    "loop_success": 0,
+    "copied_variant": [
+     "t1-fused-residual-forward"
+    ],
+    "mean_turns": 9.1,
+    "retried_after_api_error": [],
+    "by_item": {
+     "t1-crossentropy-forward": {
+      "correct": true,
+      "status": "model_finished",
+      "turns": 6,
+      "cost_usd": 0.0672918,
+      "helpers": 0
+     },
+     "t1-crossentropy-softmax-backward": {
+      "correct": true,
+      "status": "model_finished",
+      "turns": 9,
+      "cost_usd": 0.0968088,
+      "helpers": 0
+     },
+     "t1-permute": {
+      "correct": true,
+      "status": "model_finished",
+      "turns": 8,
+      "cost_usd": 0.07735775,
+      "helpers": 0
+     },
+     "t1-residual-forward": {
+      "correct": true,
+      "status": "model_finished",
+      "turns": 7,
+      "cost_usd": 0.08005145,
+      "helpers": 0
+     },
+     "t1-gelu-forward": {
+      "correct": true,
+      "status": "model_finished",
+      "turns": 8,
+      "cost_usd": 0.0859478,
+      "helpers": 0
+     },
+     "t1-gelu-backward": {
+      "correct": true,
+      "status": "max_iterations",
+      "turns": 12,
+      "cost_usd": 0.1488469,
+      "helpers": 0
+     },
+     "t1-encoder-forward": {
+      "correct": true,
+      "status": "max_iterations",
+      "turns": 12,
+      "cost_usd": 0.16666895,
+      "helpers": 0
+     },
+     "t1-encoder-backward": {
+      "correct": true,
+      "status": "model_finished",
+      "turns": 9,
+      "cost_usd": 0.08899885,
+      "helpers": 0
+     },
+     "t1-adamw": {
+      "correct": true,
+      "status": "model_finished",
+      "turns": 10,
+      "cost_usd": 0.1205311,
+      "helpers": 0
+     },
+     "t1-fused-residual-forward": {
+      "correct": true,
+      "status": "model_finished",
+      "turns": 10,
+      "cost_usd": 0.247769,
+      "helpers": 0
+     }
+    }
+   },
+   {
+    "batch": "port-llmc-tier1-baseline-2",
+    "spent_usd": 1.2613,
+    "items": 10,
+    "correct": 9,
+    "loop_success": 0,
+    "copied_variant": [],
+    "mean_turns": 8.7,
+    "retried_after_api_error": [
+     "t1-gelu-backward"
+    ],
+    "by_item": {
+     "t1-crossentropy-forward": {
+      "correct": true,
+      "status": "model_finished",
+      "turns": 9,
+      "cost_usd": 0.1087499,
+      "helpers": 0
+     },
+     "t1-crossentropy-softmax-backward": {
+      "correct": true,
+      "status": "model_finished",
+      "turns": 8,
+      "cost_usd": 0.0738177,
+      "helpers": 0
+     },
+     "t1-permute": {
+      "correct": true,
+      "status": "model_finished",
+      "turns": 8,
+      "cost_usd": 0.06992675,
+      "helpers": 0
+     },
+     "t1-residual-forward": {
+      "correct": true,
+      "status": "model_finished",
+      "turns": 7,
+      "cost_usd": 0.09583455,
+      "helpers": 0
+     },
+     "t1-gelu-forward": {
+      "correct": true,
+      "status": "model_finished",
+      "turns": 7,
+      "cost_usd": 0.0905416,
+      "helpers": 0
+     },
+     "t1-gelu-backward": {
+      "correct": true,
+      "status": "model_finished",
+      "turns": 9,
+      "cost_usd": 0.10776235,
+      "helpers": 0
+     },
+     "t1-encoder-forward": {
+      "correct": true,
+      "status": "max_iterations",
+      "turns": 12,
+      "cost_usd": 0.19399604999999998,
+      "helpers": 0
+     },
+     "t1-encoder-backward": {
+      "correct": true,
+      "status": "model_finished",
+      "turns": 8,
+      "cost_usd": 0.08481564999999999,
+      "helpers": 0
+     },
+     "t1-adamw": {
+      "correct": true,
+      "status": "model_finished",
+      "turns": 7,
+      "cost_usd": 0.09991375,
+      "helpers": 0
+     },
+     "t1-fused-residual-forward": {
+      "correct": false,
+      "status": "max_iterations",
+      "turns": 12,
+      "cost_usd": 0.27787934999999997,
+      "helpers": 98
+     }
+    }
+   },
+   {
+    "batch": "port-llmc-tier1-baseline-3",
+    "spent_usd": 1.1303,
+    "items": 10,
+    "correct": 9,
+    "loop_success": 0,
+    "copied_variant": [],
+    "mean_turns": 9.9,
+    "retried_after_api_error": [],
+    "by_item": {
+     "t1-crossentropy-forward": {
+      "correct": true,
+      "status": "model_finished",
+      "turns": 7,
+      "cost_usd": 0.0648643,
+      "helpers": 0
+     },
+     "t1-crossentropy-softmax-backward": {
+      "correct": true,
+      "status": "model_finished",
+      "turns": 11,
+      "cost_usd": 0.10664455,
+      "helpers": 0
+     },
+     "t1-permute": {
+      "correct": true,
+      "status": "model_finished",
+      "turns": 7,
+      "cost_usd": 0.05808905,
+      "helpers": 0
+     },
+     "t1-residual-forward": {
+      "correct": true,
+      "status": "max_iterations",
+      "turns": 12,
+      "cost_usd": 0.13550465,
+      "helpers": 0
+     },
+     "t1-gelu-forward": {
+      "correct": true,
+      "status": "model_finished",
+      "turns": 10,
+      "cost_usd": 0.14537395,
+      "helpers": 0
+     },
+     "t1-gelu-backward": {
+      "correct": true,
+      "status": "model_finished",
+      "turns": 11,
+      "cost_usd": 0.09683805000000001,
+      "helpers": 0
+     },
+     "t1-encoder-forward": {
+      "correct": true,
+      "status": "max_iterations",
+      "turns": 12,
+      "cost_usd": 0.11713875,
+      "helpers": 0
+     },
+     "t1-encoder-backward": {
+      "correct": true,
+      "status": "model_finished",
+      "turns": 8,
+      "cost_usd": 0.07896715,
+      "helpers": 0
+     },
+     "t1-adamw": {
+      "correct": true,
+      "status": "model_finished",
+      "turns": 9,
+      "cost_usd": 0.08286375,
+      "helpers": 0
+     },
+     "t1-fused-residual-forward": {
+      "correct": false,
+      "status": "max_iterations",
+      "turns": 12,
+      "cost_usd": 0.2440538,
+      "helpers": 98
+     }
+    }
+   }
+  ]
+ },
+ "per_item": {
+  "t1-crossentropy-forward": {
+   "feedback": 3,
+   "baseline": 3
+  },
+  "t1-crossentropy-softmax-backward": {
+   "feedback": 3,
+   "baseline": 3
+  },
+  "t1-permute": {
+   "feedback": 3,
+   "baseline": 3
+  },
+  "t1-residual-forward": {
+   "feedback": 3,
+   "baseline": 3
+  },
+  "t1-gelu-forward": {
+   "feedback": 3,
+   "baseline": 3
+  },
+  "t1-gelu-backward": {
+   "feedback": 3,
+   "baseline": 3
+  },
+  "t1-encoder-forward": {
+   "feedback": 3,
+   "baseline": 3
+  },
+  "t1-encoder-backward": {
+   "feedback": 3,
+   "baseline": 3
+  },
+  "t1-adamw": {
+   "feedback": 3,
+   "baseline": 3
+  },
+  "t1-fused-residual-forward": {
+   "feedback": 2,
+   "baseline": 1
+  }
+ },
+ "totals": {
+  "feedback": {
+   "correct": 29,
+   "of": 30,
+   "per_run": [
+    10,
+    10,
+    9
+   ],
+   "spent_usd": 2.9806
+  },
+  "baseline": {
+   "correct": 28,
+   "of": 30,
+   "per_run": [
+    10,
+    9,
+    9
+   ],
+   "spent_usd": 3.5719
+  }
+ }
+}
