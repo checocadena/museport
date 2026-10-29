@@ -1,0 +1,25 @@
+===== forced ok
+llm.c's test on NVIDIA RTX 2000 Ada Generation: PASS: 1/1 case(s) match (worst max abs err 0.0288, atol 0.05)
+  losses vs llm.c's CUDA test on the same GPU: PASS: 1/1 case(s) match (worst max abs err 0.0343, atol 0.05)
+speed on NVIDIA RTX 2000 Ada Generation: 207.9 ms per step (median, steps 6-30); llm.c's CUDA trainer: 183.3 ms, 1.13x llm.c's CUDA time
+  30 training losses vs llm.c's CUDA recording: PASS: 1/1 case(s) match (worst max abs err 0.016, atol 0.1)
+GPU budget: $0.02 of $1.00 spent, call 1 of 2
+===== pure error
+GPU budget used: $0.02 of $1.00, 1 of 2 calls; no more GPU runs in this session. Finish with what you have measured.
+===== forced ok
+llm.c's test on NVIDIA RTX 2000 Ada Generation: PASS: 1/1 case(s) match (worst max abs err 0.0288, atol 0.05)
+  losses vs llm.c's CUDA test on the same GPU: PASS: 1/1 case(s) match (worst max abs err 0.0343, atol 0.05)
+speed on NVIDIA L4: 159.9 ms per step (median, steps 6-30); llm.c's CUDA trainer: 140.7 ms, 1.14x llm.c's CUDA time
+  30 training losses vs llm.c's CUDA recording: PASS: 1/1 case(s) match (worst max abs err 0.0121, atol 0.1)
+GPU budget: $0.06 of $4.00 spent, call 2 of 2
+===== pure ok
+llm.c's test on NVIDIA RTX 2000 Ada Generation: PASS: 1/1 case(s) match (worst max abs err 0.0378, atol 0.05)
+  losses vs llm.c's CUDA test on the same GPU: PASS: 1/1 case(s) match (worst max abs err 0.0359, atol 0.05)
+speed on NVIDIA RTX A4500: 139.8 ms per step (median, steps 6-30); llm.c's CUDA trainer: 91.8 ms, 1.52x llm.c's CUDA time
+  30 training losses vs llm.c's CUDA recording: PASS: 1/1 case(s) match (worst max abs err 0.0112, atol 0.1)
+GPU budget: $0.02 of $4.00 spent, call 1 of 2
+===== forced amd ok
+llm.c's test on AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85]: PASS: 1/1 case(s) match (worst max abs err 0.0464, atol 0.05)
+speed on AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85]: 63.1 ms per step (median, steps 6-30)
+  30 training losses vs llm.c's CUDA recording: PASS: 1/1 case(s) match (worst max abs err 0.0155, atol 0.1)
+GPU budget: $0.30 of $4.00 spent, call 1 of 1

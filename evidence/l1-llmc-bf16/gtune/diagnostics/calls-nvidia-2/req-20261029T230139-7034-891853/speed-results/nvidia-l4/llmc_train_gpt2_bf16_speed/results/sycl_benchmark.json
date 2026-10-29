@@ -1,0 +1,46 @@
+{
+  "tool": "benchmark",
+  "status": "ok",
+  "summary": "2 run(s) each; cuda:0: median 5923.67 ms, p95 5945.14 ms",
+  "evidence": {
+    "command": "python3 /tmp/tmp.eGMpiAHz54/task/run_speed.py build/sycl /tmp/tmp.eGMpiAHz54/task/args.txt /tmp/tmp.eGMpiAHz54/out/work/bench_out.wav",
+    "runs": 2,
+    "warmup": 1,
+    "results": [
+      {
+        "selector": "cuda:0",
+        "status": "ok",
+        "wall_time_s": {
+          "n": 2,
+          "min": 5.899804304004647,
+          "median": 5.923666863527615,
+          "p95": 5.945143167098285,
+          "max": 5.947529423050582,
+          "mean": 5.923666863527615,
+          "stdev": 0.0337467553103163
+        },
+        "samples_s": [
+          5.899804,
+          5.947529
+        ],
+        "reported": {
+          "n": 2,
+          "min": 159.74,
+          "median": 159.9,
+          "p95": 160.044,
+          "max": 160.06,
+          "mean": 159.9,
+          "stdev": 0.22627416997969038
+        },
+        "reported_samples": [
+          160.06,
+          159.74
+        ]
+      }
+    ]
+  },
+  "limitations": [
+    "Wall-clock time of the whole process (includes start-up, JIT compilation of SYCL kernels on first use, I/O). Use report_regex for in-program kernel timings.",
+    "Device selection uses ONEAPI_DEVICE_SELECTOR; it only takes effect if the program uses a default/selector-based sycl::queue."
+  ]
+}

@@ -84,14 +84,17 @@ CUDA time there. For scale only: the same port takes 49.8 ms on an RTX 4090.
 
 ### Diagnostics we ran on the final port
 
-Each is a small change by us (Claude), not by Muse. The diffs and results are in
-[diagnostics/](diagnostics).
+Each is a small change by us (Claude), not by Muse. The diffs ([forced.diff](diagnostics/forced.diff),
+[pure.diff](diagnostics/pure.diff)) and results ([results.txt](diagnostics/results.txt)) are in
+[diagnostics/](diagnostics). The forced variant ran twice on NVIDIA (a launcher error of ours sent the
+second batch's forced run to NVIDIA instead of AMD); both runs passed. The broker refused the
+pure variant in the first batch on its own budget rule, and it ran in the second.
 
 | Variant | GPU | llm.c's test | Speed |
 |---|---|---|---|
 | **Pure SYCL + oneMath:** cuBLAS interop compiled out (`kSyclCudaNativeOk = false`) | NVIDIA RTX 2000 Ada (test), RTX A4500 (speed) | PASS (0.038) | 139.8 vs CUDA 91.8 ms: **1.52x** |
 | **Fast paths forced on for llm.c's test:** large-shape gates set to 0 | NVIDIA RTX 2000 Ada | **PASS** (0.029; also vs CUDA's test) | 1.14x on an L4 |
-| same | AMD MI350X | AMD_FORCED | |
+| same | AMD MI350X | **PASS** (0.046) | 63.1 ms, as unforced |
 
 ## Caveats
 
@@ -104,7 +107,7 @@ Each is a small change by us (Claude), not by Muse. The diffs and results are in
   - **What covers the fast paths:** in the run itself, only the 30-step training losses at T=1024,
     which stay within 0.016 of CUDA's.
   - **The forced-on diagnostic:** with the fast paths forced on, llm.c's test passes on NVIDIA
-    (worst loss 0.029, all 16 gradients) AMD_FORCED_SHORT. The gate is not hiding a failure on
+    (worst loss 0.029, all 16 gradients) and on AMD (0.046, close to the 0.05 tolerance). The gate is not hiding a failure on
     the final code.
 - **The 1.13-1.14x on NVIDIA uses NVIDIA's cuBLAS** at runtime, through SYCL's interop. It is
   vendor-specific code inside a SYCL program. Pure SYCL + oneMath measures 1.52x. The difference
@@ -136,4 +139,4 @@ Each is a small change by us (Claude), not by Muse. The diffs and results are in
 | Muse, this run | 14.50 |
 | GPU, Muse's 23 calls | 3.50 |
 | GPU, our 3 broker smoke tests before the run | 0.15 |
-| GPU, our diagnostics | DIAG_COST |
+| GPU, our diagnostics | 0.38 |

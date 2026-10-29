@@ -1,0 +1,155 @@
+{
+ "speed": {
+  "status": "ok",
+  "summary": "gpu-mi350x1-288gb-spot: ok: PASS on AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85] (hip:0, amd): sycl_verify_vs_reference: PASS: 1/1 case(s) match (worst max abs err 0.0155, atol 0.1)",
+  "evidence": {
+   "provider": "digitalocean",
+   "create_attempts": [],
+   "sycl_url": "https://github.com/checocadena/oneapi-agent-toolkit/releases/download/sycl-hip-nightly-2026-10-14-rocm7.0-r3/sycl-hip-linux-x86_64.tar.gz",
+   "sycl_sha256": "e9bf82ee3d7bd18d8d86ad5e0ea918aab3d4a30578934af510ddbc50c43c8fc3",
+   "gpu": "gpu-mi350x1-288gb-spot",
+   "price_per_hour": 3.0,
+   "max_minutes": 30.0,
+   "machine_id": "614028088",
+   "agent_url": "https://165-245-168-229.sslip.io",
+   "setup_tail": "o.7 => /opt/rocm/lib/libamdhip64.so.7 (0x0000744eaae00000)\n++ command -v hipcc\n+ HIPCC_BIN=/opt/rocm/bin/hipcc\n++++ readlink -f /opt/rocm/bin/hipcc\n+++ dirname /opt/rocm/core-7.14/bin/hipcc\n++ dirname /opt/rocm/core-7.14/bin\n+ HIP_ROOT=/opt/rocm/core-7.14\n+ '[' -e /opt/rocm/core-7.14/include/hip/hip_runtime.h ']'\n+ echo 'HIP headers: hip/hip_runtime.h missing under /opt/rocm/core-7.14/include'\nHIP headers: hip/hip_runtime.h missing under /opt/rocm/core-7.14/include\n++ sed -n 's/^core-\\([0-9]*\\.[0-9]*\\).*/\\1/p'\n++ basename /opt/rocm/core-7.14\n+ RV=7.14\n+ PKG=amdrocm-runtime-dev7.14\n++ dpkg-query -W '-f=${Version}' amdrocm-runtime7.14\n+ WANT=7.14.0~pre3-29052710811\n+ '[' -n 7.14.0~pre3-29052710811 ']'\n+ '[' -z 7.14 ']'\n+ grep -rqs repo.amd.com/rocm/packages /etc/apt/sources.list /etc/apt/sources.list.d\n+ . /etc/os-release\n++ PRETTY_NAME='Ubuntu 24.04.4 LTS'\n++ NAME=Ubuntu\n++ VERSION_ID=24.04\n++ VERSION='24.04.4 LTS (Noble Numbat)'\n++ VERSION_CODENAME=noble\n++ ID=ubuntu\n++ ID_LIKE=debian\n++ HOME_URL=https://www.ubuntu.com/\n++ SUPPORT_URL=https://help.ubuntu.com/\n++ BUG_REPORT_URL=https://bugs.launchpad.net/ubuntu/\n++ PRIVACY_POLICY_URL=https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\n++ UBUNTU_CODENAME=noble\n++ LOGO=ubuntu-logo\n+ mkdir -p /etc/apt/keyrings\n+ AMD_REPO=https://repo.amd.com/rocm/packages-multi-arch\n+ curl -fsSL --retry 3 -o /etc/apt/keyrings/gt-amdrocm.asc https://repo.amd.com/rocm/packages-multi-arch/gpg/rocm.gpg\n+ echo 'deb [arch=amd64 signed-by=/etc/apt/keyrings/gt-amdrocm.asc]' 'https://repo.amd.com/rocm/packages-multi-arch/ubuntu2404 stable main'\n+ apt-get update -qq\n++ apt-cache madison amdrocm-runtime-dev7.14\n++ awk -v w=7.14.0~pre3-29052710811 'w != \"\" && index($3, w) == 1 {print $3; exit}'\n+ VER=7.14.0~pre3-29052710811\n+ '[' -z 7.14.0~pre3-29052710811 ']'\n++ mktemp -d\n+ D=/tmp/tmp.LxqLlU3GGh\n+ cd /tmp/tmp.LxqLlU3GGh\n+ apt-get download amdrocm-runtime-dev7.14=7.14.0~pre3-29052710811\nGet:1 https://repo.radeon.com/rocmradeon/apt/26.13 noble/main amd64 amdrocm-runtime-dev7.14 amd64 7.14.0~pre3-29052710811 [506 kB]\nFetched 506 kB in 0s (10.4 MB/s)\nW: Download is performed unsandboxed as root as file '/tmp/tmp.LxqLlU3GGh/amdrocm-runtime-dev7.14_7.14.0~pre3-29052710811_amd64.deb' couldn't be accessed by user '_apt'. - pkgAcquire::Run (13: Permission denied)\n+ dpkg-deb -x /tmp/tmp.LxqLlU3GGh/amdrocm-runtime-dev7.14_7.14.0~pre3-29052710811_amd64.deb /tmp/tmp.LxqLlU3GGh/x\n+ cp -rn /tmp/tmp.LxqLlU3GGh/x/opt/rocm/core-7.14/. /opt/rocm/core-7.14/\ncp: warning: behavior of -n is non-portable and may change in future; use --update=none instead\n+ echo 'HIP headers: unpacked amdrocm-runtime-dev7.14=7.14.0~pre3-29052710811 into /opt/rocm/core-7.14'\nHIP headers: unpacked amdrocm-runtime-dev7.14=7.14.0~pre3-29052710811 into /opt/rocm/core-7.14\n+ rm -rf /tmp/tmp.LxqLlU3GGh\n+ '[' -e /opt/rocm/core-7.14/include/hip/hip_runtime.h ']'\n+ sycl-ls\n[hip:gpu][hip:0] AMD HIP BACKEND, AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85]\n",
+   "ingest": {
+    "dest": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/l1/diag/q/req-20261029T230741-7278-27860/speed-results/amd-instinct-mi350x-vf-gfx950-sramecc-xnack-hip-71460-85/llmc_train_gpt2_bf16_speed",
+    "remote_result": {
+     "tool": "gpu_test",
+     "status": "ok",
+     "summary": "PASS on AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85] (hip:0, amd): sycl_verify_vs_reference: PASS: 1/1 case(s) match (worst max abs err 0.0155, atol 0.1)",
+     "evidence": {
+      "task": "llmc_train_gpt2_bf16_speed",
+      "device": {
+       "backend": "hip",
+       "device_type": "gpu",
+       "index": 0,
+       "platform": "AMD HIP BACKEND",
+       "name": "AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85]",
+       "description": "AMD HIP BACKEND, AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85]",
+       "selector": "hip:0"
+      },
+      "vendor": "amd",
+      "amd_arch": "gfx950",
+      "cuda_arch": null,
+      "target_flags": [
+       "-fsycl-targets=amdgcn-amd-amdhsa",
+       "-Xsycl-target-backend=amdgcn-amd-amdhsa",
+       "--offload-arch=gfx950"
+      ],
+      "selector": "hip:0",
+      "steps": [
+       {
+        "step": "reference_build",
+        "status": "ok",
+        "summary": "exit 0: true"
+       },
+       {
+        "step": "native_build",
+        "status": "fail",
+        "summary": "exit 1: /opt/rocm/bin/hipcc -O2 -std=c++17 --offload-arch=gfx950 -I/tmp/tmp.StOzohN3uv/task /tmp/tmp.StOzohN3uv/out/work/train_gpt2.hip.cpp -o build/native"
+       },
+       {
+        "step": "sycl_compile",
+        "status": "ok",
+        "summary": "compiled 1 source(s) -> /tmp/tmp.StOzohN3uv/out/work/build/sycl (0 warning(s))"
+       },
+       {
+        "step": "sycl_verify_vs_reference",
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 0.0155, atol 0.1)"
+       },
+       {
+        "step": "sycl_benchmark",
+        "status": "ok",
+        "summary": "2 run(s) each; hip:0: median 4509.00 ms, p95 4535.72 ms"
+       }
+      ],
+      "results_dir": "/tmp/tmp.StOzohN3uv/out/results"
+     },
+     "limitations": [
+      "Benchmarks are single-process wall times plus program-reported kernel times; treat them as rough."
+     ]
+    }
+   },
+   "pod_deleted": true,
+   "minutes": 3.0,
+   "est_cost_usd": 0.149
+  }
+ },
+ "test": {
+  "status": "ok",
+  "summary": "gpu-mi350x1-288gb-spot: ok: PASS on AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85] (hip:0, amd): sycl_verify_vs_reference: PASS: 1/1 case(s) match (worst max abs err 0.0464, atol 0.05)",
+  "evidence": {
+   "provider": "digitalocean",
+   "create_attempts": [],
+   "sycl_url": "https://github.com/checocadena/oneapi-agent-toolkit/releases/download/sycl-hip-nightly-2026-10-14-rocm7.0-r3/sycl-hip-linux-x86_64.tar.gz",
+   "sycl_sha256": "e9bf82ee3d7bd18d8d86ad5e0ea918aab3d4a30578934af510ddbc50c43c8fc3",
+   "gpu": "gpu-mi350x1-288gb-spot",
+   "price_per_hour": 3.0,
+   "max_minutes": 30.0,
+   "machine_id": "614028087",
+   "agent_url": "https://165-245-160-241.sslip.io",
+   "setup_tail": "o.7 => /opt/rocm/lib/libamdhip64.so.7 (0x000079f9ab600000)\n++ command -v hipcc\n+ HIPCC_BIN=/opt/rocm/bin/hipcc\n++++ readlink -f /opt/rocm/bin/hipcc\n+++ dirname /opt/rocm/core-7.14/bin/hipcc\n++ dirname /opt/rocm/core-7.14/bin\n+ HIP_ROOT=/opt/rocm/core-7.14\n+ '[' -e /opt/rocm/core-7.14/include/hip/hip_runtime.h ']'\n+ echo 'HIP headers: hip/hip_runtime.h missing under /opt/rocm/core-7.14/include'\nHIP headers: hip/hip_runtime.h missing under /opt/rocm/core-7.14/include\n++ basename /opt/rocm/core-7.14\n++ sed -n 's/^core-\\([0-9]*\\.[0-9]*\\).*/\\1/p'\n+ RV=7.14\n+ PKG=amdrocm-runtime-dev7.14\n++ dpkg-query -W '-f=${Version}' amdrocm-runtime7.14\n+ WANT=7.14.0~pre3-29052710811\n+ '[' -n 7.14.0~pre3-29052710811 ']'\n+ '[' -z 7.14 ']'\n+ grep -rqs repo.amd.com/rocm/packages /etc/apt/sources.list /etc/apt/sources.list.d\n+ . /etc/os-release\n++ PRETTY_NAME='Ubuntu 24.04.4 LTS'\n++ NAME=Ubuntu\n++ VERSION_ID=24.04\n++ VERSION='24.04.4 LTS (Noble Numbat)'\n++ VERSION_CODENAME=noble\n++ ID=ubuntu\n++ ID_LIKE=debian\n++ HOME_URL=https://www.ubuntu.com/\n++ SUPPORT_URL=https://help.ubuntu.com/\n++ BUG_REPORT_URL=https://bugs.launchpad.net/ubuntu/\n++ PRIVACY_POLICY_URL=https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\n++ UBUNTU_CODENAME=noble\n++ LOGO=ubuntu-logo\n+ mkdir -p /etc/apt/keyrings\n+ AMD_REPO=https://repo.amd.com/rocm/packages-multi-arch\n+ curl -fsSL --retry 3 -o /etc/apt/keyrings/gt-amdrocm.asc https://repo.amd.com/rocm/packages-multi-arch/gpg/rocm.gpg\n+ echo 'deb [arch=amd64 signed-by=/etc/apt/keyrings/gt-amdrocm.asc]' 'https://repo.amd.com/rocm/packages-multi-arch/ubuntu2404 stable main'\n+ apt-get update -qq\n++ apt-cache madison amdrocm-runtime-dev7.14\n++ awk -v w=7.14.0~pre3-29052710811 'w != \"\" && index($3, w) == 1 {print $3; exit}'\n+ VER=7.14.0~pre3-29052710811\n+ '[' -z 7.14.0~pre3-29052710811 ']'\n++ mktemp -d\n+ D=/tmp/tmp.foiqNLVa4Z\n+ cd /tmp/tmp.foiqNLVa4Z\n+ apt-get download amdrocm-runtime-dev7.14=7.14.0~pre3-29052710811\nGet:1 https://repo.radeon.com/rocmradeon/apt/26.13 noble/main amd64 amdrocm-runtime-dev7.14 amd64 7.14.0~pre3-29052710811 [506 kB]\nFetched 506 kB in 0s (5647 kB/s)\nW: Download is performed unsandboxed as root as file '/tmp/tmp.foiqNLVa4Z/amdrocm-runtime-dev7.14_7.14.0~pre3-29052710811_amd64.deb' couldn't be accessed by user '_apt'. - pkgAcquire::Run (13: Permission denied)\n+ dpkg-deb -x /tmp/tmp.foiqNLVa4Z/amdrocm-runtime-dev7.14_7.14.0~pre3-29052710811_amd64.deb /tmp/tmp.foiqNLVa4Z/x\n+ cp -rn /tmp/tmp.foiqNLVa4Z/x/opt/rocm/core-7.14/. /opt/rocm/core-7.14/\ncp: warning: behavior of -n is non-portable and may change in future; use --update=none instead\n+ echo 'HIP headers: unpacked amdrocm-runtime-dev7.14=7.14.0~pre3-29052710811 into /opt/rocm/core-7.14'\nHIP headers: unpacked amdrocm-runtime-dev7.14=7.14.0~pre3-29052710811 into /opt/rocm/core-7.14\n+ rm -rf /tmp/tmp.foiqNLVa4Z\n+ '[' -e /opt/rocm/core-7.14/include/hip/hip_runtime.h ']'\n+ sycl-ls\n[hip:gpu][hip:0] AMD HIP BACKEND, AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85]\n",
+   "ingest": {
+    "dest": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/l1/diag/q/req-20261029T230741-7278-27860/test-results/amd-instinct-mi350x-vf-gfx950-sramecc-xnack-hip-71460-85/llmc_test_gpt2_bf16",
+    "remote_result": {
+     "tool": "gpu_test",
+     "status": "ok",
+     "summary": "PASS on AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85] (hip:0, amd): sycl_verify_vs_reference: PASS: 1/1 case(s) match (worst max abs err 0.0464, atol 0.05)",
+     "evidence": {
+      "task": "llmc_test_gpt2_bf16",
+      "device": {
+       "backend": "hip",
+       "device_type": "gpu",
+       "index": 0,
+       "platform": "AMD HIP BACKEND",
+       "name": "AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85]",
+       "description": "AMD HIP BACKEND, AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85]",
+       "selector": "hip:0"
+      },
+      "vendor": "amd",
+      "amd_arch": "gfx950",
+      "cuda_arch": null,
+      "target_flags": [
+       "-fsycl-targets=amdgcn-amd-amdhsa",
+       "-Xsycl-target-backend=amdgcn-amd-amdhsa",
+       "--offload-arch=gfx950"
+      ],
+      "selector": "hip:0",
+      "steps": [
+       {
+        "step": "reference_build",
+        "status": "ok",
+        "summary": "exit 0: true"
+       },
+       {
+        "step": "native_build",
+        "status": "fail",
+        "summary": "exit 1: /opt/rocm/bin/hipcc -O2 -std=c++17 --offload-arch=gfx950 -I/tmp/tmp.5K1lIEhS2O/task /tmp/tmp.5K1lIEhS2O/out/work/test_gpt2.hip.cpp -o build/native"
+       },
+       {
+        "step": "sycl_compile",
+        "status": "ok",
+        "summary": "compiled 1 source(s) -> /tmp/tmp.5K1lIEhS2O/out/work/build/sycl (0 warning(s))"
+       },
+       {
+        "step": "sycl_verify_vs_reference",
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 0.0464, atol 0.05)"
+       }
+      ],
+      "results_dir": "/tmp/tmp.5K1lIEhS2O/out/results"
+     },
+     "limitations": [
+      "Benchmarks are single-process wall times plus program-reported kernel times; treat them as rough."
+     ]
+    }
+   },
+   "pod_deleted": true,
+   "minutes": 3.1,
+   "est_cost_usd": 0.156
+  }
+ }
+}

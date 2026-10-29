@@ -1,0 +1,11 @@
+{
+ "status": "ok",
+ "summary": "llm.c's test on AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85]: PASS: 1/1 case(s) match (worst max abs err 0.0464, atol 0.05)\nspeed on AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85]: 63.1 ms per step (median, steps 6-30)\n  30 training losses vs llm.c's CUDA recording: PASS: 1/1 case(s) match (worst max abs err 0.0155, atol 0.1)\nGPU budget: $0.30 of $4.00 spent, call 1 of 1",
+ "evidence": {
+  "vendor": "amd",
+  "test_device": "AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85]",
+  "speed_device": "AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85]",
+  "test": "gpu-mi350x1-288gb-spot: ok: PASS on AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85] (hip:0, amd): sycl_verify_vs_reference: PASS: 1/1 case(s) match (worst max abs err 0.0464, atol 0.05)",
+  "speed": "gpu-mi350x1-288gb-spot: ok: PASS on AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85] (hip:0, amd): sycl_verify_vs_reference: PASS: 1/1 case(s) match (worst max abs err 0.0155, atol 0.1)"
+ }
+}
