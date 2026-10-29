@@ -1,0 +1,42 @@
+{
+  "model": "muse-spark-1.3",
+  "spent_usd": 0.1087,
+  "items": [
+    {
+      "item": "t1-crossentropy-forward",
+      "file": "crossentropy_forward.cu",
+      "baseline": true,
+      "task": "t1-crossentropy-forward/task/task.json",
+      "run_id": "20261029T004428154898Z",
+      "status": "model_finished",
+      "detail": "model called finish (baseline: no loop-side success check)",
+      "iterations": 9,
+      "usage": {
+        "input_tokens": 66157,
+        "output_tokens": 4881,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 35396
+      },
+      "cost_usd": 0.1087499,
+      "best": null,
+      "evaluation": {
+        "source_hash": "4f07cf7d821ec68d",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 5.96e-08, atol 1e-05)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "crossentropy_forward.cpp"
+      ],
+      "variant_check": {
+        "variants": 1,
+        "kernels": 1,
+        "distinct_kernel_bodies": 1,
+        "onemath_calls": 0,
+        "duplicated_variants": false
+      }
+    }
+  ]
+}
