@@ -146,3 +146,12 @@ def test_submit_times_out_without_a_broker(tmp_path: Path) -> None:
     t0 = time.time()
     r = submit(tmp_path / "q", _work(tmp_path), timeout_s=0.2, poll_s=0.05)
     assert r.status == "error" and "broker" in r.summary and time.time() - t0 < 5
+
+
+def test_a_failing_test_shows_its_failed_checks_first() -> None:
+    from museport.gpubroker import failing
+    out = ("overall okay: 0\nfailed checks:\nTENSOR NOT OK: wpe\ntest output tail:\n"
+           + "OK 1 1\n" * 2000 + "overall okay: 0\n")
+    shown = failing(out)
+    assert shown.startswith("failed checks:\nTENSOR NOT OK: wpe") and len(shown) < 3000
+    assert shown.endswith("overall okay: 0")

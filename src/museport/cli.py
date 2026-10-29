@@ -186,6 +186,9 @@ def build_parser() -> argparse.ArgumentParser:
     gb.add_argument("--budget", type=float, required=True, help="GPU USD for the whole session")
     gb.add_argument("--max-calls", type=int, default=20)
     gb.add_argument("--model", default="muse-spark-1.3")
+    gb.add_argument("--spent", type=float, default=0.0,
+                    help="a restarted broker: GPU USD this session has already spent")
+    gb.add_argument("--calls", type=int, default=0, help="... and calls it has already made")
 
     rv = sub.add_parser("review", help="Muse reviews each finished port from the code alone "
                                        "(no test results); verdicts compared with the hidden "
@@ -297,6 +300,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         serve(Path(args.queue), llmc=Path(args.llmc), recorded=Path(args.recorded),
               evidence_dir=Path(args.evidence), run="tune", onemath_patch=Path(args.patch),
               budget_usd=args.budget, max_calls=args.max_calls, model=args.model,
+              spent=args.spent, calls=args.calls,
               log=lambda m: print(f"[gpu-broker] {m}", file=sys.stderr, flush=True))
         return 0
     if args.cmd == "gpt2-gpu-task":

@@ -127,6 +127,15 @@ def _stdout(step: dict[str, Any] | None) -> str:
     return (cases[0].get("candidate", {}).get("stdout", "") if cases else "") or ""
 
 
+def failing(out: str) -> str:
+    """The wrapper's list of failed checks first (it can be far from the end), then the tail."""
+    head, sep, rest = out.partition("failed checks:")
+    if not sep:
+        return out[-2500:]
+    checks, _, tail = rest.partition("test output tail:")
+    return ("failed checks:" + checks[:1500] + "\ntest output tail:\n" + tail[-1200:]).strip()
+
+
 def _ms(step: dict[str, Any] | None) -> float | None:
     if not step or step.get("status") != "ok":
         return None
@@ -162,7 +171,7 @@ def describe(vendor: str, test: tuple[dict[str, Any], Path], speed: tuple[dict[s
             test_ok = (v or {}).get("status") == "ok"
             lines.append(f"llm.c's test on {device}: {(v or {}).get('summary', 'no result')}")
             if not test_ok:
-                lines.append(out[-2500:])
+                lines.append(failing(out))
             nv = steps.get("sycl_verify_vs_native")
             if nv:
                 lines.append(f"  losses vs llm.c's CUDA test on the same GPU: {nv['summary']}")
@@ -199,16 +208,17 @@ def describe(vendor: str, test: tuple[dict[str, Any], Path], speed: tuple[dict[s
 def serve(queue: Path, *, llmc: Path, recorded: Path, evidence_dir: Path, run: str,
           onemath_patch: Path, budget_usd: float, max_calls: int, model: str,
           log: Callable[[str], None] = print, poll_s: float = 5,
-          remote: Callable[..., Any] | None = None) -> None:
+          remote: Callable[..., Any] | None = None, spent: float = 0.0,
+          calls: int = 0) -> None:
     """Answer requests in ``queue`` until a STOP file appears there. Every request and its
-    results stay in the queue folder as evidence."""
+    results stay in the queue folder as evidence. ``spent`` and ``calls``: what a broker
+    restarted mid-session has already used."""
     from oneapi_agent.remote import remote_test
 
     from .bf16 import make_gpu_task
     from .speed import make_speed_task
 
     remote = remote or remote_test
-    spent, calls = 0.0, 0
     while not (queue / "STOP").exists():
         reqs = sorted(p for p in queue.glob("req-*") if p.is_dir()
                       and not p.name.endswith(".tmp") and not (p / "claimed").exists())
