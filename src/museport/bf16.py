@@ -242,3 +242,34 @@ def make_proof_task(llmc: Path, out: Path, *, name: str = "llmc_test_gpt2_bf16_p
     task["museport"]["planted"] = list(patch) if patch else None
     (out / "task.json").write_text(json.dumps(task, indent=2) + "\n")
     return out / "task.json"
+
+
+def make_gpu_task(evidence_dir: Path, dest: Path, model: str, vendor: str = "nvidia",
+                  run: str = "run3") -> Path:
+    """A ``remote-test`` task for the L1 port: the task (wrapper, reference), Muse's final files
+    from ``run`` (``test_gpt2.cpp`` and what it includes), unchanged, the weights and debug state
+    fetched on the machine, and oneMath built there for ``vendor``. On NVIDIA the native build
+    is llm.c's own CUDA test, run through the same wrapper."""
+    from .gpt2 import ONEMATH_BACKENDS, onemath_gpu_setup
+
+    if dest.exists():
+        shutil.rmtree(dest)
+    shutil.copytree(evidence_dir / "task", dest,
+                    ignore=shutil.ignore_patterns("task-*.json", "run_test-before-*"))
+    shutil.copytree(evidence_dir / run / "port", dest / "agent_port")
+    backend = ONEMATH_BACKENDS[vendor]
+    setup = f"onemath_{backend['backend']}_setup.sh"
+    (dest / setup).write_text(onemath_gpu_setup(vendor))
+    task = json.loads((dest / "task.json").read_text())
+    task.pop("goal", None)
+    task["sycl_sources"] = ["agent_port/test_gpt2.cpp"]
+    task["gpu_setup"] = setup
+    task["benchmark_runs"] = 0
+    task["fetch"] = [{"path": WEIGHTS_BF16, "url": f"{STARTER_PACK}{WEIGHTS_BF16}?download=true",
+                      "sha256": WEIGHTS_BF16_SHA256},
+                     {"path": STATE, "url": f"{STARTER_PACK}{STATE}?download=true",
+                      "sha256": DATA_SHA256[STATE]}]
+    task["port_origin"] = (f"agent-made: {model} via museport loop, {evidence_dir.name}/{run} "
+                           "(continuing run2); its final files, unchanged")
+    (dest / "task.json").write_text(json.dumps(task, indent=2) + "\n")
+    return dest / "task.json"

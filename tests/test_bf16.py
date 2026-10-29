@@ -105,3 +105,15 @@ def test_a_failing_test_shows_its_own_output(tmp_path: Path) -> None:
     p = subprocess.run([sys.executable, str(task / "run_test.py"), str(exe), "x", "o.bin"],
                        cwd=tmp_path, capture_output=True, text=True, check=True)
     assert "test output tail" in p.stdout and "TENSOR NOT OK: qkvw" in p.stdout
+
+
+def test_gpu_task_from_the_committed_port(tmp_path: Path) -> None:
+    from museport.bf16 import make_gpu_task
+
+    root = Path(__file__).resolve().parents[1] / "evidence" / "l1-llmc-bf16"
+    t = json.loads(make_gpu_task(root, tmp_path / "g", "muse-spark-1.3", vendor="amd").read_text())
+    assert t["sycl_sources"] == ["agent_port/test_gpt2.cpp"] and "goal" not in t
+    assert (tmp_path / "g/agent_port/test_gpt2.cpp").read_bytes() == (
+        root / "run3/port/test_gpt2.cpp").read_bytes()
+    assert t["gpu_setup"] == "onemath_rocblas_setup.sh" and "-DENABLE_BF16" in t["base_flags"]
+    assert {f["path"] for f in t["fetch"]} == {"gpt2_124M_bf16.bin", "gpt2_124M_debug_state.bin"}

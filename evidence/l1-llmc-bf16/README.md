@@ -7,7 +7,7 @@ cuDNN, which are llm.c's defaults. Plan: [`docs/L1-PLAN.md`](../../docs/L1-PLAN.
 
 **Result:** Muse's SYCL port passes llm.c's own test on the CPU device: logits, all 16 gradient
 tensors, 10 training losses against PyTorch, and a bit-exact save, reload and replay, with
-llm.c's own bf16 tolerances. It took **three runs, 299 turns and $14.35**, plus a $0.18 plan.
+llm.c's own bf16 tolerances. It took **three runs, 299 turns and $14.34**, plus a $0.18 plan.
 The third run continued from the second run's files. A clean rebuild outside the loop passes
 too.
 
@@ -107,5 +107,5 @@ from the loop alone ([`independent-grade/`](independent-grade)):
 - **Scope:** CPU only so far. One machine, one run of the test. bf16 stochastic rounding and
   llm.c's tolerances are as in llm.c. Speed was not compared.
 
-**Muse cost:** $14.53 in all (plan $0.18 and runs $0.70, $11.79 and $1.86), of the $80 cap.
+**Muse cost:** $14.52 in all (plan $0.18 and runs $0.70, $11.79 and $1.86), of the $80 cap.
 **GPU:** $0.008 of the $40 cap so far.
