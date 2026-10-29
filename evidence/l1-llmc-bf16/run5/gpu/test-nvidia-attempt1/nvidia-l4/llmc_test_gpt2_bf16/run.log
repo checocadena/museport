@@ -1,0 +1,1 @@
+[gpu_test] fail: SYCL port did not compile for NVIDIA L4 (cuda:0, nvidia): compile failed with 3 error(s) at test_gpt2.cpp:None: undefined reference to `nvmlInit_v2'
