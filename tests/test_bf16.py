@@ -99,12 +99,15 @@ def test_a_failing_test_shows_its_own_output(tmp_path: Path) -> None:
     for f in ("gpt2_124M_bf16.bin", "gpt2_124M_debug_state.bin", "tiny_shakespeare_val.bin"):
         (task / f).write_bytes(b"")
     exe = tmp_path / "test"
-    exe.write_text("#!/bin/sh\necho 'TENSOR NOT OK: qkvw'\nfor i in 1 2 3 4 5 6 7 8 9 10; do echo "
+    exe.write_text("#!/bin/sh\necho 'TENSOR OK, max diff: 1e-3, with rel error: 0.1'\n"
+                   "echo 'TENSOR NOT OK: qkvw'\nfor i in 1 2 3 4 5 6 7 8 9 10; do echo "
                    "\"step $i: loss 4.0\"; done\necho 'overall okay: 0'\n")
     exe.chmod(exe.stat().st_mode | stat.S_IEXEC)
     p = subprocess.run([sys.executable, str(task / "run_test.py"), str(exe), "x", "o.bin"],
                        cwd=tmp_path, capture_output=True, text=True, check=True)
     assert "test output tail" in p.stdout and "TENSOR NOT OK: qkvw" in p.stdout
+    failed = p.stdout.split("failed checks:")[1].split("test output tail")[0]
+    assert "TENSOR NOT OK" in failed and "rel error" not in failed  # passing lines are not listed
 
 
 def test_gpu_task_from_the_committed_port(tmp_path: Path) -> None:
