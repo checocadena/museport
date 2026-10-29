@@ -1,0 +1,8 @@
+{
+  "command": "/usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.9TyvEyg58E/task /tmp/tmp.9TyvEyg58E/task/train_gpt2.cu --use_fast_math -DENABLE_BF16 -lcublas -lcublasLt -L/usr/local/cuda/lib64/stubs -lnvidia-ml -o build/native",
+  "returncode": 0,
+  "duration_s": 5.94926,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.9TyvEyg58E/out/work"
+}
