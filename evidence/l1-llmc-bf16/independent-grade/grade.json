@@ -1,0 +1,34 @@
+{
+ "build": "icpx -fsycl -O2 -DENABLE_BF16 -I$ONEMATH_PREFIX/include test_gpt2.cpp ... -lonemath, in a clean folder with only Muse's final files (no task or SYCLomatic include paths), CPU device (Intel Xeon)",
+ "values": [
+  1.0,
+  1.0,
+  5.259894,
+  4.028119,
+  3.3269,
+  2.729003,
+  2.182169,
+  1.680343,
+  1.177196,
+  0.763823,
+  0.414061,
+  0.206507
+ ],
+ "reference": [
+  1.0,
+  1.0,
+  5.270009,
+  4.060681,
+  3.320085,
+  2.71755,
+  2.181066,
+  1.653923,
+  1.16805,
+  0.736873,
+  0.401021,
+  0.187493
+ ],
+ "tolerance": 0.05,
+ "worst_abs_err": 0.032562,
+ "result": "PASS"
+}
