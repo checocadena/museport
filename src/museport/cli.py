@@ -61,6 +61,9 @@ def build_parser() -> argparse.ArgumentParser:
     lp.add_argument("--tune", action="store_true",
                     help="tune a seeded, passing port: no migrate, and the run succeeds only "
                          "when the model calls finish with the test passing")
+    lp.add_argument("--gpu-queue", default=None,
+                    help="with --tune: offer the gpu_test tool, answered by a `museport "
+                         "gpu-broker` on this queue folder (the loop itself holds no GPU keys)")
     lp.add_argument("--compact", action="store_true",
                     help="shorten old tool results once the prompt passes about 300k tokens, "
                          "for long runs")
@@ -172,6 +175,18 @@ def build_parser() -> argparse.ArgumentParser:
     l2.add_argument("--out", default="llama2-sycl")
     l2.add_argument("--evidence", default="evidence/j4-llama2")
 
+    gb = sub.add_parser("gpu-broker", help="answer a tuning run's gpu_test requests: rent the "
+                                           "GPUs (needs the providers' keys), within a budget")
+    gb.add_argument("queue")
+    gb.add_argument("--llmc", required=True, help="the llm.c checkout (CUDA trainer, data)")
+    gb.add_argument("--recorded", required=True,
+                    help="the speed record task's results/recorded/ folder")
+    gb.add_argument("--evidence", default="evidence/l1-llmc-bf16")
+    gb.add_argument("--patch", default="patches/onemath-cublas-bf16-gemm.patch")
+    gb.add_argument("--budget", type=float, required=True, help="GPU USD for the whole session")
+    gb.add_argument("--max-calls", type=int, default=20)
+    gb.add_argument("--model", default="muse-spark-1.3")
+
     rv = sub.add_parser("review", help="Muse reviews each finished port from the code alone "
                                        "(no test results); verdicts compared with the hidden "
                                        "grade and the variant check")
@@ -273,6 +288,16 @@ def main(argv: Sequence[str] | None = None) -> int:
         prov = assemble_llama2(Path(args.evidence), Path(args.upstream), Path(args.out))
         print(f"[llama2-sycl] {args.out}: {prov['upstream']} at {prov['upstream_commit']}, "
               "llama2.cu replaced by Muse's llama2.cpp", file=sys.stderr)
+        return 0
+    if args.cmd == "gpu-broker":
+        from pathlib import Path
+
+        from .gpubroker import serve
+
+        serve(Path(args.queue), llmc=Path(args.llmc), recorded=Path(args.recorded),
+              evidence_dir=Path(args.evidence), run="tune", onemath_patch=Path(args.patch),
+              budget_usd=args.budget, max_calls=args.max_calls, model=args.model,
+              log=lambda m: print(f"[gpu-broker] {m}", file=sys.stderr, flush=True))
         return 0
     if args.cmd == "gpt2-gpu-task":
         from pathlib import Path
@@ -395,7 +420,7 @@ def _loop(args: argparse.Namespace) -> int:
                       max_iterations=args.max_iterations, max_cost_usd=args.max_cost,
                       runs_dir=args.runs_dir, baseline=args.baseline,
                       no_migrate=args.no_migrate, shell=args.shell, compact=args.compact,
-                      tune=args.tune,
+                      tune=args.tune, gpu_queue=args.gpu_queue,
                       **extra)
     except RuntimeError as e:
         print(f"museport: {e}", file=sys.stderr)

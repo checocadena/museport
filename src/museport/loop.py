@@ -13,7 +13,7 @@ import json
 import shutil
 import sys
 from collections.abc import Iterator
-from contextlib import contextmanager
+from contextlib import contextmanager, nullcontext
 from pathlib import Path
 from typing import Any
 
@@ -22,6 +22,7 @@ from oneapi_agent.loop import AgentLoop, LoopConfig, Toolbox, model_pricing, pre
 from oneapi_agent.models import OpenAICompatModel, Transport
 from oneapi_agent.result import ToolResult
 
+from .gpubroker import gpu_tool, toolbox_factory
 from .stream import stream_transport
 
 # Per turn, reasoning included. The toolkit's default is 16000; Muse wrote whole llm.c ports of
@@ -224,9 +225,10 @@ def run(task_file: str | Path, *, model: str, provider: str = "meta", max_iterat
         max_output_tokens: int = MAX_OUTPUT_TOKENS,
         max_total_tokens: int = MAX_TOTAL_TOKENS, no_migrate: bool = False,
         baseline: bool = False, shell: bool = False, compact: bool = False,
-        tune: bool = False) -> dict[str, Any]:
+        tune: bool = False, gpu_queue: str | Path | None = None) -> dict[str, Any]:
     """``no_migrate``: the ablation without SYCLomatic (see NoMigrateLoop). ``baseline``: the
-    toolkit's arm without feedback (no verify, scan_helpers or benchmark; ends on finish)."""
+    toolkit's arm without feedback (no verify, scan_helpers or benchmark; ends on finish).
+    ``gpu_queue`` (with ``tune``): the gpu_test tool, answered by a GPU broker on that queue."""
     preflight_real_model(model, provider=provider)
     cfg, client = build(task_file, model=model, provider=provider,
                         max_iterations=max_iterations, max_cost_usd=max_cost_usd,
@@ -236,10 +238,13 @@ def run(task_file: str | Path, *, model: str, provider: str = "meta", max_iterat
         client = CompactingModel(client)
     if tune:
         gate = FinishGate(client)
-        tuner = TuningLoop(cfg, gate, runs_dir=runs_dir, toolbox_factory=NoMigrateToolbox)
+        factory: Any = NoMigrateToolbox
+        if gpu_queue:
+            factory = toolbox_factory(NoMigrateToolbox, Path(gpu_queue).resolve())
+        tuner = TuningLoop(cfg, gate, runs_dir=runs_dir, toolbox_factory=factory)
         tuner.gate = gate
         seed_work(task_file, tuner.work)
-        with _shell_not_stuck():
+        with _shell_not_stuck(), (gpu_tool() if gpu_queue else nullcontext()):
             return tuner.run()
     agent = (NoMigrateLoop(cfg, client, runs_dir=runs_dir, toolbox_factory=NoMigrateToolbox)
              if no_migrate else

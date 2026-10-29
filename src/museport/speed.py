@@ -47,13 +47,77 @@ from pathlib import Path
 
 here = Path(__file__).resolve().parent
 binary, args, out = Path(sys.argv[1]).resolve(), sys.argv[2], sys.argv[3]
-with tempfile.TemporaryDirectory() as run:
+
+
+def link_inputs(run):
     for name in ("gpt2_124M_bf16.bin", "gpt2_tokenizer.bin"):
         os.symlink(here / name, Path(run) / name)
     data = Path(run) / "dev" / "data" / "tinyshakespeare"
     data.mkdir(parents=True)
     for name in ("tiny_shakespeare_train.bin", "tiny_shakespeare_val.bin"):
         os.symlink(here / name, data / name)
+
+
+def profile():
+    """With a 'profile' file in the task dir: once per binary, 10 steps under nsys (NVIDIA) or
+    rocprofv3 (AMD), and the top kernels by GPU time."""
+    import csv
+    import glob
+    import shutil
+    mark = here / ("profiled-" + binary.name)
+    if not (here / "profile").exists() or mark.exists():
+        return
+    mark.write_text("1")
+    pargs = Path(args).read_text().split()
+    if "-x" in pargs:
+        pargs[pargs.index("-x") + 1] = "10"
+    nsys = shutil.which("nsys") or next(iter(sorted(
+        glob.glob("/opt/nvidia/nsight-systems*/*/bin/nsys")
+        + glob.glob("/usr/local/cuda*/bin/nsys"))), None)
+    roc = shutil.which("rocprofv3") or next(iter(glob.glob("/opt/rocm*/bin/rocprofv3")), None)
+    rows, tool = [], None
+    with tempfile.TemporaryDirectory() as run:
+        link_inputs(run)
+        try:
+            if nsys:
+                tool = "nsys"
+                subprocess.run([nsys, "profile", "-o", "prof", "--force-overwrite", "true",
+                                "-t", "cuda", str(binary), *pargs], cwd=run,
+                               capture_output=True, timeout=1500)
+                s = subprocess.run([nsys, "stats", "--report", "cuda_gpu_kern_sum", "--format",
+                                    "csv", "prof.nsys-rep"], cwd=run, capture_output=True,
+                                   text=True, timeout=600).stdout
+                body = s[s.find("Time"):] if "Time" in s else ""
+                for r in csv.DictReader(body.splitlines()):
+                    rows.append((float(r.get("Time (%)") or 0),
+                                 float(r.get("Total Time (ns)") or 0) / 1e6,
+                                 r.get("Instances", "?"), r.get("Name", "?")))
+            elif roc:
+                tool = "rocprofv3"
+                subprocess.run([roc, "--kernel-trace", "--stats", "-d", "prof", "-o", "p",
+                                "--", str(binary), *pargs], cwd=run, capture_output=True,
+                               timeout=1500)
+                found = sorted(glob.glob(run + "/prof/**/*kernel_stats.csv", recursive=True))
+                for r in (csv.DictReader(open(found[0])) if found else []):
+                    rows.append((float(r.get("Percentage") or 0),
+                                 float(r.get("TotalDurationNs") or 0) / 1e6,
+                                 r.get("Calls", "?"), r.get("Name", "?")))
+        except Exception as e:
+            print("=== profile (" + binary.name + "): failed: " + repr(e)[:300])
+            return
+    if not tool:
+        print("=== profile (" + binary.name + "): no profiler (nsys, rocprofv3) on this machine")
+        return
+    rows.sort(reverse=True)
+    total = sum(r[1] for r in rows)
+    print("=== profile (" + binary.name + ", " + tool + ", 10 steps): " + str(len(rows))
+          + " kernels, " + str(round(total, 1)) + " ms of GPU time; top 15:")
+    for pct, ms, n, name in rows[:15]:
+        print(f"{pct:5.1f}%  {ms:9.1f} ms  x{n:>6}  {name[:110]}")
+
+
+with tempfile.TemporaryDirectory() as run:
+    link_inputs(run)
     p = subprocess.run([str(binary), *Path(args).read_text().split()], cwd=run,
                        capture_output=True, text=True, timeout=3000)
 text = p.stdout
@@ -67,6 +131,7 @@ median = statistics.median(ms[5:]) if len(ms) > 5 else statistics.median(ms)
 Path(out).write_bytes(struct.pack(f"<{len(losses)}f", *losses))
 print(json.dumps({"steps": len(steps), "ms_per_step_median": median, "losses": losses}))
 print(f"kernel_ms={median}")
+profile()
 '''
 
 

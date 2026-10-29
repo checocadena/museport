@@ -318,9 +318,35 @@ TUNE_GOAL = (
     "you call finish and the test passes on the current sources.")
 
 
-def make_tune_task(llmc: Path, data: Path, port: Path, out: Path) -> Path:
+# The second tuning run, with the gpu_test tool (museport.gpubroker): numbers measured on
+# 2026-10-29 for the seed (the first tuning run's port) and for run 3's port.
+GPU_TUNE_GOAL = (
+    "Your work dir holds a SYCL 2020 port of llm.c's bf16 GPT-2 trainer (train_gpt2.cpp, "
+    "test_gpt2.cpp, llmc/*.hpp and llmc's plain-C headers). It passes llm.c's own test, the "
+    "hidden check, on the CPU device here, and on GPUs. Make it as fast as you can on GPUs, "
+    "measured against llm.c's own CUDA trainer, without breaking that test. "
+    "You now have a `gpu_test` tool: it builds your current files on a real rented GPU and "
+    "returns llm.c's test result there and the trainer's median ms per step at B=4, T=1024, on "
+    "NVIDIA next to llm.c's CUDA trainer on the same GPU (compare the ratio: the GPU model can "
+    "differ between calls). profile=true adds the top kernels by GPU time, for your port and "
+    "for llm.c's CUDA. Each call takes minutes and real money, within a fixed budget it "
+    "reports; measure, don't guess. Measured so far: this port takes 1058 ms per step on an "
+    "NVIDIA RTX 2000 Ada where llm.c's CUDA takes 187 ms (5.7x), and 578 ms on an AMD MI350X. An "
+    "older port that used oneMath gemm for attention took 2.9x CUDA's time on the same NVIDIA "
+    "GPU, so this port's own attention kernels may be slower than a library gemm. Start with "
+    "a profiled gpu_test on NVIDIA, work on the kernels that take the most time, and check "
+    "each change with gpu_test; undo changes that do not help. Keep llm.c's test exactly as it "
+    "is (checks, tolerances, printout), its determinism, zero dpct helpers, and the sources "
+    "[test_gpt2.cpp] with -DENABLE_BF16; the test must pass on the CPU here (compile and "
+    "verify) and on both GPU vendors (gpu_test with vendor nvidia and amd) at the end. When "
+    "you have done what you can, call finish: the run ends only when you call finish and the "
+    "test passes on the current sources.")
+
+
+def make_tune_task(llmc: Path, data: Path, port: Path, out: Path,
+                   goal: str = TUNE_GOAL) -> Path:
     """The tuning task: run 5's no-migrate, shell task with ``port``'s files as the seed (the
-    port files only, not its debug programs) and TUNE_GOAL."""
+    port files only, not its debug programs) and ``goal``."""
     make_task(llmc, data, out, no_migrate=True, shell=True)
     seed = out / "seed"
     seed.mkdir()
@@ -328,7 +354,7 @@ def make_tune_task(llmc: Path, data: Path, port: Path, out: Path) -> Path:
         shutil.copyfile(port / name, seed / name)
     shutil.copytree(port / "llmc", seed / "llmc")
     task = json.loads((out / "task.json").read_text())
-    task["goal"] = TUNE_GOAL + SHELL_NOTE.replace("{task_dir}", str(out.resolve()))
+    task["goal"] = goal + SHELL_NOTE.replace("{task_dir}", str(out.resolve()))
     task["museport"]["seed"] = "seed"
     (out / "task.json").write_text(json.dumps(task, indent=2) + "\n")
     return out / "task.json"
