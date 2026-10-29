@@ -54,6 +54,11 @@ def build_parser() -> argparse.ArgumentParser:
     lp.add_argument("--baseline", action="store_true",
                     help="ablation: the toolkit's arm without feedback (no verify, scan_helpers "
                          "or benchmark; the run ends on finish; graded afterwards)")
+    lp.add_argument("--no-migrate", action="store_true",
+                    help="run without SYCLomatic (no migrate tool)")
+    lp.add_argument("--max-total-tokens", type=int, default=None,
+                    help="the toolkit's per-run token limit, cached reads included (default "
+                         "2000000); raise it for a large port so the USD cap decides")
 
     po = sub.add_parser("port", help="Muse ports each plan item of a tier with the toolkit's "
                                      "loop; a hidden reference checks every result")
@@ -376,10 +381,12 @@ def _loop(args: argparse.Namespace) -> int:
     print(f"[loop] {args.model}: up to {args.max_iterations} turns; stops once cost exceeds "
           f"${args.max_cost:.2f} (one more turn can add about "
           f"${turn_overshoot_usd(args.model):.2f})", file=sys.stderr)
+    extra = {"max_total_tokens": args.max_total_tokens} if args.max_total_tokens else {}
     try:
         outcome = run(args.task, model=args.model, provider=args.provider,
                       max_iterations=args.max_iterations, max_cost_usd=args.max_cost,
-                      runs_dir=args.runs_dir, baseline=args.baseline)
+                      runs_dir=args.runs_dir, baseline=args.baseline,
+                      no_migrate=args.no_migrate, **extra)
     except RuntimeError as e:
         print(f"museport: {e}", file=sys.stderr)
         return 2

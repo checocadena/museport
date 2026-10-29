@@ -97,7 +97,8 @@ vals = [1.0 if ok[-1] == "1" and p.returncode == 0 else 0.0,
         1.0 if tolerances_kept() else 0.0, *losses[:10]]
 Path(out).write_bytes(struct.pack(f"<{len(vals)}f", *vals))
 print("overall okay:", ok[-1], "| tolerances kept:", bool(vals[1]), "| losses:", losses[:10])
-'''.replace("__GRAD_TOLS__", repr(GRAD_TOLS))
+'''.replace("__GRAD_TOLS__", "(" + ",\n             ".join(
+    ", ".join(map(repr, GRAD_TOLS[i:i + 8])) for i in range(0, len(GRAD_TOLS), 8)) + ")")
 
 GOAL = (
     "Port llm.c's main GPT-2 trainer from CUDA to SYCL 2020, in one go: train_gpt2.cu, "
@@ -127,6 +128,12 @@ GOAL = (
     "work directory (path '.') on the same sources; delete migrate's output (delete_file) once "
     "your port is done. This is a large port: write each file early and in full, then fix "
     "compile errors with edit_file rather than rewriting whole files.")
+# Without SYCLomatic (it cannot parse llm.c's trainer: nvtx3/nvToolsExt.h is not in its CUDA
+# headers): no migrate tool, and the port is written from the CUDA directly.
+NO_MIGRATE_GOAL = GOAL.replace(
+    "; delete migrate's output (delete_file) once your port is done.",
+    ". There is no migration tool: write the SYCL from the CUDA directly, and do not try to read "
+    "all 4,900 lines before writing; port file by file, reading each one as you write its port.")
 
 LLMC_CUDA = ("cuda_common.h", "cuda_utils.cuh", "cublas_common.h", "encoder.cuh", "layernorm.cuh",
              "matmul.cuh", "attention.cuh", "fused_classifier.cuh", "gelu.cuh", "adamw.cuh",
@@ -166,9 +173,10 @@ def _base(test_src: str, ref: list[float]) -> dict:
                                    "test_gpt2.cu (PyTorch)"}}}
 
 
-def make_task(llmc: Path, data: Path, out: Path) -> Path:
+def make_task(llmc: Path, data: Path, out: Path, *, no_migrate: bool = False) -> Path:
     """The task Muse ports in one run, on the CPU device. ``data`` holds the bf16 weights and
-    the debug state; they are linked, not copied."""
+    the debug state; they are linked, not copied. ``no_migrate``: the goal for a run without
+    SYCLomatic."""
     if out.exists():
         shutil.rmtree(out)
     _copy_llmc(llmc, out)
@@ -176,7 +184,8 @@ def make_task(llmc: Path, data: Path, out: Path) -> Path:
         (out / f).symlink_to((data / f).resolve())
     test_src = (llmc / "test_gpt2.cu").read_text()
     ref = _reference(test_src, out)
-    task = {"name": "llmc_test_gpt2_bf16", "goal": GOAL, **_base(test_src, ref)}
+    task = {"name": "llmc_test_gpt2_bf16", "goal": NO_MIGRATE_GOAL if no_migrate else GOAL,
+            **_base(test_src, ref)}
     (out / "task.json").write_text(json.dumps(task, indent=2) + "\n")
     return out / "task.json"
 

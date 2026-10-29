@@ -13,7 +13,8 @@ from pathlib import Path
 
 here = Path(__file__).resolve().parent
 binary, out = Path(sys.argv[1]).resolve(), sys.argv[3]
-GRAD_TOLS = (0.5, 0.004, 0.1, 0.04, 0.05, 0.035, 0.02, 0.03, 0.05, 0.03, 0.03, 0.03, 0.02, 0.01, 0.1, 0.02)
+GRAD_TOLS = (0.5, 0.004, 0.1, 0.04, 0.05, 0.035, 0.02, 0.03,
+             0.05, 0.03, 0.03, 0.03, 0.02, 0.01, 0.1, 0.02)
 
 
 def tolerances_kept() -> bool:
