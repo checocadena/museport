@@ -56,6 +56,11 @@ def build_parser() -> argparse.ArgumentParser:
                          "or benchmark; the run ends on finish; graded afterwards)")
     lp.add_argument("--no-migrate", action="store_true",
                     help="run without SYCLomatic (no migrate tool)")
+    lp.add_argument("--shell", action="store_true",
+                    help="offer the toolkit's `run` tool: a bash shell in the work dir")
+    lp.add_argument("--compact", action="store_true",
+                    help="shorten old tool results once the prompt passes about 300k tokens, "
+                         "for long runs")
     lp.add_argument("--max-total-tokens", type=int, default=None,
                     help="the toolkit's per-run token limit, cached reads included (default "
                          "2000000); raise it for a large port so the USD cap decides")
@@ -386,7 +391,8 @@ def _loop(args: argparse.Namespace) -> int:
         outcome = run(args.task, model=args.model, provider=args.provider,
                       max_iterations=args.max_iterations, max_cost_usd=args.max_cost,
                       runs_dir=args.runs_dir, baseline=args.baseline,
-                      no_migrate=args.no_migrate, **extra)
+                      no_migrate=args.no_migrate, shell=args.shell, compact=args.compact,
+                      **extra)
     except RuntimeError as e:
         print(f"museport: {e}", file=sys.stderr)
         return 2

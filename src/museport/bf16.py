@@ -179,7 +179,16 @@ def _base(test_src: str, ref: list[float]) -> dict:
                                    "test_gpt2.cu (PyTorch)"}}}
 
 
-def make_task(llmc: Path, data: Path, out: Path, *, no_migrate: bool = False) -> Path:
+SHELL_NOTE = (
+    " You have a `run` tool (bash in the work dir): build and run your own test programs and "
+    "your test_gpt2 itself with it. The files the test reads are in {task_dir}: "
+    "gpt2_124M_bf16.bin, gpt2_124M_debug_state.bin and tiny_shakespeare_val.bin (the test opens "
+    "dev/data/tinyshakespeare/tiny_shakespeare_val.bin); link them into your work dir. Do not "
+    "change anything in {task_dir}. The hidden check still decides success.")
+
+
+def make_task(llmc: Path, data: Path, out: Path, *, no_migrate: bool = False,
+              shell: bool = False) -> Path:
     """The task Muse ports in one run, on the CPU device. ``data`` holds the bf16 weights and
     the debug state; they are linked, not copied. ``no_migrate``: the goal for a run without
     SYCLomatic."""
@@ -190,8 +199,10 @@ def make_task(llmc: Path, data: Path, out: Path, *, no_migrate: bool = False) ->
         (out / f).symlink_to((data / f).resolve())
     test_src = (llmc / "test_gpt2.cu").read_text()
     ref = _reference(test_src, out)
-    task = {"name": "llmc_test_gpt2_bf16", "goal": NO_MIGRATE_GOAL if no_migrate else GOAL,
-            **_base(test_src, ref)}
+    goal = NO_MIGRATE_GOAL if no_migrate else GOAL
+    if shell:
+        goal += SHELL_NOTE.replace("{task_dir}", str(out.resolve()))
+    task = {"name": "llmc_test_gpt2_bf16", "goal": goal, **_base(test_src, ref)}
     (out / "task.json").write_text(json.dumps(task, indent=2) + "\n")
     return out / "task.json"
 
