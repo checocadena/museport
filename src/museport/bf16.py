@@ -33,8 +33,9 @@ LOGIT_TOL, LOSS_TOL = 25.0, 0.05
 GRAD_TOLS = (5e-1, 4e-3, 1e-1, 4e-2, 5e-2, 3.5e-2, 2e-2, 3e-2, 5e-2, 3e-2, 3e-2, 3e-2, 2e-2,
              1e-2, 1e-1, 2e-2)
 # the CUDA build of the proof: llm.c's Makefile flags for test_gpt2cu, single GPU, no cuDNN
-NATIVE_FLAGS = ["--use_fast_math", "-DENABLE_BF16", "-lcublas", "-lcublasLt",
-                "-L/usr/local/cuda/lib64/stubs", "-lnvidia-ml"]
+# llm.c's mfu.h reads the GPU clock through NVIDIA's NVML; ports that keep it link it on NVIDIA
+NVML_FLAGS = ["-L/usr/local/cuda/lib64/stubs", "-lnvidia-ml"]
+NATIVE_FLAGS = ["--use_fast_math", "-DENABLE_BF16", "-lcublas", "-lcublasLt", *NVML_FLAGS]
 ONEMATH_FLAGS = ["-O2", "-I${ONEMATH_PREFIX}/include", "-Wl,--no-as-needed",
                  "-L${ONEMATH_PREFIX}/lib", "-Wl,-rpath,${ONEMATH_PREFIX}/lib", "-lonemath"]
 
@@ -281,12 +282,14 @@ def make_gpu_task(evidence_dir: Path, dest: Path, model: str, vendor: str = "nvi
     task["sycl_sources"] = ["agent_port/test_gpt2.cpp"]
     task["gpu_setup"] = setup
     task["benchmark_runs"] = 0
+    if vendor == "nvidia":
+        task["base_flags"] = [*task["base_flags"], *NVML_FLAGS]
     task["fetch"] = [{"path": WEIGHTS_BF16, "url": f"{STARTER_PACK}{WEIGHTS_BF16}?download=true",
                       "sha256": WEIGHTS_BF16_SHA256},
                      {"path": STATE, "url": f"{STARTER_PACK}{STATE}?download=true",
                       "sha256": DATA_SHA256[STATE]}]
-    task["port_origin"] = (f"agent-made: {model} via museport loop, {evidence_dir.name}/{run} "
-                           "(continuing run2); its final files, unchanged")
+    task["port_origin"] = (f"agent-made: {model} via museport loop, {evidence_dir.name}/{run}; "
+                           "its final files, unchanged")
     (dest / "task.json").write_text(json.dumps(task, indent=2) + "\n")
     return dest / "task.json"
 

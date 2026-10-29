@@ -18,7 +18,7 @@ import json
 import shutil
 from pathlib import Path
 
-from .bf16 import NATIVE_FLAGS, ONEMATH_FLAGS, WEIGHTS_BF16, WEIGHTS_BF16_SHA256
+from .bf16 import NATIVE_FLAGS, NVML_FLAGS, ONEMATH_FLAGS, WEIGHTS_BF16, WEIGHTS_BF16_SHA256
 from .gpt2 import STARTER_PACK
 from .trainer import TOKENIZER, TOKENIZER_SHA256
 
@@ -130,6 +130,8 @@ def make_speed_task(llmc: Path, port: Path, recorded: Path, out: Path, model: st
             "reference_cmd": "cp {task_dir}/recorded_losses.out {output}",
             "sycl_sources": ["agent_port/train_gpt2.cpp"], "gpu_setup": setup,
             "benchmark_runs": runs,
+            "base_flags": [*ONEMATH_FLAGS, "-DENABLE_BF16",
+                           *(NVML_FLAGS if vendor == "nvidia" else [])],
             "port_origin": f"agent-made: {model} via museport loop; its final files, unchanged"}
     (out / "task.json").write_text(json.dumps(task, indent=2) + "\n")
     return out / "task.json"

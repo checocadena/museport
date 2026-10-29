@@ -120,6 +120,10 @@ def test_gpu_task_from_the_committed_port(tmp_path: Path) -> None:
         root / "run3/port/test_gpt2.cpp").read_bytes()
     assert t["gpu_setup"] == "onemath_rocblas_setup.sh" and "-DENABLE_BF16" in t["base_flags"]
     assert {f["path"] for f in t["fetch"]} == {"gpt2_124M_bf16.bin", "gpt2_124M_debug_state.bin"}
+    assert "-lnvidia-ml" not in t["base_flags"]
+    nv = json.loads(make_gpu_task(root, tmp_path / "n", "muse-spark-1.3", vendor="nvidia")
+                    .read_text())
+    assert "-lnvidia-ml" in nv["base_flags"]  # llm.c's mfu.h needs NVML (run 5's first try)
 
 
 def test_committed_wrapper_is_the_current_one() -> None:
