@@ -1,0 +1,376 @@
+{
+  "model": "muse-spark-1.3",
+  "provider": "meta",
+  "usage": {
+    "input_tokens": 88393,
+    "output_tokens": 16221,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0
+  },
+  "cost_usd": 0.1794305,
+  "plan": {
+    "items": [
+      {
+        "approach": "Create sycl_common + sycl_utils replacing llmc/cuda_common.h + llmc/cuda_utils.cuh. Packed128 -> sycl::vec alignment 16 with load128/store128 as vectorized global loads; __ldcs/__stcs/__stcg/__ldg hints dropped (SYCL has no streaming hints). warpReduceSum/Max via sycl::reduce_over_group or shift_group_left/permute_group_by_xor on sycl::sub_group without assuming size 32. blockReduce via sycl::local_accessor<float> + group_barrier. bf16/half via sycl::ext::oneapi::bfloat16/sycl::half. cudaMallocConditionallyManaged/cudaMallocManaged -> sycl::malloc_device with fallback sycl::malloc_shared. streams/events -> in-order sycl::queue + sycl::event. Prove simple kernels copy_and_cast_kernel and global_sum_single_block_kernel first.",
+        "depends_on": [],
+        "files": [
+          "llmc/cuda_utils.cuh"
+        ],
+        "id": "s01-cuda-utils",
+        "kernels": [
+          "copy_and_cast_kernel",
+          "global_sum_single_block_kernel"
+        ],
+        "library_mappings": [],
+        "risks": [
+          "warp_shuffle (__shfl_xor_sync): use select_from_group/permute_group_by_xor/shift_group_left on sub_group; do not assume sub-group size 32",
+          "warp_size_32 (WARP_SIZE 32U): parameterize by sycl sub-group size, handle 16/32 for NVIDIA/AMD/Intel",
+          "bf16 (__nv_bfloat16, __bfloat162float, __float2bfloat16_rn, stochastic_rounding): use sycl::ext::oneapi::bfloat16",
+          "fp16 (half, __half2float): use sycl::half",
+          "shared_memory (__shared__ shared_val): use sycl::local_accessor",
+          "unified_memory (cudaMallocManaged, cudaMemAdvise): use sycl::malloc_shared",
+          "streams_events (cudaStream_t, cudaEvent): use in-order sycl::queue + sycl::event"
+        ],
+        "tier": 2,
+        "title": "SYCL foundation utils and reductions",
+        "verification": "Standalone SYCL queue test vs CUDA reference: copy_and_cast fp32->bf16 bitwise/exact after rounding with fixed seed; global_sum_deterministic vs host double sum tolerance 1e-5 on counts from test_gpt2.cu (B*T). Must pass on sub-group 16 and 32."
+      },
+      {
+        "approach": "Port pointwise GeLU as nd_range with x128::size vector width (sycl::vec). Replace load128cs/store128 with plain vector loads/stores, tanhf/coshf with sycl::tanh/sycl::cosh. Keep N % (block*x128::size)==0 asserts. Use in-order queue for stream.",
+        "depends_on": [
+          "s01-cuda-utils"
+        ],
+        "files": [
+          "llmc/gelu.cuh"
+        ],
+        "id": "s02-gelu",
+        "kernels": [
+          "gelu_backward_inplace_kernel",
+          "gelu_forward_kernel2"
+        ],
+        "library_mappings": [],
+        "risks": [
+          "streams_events (gelu_forward/backward cudaStream_t): use in-order sycl::queue",
+          "bf16/fp16 (floatX via cuda_utils load128cs): use sycl::ext::oneapi::bfloat16/sycl::half, no __ldcs/__stcs hints",
+          "warp_size_32/warp_shuffle/shared_memory/unified_memory inherited via llmc/cuda_utils.cuh: handled in s01, do not assume 32"
+        ],
+        "tier": 1,
+        "title": "GeLU pointwise kernels",
+        "verification": "Compare SYCL vs CUDA on B*T*4*C tensors from gpt2_124M_debug_state.bin as used in test_gpt2.cu check_tensor for fcw/fcb/fcprojw; pass if thresholds in test_gpt2.cu hold (3e-2 bf16, 1e-6 fp32)."
+      },
+      {
+        "approach": "Port two-stage norm: global_norm_squared_kernel as hierarchical parallel_for with local_accessor reduction (no atomics), global_norm_aggregate_kernel as single-group reduction. Replace deviceProp.maxThreadsPerMultiProcessor grid sizing with device max_compute_units query. Queues replace streams.",
+        "depends_on": [
+          "s01-cuda-utils"
+        ],
+        "files": [
+          "llmc/global_norm.cuh"
+        ],
+        "id": "s03-global-norm",
+        "kernels": [
+          "global_norm_aggregate_kernel",
+          "global_sum_single_block_kernel",
+          "global_norm_squared_kernel"
+        ],
+        "library_mappings": [],
+        "risks": [
+          "streams_events (global_norm_squared cudaStream_t): use sycl::queue",
+          "shared_memory/blockReduce<warpReduceSum> via cuda_utils: use local_accessor + sub_group reduce, do not assume 32",
+          "warp_size_32/bf16/fp16 inherited via cuda_utils: use portable sub-group + sycl bfloat16"
+        ],
+        "tier": 1,
+        "title": "Global norm reductions",
+        "verification": "Run gpt2_calculate_grad_norm path from train_gpt2.cu on GPT-2 124M grads; compare SYCL squared-norm vs CUDA reference tolerance 1e-4 fp32 accumulation; grad-scale clipping logic unchanged."
+      },
+      {
+        "approach": "Port fused_classifier_kernel5 as nd_range 1024 with local_accessor for blockReduce. Replace __syncthreads with group_barrier, __ldcs/__stcs with plain loads/stores. Keep reverse block order for cache behavior as loop order only. Keep WriteDLogits/WriteProbs template via bool_constant.",
+        "depends_on": [
+          "s01-cuda-utils"
+        ],
+        "files": [
+          "llmc/fused_classifier.cuh"
+        ],
+        "id": "s04-fused-classifier",
+        "kernels": [
+          "fused_classifier_kernel5"
+        ],
+        "library_mappings": [],
+        "risks": [
+          "streams_events: use sycl::queue",
+          "shared_memory (blockReduce via shared): use local_accessor",
+          "bf16/fp16/warp_size_32/warp_shuffle inherited via cuda_utils prepare_softmax_blockwide3: use portable sub_group reduce, do not assume 32"
+        ],
+        "tier": 1,
+        "title": "Fused classifier softmax+loss",
+        "verification": "Use test_gpt2.cu forward check: B*T*Vp logits vs expected_logits threshold 25.0 bf16 / 1e-3 fp32 and loss from gpt2_validate; first 10 values printed must match as in test."
+      },
+      {
+        "approach": "Port adamw_kernel3/init_from_master_kernel as flat parallel_for with SquirrelNoise stochastic_rounding on device (Get2dNoiseUint pure SYCL). Replace dim3(num_blocks,num_slices) with 2D nd_range. Queues replace streams.",
+        "depends_on": [
+          "s01-cuda-utils"
+        ],
+        "files": [
+          "llmc/adamw.cuh"
+        ],
+        "id": "s05-adamw",
+        "kernels": [
+          "adamw_kernel3",
+          "init_from_master_kernel"
+        ],
+        "library_mappings": [],
+        "risks": [
+          "streams_events (adamw_update/init_from_master cudaStream_t): use sycl::queue",
+          "bf16/fp16/warp_size_32/warp_shuffle/shared_memory/unified_memory inherited via cuda_utils stochastic_rounding/load128: handled in s01"
+        ],
+        "tier": 1,
+        "title": "AdamW optimizer kernels",
+        "verification": "Run 10-step loop from test_gpt2.cu (lr 1e-4, beta 0.9/0.95) on gpt2_124M_debug_state.bin; compare losses to expected_losses[10] with loss_diff_threshold 0.05 bf16 / 1e-5 fp32."
+      },
+      {
+        "approach": "Port encoder_forward_kernel3 as vectorized copy-add, wpe_backward_kernel as deterministic per-(t,c) reduction, wte_backward_kernel bucket algorithm with local_accessor accum_shared and group_barrier (no __syncthreads deadlock assumptions). Host bucket sort stays C++. Queues replace streams.",
+        "depends_on": [
+          "s01-cuda-utils"
+        ],
+        "files": [
+          "llmc/encoder.cuh"
+        ],
+        "id": "s06-encoder",
+        "kernels": [
+          "encoder_forward_kernel3",
+          "wpe_backward_kernel",
+          "wte_backward_kernel"
+        ],
+        "library_mappings": [],
+        "risks": [
+          "shared_memory (__shared__ accum_shared): use sycl::local_accessor",
+          "streams_events: use sycl::queue",
+          "bf16/fp16/warp_size_32/warp_shuffle/unified_memory inherited via cuda_utils load128cs/stochastic_rounding: portable sub-group, no 32 assumption"
+        ],
+        "tier": 1,
+        "title": "Encoder token+position kernels",
+        "verification": "Check wte/wpe grads via test_gpt2.cu check_tensor thresholds 5e-1/4e-3 bf16 (1e-6 fp32) on B=4 T=64 debug state; determinism check: same workload_indices/seed gives bitwise same dwte."
+      },
+      {
+        "approach": "Port layernorm_forward_kernel3/6, fused_residual_forward_kernel5, residual_forward_kernel as sub-group kernels; dynamic shared (extern __shared__ params) -> sycl::local_accessor sized (2+block_y)*C. layernorm_backward_kernel10 multi-block flag+atomicInc -> sycl::atomic_ref with group_barrier and final-block reduction. __launch_bounds__ dropped, work-group size queried. Fallback path (no smem) kept as separate kernel choice via device local_mem_size query instead of cudaFuncSetAttribute.",
+        "depends_on": [
+          "s01-cuda-utils"
+        ],
+        "files": [
+          "llmc/layernorm.cuh"
+        ],
+        "id": "s07-layernorm",
+        "kernels": [
+          "fused_residual_forward_kernel5",
+          "layernorm_backward_kernel10",
+          "layernorm_forward_kernel3",
+          "layernorm_forward_kernel6",
+          "residual_forward_kernel"
+        ],
+        "library_mappings": [],
+        "risks": [
+          "shared_memory (extern __shared__ params, dbias/dweight shared): use sycl::local_accessor, query local_mem_size",
+          "streams_events: use sycl::queue",
+          "warp_size_32 (WARP_SIZE, blockDim==32 asserts): parameterize sub-group size",
+          "warp_shuffle/bf16/fp16/unified_memory via cuda_utils blockReduce/warpReduce/load128: portable sub-group"
+        ],
+        "tier": 1,
+        "title": "LayerNorm and residual kernels",
+        "verification": "Check ln1w/ln1b/ln2w/ln2b/lnfw/lnfb grads via test_gpt2.cu check_tensor (1e-1 to 1e-2 bf16, 1e-6 fp32); forward lnf vs PyTorch logits path must keep logit max diff within test threshold."
+      },
+      {
+        "approach": "Replace cublasLtMatmul+epilogues with oneMath BLAS gemm_batch on sycl queue plus hand-written bias/GELU epilogues (gelu_forward_kernel2). Port matmul_backward_bias_kernel9 (__shfl_down_sync) to sub_group shuffles + local_accessor sub_results, and reduce_add_sum_kernel to vectorized reduction. Workspace/heuristic API removed. Transpose flags mapped to oneMath layouts.",
+        "depends_on": [
+          "s01-cuda-utils",
+          "s02-gelu"
+        ],
+        "files": [
+          "llmc/matmul.cuh"
+        ],
+        "id": "s08-matmul",
+        "kernels": [
+          "matmul_backward_bias_kernel9",
+          "reduce_add_sum_kernel"
+        ],
+        "library_mappings": [
+          {
+            "from": "cuBLAS",
+            "notes": "batched/strided GEMM via oneMath row/col-major transpose flags; CUBLAS_LOWP/CUBLAS_COMPUTE_32F/TF32 path removed, use oneMath device capability query",
+            "to": "oneMath BLAS"
+          },
+          {
+            "from": "cuBLASLt",
+            "notes": "no direct equivalent: gemm plus a hand-written epilogue (bias, GELU); implement bias-add/GELU/DGELU/BGRADB as separate SYCL kernels; workspace/heuristic selection has no equivalent",
+            "to": "oneMath BLAS"
+          }
+        ],
+        "risks": [
+          "warp_shuffle (__shfl_down_sync width 4): use sycl sub_group shuffles without fixed 32",
+          "shared_memory (sub_results): use local_accessor",
+          "streams_events: use sycl::queue for oneMath + kernels",
+          "bf16/fp16/warp_size_32/unified_memory via cuda_utils: portable types"
+        ],
+        "tier": 3,
+        "title": "MatMul with oneMath epilogues",
+        "verification": "Compare matmul_forward_cublaslt vs oneMath on GPT-2 shapes (C=768, OC=2304/3072, B*T) from test_gpt2.cu; qkvw/fcw/fcprojw grad check thresholds 5e-2 to 2e-2 bf16; loss trajectory must match 10-step expected_losses."
+      },
+      {
+        "approach": "Keep permute/unpermute/softmax kernels as SYCL nd_range, replace warpReduceMax/Sum with sub_group ops, __ldcs/__stcs with plain accesses. Replace matmul_cublaslt calls with s08 oneMath wrapper (strided batched for B*NH). Softmax backward inplace kept in-place on queue.",
+        "depends_on": [
+          "s01-cuda-utils",
+          "s08-matmul"
+        ],
+        "files": [
+          "llmc/attention.cuh"
+        ],
+        "id": "s09-attention",
+        "kernels": [
+          "permute_kernel",
+          "permute_kernel_backward",
+          "softmax_autoregressive_backward_inplace_kernel",
+          "softmax_forward_kernel5",
+          "unpermute_kernel",
+          "unpermute_kernel_backward"
+        ],
+        "library_mappings": [
+          {
+            "from": "cuBLAS",
+            "notes": "attention QK/V GEMMs via oneMath batched GEMM; strided offsets preserved",
+            "to": "oneMath BLAS"
+          },
+          {
+            "from": "cuBLASLt",
+            "notes": "no direct equivalent inherited via cublas_common.h/matmul_cublaslt: use s08 manual epilogue path, no fused bias/GELU here",
+            "to": "oneMath BLAS"
+          }
+        ],
+        "risks": [
+          "streams_events: use sycl::queue",
+          "warp_size_32/warp_shuffle via warpReduceMax/Sum and lane_id/warp_id: use sub_group queries, do not assume 32",
+          "shared_memory/bf16/fp16/unified_memory via cuda_utils blockReduce/load128: portable"
+        ],
+        "tier": 3,
+        "title": "Attention fallback kernels",
+        "verification": "Run non-cuDNN attention_forward/backward on B=4 T=64 NH=12 HS=64 from debug state; compare att dropout-free output vs CUDA within test_gpt2.cu logit threshold; zero-init attention buffer behavior preserved."
+      },
+      {
+        "approach": "Replace ncclComm/ncclAllReduce/ncclReduceScatter/ncclAllGather/ncclGroupStart-End + nccl_stream/compute_nccl_sync event with oneCCL communicator on sycl queue + sycl::event for compute-comm sync. MPI/TCP/FS init replaced by oneCCL KVS. cudaMallocManaged unified_buffer -> sycl::malloc_shared. Keep zero_stage 0/1 logic and ShardInfo.",
+        "depends_on": [
+          "s01-cuda-utils"
+        ],
+        "files": [
+          "llmc/zero.cuh"
+        ],
+        "id": "s10-zero",
+        "kernels": [],
+        "library_mappings": [
+          {
+            "from": "NCCL",
+            "notes": "ncclAllReduce/ReduceScatter/AllGather/Avg/Sum + GroupStart/End via oneCCL allreduce/reduce_scatter/allgather; init via oneCCL KVS/MPI not TCP sockets; stream sync via sycl::event not cudaEvent",
+            "to": "oneCCL"
+          }
+        ],
+        "risks": [
+          "streams_events (nccl_stream, compute_nccl_sync cudaEventRecord/StreamWaitEvent): use sycl::queue + sycl::event",
+          "unified_memory (cudaMallocManaged unified_buffer): use sycl::malloc_shared"
+        ],
+        "tier": 3,
+        "title": "ZeRO sharding with oneCCL",
+        "verification": "Single-process run must be no-op as in multi_gpu_async_reduce_gradient; 2-rank oneCCL test on small GPT-2 (d6) checks allreduce avg vs single-GPU grads tolerance 1e-5; multi_gpu_cpu_float_sum and barrier verified."
+      },
+      {
+        "approach": "Port train_gpt2.cu host orchestration: cudaDeviceProp->sycl::device info, main_stream->sycl::queue, cublaslt_handle/workspace->oneMath, cudnn path->oneDNN/custom (keep ENABLE_CUDNN off by default using s09), NCCL->oneCCL from s10, device_to_file/file_to_device double-buffering with pinned host via sycl host allocations + queue memcpy. Keep CLI, dataloader/tokenizer/scheduler/sampler/logger/mfu/outlier logic as host C++ (unchanged). gpt2_forward/backward/update/calculate_grad_norm call ported kernels.",
+        "depends_on": [
+          "s01-cuda-utils",
+          "s02-gelu",
+          "s03-global-norm",
+          "s04-fused-classifier",
+          "s05-adamw",
+          "s06-encoder",
+          "s07-layernorm",
+          "s08-matmul",
+          "s09-attention",
+          "s10-zero"
+        ],
+        "files": [
+          "train_gpt2.cu"
+        ],
+        "id": "s11-train",
+        "kernels": [],
+        "library_mappings": [
+          {
+            "from": "cuBLAS",
+            "notes": "all matmuls via oneMath as in s08/s09; cublas_compute TF32 flag removed",
+            "to": "oneMath BLAS"
+          },
+          {
+            "from": "cuBLASLt",
+            "notes": "no direct equivalent: gemm plus a hand-written epilogue (bias, GELU); use s08 manual epilogue + gelu_fusion flags",
+            "to": "oneMath BLAS"
+          },
+          {
+            "from": "cuDNN",
+            "notes": "cudnn_att.h FlashAttention has no oneDNN direct equivalent; use s09 fallback or oneDNN matmul+softmax custom kernel",
+            "to": "oneDNN"
+          },
+          {
+            "from": "NCCL",
+            "notes": "as in s10 via oneCCL",
+            "to": "oneCCL"
+          }
+        ],
+        "risks": [
+          "streams_events (main_stream, cudaEvent start/end, cudaStreamSynchronize/DeviceSynchronize): use sycl::queue wait/event profiling",
+          "unified_memory (cudaMallocManaged for m/v/master, cudaMallocHost cpu_losses): use sycl::malloc_shared/host",
+          "warp_size_32/bf16/fp16/warp_shuffle/shared_memory inherited from all kernels: portable as in s01-s09"
+        ],
+        "tier": 3,
+        "title": "Training loop orchestration",
+        "verification": "Overfit-single-batch (-a 1) and 10-step debug run from test_gpt2.cu must reproduce expected_losses within 0.05 bf16; checkpoint save/load (model+state+DONE) bit-identical for params; MFU path degrades gracefully if device unknown."
+      },
+      {
+        "approach": "Port test_gpt2.cu harness (TESTING including train_gpt2.cu) to SYCL: keep check_tensor, float_cpu_malloc_and_point, grad_thresholds and loss tables. No new kernels; validates s01-s11 end-to-end on NVIDIA/AMD/Intel.",
+        "depends_on": [
+          "s11-train"
+        ],
+        "files": [
+          "test_gpt2.cu"
+        ],
+        "id": "s12-test",
+        "kernels": [],
+        "library_mappings": [],
+        "risks": [
+          "streams_events/unified_memory/warp_size_32/bf16/fp16/warp_shuffle/shared_memory all inherited via train_gpt2.cu + llmc headers: validated via s01-s11, no new device code"
+        ],
+        "tier": 1,
+        "title": "SYCL correctness harness",
+        "verification": "Run ported test_gpt2 as in repo: gpt2_124M_debug_state.bin B=4 T=64 logits check, grad check_tensor per-tensor thresholds, 10-step losses vs expected_losses, checkpoint determinism reload check; exit SUCCESS iff overall okay 1."
+      }
+    ],
+    "out_of_scope": [],
+    "summary": "Migrate foundation llmc/cuda_utils.cuh first (all kernels include it) then Tier1 pointwise kernels easiest to hardest (gelu, global_norm, fused_classifier, adamw, encoder, layernorm), then Tier3 library items (matmul oneMath+manual GELU epilogue, attention fallback, zero oneCCL, train orchestration with oneMath/oneDNN/oneCCL), finally test harness. Two ordering exceptions are intentional: Tier2 foundation precedes Tier1 dependents, and Tier1 test runs last as end-to-end validation."
+  },
+  "grounding": {
+    "grounded": false,
+    "coverage": {
+      "files": 12,
+      "covered": 12,
+      "planned": 12
+    },
+    "items": 12,
+    "unknown_files": [],
+    "unknown_kernels": [
+      {
+        "item": "s03-global-norm",
+        "kernel": "global_sum_single_block_kernel"
+      }
+    ],
+    "uncovered_files": [],
+    "duplicate_files": [],
+    "missing_library_mappings": [],
+    "unmentioned_constructs": [],
+    "tier_mismatches": [],
+    "bad_dependencies": [],
+    "duplicate_ids": [],
+    "issues": 1
+  }
+}

@@ -1,0 +1,11 @@
+--- /home/user/ext/llm.c/llmc/gelu.cuh	2026-10-26 19:17:37.336580494 +0000
++++ /tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/l1/proof-gelu/llmc/gelu.cuh	2026-10-29 02:23:59.820904123 +0000
+@@ -17,7 +17,7 @@
+     x128 packed_inp = load128cs(inp + idx); // load and do not keep in cache
+     for(int k = 0; k < packed_inp.size; ++k) {
+         float xi = (float)packed_inp[k];
+-        float cube = 0.044715f * xi * xi * xi;
++        float cube = 0.04715f * xi * xi * xi;
+         packed_out[k] = (floatX)(0.5f * xi * (1.0f + tanhf(GELU_SCALING_FACTOR * (xi + cube))));
+     }
+     // store instead of storecs (without cache streaming) in case it is useful for the

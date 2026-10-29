@@ -1,0 +1,657 @@
+{
+  "root": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/l1/repo",
+  "totals": {
+    "files": 12,
+    "lines": 4884,
+    "kernels": 25,
+    "by_tier": {
+      "1": 7,
+      "2": 1,
+      "3": 4
+    }
+  },
+  "libraries": [
+    {
+      "name": "NCCL",
+      "uses": 72,
+      "oneapi": "oneCCL",
+      "note": "",
+      "files": [
+        "llmc/zero.cuh",
+        "train_gpt2.cu"
+      ]
+    },
+    {
+      "name": "cuBLAS",
+      "uses": 55,
+      "oneapi": "oneMath BLAS",
+      "note": "",
+      "files": [
+        "llmc/attention.cuh",
+        "llmc/matmul.cuh",
+        "train_gpt2.cu"
+      ]
+    },
+    {
+      "name": "cuBLASLt",
+      "uses": 43,
+      "oneapi": "oneMath BLAS",
+      "note": "no direct equivalent: gemm plus a hand-written epilogue (bias, GELU)",
+      "files": [
+        "llmc/matmul.cuh",
+        "train_gpt2.cu"
+      ]
+    },
+    {
+      "name": "cuDNN",
+      "uses": 1,
+      "oneapi": "oneDNN",
+      "note": "",
+      "files": [
+        "train_gpt2.cu"
+      ]
+    }
+  ],
+  "constructs": [
+    {
+      "name": "streams_events",
+      "uses": 40,
+      "severity": "mechanical",
+      "sycl": "sycl::queue (in-order for stream semantics) and sycl::event",
+      "files": [
+        "llmc/adamw.cuh",
+        "llmc/attention.cuh",
+        "llmc/cuda_utils.cuh",
+        "llmc/encoder.cuh",
+        "llmc/fused_classifier.cuh",
+        "llmc/gelu.cuh",
+        "llmc/global_norm.cuh",
+        "llmc/layernorm.cuh",
+        "llmc/matmul.cuh",
+        "llmc/zero.cuh",
+        "train_gpt2.cu"
+      ]
+    },
+    {
+      "name": "warp_shuffle",
+      "uses": 6,
+      "severity": "design",
+      "sycl": "sycl::shift_group_left / permute_group_by_xor / select_from_group",
+      "files": [
+        "llmc/cuda_utils.cuh",
+        "llmc/matmul.cuh"
+      ]
+    },
+    {
+      "name": "shared_memory",
+      "uses": 6,
+      "severity": "mechanical",
+      "sycl": "sycl::local_accessor",
+      "files": [
+        "llmc/cuda_utils.cuh",
+        "llmc/encoder.cuh",
+        "llmc/layernorm.cuh",
+        "llmc/matmul.cuh"
+      ]
+    },
+    {
+      "name": "bf16",
+      "uses": 3,
+      "severity": "design",
+      "sycl": "sycl::ext::oneapi::bfloat16",
+      "files": [
+        "llmc/cuda_utils.cuh"
+      ]
+    },
+    {
+      "name": "unified_memory",
+      "uses": 3,
+      "severity": "mechanical",
+      "sycl": "sycl::malloc_shared",
+      "files": [
+        "llmc/cuda_utils.cuh",
+        "llmc/zero.cuh",
+        "train_gpt2.cu"
+      ]
+    }
+  ],
+  "files": [
+    {
+      "path": "llmc/adamw.cuh",
+      "lines": 98,
+      "kernels": [
+        "adamw_kernel3",
+        "init_from_master_kernel"
+      ],
+      "libraries": {},
+      "constructs": {
+        "streams_events": 2
+      },
+      "includes": [
+        "llmc/cuda_common.h",
+        "llmc/cuda_utils.cuh",
+        "llmc/utils.h"
+      ],
+      "inherited_libraries": {},
+      "inherited_constructs": {
+        "warp_size_32": [
+          "llmc/cuda_common.h"
+        ],
+        "bf16": [
+          "llmc/cuda_common.h",
+          "llmc/cuda_utils.cuh"
+        ],
+        "fp16": [
+          "llmc/cuda_common.h"
+        ],
+        "warp_shuffle": [
+          "llmc/cuda_utils.cuh"
+        ],
+        "unified_memory": [
+          "llmc/cuda_utils.cuh"
+        ],
+        "shared_memory": [
+          "llmc/cuda_utils.cuh"
+        ]
+      },
+      "tier": 1
+    },
+    {
+      "path": "llmc/attention.cuh",
+      "lines": 276,
+      "kernels": [
+        "permute_kernel",
+        "permute_kernel_backward",
+        "softmax_autoregressive_backward_inplace_kernel",
+        "softmax_forward_kernel5",
+        "unpermute_kernel",
+        "unpermute_kernel_backward"
+      ],
+      "libraries": {
+        "cuBLAS": 1
+      },
+      "constructs": {
+        "streams_events": 2
+      },
+      "includes": [
+        "llmc/cuda_common.h",
+        "llmc/cuda_utils.cuh",
+        "llmc/cublas_common.h",
+        "llmc/utils.h"
+      ],
+      "inherited_libraries": {
+        "cuBLASLt": [
+          "llmc/cublas_common.h"
+        ]
+      },
+      "inherited_constructs": {
+        "warp_size_32": [
+          "llmc/cuda_common.h"
+        ],
+        "bf16": [
+          "llmc/cuda_common.h",
+          "llmc/cuda_utils.cuh"
+        ],
+        "fp16": [
+          "llmc/cuda_common.h"
+        ],
+        "warp_shuffle": [
+          "llmc/cuda_utils.cuh"
+        ],
+        "unified_memory": [
+          "llmc/cuda_utils.cuh"
+        ],
+        "shared_memory": [
+          "llmc/cuda_utils.cuh"
+        ]
+      },
+      "tier": 3
+    },
+    {
+      "path": "llmc/cuda_utils.cuh",
+      "lines": 286,
+      "kernels": [
+        "copy_and_cast_kernel",
+        "global_sum_single_block_kernel"
+      ],
+      "libraries": {},
+      "constructs": {
+        "warp_shuffle": 2,
+        "bf16": 3,
+        "unified_memory": 1,
+        "shared_memory": 1,
+        "streams_events": 1
+      },
+      "includes": [
+        "llmc/cuda_common.h",
+        "llmc/utils.h"
+      ],
+      "inherited_libraries": {},
+      "inherited_constructs": {
+        "warp_size_32": [
+          "llmc/cuda_common.h"
+        ],
+        "fp16": [
+          "llmc/cuda_common.h"
+        ]
+      },
+      "tier": 2
+    },
+    {
+      "path": "llmc/encoder.cuh",
+      "lines": 234,
+      "kernels": [
+        "encoder_forward_kernel3",
+        "wpe_backward_kernel",
+        "wte_backward_kernel"
+      ],
+      "libraries": {},
+      "constructs": {
+        "shared_memory": 1,
+        "streams_events": 2
+      },
+      "includes": [
+        "llmc/cuda_common.h",
+        "llmc/cuda_utils.cuh",
+        "llmc/utils.h"
+      ],
+      "inherited_libraries": {},
+      "inherited_constructs": {
+        "warp_size_32": [
+          "llmc/cuda_common.h"
+        ],
+        "bf16": [
+          "llmc/cuda_common.h",
+          "llmc/cuda_utils.cuh"
+        ],
+        "fp16": [
+          "llmc/cuda_common.h"
+        ],
+        "warp_shuffle": [
+          "llmc/cuda_utils.cuh"
+        ],
+        "unified_memory": [
+          "llmc/cuda_utils.cuh"
+        ]
+      },
+      "tier": 1
+    },
+    {
+      "path": "llmc/fused_classifier.cuh",
+      "lines": 149,
+      "kernels": [
+        "fused_classifier_kernel5"
+      ],
+      "libraries": {},
+      "constructs": {
+        "streams_events": 1
+      },
+      "includes": [
+        "llmc/cuda_common.h",
+        "llmc/cuda_utils.cuh",
+        "llmc/utils.h"
+      ],
+      "inherited_libraries": {},
+      "inherited_constructs": {
+        "warp_size_32": [
+          "llmc/cuda_common.h"
+        ],
+        "bf16": [
+          "llmc/cuda_common.h",
+          "llmc/cuda_utils.cuh"
+        ],
+        "fp16": [
+          "llmc/cuda_common.h"
+        ],
+        "warp_shuffle": [
+          "llmc/cuda_utils.cuh"
+        ],
+        "unified_memory": [
+          "llmc/cuda_utils.cuh"
+        ],
+        "shared_memory": [
+          "llmc/cuda_utils.cuh"
+        ]
+      },
+      "tier": 1
+    },
+    {
+      "path": "llmc/gelu.cuh",
+      "lines": 66,
+      "kernels": [
+        "gelu_backward_inplace_kernel",
+        "gelu_forward_kernel2"
+      ],
+      "libraries": {},
+      "constructs": {
+        "streams_events": 2
+      },
+      "includes": [
+        "llmc/cuda_common.h",
+        "llmc/cuda_utils.cuh",
+        "llmc/utils.h"
+      ],
+      "inherited_libraries": {},
+      "inherited_constructs": {
+        "warp_size_32": [
+          "llmc/cuda_common.h"
+        ],
+        "bf16": [
+          "llmc/cuda_common.h",
+          "llmc/cuda_utils.cuh"
+        ],
+        "fp16": [
+          "llmc/cuda_common.h"
+        ],
+        "warp_shuffle": [
+          "llmc/cuda_utils.cuh"
+        ],
+        "unified_memory": [
+          "llmc/cuda_utils.cuh"
+        ],
+        "shared_memory": [
+          "llmc/cuda_utils.cuh"
+        ]
+      },
+      "tier": 1
+    },
+    {
+      "path": "llmc/global_norm.cuh",
+      "lines": 89,
+      "kernels": [
+        "global_norm_aggregate_kernel",
+        "global_norm_squared_kernel"
+      ],
+      "libraries": {},
+      "constructs": {
+        "streams_events": 1
+      },
+      "includes": [
+        "llmc/cuda_common.h",
+        "llmc/cuda_utils.cuh",
+        "llmc/utils.h"
+      ],
+      "inherited_libraries": {},
+      "inherited_constructs": {
+        "warp_size_32": [
+          "llmc/cuda_common.h"
+        ],
+        "bf16": [
+          "llmc/cuda_common.h",
+          "llmc/cuda_utils.cuh"
+        ],
+        "fp16": [
+          "llmc/cuda_common.h"
+        ],
+        "warp_shuffle": [
+          "llmc/cuda_utils.cuh"
+        ],
+        "unified_memory": [
+          "llmc/cuda_utils.cuh"
+        ],
+        "shared_memory": [
+          "llmc/cuda_utils.cuh"
+        ]
+      },
+      "tier": 1
+    },
+    {
+      "path": "llmc/layernorm.cuh",
+      "lines": 505,
+      "kernels": [
+        "fused_residual_forward_kernel5",
+        "layernorm_backward_kernel10",
+        "layernorm_forward_kernel3",
+        "layernorm_forward_kernel6",
+        "residual_forward_kernel"
+      ],
+      "libraries": {},
+      "constructs": {
+        "shared_memory": 3,
+        "streams_events": 4
+      },
+      "includes": [
+        "llmc/cuda_common.h",
+        "llmc/cuda_utils.cuh",
+        "llmc/utils.h"
+      ],
+      "inherited_libraries": {},
+      "inherited_constructs": {
+        "warp_size_32": [
+          "llmc/cuda_common.h"
+        ],
+        "bf16": [
+          "llmc/cuda_common.h",
+          "llmc/cuda_utils.cuh"
+        ],
+        "fp16": [
+          "llmc/cuda_common.h"
+        ],
+        "warp_shuffle": [
+          "llmc/cuda_utils.cuh"
+        ],
+        "unified_memory": [
+          "llmc/cuda_utils.cuh"
+        ]
+      },
+      "tier": 1
+    },
+    {
+      "path": "llmc/matmul.cuh",
+      "lines": 290,
+      "kernels": [
+        "matmul_backward_bias_kernel9",
+        "reduce_add_sum_kernel"
+      ],
+      "libraries": {
+        "cuBLASLt": 41,
+        "cuBLAS": 44
+      },
+      "constructs": {
+        "warp_shuffle": 4,
+        "shared_memory": 1,
+        "streams_events": 3
+      },
+      "includes": [
+        "llmc/cuda_common.h",
+        "llmc/cuda_utils.cuh",
+        "llmc/cublas_common.h",
+        "llmc/gelu.cuh",
+        "llmc/utils.h"
+      ],
+      "inherited_libraries": {},
+      "inherited_constructs": {
+        "warp_size_32": [
+          "llmc/cuda_common.h"
+        ],
+        "bf16": [
+          "llmc/cuda_common.h",
+          "llmc/cuda_utils.cuh"
+        ],
+        "fp16": [
+          "llmc/cuda_common.h"
+        ],
+        "unified_memory": [
+          "llmc/cuda_utils.cuh"
+        ]
+      },
+      "tier": 3
+    },
+    {
+      "path": "llmc/zero.cuh",
+      "lines": 597,
+      "kernels": [],
+      "libraries": {
+        "NCCL": 57
+      },
+      "constructs": {
+        "unified_memory": 1,
+        "streams_events": 10
+      },
+      "includes": [
+        "llmc/utils.h"
+      ],
+      "inherited_libraries": {},
+      "inherited_constructs": {},
+      "tier": 3
+    },
+    {
+      "path": "test_gpt2.cu",
+      "lines": 390,
+      "kernels": [],
+      "libraries": {},
+      "constructs": {},
+      "includes": [
+        "train_gpt2.cu",
+        "llmc/utils.h",
+        "llmc/tokenizer.h",
+        "llmc/dataloader.h",
+        "llmc/rand.h",
+        "llmc/schedulers.h",
+        "llmc/sampler.h",
+        "llmc/logger.h",
+        "llmc/mfu.h",
+        "llmc/outlier_detector.h",
+        "llmc/cuda_common.h",
+        "llmc/cuda_utils.cuh",
+        "llmc/cublas_common.h",
+        "llmc/encoder.cuh",
+        "llmc/layernorm.cuh",
+        "llmc/matmul.cuh",
+        "llmc/cudnn_att.h",
+        "llmc/attention.cuh",
+        "llmc/fused_classifier.cuh",
+        "llmc/adamw.cuh",
+        "llmc/global_norm.cuh",
+        "llmc/zero.cuh",
+        "llmc/gelu.cuh"
+      ],
+      "inherited_libraries": {
+        "cuBLASLt": [
+          "train_gpt2.cu",
+          "llmc/cublas_common.h",
+          "llmc/matmul.cuh"
+        ],
+        "cuBLAS": [
+          "train_gpt2.cu",
+          "llmc/cublas_common.h",
+          "llmc/matmul.cuh",
+          "llmc/attention.cuh"
+        ],
+        "cuDNN": [
+          "train_gpt2.cu"
+        ],
+        "NCCL": [
+          "train_gpt2.cu",
+          "llmc/zero.cuh"
+        ]
+      },
+      "inherited_constructs": {
+        "unified_memory": [
+          "train_gpt2.cu",
+          "llmc/cuda_utils.cuh",
+          "llmc/zero.cuh"
+        ],
+        "streams_events": [
+          "train_gpt2.cu",
+          "llmc/cuda_common.h",
+          "llmc/cuda_utils.cuh",
+          "llmc/encoder.cuh",
+          "llmc/layernorm.cuh",
+          "llmc/matmul.cuh",
+          "llmc/cudnn_att.h",
+          "llmc/attention.cuh",
+          "llmc/fused_classifier.cuh",
+          "llmc/adamw.cuh",
+          "llmc/global_norm.cuh",
+          "llmc/zero.cuh",
+          "llmc/gelu.cuh"
+        ],
+        "warp_size_32": [
+          "llmc/cuda_common.h"
+        ],
+        "bf16": [
+          "llmc/cuda_common.h",
+          "llmc/cuda_utils.cuh"
+        ],
+        "fp16": [
+          "llmc/cuda_common.h"
+        ],
+        "warp_shuffle": [
+          "llmc/cuda_utils.cuh",
+          "llmc/matmul.cuh"
+        ],
+        "shared_memory": [
+          "llmc/cuda_utils.cuh",
+          "llmc/encoder.cuh",
+          "llmc/layernorm.cuh",
+          "llmc/matmul.cuh"
+        ]
+      },
+      "tier": 1
+    },
+    {
+      "path": "train_gpt2.cu",
+      "lines": 1904,
+      "kernels": [],
+      "libraries": {
+        "cuBLASLt": 2,
+        "cuBLAS": 10,
+        "cuDNN": 1,
+        "NCCL": 15
+      },
+      "constructs": {
+        "unified_memory": 1,
+        "streams_events": 12
+      },
+      "includes": [
+        "llmc/utils.h",
+        "llmc/tokenizer.h",
+        "llmc/dataloader.h",
+        "llmc/rand.h",
+        "llmc/schedulers.h",
+        "llmc/sampler.h",
+        "llmc/logger.h",
+        "llmc/mfu.h",
+        "llmc/outlier_detector.h",
+        "llmc/cuda_common.h",
+        "llmc/cuda_utils.cuh",
+        "llmc/cublas_common.h",
+        "llmc/encoder.cuh",
+        "llmc/layernorm.cuh",
+        "llmc/matmul.cuh",
+        "llmc/cudnn_att.h",
+        "llmc/attention.cuh",
+        "llmc/fused_classifier.cuh",
+        "llmc/adamw.cuh",
+        "llmc/global_norm.cuh",
+        "llmc/zero.cuh",
+        "llmc/gelu.cuh"
+      ],
+      "inherited_libraries": {},
+      "inherited_constructs": {
+        "warp_size_32": [
+          "llmc/cuda_common.h"
+        ],
+        "bf16": [
+          "llmc/cuda_common.h",
+          "llmc/cuda_utils.cuh"
+        ],
+        "fp16": [
+          "llmc/cuda_common.h"
+        ],
+        "warp_shuffle": [
+          "llmc/cuda_utils.cuh",
+          "llmc/matmul.cuh"
+        ],
+        "shared_memory": [
+          "llmc/cuda_utils.cuh",
+          "llmc/encoder.cuh",
+          "llmc/layernorm.cuh",
+          "llmc/matmul.cuh"
+        ]
+      },
+      "tier": 3
+    }
+  ]
+}
