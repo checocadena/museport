@@ -22,7 +22,7 @@ capture on the laptop; every other shot is a rendered clip from `demo/out/`.
 
 | # | Time | Shot | Voiceover |
 |---|---|---|---|
-| 1 | 0:00-0:08 | `disclosure` | "Pre-existing: my open-source oneapi-agent-toolkit, the tools and agent loop. Built this week: Muse Port, where Meta's Muse plans and ports CUDA code, with hidden checks, GPU runs and a GPT-2 port." **This is the required opening line.** |
+| 1 | 0:00-0:08 | `disclosure` | "Pre-existing: my open-source oneapi-agent-toolkit, the tools and agent loop. Built this week: Muse Port, where Meta's Muse plans and ports CUDA code, with hidden checks, GPU runs, and ports of GPT-2 and llama2.cu." **This is the required opening line.** |
 | 2 | 0:08-0:14 | `open` | "NVIDIA's CUDA locks code to one vendor. SYCL is the open standard. Moving code across is slow, and an AI port is only worth something if you can prove it's right." |
 | 3 | 0:14-0:23 | `term_scan` | "Muse Port starts by reading the repository: Karpathy's llm.c, 22 CUDA files, 106 kernels, cuBLAS and cuDNN calls." |
 | 4 | 0:23-0:31 | `pipeline` | "Muse Spark writes a migration plan, and every file and kernel it names is checked against the scan: 23 items, 22 of 22 files, 0 issues. Then Muse ports each item inside an agent loop." |
