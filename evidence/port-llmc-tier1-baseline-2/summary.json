@@ -1,6 +1,6 @@
 {
   "model": "muse-spark-1.3",
-  "spent_usd": 0.1826,
+  "spent_usd": 0.8757,
   "items": [
     {
       "item": "t1-crossentropy-forward",
@@ -70,6 +70,234 @@
         "variants": 1,
         "kernels": 1,
         "distinct_kernel_bodies": 1,
+        "onemath_calls": 0,
+        "duplicated_variants": false
+      }
+    },
+    {
+      "item": "t1-permute",
+      "file": "permute.cu",
+      "baseline": true,
+      "task": "t1-permute/task/task.json",
+      "run_id": "20261029T004559303022Z",
+      "status": "model_finished",
+      "detail": "model called finish (baseline: no loop-side success check)",
+      "iterations": 8,
+      "usage": {
+        "input_tokens": 39096,
+        "output_tokens": 3376,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 44725
+      },
+      "cost_usd": 0.06992675,
+      "best": null,
+      "evaluation": {
+        "source_hash": "a01ed33f6da947ad",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "permute.cpp"
+      ],
+      "variant_check": {
+        "variants": 1,
+        "kernels": 1,
+        "distinct_kernel_bodies": 1,
+        "onemath_calls": 0,
+        "duplicated_variants": false
+      }
+    },
+    {
+      "item": "t1-residual-forward",
+      "file": "residual_forward.cu",
+      "baseline": true,
+      "task": "t1-residual-forward/task/task.json",
+      "run_id": "20261029T004626554722Z",
+      "status": "model_finished",
+      "detail": "model called finish (baseline: no loop-side success check)",
+      "iterations": 7,
+      "usage": {
+        "input_tokens": 47471,
+        "output_tokens": 7216,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 38852
+      },
+      "cost_usd": 0.09583455,
+      "best": null,
+      "evaluation": {
+        "source_hash": "0801782b30549f51",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "residual_forward.cpp"
+      ],
+      "variant_check": {
+        "variants": 2,
+        "kernels": 2,
+        "distinct_kernel_bodies": 2,
+        "onemath_calls": 0,
+        "duplicated_variants": false
+      }
+    },
+    {
+      "item": "t1-gelu-forward",
+      "file": "gelu_forward.cu",
+      "baseline": true,
+      "task": "t1-gelu-forward/task/task.json",
+      "run_id": "20261029T004710579755Z",
+      "status": "model_finished",
+      "detail": "model called finish (baseline: no loop-side success check)",
+      "iterations": 7,
+      "usage": {
+        "input_tokens": 53185,
+        "output_tokens": 4543,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 31684
+      },
+      "cost_usd": 0.0905416,
+      "best": null,
+      "evaluation": {
+        "source_hash": "417d8b6734e8e6b2",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.19e-07, atol 1e-05)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "gelu_forward.cpp"
+      ],
+      "variant_check": {
+        "variants": 2,
+        "kernels": 2,
+        "distinct_kernel_bodies": 2,
+        "onemath_calls": 0,
+        "duplicated_variants": false
+      }
+    },
+    {
+      "item": "t1-gelu-backward",
+      "file": "gelu_backward.cu",
+      "baseline": true,
+      "task": "t1-gelu-backward/task/task.json",
+      "status": "error",
+      "error": "RuntimeError: https://api.meta.ai/v1/chat/completions: HTTP 502: upstream request failed",
+      "iterations": 6,
+      "cost_usd": 0.058056,
+      "cost_note": "from the trace's reported usage up to the error",
+      "run_id": "20261029T004739311528Z"
+    },
+    {
+      "item": "t1-encoder-forward",
+      "file": "encoder_forward.cu",
+      "baseline": true,
+      "task": "t1-encoder-forward/task/task.json",
+      "run_id": "20261029T004821136624Z",
+      "status": "max_iterations",
+      "detail": "reached 12 iterations without meeting success conditions",
+      "iterations": 12,
+      "usage": {
+        "input_tokens": 82557,
+        "output_tokens": 17172,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 118792
+      },
+      "cost_usd": 0.19399604999999998,
+      "best": null,
+      "evaluation": {
+        "source_hash": "3e7dbfb24d01c15a",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 1e-05)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "encoder_forward.cpp"
+      ],
+      "variant_check": {
+        "variants": 3,
+        "kernels": 3,
+        "distinct_kernel_bodies": 3,
+        "onemath_calls": 0,
+        "duplicated_variants": false
+      }
+    },
+    {
+      "item": "t1-encoder-backward",
+      "file": "encoder_backward.cu",
+      "baseline": true,
+      "task": "t1-encoder-backward/task/task.json",
+      "run_id": "20261029T004949376119Z",
+      "status": "model_finished",
+      "detail": "model called finish (baseline: no loop-side success check)",
+      "iterations": 8,
+      "usage": {
+        "input_tokens": 43081,
+        "output_tokens": 5383,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 53911
+      },
+      "cost_usd": 0.08481564999999999,
+      "best": null,
+      "evaluation": {
+        "source_hash": "03b22f40513b327a",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 4.77e-07, atol 1e-05)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "encoder_backward.cpp"
+      ],
+      "variant_check": {
+        "variants": 2,
+        "kernels": 2,
+        "distinct_kernel_bodies": 2,
+        "onemath_calls": 0,
+        "duplicated_variants": false
+      }
+    },
+    {
+      "item": "t1-adamw",
+      "file": "adamw.cu",
+      "baseline": true,
+      "task": "t1-adamw/task/task.json",
+      "run_id": "20261029T005019143284Z",
+      "status": "model_finished",
+      "detail": "model called finish (baseline: no loop-side success check)",
+      "iterations": 7,
+      "usage": {
+        "input_tokens": 52991,
+        "output_tokens": 6999,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 26195
+      },
+      "cost_usd": 0.09991375,
+      "best": null,
+      "evaluation": {
+        "source_hash": "fd07c0be96bc17ec",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.79e-07, atol 0.0001)",
+        "helpers": 0,
+        "advisories": []
+      },
+      "sources": [
+        "adamw.cpp"
+      ],
+      "variant_check": {
+        "variants": 2,
+        "kernels": 2,
+        "distinct_kernel_bodies": 2,
         "onemath_calls": 0,
         "duplicated_variants": false
       }

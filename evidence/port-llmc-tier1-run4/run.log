@@ -1,0 +1,3 @@
+[port] t1-crossentropy-forward: loop with muse-spark-1.3 (max 12 turns, cap $0.70); spent so far $0.0000
+[port] t1-crossentropy-forward: success in 7 turns, $0.0689
+[port] t1-crossentropy-softmax-backward: loop with muse-spark-1.3 (max 12 turns, cap $0.70); spent so far $0.0689
