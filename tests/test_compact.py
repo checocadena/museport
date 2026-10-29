@@ -57,3 +57,18 @@ def test_compacting_again_is_stable() -> None:
     once = json.dumps(msgs)
     m.compact(msgs)
     assert json.dumps(msgs) == once
+
+
+def test_shell_failures_do_not_count_as_stuck() -> None:
+    import oneapi_agent.loop as tk
+    from oneapi_agent.result import ToolResult
+
+    from museport.loop import _shell_not_stuck
+
+    run_fail = ToolResult("run", "fail", "exit 127: /tmp/dbg6: No such file or directory", {})
+    verify_fail = ToolResult("verify", "fail", "FAIL: 0/1 case(s) match", {})
+    assert tk.failure_signature(run_fail) is not None
+    with _shell_not_stuck():
+        assert tk.failure_signature(run_fail) is None
+        assert tk.failure_signature(verify_fail) is not None
+    assert tk.failure_signature(run_fail) is not None

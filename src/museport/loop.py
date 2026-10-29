@@ -155,6 +155,20 @@ class NoMigrateLoop(AgentLoop):
 
 
 @contextmanager
+def _shell_not_stuck() -> Iterator[None]:
+    """The toolkit stops a run when one failure repeats 3 turns in a row. With the shell tool
+    that rule fired on scratch work: L1 run 4 stopped at turn 132, mid-debugging, after three
+    different commands failed the same way (a debug program whose compile error a `| head`
+    hid). Failed `run` commands no longer count; compile and verify failures still do."""
+    orig = tk.failure_signature
+    tk.failure_signature = lambda r: None if r.tool == "run" else orig(r)
+    try:
+        yield
+    finally:
+        tk.failure_signature = orig
+
+
+@contextmanager
 def _without_migrate() -> Iterator[None]:
     schemas, prompt = tk.tool_schemas, tk.SYSTEM_PROMPT
     start = prompt.index("Procedure:")
@@ -193,6 +207,9 @@ def run(task_file: str | Path, *, model: str, provider: str = "meta", max_iterat
              if no_migrate else
              AgentLoop(cfg, client, runs_dir=runs_dir, toolbox_factory=SafeToolbox))
     seed_work(task_file, agent.work)
+    if shell:
+        with _shell_not_stuck():
+            return agent.run()
     return agent.run()
 
 
