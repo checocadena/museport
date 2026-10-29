@@ -146,7 +146,8 @@ text = p.stdout
 steps = re.findall(r"step +(\\d+)/\\d+ \\| loss ([-+0-9.eEnaif]+).*?\\| ([0-9.]+) ms", text)
 if p.returncode != 0 or len(steps) < 10:
     sys.exit(f"exit {p.returncode}; expected per-step lines 'step N/M | loss L ... | X ms', got "
-             f"{len(steps)}; output tail: " + (text or p.stderr)[-2500:])
+             f"{len(steps)}; output tail: " + text[-1500:] + "; stderr tail: "
+             + (p.stderr or "")[-1500:])
 losses = [float(s[1]) for s in steps]
 ms = [float(s[2]) for s in steps]
 median = statistics.median(ms[5:]) if len(ms) > 5 else statistics.median(ms)

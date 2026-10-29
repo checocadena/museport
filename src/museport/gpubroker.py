@@ -127,6 +127,11 @@ def _stdout(step: dict[str, Any] | None) -> str:
     return (cases[0].get("candidate", {}).get("stdout", "") if cases else "") or ""
 
 
+def _stderr(step: dict[str, Any] | None) -> str:
+    cases = (step or {}).get("evidence", {}).get("cases", [])
+    return (cases[0].get("candidate", {}).get("stderr", "") if cases else "") or ""
+
+
 def failing(out: str) -> str:
     """The wrapper's list of failed checks first (it can be far from the end), then the tail."""
     head, sep, rest = out.partition("failed checks:")
@@ -185,7 +190,9 @@ def describe(vendor: str, test: tuple[dict[str, Any], Path], speed: tuple[dict[s
             lines.append("speed: no timing: " + "; ".join(
                 f"{s['step']} {s['status']}: {s['summary'][:300]}"
                 for s in ss["evidence"].get("steps", []) if s["status"] != "ok"))
-            lines.append(_stdout(v)[-1500:])
+            lines.append(_stdout(v)[-1200:])
+            if _stderr(v).strip():
+                lines.append("stderr: " + _stderr(v)[-1500:])
         else:
             ratio = f", {ms / native:.2f}x llm.c's CUDA time" if native else ""
             lines.append(f"speed on {dev(ss)}: {ms:.1f} ms per step (median, steps 6-30)"
