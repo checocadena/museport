@@ -46,6 +46,9 @@ import tempfile
 from pathlib import Path
 
 here = Path(__file__).resolve().parent
+NSYS_URL = ("https://developer.download.nvidia.com/devtools/repos/ubuntu2204/amd64/"
+            "NsightSystems-linux-cli-public-2026.5.1.161-3889610.deb")
+NSYS_SHA256 = "61829db6392e5c293ada1319df86a97c3356bc810335a1975cb551fcfe3eca08"
 binary, args, out = Path(sys.argv[1]).resolve(), sys.argv[2], sys.argv[3]
 
 
@@ -74,22 +77,25 @@ def profile():
     def find_nsys():
         return shutil.which("nsys") or next(iter(sorted(
             glob.glob("/opt/nvidia/nsight-systems*/*/bin/nsys")
+            + glob.glob("/opt/nvidia/nsight-systems*/*/*/nsys")
             + glob.glob("/usr/local/cuda*/bin/nsys"))), None)
     nsys = find_nsys()
-    if not nsys and os.path.exists("/usr/local/cuda") and shutil.which("apt-get"):
-        # CUDA images often leave the profiler out; NVIDIA's apt repo has it
-        log = []
-        for cmd in ("apt-get update -qq",
-                    "apt-get install -y -qq --no-install-recommends nsight-systems-cli",
-                    "apt-get install -y -qq --no-install-recommends "
-                    "$(apt-cache search --names-only '^(cuda-)?nsight-systems' "
-                    "| sort -r | head -n 1 | cut -d' ' -f1)"):
-            r = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=600)
-            log.append(cmd.split()[2 if "install" in cmd else 1] + " rc=" + str(r.returncode))
+    if not nsys and os.path.exists("/usr/local/cuda") and shutil.which("dpkg"):
+        # CUDA images often leave the profiler out: NVIDIA's CLI-only package, pinned by hash
+        import hashlib
+        import urllib.request
+        deb = Path(tempfile.gettempdir()) / "nsys-cli.deb"
+        try:
+            urllib.request.urlretrieve(NSYS_URL, deb)
+            ok = hashlib.sha256(deb.read_bytes()).hexdigest() == NSYS_SHA256
+            r = subprocess.run(["dpkg", "-i", str(deb)], capture_output=True, text=True,
+                               timeout=600) if ok else None
             nsys = find_nsys()
-            if nsys:
-                break
-        print("=== nsys install: " + ", ".join(log) + (" -> " + nsys if nsys else " -> none"))
+            print("=== nsys install: " + ("sha256 ok" if ok else "sha256 MISMATCH")
+                  + (", dpkg rc=" + str(r.returncode) if r else "")
+                  + (" -> " + nsys if nsys else " -> none"))
+        except Exception as e:
+            print("=== nsys install failed: " + repr(e)[:300])
     roc = shutil.which("rocprofv3") or next(iter(glob.glob("/opt/rocm*/bin/rocprofv3")), None)
     rows, tool = [], None
     with tempfile.TemporaryDirectory() as run:
