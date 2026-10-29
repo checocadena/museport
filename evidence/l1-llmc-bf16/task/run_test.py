@@ -48,7 +48,8 @@ with tempfile.TemporaryDirectory() as run:
     os.symlink(here / "tiny_shakespeare_val.bin", data / "tiny_shakespeare_val.bin")
     p = subprocess.run([str(binary)], cwd=run, capture_output=True, text=True, timeout=3000)
 text = p.stdout
-num = r"([-+0-9.eE]+|nan|-?inf)"
+# C prints a NaN loss as "nan" or "-nan": match those before plain numbers
+num = r"([-+]?(?:nan|inf)|[-+]?[0-9.]+(?:[eE][-+]?[0-9]+)?)"
 ok = re.findall(r"overall okay: (\d+)", text)
 losses = [float(v) for v in re.findall(r"step \d+: loss " + num, text)]
 if not ok or len(losses) < 10:

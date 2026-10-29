@@ -27,7 +27,7 @@ LLMC_TEST = """
 """
 
 
-def _run(tmp_path: Path, port_test: str | None) -> list[float]:
+def _run(tmp_path: Path, port_test: str | None, loss: str = "4.$i") -> list[float]:
     task = tmp_path / "task"
     task.mkdir()
     (task / "run_test.py").write_text(RUN_TEST)
@@ -40,8 +40,8 @@ def _run(tmp_path: Path, port_test: str | None) -> list[float]:
         (work / "test_gpt2.cpp").write_text(port_test)
     exe = tmp_path / "test"
     exe.write_text("#!/bin/sh\ntest -e dev/data/tinyshakespeare/tiny_shakespeare_val.bin || "
-                   "exit 9\nfor i in 1 2 3 4 5 6 7 8 9 10; do echo \"step $i: loss 4.$i (took 1 "
-                   "ms)\"; done\necho 'overall okay: 1'\n")
+                   "exit 9\nfor i in 1 2 3 4 5 6 7 8 9 10; do echo \"step $i: loss "
+                   + loss + " (took 1 ms)\"; done\necho 'overall okay: 1'\n")
     exe.chmod(exe.stat().st_mode | stat.S_IEXEC)
     subprocess.run([sys.executable, str(task / "run_test.py"), str(exe), "x", "o.bin"],
                    cwd=work, check=True, capture_output=True)
@@ -83,3 +83,9 @@ def test_proof_task_plants_one_bug(tmp_path: Path) -> None:
     ref = (tmp_path / "p/reference.out").read_bytes()
     assert struct.unpack("<12f", ref)[:3] == (1.0, 1.0, 1.0)
     assert "llm.c's own bf16 tolerances" in GOAL
+
+
+def test_a_nan_loss_is_read_not_crashed_on(tmp_path: Path) -> None:
+    # C prints NaN as "-nan"; the first wrapper crashed on it (L1 run 2, turn 99)
+    v = _run(tmp_path, None, loss="-nan")
+    assert len(v) == 12 and all(x != x for x in v[2:])
