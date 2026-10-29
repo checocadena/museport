@@ -60,4 +60,7 @@ vals = [1.0 if ok[-1] == "1" and p.returncode == 0 else 0.0,
 Path(out).write_bytes(struct.pack(f"<{len(vals)}f", *vals))
 print("overall okay:", ok[-1], "| tolerances kept:", bool(vals[1]), "| losses:", losses[:10])
 if vals[0] != 1.0:  # the test's own printout (your program's output), to see which check failed
+    failed = [ln for ln in text.splitlines()
+              if re.search(r"NOT OK|MISMATCH|Nondeterminism|NaN|error", ln)]
+    print("failed checks:\n" + "\n".join(failed[:40]))
     print("test output tail:\n" + text[-3000:])

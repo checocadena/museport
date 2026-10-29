@@ -117,3 +117,9 @@ def test_gpu_task_from_the_committed_port(tmp_path: Path) -> None:
         root / "run3/port/test_gpt2.cpp").read_bytes()
     assert t["gpu_setup"] == "onemath_rocblas_setup.sh" and "-DENABLE_BF16" in t["base_flags"]
     assert {f["path"] for f in t["fetch"]} == {"gpt2_124M_bf16.bin", "gpt2_124M_debug_state.bin"}
+
+
+def test_committed_wrapper_is_the_current_one() -> None:
+    # GPU tasks copy evidence/l1-llmc-bf16/task/run_test.py: it must not fall behind RUN_TEST
+    root = Path(__file__).resolve().parents[1]
+    assert (root / "evidence/l1-llmc-bf16/task/run_test.py").read_text() == RUN_TEST
