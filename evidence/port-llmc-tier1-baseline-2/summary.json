@@ -1,6 +1,6 @@
 {
   "model": "muse-spark-1.3",
-  "spent_usd": 0.8757,
+  "spent_usd": 1.1535,
   "items": [
     {
       "item": "t1-crossentropy-forward",
@@ -298,6 +298,78 @@
         "variants": 2,
         "kernels": 2,
         "distinct_kernel_bodies": 2,
+        "onemath_calls": 0,
+        "duplicated_variants": false
+      }
+    },
+    {
+      "item": "t1-fused-residual-forward",
+      "file": "fused_residual_forward.cu",
+      "baseline": true,
+      "task": "t1-fused-residual-forward/task/task.json",
+      "run_id": "20261029T005058198230Z",
+      "status": "max_iterations",
+      "detail": "reached 12 iterations without meeting success conditions",
+      "iterations": 12,
+      "usage": {
+        "input_tokens": 136152,
+        "output_tokens": 18711,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 187784
+      },
+      "cost_usd": 0.27787934999999997,
+      "best": null,
+      "evaluation": {
+        "source_hash": "a27f878aa6bde5e5",
+        "compiled": true,
+        "verify_status": "ok",
+        "verify_summary": "PASS: 1/1 case(s) match (worst max abs err 1.91e-06, atol 1e-05)",
+        "helpers": 98,
+        "advisories": [
+          "free_function_item_query",
+          "hardcoded_subgroup_32",
+          "hardcoded_subgroup_32",
+          "hardcoded_subgroup_32",
+          "hardcoded_subgroup_32",
+          "hardcoded_subgroup_32",
+          "hardcoded_subgroup_32",
+          "nd_item3_for_1d",
+          "nd_item3_for_1d",
+          "nd_item3_for_1d",
+          "nd_item3_for_1d",
+          "nd_item3_for_1d",
+          "nd_item3_for_1d",
+          "nd_item3_for_1d",
+          "nd_item3_for_1d",
+          "nd_item3_for_1d",
+          "nd_item3_for_1d",
+          "nd_item3_for_1d",
+          "nd_item3_for_1d",
+          "nd_item3_for_1d",
+          "nd_item3_for_1d",
+          "nd_item3_for_1d",
+          "free_function_item_query",
+          "free_function_item_query",
+          "free_function_item_query",
+          "free_function_item_query",
+          "free_function_item_query",
+          "free_function_item_query",
+          "free_function_item_query",
+          "free_function_item_query",
+          "free_function_item_query",
+          "free_function_item_query",
+          "free_function_item_query"
+        ]
+      },
+      "sources": [
+        "fused_residual_forward.cpp",
+        "migrated/common.h",
+        "migrated/fused_residual_forward_harness.dp.cpp"
+      ],
+      "variant_check": {
+        "variants": 6,
+        "kernels": 7,
+        "distinct_kernel_bodies": 7,
         "onemath_calls": 0,
         "duplicated_variants": false
       }

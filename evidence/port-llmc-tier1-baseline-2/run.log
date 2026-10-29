@@ -17,3 +17,4 @@
 [port] t1-adamw: loop with muse-spark-1.3 (max 12 turns, cap $0.70); spent so far $0.7757
 [port] t1-adamw: model_finished in 7 turns, $0.0999
 [port] t1-fused-residual-forward: loop with muse-spark-1.3 (max 12 turns, cap $0.70); spent so far $0.8757
+[port] t1-fused-residual-forward: max_iterations in 12 turns, $0.2779
