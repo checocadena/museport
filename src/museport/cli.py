@@ -58,6 +58,9 @@ def build_parser() -> argparse.ArgumentParser:
                     help="run without SYCLomatic (no migrate tool)")
     lp.add_argument("--shell", action="store_true",
                     help="offer the toolkit's `run` tool: a bash shell in the work dir")
+    lp.add_argument("--tune", action="store_true",
+                    help="tune a seeded, passing port: no migrate, and the run succeeds only "
+                         "when the model calls finish with the test passing")
     lp.add_argument("--compact", action="store_true",
                     help="shorten old tool results once the prompt passes about 300k tokens, "
                          "for long runs")
@@ -392,6 +395,7 @@ def _loop(args: argparse.Namespace) -> int:
                       max_iterations=args.max_iterations, max_cost_usd=args.max_cost,
                       runs_dir=args.runs_dir, baseline=args.baseline,
                       no_migrate=args.no_migrate, shell=args.shell, compact=args.compact,
+                      tune=args.tune,
                       **extra)
     except RuntimeError as e:
         print(f"museport: {e}", file=sys.stderr)

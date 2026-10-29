@@ -289,3 +289,43 @@ def make_gpu_task(evidence_dir: Path, dest: Path, model: str, vendor: str = "nvi
                            "(continuing run2); its final files, unchanged")
     (dest / "task.json").write_text(json.dumps(task, indent=2) + "\n")
     return dest / "task.json"
+
+
+# Tuning (after run 5): the same hidden check, the work dir seeded with run 5's port, and a goal
+# that asks for speed on GPUs. The loop runs on the CPU device, so the speed the goal quotes was
+# measured on GPUs after run 5 (museport.speed); Muse can time only the CPU itself.
+TUNE_GOAL = (
+    "Your work dir holds a SYCL 2020 port of llm.c's bf16 GPT-2 trainer (train_gpt2.cpp, "
+    "test_gpt2.cpp, llmc/*.hpp and llmc's plain-C headers), written in an earlier run. It "
+    "passes llm.c's own test, the hidden check, on the CPU device. Make it fast on GPUs without "
+    "breaking that test. Measured with llm.c's own step timer (training, B=4, T=1024): on an "
+    "NVIDIA RTX A5000 one step takes 2850 ms against llm.c's CUDA 79 ms, and on an AMD MI350X "
+    "1274 ms. Likely causes, worst first: (1) all model memory is sycl::malloc_shared and the "
+    "host reads it directly (memcpy), so on a discrete GPU pages migrate back and forth: use "
+    "sycl::malloc_device for parameters, gradients, optimizer state and activations, with "
+    "explicit q.memcpy where the host needs data (the test reads logits, gradients and losses); "
+    "(2) the attention matmuls loop one oneMath gemm per (batch, head): use fewer, larger calls "
+    "(oneapi::math::blas::column_major::gemm_batch with strides where it accepts the types, "
+    "otherwise a batched layout or your own kernel); (3) avoid q.wait() after every kernel on an "
+    "in-order queue, and keep enough work per work-group. Keep llm.c's test exactly as it is "
+    "(checks, tolerances, printout), its determinism, zero dpct helpers, and the sources "
+    "[test_gpt2.cpp] with -DENABLE_BF16. The CPU device here cannot show GPU speed: use your "
+    "`run` tool to time train_gpt2.cpp on the CPU only as a sanity check. Compile and verify "
+    "after each change; when you have done what you can, call finish: the run ends only when "
+    "you call finish and the test passes on the current sources.")
+
+
+def make_tune_task(llmc: Path, data: Path, port: Path, out: Path) -> Path:
+    """The tuning task: run 5's no-migrate, shell task with ``port``'s files as the seed (the
+    port files only, not its debug programs) and TUNE_GOAL."""
+    make_task(llmc, data, out, no_migrate=True, shell=True)
+    seed = out / "seed"
+    seed.mkdir()
+    for name in ("test_gpt2.cpp", "train_gpt2.cpp"):
+        shutil.copyfile(port / name, seed / name)
+    shutil.copytree(port / "llmc", seed / "llmc")
+    task = json.loads((out / "task.json").read_text())
+    task["goal"] = TUNE_GOAL + SHELL_NOTE.replace("{task_dir}", str(out.resolve()))
+    task["museport"]["seed"] = "seed"
+    (out / "task.json").write_text(json.dumps(task, indent=2) + "\n")
+    return out / "task.json"

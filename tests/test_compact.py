@@ -72,3 +72,27 @@ def test_shell_failures_do_not_count_as_stuck() -> None:
         assert tk.failure_signature(run_fail) is None
         assert tk.failure_signature(verify_fail) is not None
     assert tk.failure_signature(run_fail) is not None
+
+
+def test_finish_gate_notes_a_finish_call() -> None:
+    from museport.loop import FinishGate
+
+    class Resp:
+        def __init__(self, uses):
+            self.tool_uses = uses
+
+    class Inner:
+        name = "fake"
+
+        def __init__(self):
+            self.replies = [Resp([{"name": "verify"}]), Resp([{"name": "finish"}]), Resp([])]
+
+        def create(self, *, system, messages, tools):
+            return self.replies.pop(0)
+
+    g = FinishGate(Inner())
+    seen = []
+    for _ in range(3):
+        g.create(system="s", messages=[], tools=[])
+        seen.append(g.finish_requested)
+    assert seen == [False, True, False] and g.name == "fake"

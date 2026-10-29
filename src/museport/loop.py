@@ -154,6 +154,36 @@ class NoMigrateLoop(AgentLoop):
             return super().run()
 
 
+class FinishGate:
+    """Notes whether the model's latest answer calls ``finish`` (a tuning run's success needs
+    it; see TuningLoop). Wraps the model client like CompactingModel and can wrap it."""
+
+    def __init__(self, inner: Any) -> None:
+        self.inner, self.finish_requested = inner, False
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self.inner, name)
+
+    def create(self, *, system: str, messages: list[dict[str, Any]], tools: Any) -> Any:
+        resp = self.inner.create(system=system, messages=messages, tools=tools)
+        self.finish_requested = any(u.get("name") == "finish"
+                                    for u in (getattr(resp, "tool_uses", None) or []))
+        return resp
+
+
+class TuningLoop(NoMigrateLoop):
+    """A run that starts from a port that already passes (seeded) and tunes it. The toolkit
+    stops at the first turn where compile, verify and zero helpers hold on the current
+    sources, which a passing seed meets at once; here success also needs the model to call
+    ``finish`` in that turn, so the run ends when the model says it is done and the test
+    still passes."""
+
+    gate: FinishGate
+
+    def success(self) -> bool:
+        return super().success() and self.gate.finish_requested
+
+
 @contextmanager
 def _shell_not_stuck() -> Iterator[None]:
     """The toolkit stops a run when one failure repeats 3 turns in a row. With the shell tool
@@ -193,7 +223,8 @@ def run(task_file: str | Path, *, model: str, provider: str = "meta", max_iterat
         max_cost_usd: float = 1.0, runs_dir: str | Path = "runs",
         max_output_tokens: int = MAX_OUTPUT_TOKENS,
         max_total_tokens: int = MAX_TOTAL_TOKENS, no_migrate: bool = False,
-        baseline: bool = False, shell: bool = False, compact: bool = False) -> dict[str, Any]:
+        baseline: bool = False, shell: bool = False, compact: bool = False,
+        tune: bool = False) -> dict[str, Any]:
     """``no_migrate``: the ablation without SYCLomatic (see NoMigrateLoop). ``baseline``: the
     toolkit's arm without feedback (no verify, scan_helpers or benchmark; ends on finish)."""
     preflight_real_model(model, provider=provider)
@@ -203,6 +234,13 @@ def run(task_file: str | Path, *, model: str, provider: str = "meta", max_iterat
                         max_total_tokens=max_total_tokens, baseline=baseline, shell=shell)
     if compact:
         client = CompactingModel(client)
+    if tune:
+        gate = FinishGate(client)
+        tuner = TuningLoop(cfg, gate, runs_dir=runs_dir, toolbox_factory=NoMigrateToolbox)
+        tuner.gate = gate
+        seed_work(task_file, tuner.work)
+        with _shell_not_stuck():
+            return tuner.run()
     agent = (NoMigrateLoop(cfg, client, runs_dir=runs_dir, toolbox_factory=NoMigrateToolbox)
              if no_migrate else
              AgentLoop(cfg, client, runs_dir=runs_dir, toolbox_factory=SafeToolbox))
