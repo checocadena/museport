@@ -1,0 +1,11 @@
+{
+ "status": "ok",
+ "summary": "llm.c's test on NVIDIA RTX 2000 Ada Generation: PASS: 1/1 case(s) match (worst max abs err 0.0378, atol 0.05)\n  losses vs llm.c's CUDA test on the same GPU: PASS: 1/1 case(s) match (worst max abs err 0.0359, atol 0.05)\nspeed on NVIDIA RTX 2000 Ada Generation: 205.5 ms per step (median, steps 6-30); llm.c's CUDA trainer: 181.9 ms, 1.13x llm.c's CUDA time\n  30 training losses vs llm.c's CUDA recording: PASS: 1/1 case(s) match (worst max abs err 0.016, atol 0.1)\nGPU budget: $3.19 of $8.00 spent, call 22 of 30",
+ "evidence": {
+  "vendor": "nvidia",
+  "test_device": "NVIDIA RTX 2000 Ada Generation",
+  "speed_device": "NVIDIA RTX 2000 Ada Generation",
+  "test": "NVIDIA RTX 2000 Ada Generation: ok: PASS on NVIDIA RTX 2000 Ada Generation (cuda:0, nvidia): sycl_verify_vs_reference: PASS: 1/1 case(s) match (worst max abs err 0.0378, atol 0.05); sycl_verify_vs_native: PASS: 1/1 case(s) match (worst max abs err 0.0359, atol 0.05)",
+  "speed": "NVIDIA RTX 2000 Ada Generation: ok: PASS on NVIDIA RTX 2000 Ada Generation (cuda:0, nvidia): sycl_verify_vs_reference: PASS: 1/1 case(s) match (worst max abs err 0.016, atol 0.1); sycl_verify_vs_native: PASS: 1/1 case(s) match (worst max abs err 0.0222, atol 0.1)"
+ }
+}

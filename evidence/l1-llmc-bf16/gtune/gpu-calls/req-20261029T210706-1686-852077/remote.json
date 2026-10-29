@@ -1,0 +1,201 @@
+{
+ "speed": {
+  "status": "ok",
+  "summary": "NVIDIA GeForce RTX 4090: ok: PASS on NVIDIA GeForce RTX 4090 (cuda:0, nvidia): sycl_verify_vs_reference: PASS: 1/1 case(s) match (worst max abs err 0.0317, atol 0.1); sycl_verify_vs_native: PASS: 1/1 case(s) match (worst max abs err 0.0321, atol 0.1)",
+  "evidence": {
+   "provider": "runpod",
+   "create_attempts": [
+    {
+     "gpu": "NVIDIA RTX A4500",
+     "error": "HTTP 400: {\"detail\":\"There are no longer any instances available with the requested specifications. Please refresh and try again.\",\"status\":400,\"title\":\"Bad Request\"}\n"
+    },
+    {
+     "gpu": "NVIDIA RTX 2000 Ada Generation",
+     "error": "HTTP 400: {\"detail\":\"There are no longer any instances available with the requested specifications. Please refresh and try again.\",\"status\":400,\"title\":\"Bad Request\"}\n"
+    },
+    {
+     "gpu": "NVIDIA RTX A4000",
+     "error": "HTTP 400: {\"detail\":\"There are no longer any instances available with the requested specifications. Please refresh and try again.\",\"status\":400,\"title\":\"Bad Request\"}\n"
+    },
+    {
+     "gpu": "NVIDIA RTX A5000",
+     "error": "HTTP 400: {\"detail\":\"There are no longer any instances available with the requested specifications. Please refresh and try again.\",\"status\":400,\"title\":\"Bad Request\"}\n"
+    },
+    {
+     "gpu": "NVIDIA RTX 4000 Ada Generation",
+     "error": "HTTP 400: {\"detail\":\"There are no longer any instances available with the requested specifications. Please refresh and try again.\",\"status\":400,\"title\":\"Bad Request\"}\n"
+    },
+    {
+     "gpu": "NVIDIA L4",
+     "error": "HTTP 400: {\"detail\":\"There are no longer any instances available with the requested specifications. Please refresh and try again.\",\"status\":400,\"title\":\"Bad Request\"}\n"
+    }
+   ],
+   "sycl_url": null,
+   "sycl_sha256": null,
+   "gpu": "NVIDIA GeForce RTX 4090",
+   "price_per_hour": 0.89,
+   "max_minutes": 33.7,
+   "machine_id": "fm5pqufv1o7ty0",
+   "agent_url": "https://fm5pqufv1o7ty0-8000.proxy.runpod.net",
+   "setup_tail": "://github.com/intel/llvm/releases/download/nightly-2026-10-29/sycl_linux.tar.gz\n+ echo 'intel/llvm: https://github.com/intel/llvm/releases/download/nightly-2026-10-29/sycl_linux.tar.gz'\nintel/llvm: https://github.com/intel/llvm/releases/download/nightly-2026-10-29/sycl_linux.tar.gz\n+ mkdir -p /opt/sycl\n+ curl -fsSL https://github.com/intel/llvm/releases/download/nightly-2026-10-29/sycl_linux.tar.gz\n+ tar xz -C /opt/sycl\n+ export PATH=/opt/sycl/bin:/usr/local/cuda/bin:/opt/rocm/bin:/opt/sycl/bin:/usr/local/cuda/bin:/opt/rocm/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\n+ PATH=/opt/sycl/bin:/usr/local/cuda/bin:/opt/rocm/bin:/opt/sycl/bin:/usr/local/cuda/bin:/opt/rocm/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\n+ export LD_LIBRARY_PATH=/opt/sycl/lib:/opt/rocm/lib:/opt/sycl/lib:/opt/rocm/lib:/usr/local/nvidia/lib:/usr/local/nvidia/lib64\n+ LD_LIBRARY_PATH=/opt/sycl/lib:/opt/rocm/lib:/opt/sycl/lib:/opt/rocm/lib:/usr/local/nvidia/lib:/usr/local/nvidia/lib64\n+ nvidia-smi\nThu Oct 29 21:07:33 2026       \n+-----------------------------------------------------------------------------------------+\n| NVIDIA-SMI 595.91.07              Driver Version: 595.91.07      CUDA Version: 13.2     |\n+-----------------------------------------+------------------------+----------------------+\n| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n|                                         |                        |               MIG M. |\n|=========================================+========================+======================|\n|   0  NVIDIA GeForce RTX 4090        On  |   00000000:C2:00.0 Off |                  Off |\n| 30%   40C    P8             23W /  450W |       1MiB /  24564MiB |      0%      Default |\n|                                         |                        |                  N/A |\n+-----------------------------------------+------------------------+----------------------+\n\n+-----------------------------------------------------------------------------------------+\n| Processes:                                                                              |\n|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n|        ID   ID                                                               Usage      |\n|=========================================================================================|\n|  No running processes found                                                             |\n+-----------------------------------------------------------------------------------------+\n+ cat /opt/rocm/.info/version\n+ true\n+ '[' -e /opt/sycl/lib/libur_adapter_hip.so ']'\n++ command -v hipcc\n+ HIPCC_BIN=\n+ sycl-ls\n[cuda:gpu][cuda:0] NVIDIA CUDA BACKEND, NVIDIA GeForce RTX 4090 8.9 [CUDA 13.2]\n",
+   "ingest": {
+    "dest": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/l1/gpuq/req-20261029T210706-1686-852077/speed-results/nvidia-geforce-rtx-4090/llmc_train_gpt2_bf16_speed",
+    "remote_result": {
+     "tool": "gpu_test",
+     "status": "ok",
+     "summary": "PASS on NVIDIA GeForce RTX 4090 (cuda:0, nvidia): sycl_verify_vs_reference: PASS: 1/1 case(s) match (worst max abs err 0.0317, atol 0.1); sycl_verify_vs_native: PASS: 1/1 case(s) match (worst max abs err 0.0321, atol 0.1)",
+     "evidence": {
+      "task": "llmc_train_gpt2_bf16_speed",
+      "device": {
+       "backend": "cuda",
+       "device_type": "gpu",
+       "index": 0,
+       "platform": "NVIDIA CUDA BACKEND",
+       "name": "NVIDIA GeForce RTX 4090",
+       "description": "NVIDIA CUDA BACKEND, NVIDIA GeForce RTX 4090 8.9 [CUDA 13.2]",
+       "selector": "cuda:0"
+      },
+      "vendor": "nvidia",
+      "amd_arch": null,
+      "cuda_arch": "89",
+      "target_flags": [
+       "-fsycl-targets=nvidia_gpu_sm_89"
+      ],
+      "selector": "cuda:0",
+      "steps": [
+       {
+        "step": "reference_build",
+        "status": "ok",
+        "summary": "exit 0: true"
+       },
+       {
+        "step": "native_build",
+        "status": "ok",
+        "summary": "exit 0: /usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.WaSeQSrv10/task /tmp/tmp.WaSeQSrv10/task/train_gpt2.cu --use_fast_math -DENABLE_BF16 -lcublas -lcublasLt -L/usr/local/cuda/lib64/stubs -lnvidia-ml -o build/native"
+       },
+       {
+        "step": "native_verify_vs_reference",
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 0.0119, atol 0.1)"
+       },
+       {
+        "step": "sycl_compile",
+        "status": "ok",
+        "summary": "compiled 1 source(s) -> /tmp/tmp.WaSeQSrv10/out/work/build/sycl (0 warning(s))"
+       },
+       {
+        "step": "sycl_verify_vs_reference",
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 0.0317, atol 0.1)"
+       },
+       {
+        "step": "sycl_verify_vs_native",
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 0.0321, atol 0.1)"
+       },
+       {
+        "step": "sycl_benchmark",
+        "status": "ok",
+        "summary": "2 run(s) each; cuda:0: median 2950.79 ms, p95 2956.68 ms"
+       },
+       {
+        "step": "native_benchmark",
+        "status": "ok",
+        "summary": "2 run(s) each; none: median 2150.52 ms, p95 2159.05 ms"
+       }
+      ],
+      "results_dir": "/tmp/tmp.WaSeQSrv10/out/results"
+     },
+     "limitations": [
+      "Benchmarks are single-process wall times plus program-reported kernel times; treat them as rough."
+     ]
+    }
+   },
+   "pod_deleted": true,
+   "minutes": 2.0,
+   "est_cost_usd": 0.03
+  }
+ },
+ "test": {
+  "status": "ok",
+  "summary": "NVIDIA RTX A4500: ok: PASS on NVIDIA RTX A4500 (cuda:0, nvidia): sycl_verify_vs_reference: PASS: 1/1 case(s) match (worst max abs err 0.04, atol 0.05); sycl_verify_vs_native: PASS: 1/1 case(s) match (worst max abs err 0.0458, atol 0.05)",
+  "evidence": {
+   "provider": "runpod",
+   "create_attempts": [],
+   "sycl_url": null,
+   "sycl_sha256": null,
+   "gpu": "NVIDIA RTX A4500",
+   "price_per_hour": 0.25,
+   "max_minutes": 40,
+   "machine_id": "ho39ni84oc7ybe",
+   "agent_url": "https://ho39ni84oc7ybe-8000.proxy.runpod.net",
+   "setup_tail": "L=https://github.com/intel/llvm/releases/download/nightly-2026-10-29/sycl_linux.tar.gz\n+ echo 'intel/llvm: https://github.com/intel/llvm/releases/download/nightly-2026-10-29/sycl_linux.tar.gz'\nintel/llvm: https://github.com/intel/llvm/releases/download/nightly-2026-10-29/sycl_linux.tar.gz\n+ mkdir -p /opt/sycl\n+ curl -fsSL https://github.com/intel/llvm/releases/download/nightly-2026-10-29/sycl_linux.tar.gz\n+ tar xz -C /opt/sycl\n+ export PATH=/opt/sycl/bin:/usr/local/cuda/bin:/opt/rocm/bin:/opt/sycl/bin:/usr/local/cuda/bin:/opt/rocm/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\n+ PATH=/opt/sycl/bin:/usr/local/cuda/bin:/opt/rocm/bin:/opt/sycl/bin:/usr/local/cuda/bin:/opt/rocm/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\n+ export LD_LIBRARY_PATH=/opt/sycl/lib:/opt/rocm/lib:/opt/sycl/lib:/opt/rocm/lib:/usr/local/nvidia/lib:/usr/local/nvidia/lib64\n+ LD_LIBRARY_PATH=/opt/sycl/lib:/opt/rocm/lib:/opt/sycl/lib:/opt/rocm/lib:/usr/local/nvidia/lib:/usr/local/nvidia/lib64\n+ nvidia-smi\nThu Oct 29 21:07:33 2026       \n+-----------------------------------------------------------------------------------------+\n| NVIDIA-SMI 595.91.07              Driver Version: 595.91.07      CUDA Version: 13.2     |\n+-----------------------------------------+------------------------+----------------------+\n| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n|                                         |                        |               MIG M. |\n|=========================================+========================+======================|\n|   0  NVIDIA RTX A4500               On  |   00000000:82:00.0 Off |                  Off |\n| 30%   42C    P8             23W /  200W |       1MiB /  20470MiB |      0%      Default |\n|                                         |                        |                  N/A |\n+-----------------------------------------+------------------------+----------------------+\n\n+-----------------------------------------------------------------------------------------+\n| Processes:                                                                              |\n|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n|        ID   ID                                                               Usage      |\n|=========================================================================================|\n|  No running processes found                                                             |\n+-----------------------------------------------------------------------------------------+\n+ cat /opt/rocm/.info/version\n+ true\n+ '[' -e /opt/sycl/lib/libur_adapter_hip.so ']'\n++ command -v hipcc\n+ HIPCC_BIN=\n+ sycl-ls\n[cuda:gpu][cuda:0] NVIDIA CUDA BACKEND, NVIDIA RTX A4500 8.6 [CUDA 13.2]\n",
+   "ingest": {
+    "dest": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/l1/gpuq/req-20261029T210706-1686-852077/test-results/nvidia-rtx-a4500/llmc_test_gpt2_bf16",
+    "remote_result": {
+     "tool": "gpu_test",
+     "status": "ok",
+     "summary": "PASS on NVIDIA RTX A4500 (cuda:0, nvidia): sycl_verify_vs_reference: PASS: 1/1 case(s) match (worst max abs err 0.04, atol 0.05); sycl_verify_vs_native: PASS: 1/1 case(s) match (worst max abs err 0.0458, atol 0.05)",
+     "evidence": {
+      "task": "llmc_test_gpt2_bf16",
+      "device": {
+       "backend": "cuda",
+       "device_type": "gpu",
+       "index": 0,
+       "platform": "NVIDIA CUDA BACKEND",
+       "name": "NVIDIA RTX A4500",
+       "description": "NVIDIA CUDA BACKEND, NVIDIA RTX A4500 8.6 [CUDA 13.2]",
+       "selector": "cuda:0"
+      },
+      "vendor": "nvidia",
+      "amd_arch": null,
+      "cuda_arch": "86",
+      "target_flags": [
+       "-fsycl-targets=nvidia_gpu_sm_86"
+      ],
+      "selector": "cuda:0",
+      "steps": [
+       {
+        "step": "reference_build",
+        "status": "ok",
+        "summary": "exit 0: true"
+       },
+       {
+        "step": "native_build",
+        "status": "ok",
+        "summary": "exit 0: /usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.2x3RSwOdaN/task /tmp/tmp.2x3RSwOdaN/task/test_gpt2.cu --use_fast_math -DENABLE_BF16 -lcublas -lcublasLt -L/usr/local/cuda/lib64/stubs -lnvidia-ml -o build/native"
+       },
+       {
+        "step": "native_verify_vs_reference",
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 0.0318, atol 0.05)"
+       },
+       {
+        "step": "sycl_compile",
+        "status": "ok",
+        "summary": "compiled 1 source(s) -> /tmp/tmp.2x3RSwOdaN/out/work/build/sycl (0 warning(s))"
+       },
+       {
+        "step": "sycl_verify_vs_reference",
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 0.04, atol 0.05)"
+       },
+       {
+        "step": "sycl_verify_vs_native",
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 0.0458, atol 0.05)"
+       }
+      ],
+      "results_dir": "/tmp/tmp.2x3RSwOdaN/out/results"
+     },
+     "limitations": [
+      "Benchmarks are single-process wall times plus program-reported kernel times; treat them as rough."
+     ]
+    }
+   },
+   "pod_deleted": true,
+   "minutes": 2.2,
+   "est_cost_usd": 0.009
+  }
+ }
+}

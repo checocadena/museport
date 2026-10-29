@@ -1,0 +1,134 @@
+{
+  "tool": "compile",
+  "status": "fail",
+  "summary": "compile failed with 2 error(s) at /tmp/tmp.fRVHsIcZ76/task/agent_port/llmc/batched_gemm.hpp:99: no matching function for call to 'get_native'",
+  "evidence": {
+    "run": {
+      "command": "/opt/sycl/bin/clang++ -fsycl -O2 -I/root/onemath-rocblas/include -Wl,--no-as-needed -L/root/onemath-rocblas/lib -Wl,-rpath,/root/onemath-rocblas/lib -lonemath -DENABLE_BF16 -fsycl-targets=amdgcn-amd-amdhsa -Xsycl-target-backend=amdgcn-amd-amdhsa --offload-arch=gfx950 -I/tmp/tmp.fRVHsIcZ76/task /tmp/tmp.fRVHsIcZ76/task/agent_port/train_gpt2.cpp -o /tmp/tmp.fRVHsIcZ76/out/work/build/sycl",
+      "returncode": 1,
+      "duration_s": 1.951449,
+      "stdout": "",
+      "stderr": "In file included from /tmp/tmp.fRVHsIcZ76/task/agent_port/train_gpt2.cpp:32:\nIn file included from /tmp/tmp.fRVHsIcZ76/task/agent_port/llmc/matmul.hpp:27:\n/tmp/tmp.fRVHsIcZ76/task/agent_port/llmc/batched_gemm.hpp:99:32: error: no matching function for call to 'get_native'\n   99 |     sycl_cudaStream_t stream = sycl::get_native<sycl::backend::ext_oneapi_cuda>(q);\n      |                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/opt/sycl/bin/../include/sycl/backend.hpp:124:6: note: candidate template ignored: substitution failure [with BackendName = sycl::backend::ext_oneapi_cuda, SyclObjectT = sycl::queue]: implicit instantiation of undefined template 'sycl::detail::BackendReturn<sycl::backend::ext_oneapi_cuda, sycl::queue>'\n   73 | auto get_native(const SyclObjectT &Obj)\n      |      ^\n/opt/sycl/bin/../include/sycl/backend.hpp:135:6: note: candidate template ignored: substitution failure [with BackendName = sycl::backend::ext_oneapi_cuda]: implicit instantiation of undefined template 'sycl::detail::BackendReturn<sycl::backend::ext_oneapi_cuda, sycl::queue>'\n   73 | auto get_native(const queue &Obj) -> backend_return_t<BackendName, queue> {\n      |      ^\n/opt/sycl/bin/../include/sycl/backend.hpp:158:6: note: candidate template ignored: could not match 'kernel_bundle<State>' against 'sycl::queue'\n  158 | auto get_native(const kernel_bundle<State> &Obj)\n      |      ^\n/opt/sycl/bin/../include/sycl/backend.hpp:169:6: note: candidate template ignored: could not match 'buffer<DataT, Dimensions, AllocatorT>' against 'sycl::queue'\n  169 | auto get_native(const buffer<DataT, Dimensions, AllocatorT> &Obj)\n      |      ^\n/opt/sycl/bin/../include/sycl/backend.hpp:245:6: note: candidate template ignored: could not match 'accessor<DataT, Dimensions, AccessMode, AccessTarget, IsPlaceholder>' against 'sycl::queue'\n  245 | auto get_native(const accessor<DataT, Dimensions, AccessMode, AccessTarget,\n      |      ^\nIn file included from /tmp/tmp.fRVHsIcZ76/task/agent_port/train_gpt2.cpp:32:\nIn file included from /tmp/tmp.fRVHsIcZ76/task/agent_port/llmc/matmul.hpp:27:\n/tmp/tmp.fRVHsIcZ76/task/agent_port/llmc/batched_gemm.hpp:210:32: error: no matching function for call to 'get_native'\n  210 |     sycl_cudaStream_t stream = sycl::get_native<sycl::backend::ext_oneapi_cuda>(q);\n      |                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/opt/sycl/bin/../include/sycl/backend.hpp:124:6: note: candidate template ignored: substitution failure [with BackendName = sycl::backend::ext_oneapi_cuda, SyclObjectT = sycl::queue]: implicit instantiation of undefined template 'sycl::detail::BackendReturn<sycl::backend::ext_oneapi_cuda, sycl::queue>'\n   73 | auto get_native(const SyclObjectT &Obj)\n      |      ^\n/opt/sycl/bin/../include/sycl/backend.hpp:135:6: note: candidate template ignored: substitution failure [with BackendName = sycl::backend::ext_oneapi_cuda]: implicit instantiation of undefined template 'sycl::detail::BackendReturn<sycl::backend::ext_oneapi_cuda, sycl::queue>'\n   73 | auto get_native(const queue &Obj) -> backend_return_t<BackendName, queue> {\n      |      ^\n/opt/sycl/bin/../include/sycl/backend.hpp:158:6: note: candidate template ignored: could not match 'kernel_bundle<State>' against 'sycl::queue'\n  158 | auto get_native(const kernel_bundle<State> &Obj)\n      |      ^\n/opt/sycl/bin/../include/sycl/backend.hpp:169:6: note: candidate template ignored: could not match 'buffer<DataT, Dimensions, AllocatorT>' against 'sycl::queue'\n  169 | auto get_native(const buffer<DataT, Dimensions, AllocatorT> &Obj)\n      |      ^\n/opt/sycl/bin/../include/sycl/backend.hpp:245:6: note: candidate template ignored: could not match 'accessor<DataT, Dimensions, AccessMode, AccessTarget, IsPlaceholder>' against 'sycl::queue'\n  245 | auto get_native(const accessor<DataT, Dimensions, AccessMode, AccessTarget,\n      |      ^\n2 errors generated.\n"
+    },
+    "output": "/tmp/tmp.fRVHsIcZ76/out/work/build/sycl",
+    "dpct_include_added": null,
+    "diagnostics": [
+      {
+        "file": "/tmp/tmp.fRVHsIcZ76/task/agent_port/llmc/batched_gemm.hpp",
+        "line": 99,
+        "column": 32,
+        "severity": "error",
+        "message": "no matching function for call to 'get_native'",
+        "flag": null,
+        "snippet": "    sycl_cudaStream_t stream = sycl::get_native<sycl::backend::ext_oneapi_cuda>(q);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/backend.hpp",
+        "line": 124,
+        "column": 6,
+        "severity": "note",
+        "message": "candidate template ignored: substitution failure [with BackendName = sycl::backend::ext_oneapi_cuda, SyclObjectT = sycl::queue]: implicit instantiation of undefined template 'sycl::detail::BackendReturn<sycl::backend::ext_oneapi_cuda, sycl::queue>'",
+        "flag": null,
+        "snippet": "auto get_native(const SyclObjectT &Obj)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/backend.hpp",
+        "line": 135,
+        "column": 6,
+        "severity": "note",
+        "message": "candidate template ignored: substitution failure [with BackendName = sycl::backend::ext_oneapi_cuda]: implicit instantiation of undefined template 'sycl::detail::BackendReturn<sycl::backend::ext_oneapi_cuda, sycl::queue>'",
+        "flag": null,
+        "snippet": "auto get_native(const queue &Obj) -> backend_return_t<BackendName, queue> {"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/backend.hpp",
+        "line": 158,
+        "column": 6,
+        "severity": "note",
+        "message": "candidate template ignored: could not match 'kernel_bundle<State>' against 'sycl::queue'",
+        "flag": null,
+        "snippet": "auto get_native(const kernel_bundle<State> &Obj)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/backend.hpp",
+        "line": 169,
+        "column": 6,
+        "severity": "note",
+        "message": "candidate template ignored: could not match 'buffer<DataT, Dimensions, AllocatorT>' against 'sycl::queue'",
+        "flag": null,
+        "snippet": "auto get_native(const buffer<DataT, Dimensions, AllocatorT> &Obj)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/backend.hpp",
+        "line": 245,
+        "column": 6,
+        "severity": "note",
+        "message": "candidate template ignored: could not match 'accessor<DataT, Dimensions, AccessMode, AccessTarget, IsPlaceholder>' against 'sycl::queue'",
+        "flag": null,
+        "snippet": "auto get_native(const accessor<DataT, Dimensions, AccessMode, AccessTarget,"
+      },
+      {
+        "file": "/tmp/tmp.fRVHsIcZ76/task/agent_port/llmc/batched_gemm.hpp",
+        "line": 210,
+        "column": 32,
+        "severity": "error",
+        "message": "no matching function for call to 'get_native'",
+        "flag": null,
+        "snippet": "    sycl_cudaStream_t stream = sycl::get_native<sycl::backend::ext_oneapi_cuda>(q);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/backend.hpp",
+        "line": 124,
+        "column": 6,
+        "severity": "note",
+        "message": "candidate template ignored: substitution failure [with BackendName = sycl::backend::ext_oneapi_cuda, SyclObjectT = sycl::queue]: implicit instantiation of undefined template 'sycl::detail::BackendReturn<sycl::backend::ext_oneapi_cuda, sycl::queue>'",
+        "flag": null,
+        "snippet": "auto get_native(const SyclObjectT &Obj)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/backend.hpp",
+        "line": 135,
+        "column": 6,
+        "severity": "note",
+        "message": "candidate template ignored: substitution failure [with BackendName = sycl::backend::ext_oneapi_cuda]: implicit instantiation of undefined template 'sycl::detail::BackendReturn<sycl::backend::ext_oneapi_cuda, sycl::queue>'",
+        "flag": null,
+        "snippet": "auto get_native(const queue &Obj) -> backend_return_t<BackendName, queue> {"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/backend.hpp",
+        "line": 158,
+        "column": 6,
+        "severity": "note",
+        "message": "candidate template ignored: could not match 'kernel_bundle<State>' against 'sycl::queue'",
+        "flag": null,
+        "snippet": "auto get_native(const kernel_bundle<State> &Obj)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/backend.hpp",
+        "line": 169,
+        "column": 6,
+        "severity": "note",
+        "message": "candidate template ignored: could not match 'buffer<DataT, Dimensions, AllocatorT>' against 'sycl::queue'",
+        "flag": null,
+        "snippet": "auto get_native(const buffer<DataT, Dimensions, AllocatorT> &Obj)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/backend.hpp",
+        "line": 245,
+        "column": 6,
+        "severity": "note",
+        "message": "candidate template ignored: could not match 'accessor<DataT, Dimensions, AccessMode, AccessTarget, IsPlaceholder>' against 'sycl::queue'",
+        "flag": null,
+        "snippet": "auto get_native(const accessor<DataT, Dimensions, AccessMode, AccessTarget,"
+      }
+    ],
+    "counts": {
+      "error": 2,
+      "warning": 0,
+      "note": 10
+    }
+  },
+  "limitations": [
+    "A successful compile says nothing about numerical correctness; run verify."
+  ]
+}

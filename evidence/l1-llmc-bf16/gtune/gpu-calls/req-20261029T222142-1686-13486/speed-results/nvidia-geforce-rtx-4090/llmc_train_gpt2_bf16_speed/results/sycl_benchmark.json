@@ -1,0 +1,46 @@
+{
+  "tool": "benchmark",
+  "status": "ok",
+  "summary": "2 run(s) each; cuda:0: median 2374.92 ms, p95 2394.91 ms",
+  "evidence": {
+    "command": "python3 /tmp/tmp.ug0bz8sFnt/task/run_speed.py build/sycl /tmp/tmp.ug0bz8sFnt/task/args.txt /tmp/tmp.ug0bz8sFnt/out/work/bench_out.wav",
+    "runs": 2,
+    "warmup": 1,
+    "results": [
+      {
+        "selector": "cuda:0",
+        "status": "ok",
+        "wall_time_s": {
+          "n": 2,
+          "min": 2.3527172920294106,
+          "median": 2.3749223414924927,
+          "p95": 2.3949068860092666,
+          "max": 2.397127390955575,
+          "mean": 2.3749223414924927,
+          "stdev": 0.031402682103856126
+        },
+        "samples_s": [
+          2.397127,
+          2.352717
+        ],
+        "reported": {
+          "n": 2,
+          "min": 49.77,
+          "median": 49.785,
+          "p95": 49.7985,
+          "max": 49.8,
+          "mean": 49.785,
+          "stdev": 0.021213203435592205
+        },
+        "reported_samples": [
+          49.8,
+          49.77
+        ]
+      }
+    ]
+  },
+  "limitations": [
+    "Wall-clock time of the whole process (includes start-up, JIT compilation of SYCL kernels on first use, I/O). Use report_regex for in-program kernel timings.",
+    "Device selection uses ONEAPI_DEVICE_SELECTOR; it only takes effect if the program uses a default/selector-based sycl::queue."
+  ]
+}

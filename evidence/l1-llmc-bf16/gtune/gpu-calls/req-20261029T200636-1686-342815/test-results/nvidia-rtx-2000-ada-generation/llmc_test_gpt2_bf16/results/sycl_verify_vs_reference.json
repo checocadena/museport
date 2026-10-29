@@ -1,0 +1,79 @@
+{
+  "tool": "verify",
+  "status": "fail",
+  "summary": "FAIL: 0/1 case(s) match; first failure: 1 of 12 element(s) outside tolerance",
+  "evidence": {
+    "mode": "array",
+    "cases": [
+      {
+        "input": "/tmp/tmp.Ji2yR4w2Me/task/test_args.txt",
+        "reference": {
+          "command": "cp /tmp/tmp.Ji2yR4w2Me/task/reference.out /tmp/tmp.Ji2yR4w2Me/out/work/v_sycl/case0_reference.out",
+          "returncode": 0,
+          "duration_s": 0.003823,
+          "stdout": "",
+          "stderr": "",
+          "cwd": "/tmp/tmp.Ji2yR4w2Me/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "cuda:0"
+          },
+          "output_file": "/tmp/tmp.Ji2yR4w2Me/out/work/v_sycl/case0_reference.out"
+        },
+        "candidate": {
+          "command": "python3 /tmp/tmp.Ji2yR4w2Me/task/run_test.py build/sycl /tmp/tmp.Ji2yR4w2Me/task/test_args.txt /tmp/tmp.Ji2yR4w2Me/out/work/v_sycl/case0_candidate.out",
+          "returncode": 0,
+          "duration_s": 4.903039,
+          "stdout": "overall okay: 0 | tolerances kept: True | losses: [5.263682, 4.036744, 3.319788, 2.726704, 2.187906, 1.690007, 1.185475, 0.754742, 0.418961, 0.198414]\nfailed checks:\nTENSOR NOT OK, max diff: 8.944e-02, with rel error: 2.304e-01 (calculated= -0.298828, ref= -0.388266), 110.86% of maximum error\ntest output tail:\num error\n---\nchecking tensor: fcprojw\nOK 0.000553 0.000681\nOK 0.000100 0.000073\nOK -0.000370 -0.000416\nOK -0.000021 -0.000061\nOK -0.000530 -0.000604\nOK -0.000054 -0.000087\nOK -0.000294 -0.000350\nOK -0.000109 -0.000169\nOK -0.000372 -0.000435\nOK -0.000219 -0.000289\nTENSOR OK, max diff: 1.460e-02, with rel error: 1.609e-01 (calculated=  0.076172, ref=  0.090774), 53.74% of maximum error\n---\nchecking tensor: fcprojb\nOK 0.002869 0.003584\nOK -0.006775 -0.007158\nOK -0.001968 -0.001964\nOK 0.001411 0.001462\nOK 0.000927 0.001217\nOK 0.004852 0.005518\nOK -0.004822 -0.004662\nOK -0.003693 -0.004146\nOK 0.001549 0.001308\nOK 0.000460 0.000362\nTENSOR OK, max diff: 2.596e-03, with rel error: 5.062e-01 (calculated=  0.002533, ref=  0.005129), 24.95% of maximum error\n---\nchecking tensor: lnfw\nOK 0.000019 -0.000022\nOK 0.001045 0.000811\nOK 0.001183 0.001161\nOK -0.002899 -0.002957\nOK 0.001190 0.001145\nOK 0.002991 0.002996\nOK 0.000858 0.000900\nOK 0.000675 0.000635\nOK -0.000437 -0.000443\nOK 0.002777 0.002749\nTENSOR OK, max diff: 9.895e-02, with rel error: 7.637e-01 (calculated= -0.228516, ref= -0.129568), 89.76% of maximum error\n---\nchecking tensor: lnfb\nOK -0.010803 -0.011101\nOK 0.006897 0.008007\nOK -0.004333 -0.004769\nOK -0.002304 -0.002113\nOK -0.005432 -0.005905\nOK -0.007660 -0.008205\nOK -0.002869 -0.002258\nOK -0.001266 -0.001425\nOK -0.004517 -0.003727\nOK -0.003647 -0.002972\nTENSOR OK, max diff: 1.535e-02, with rel error: 4.974e+00 (calculated= -0.018433, ref= -0.003085), 75.81% of maximum error\nstep 1: loss 5.263682 (took 58.541806 ms)\nstep 2: loss 4.036744 (took 82.157395 ms)\nstep 3: loss 3.319788 (took 73.723377 ms)\nstep 4: loss 2.726704 (took 67.402810 ms)\nstep 5: loss 2.187906 (took 67.580206 ms)\nstep 6: loss 1.690007 (took 67.492673 ms)\nstep 7: loss 1.185475 (took 67.446342 ms)\nstep 8: loss 0.754742 (took 67.482762 ms)\nstep 9: loss 0.418961 (took 67.631598 ms)\nstep 10: loss 0.198414 (took 67.495973 ms)\nloss ok at step 1: 5.263683 5.270009\nloss ok at step 2: 4.036744 4.060681\nloss ok at step 3: 3.319788 3.320085\nloss ok at step 4: 2.726704 2.717550\nloss ok at step 5: 2.187906 2.181066\nloss ok at step 6: 1.690007 1.653923\nloss ok at step 7: 1.185475 1.168050\nloss ok at step 8: 0.754742 0.736873\nloss ok at step 9: 0.418961 0.401021\nloss ok at step 10: 0.198414 0.187493\nWriting model to test_gpt2cu_model.ckpt\nWriting state to test_gpt2cu_state.ckpt\nallocating 237 MiB for parameter gradients\nallocating 87 MiB for activations\nallocating 474 MiB for AdamW optimizer state m\nallocating 474 MiB for AdamW optimizer state v\nallocating 474 MiB for master copy of params\nmemory per sequence: 21 MiB\nloss ok at step 0: 5.684713 5.684713\nloss ok at step 1: 6.822698 6.822698\nloss ok at step 2: 5.116248 5.116248\nloss ok at step 3: 4.705798 4.705798\nloss ok at step 4: 4.456792 4.456792\nloss ok at step 5: 4.429749 4.429749\nloss ok at step 6: 4.793663 4.793663\nloss ok at step 7: 4.858059 4.858059\nloss ok at step 8: 4.524684 4.524684\nloss ok at step 9: 4.088269 4.088269\noverall okay: 0\n\n",
+          "stderr": "",
+          "cwd": "/tmp/tmp.Ji2yR4w2Me/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "cuda:0"
+          },
+          "output_file": "/tmp/tmp.Ji2yR4w2Me/out/work/v_sycl/case0_candidate.out"
+        },
+        "reference_format": "f32",
+        "candidate_format": "f32",
+        "mode": "array",
+        "stats": {
+          "n_reference": 12,
+          "n_candidate": 12,
+          "atol": 0.05,
+          "rtol": 0.0,
+          "max_ulp_allowed": null,
+          "passed": false,
+          "max_abs_err": 1.0,
+          "rms_err": 0.2891236414967681,
+          "mean_abs_err": 0.09556614359219869,
+          "max_rel_err": 1.0,
+          "max_ulp_f32": 1065353216,
+          "median_ulp_f32": 98185.0,
+          "exact_matches": 1,
+          "mismatches": 1,
+          "nan_mismatches": 0,
+          "reference_range": [
+            0.1874929964542389,
+            5.2700090408325195
+          ],
+          "first_mismatches": [
+            {
+              "index": 0,
+              "reference": 1.0,
+              "candidate": 0.0,
+              "abs_err": 1.0
+            }
+          ],
+          "reason": "1 of 12 element(s) outside tolerance"
+        },
+        "passed": false,
+        "reason": "1 of 12 element(s) outside tolerance"
+      }
+    ],
+    "work_dir": "/tmp/tmp.Ji2yR4w2Me/out/work/v_sycl",
+    "passed_cases": 0,
+    "total_cases": 1,
+    "worst_max_abs_err": 1.0
+  },
+  "limitations": [
+    "Equivalence is shown only for the inputs tested; other inputs/sizes may behave differently."
+  ]
+}

@@ -1,0 +1,1 @@
+[gpu_test] fail: SYCL port did not compile for AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85] (hip:0, amd): compile failed with 2 error(s) at /tmp/tmp.fRVHsIcZ76/task/agent_port/llmc/batched_gemm.hpp:99: no matching function for call to 'get_native'

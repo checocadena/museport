@@ -1,0 +1,11 @@
+{
+ "status": "ok",
+ "summary": "llm.c's test on NVIDIA GeForce RTX 4090: PASS: 1/1 case(s) match (worst max abs err 0.0324, atol 0.05)\n  losses vs llm.c's CUDA test on the same GPU: PASS: 1/1 case(s) match (worst max abs err 0.0314, atol 0.05)\nspeed: no timing: sycl_verify_vs_reference fail: candidate exited with code 1; sycl_verify_vs_native fail: candidate exited with code 1; sycl_benchmark fail: command failed on all 1 device(s)\n\nGPU budget: $0.94 of $8.00 spent, call 16 of 30",
+ "evidence": {
+  "vendor": "nvidia",
+  "test_device": "NVIDIA GeForce RTX 4090",
+  "speed_device": "NVIDIA GeForce RTX 4090",
+  "test": "NVIDIA GeForce RTX 4090: ok: PASS on NVIDIA GeForce RTX 4090 (cuda:0, nvidia): sycl_verify_vs_reference: PASS: 1/1 case(s) match (worst max abs err 0.0324, atol 0.05); sycl_verify_vs_native: PASS: 1/1 case(s) match (worst max abs err 0.0314, atol 0.05)",
+  "speed": "NVIDIA GeForce RTX 4090: fail: FAIL on NVIDIA GeForce RTX 4090 (cuda:0, nvidia): sycl_verify_vs_reference: candidate exited with code 1; sycl_verify_vs_native: candidate exited with code 1"
+ }
+}

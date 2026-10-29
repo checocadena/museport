@@ -1,0 +1,11 @@
+{
+ "status": "ok",
+ "summary": "llm.c's test on NVIDIA L4: PASS: 1/1 case(s) match (worst max abs err 0.0403, atol 0.05)\n  losses vs llm.c's CUDA test on the same GPU: FAIL: 0/1 case(s) match; first failure: 1 of 12 element(s) outside tolerance\nspeed on NVIDIA RTX 2000 Ada Generation: 502.0 ms per step (median, steps 6-30); llm.c's CUDA trainer: 186.7 ms, 2.69x llm.c's CUDA time\n  30 training losses vs llm.c's CUDA recording: PASS: 1/1 case(s) match (worst max abs err 0.0371, atol 0.1)\nGPU budget: $0.12 of $8.00 spent, call 4 of 30",
+ "evidence": {
+  "vendor": "nvidia",
+  "test_device": "NVIDIA L4",
+  "speed_device": "NVIDIA RTX 2000 Ada Generation",
+  "test": "NVIDIA L4: fail: FAIL on NVIDIA L4 (cuda:0, nvidia): sycl_verify_vs_reference: PASS: 1/1 case(s) match (worst max abs err 0.0403, atol 0.05); sycl_verify_vs_native: FAIL: 0/1 case(s) match; first failure: 1 of 12 element(s) outside tolerance",
+  "speed": "NVIDIA RTX 2000 Ada Generation: ok: PASS on NVIDIA RTX 2000 Ada Generation (cuda:0, nvidia): sycl_verify_vs_reference: PASS: 1/1 case(s) match (worst max abs err 0.0371, atol 0.1); sycl_verify_vs_native: PASS: 1/1 case(s) match (worst max abs err 0.0325, atol 0.1)"
+ }
+}

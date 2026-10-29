@@ -1,0 +1,426 @@
+oneMath 1308c5e979daf0c80e3d6ae61c1e2de5ad0f2e4a with /opt/sycl/bin/clang++
+dpkg-preconfigure: unable to re-open stdin: No such file or directory
+Selecting previously unselected package libjsoncpp25:amd64.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 150508 files and directories currently installed.)
+Preparing to unpack .../libjsoncpp25_1.9.5-6build1_amd64.deb ...
+Unpacking libjsoncpp25:amd64 (1.9.5-6build1) ...
+Selecting previously unselected package librhash0:amd64.
+Preparing to unpack .../librhash0_1.4.3-3build1_amd64.deb ...
+Unpacking librhash0:amd64 (1.4.3-3build1) ...
+Selecting previously unselected package cmake-data.
+Preparing to unpack .../cmake-data_3.28.3-1build7_all.deb ...
+Unpacking cmake-data (3.28.3-1build7) ...
+Selecting previously unselected package cmake.
+Preparing to unpack .../cmake_3.28.3-1build7_amd64.deb ...
+Unpacking cmake (3.28.3-1build7) ...
+Selecting previously unselected package ninja-build.
+Preparing to unpack .../ninja-build_1.11.1-2_amd64.deb ...
+Unpacking ninja-build (1.11.1-2) ...
+Setting up ninja-build (1.11.1-2) ...
+Setting up libjsoncpp25:amd64 (1.9.5-6build1) ...
+Setting up librhash0:amd64 (1.4.3-3build1) ...
+Setting up cmake-data (3.28.3-1build7) ...
+Setting up cmake (3.28.3-1build7) ...
+Processing triggers for man-db (2.12.0-4build2) ...
+Processing triggers for libc-bin (2.39-0ubuntu8.8) ...
+
+Running kernel seems to be up-to-date.
+
+No services need to be restarted.
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+AMD target: gfx950
+Get:1 https://repo.radeon.com/rocmradeon/apt/26.13 noble/main amd64 amdrocm-blas-dev7.14 amd64 7.14.0~pre3-29052710811 [256 kB]
+Get:2 https://repo.radeon.com/rocmradeon/apt/26.13 noble/main amd64 amdrocm-blas-host7.14 amd64 7.14.0~pre3-29052710811 [17.8 MB]
+Get:3 https://repo.radeon.com/rocmradeon/apt/26.13 noble/main amd64 amdrocm-blas7.14-gfx950 amd64 7.14.0~pre3-29052710811 [503 MB]
+Fetched 521 MB in 4s (149 MB/s)
+W: Download is performed unsandboxed as root as file '/tmp/tmp.eCQ3TiZ09x/amdrocm-blas-dev7.14_7.14.0~pre3-29052710811_amd64.deb' couldn't be accessed by user '_apt'. - pkgAcquire::Run (13: Permission denied)
+cp: warning: behavior of -n is non-portable and may change in future; use --update=none instead
+rocBLAS: unpacked 7.14.0~pre3-29052710811 for gfx950 into /opt/rocm/core-7.14
+Get:1 https://repo.radeon.com/rocmradeon/apt/26.13 noble/main amd64 amdrocm-llvm-dev7.14 amd64 7.14.0~pre3-29052710811 [148 MB]
+Fetched 148 MB in 2s (85.8 MB/s)
+W: Download is performed unsandboxed as root as file '/tmp/tmp.aQB3P4v97f/amdrocm-llvm-dev7.14_7.14.0~pre3-29052710811_amd64.deb' couldn't be accessed by user '_apt'. - pkgAcquire::Run (13: Permission denied)
+AMDDeviceLibs: unpacked CMake config of amdrocm-llvm-dev7.14=7.14.0~pre3-29052710811
+-- CMAKE_BUILD_TYPE: Release
+-- The CXX compiler identification is Clang 24.0.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /opt/sycl/bin/clang++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- TARGET_DOMAINS: blas
+-- Looking for dpc++
+-- Performing Test is_dpcpp
+-- Performing Test is_dpcpp - Success
+-- Performing Test dpcpp_supports_nvptx64
+-- Performing Test dpcpp_supports_nvptx64 - Failed
+-- HIP: Using hipcc from relative path: /opt/rocm/bin/hipcc
+-- HIP_PLATFORM using hip_HIPCONFIG_EXECUTABLE: amd
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE  
+-- Performing Test HIP_CLANG_SUPPORTS_PARALLEL_JOBS
+-- Performing Test HIP_CLANG_SUPPORTS_PARALLEL_JOBS - Failed
+-- HIP: Using hipcc from relative path: /opt/rocm/bin/hipcc
+-- Configuring done (0.3s)
+-- Generating done (0.0s)
+-- Build files have been written to: /tmp/tmp.1iVRyRWqpM/oneMath/build
+[1/12] Building CXX object bin/blas/backends/rocblas/CMakeFiles/onemath_blas_rocblas_obj.dir/rocblas_wrappers.cpp.o
+[2/12] Building CXX object bin/blas/backends/rocblas/CMakeFiles/onemath_blas_rocblas_obj.dir/rocblas_scope_handle.cpp.o
+/tmp/tmp.1iVRyRWqpM/oneMath/src/blas/backends/rocblas/rocblas_scope_handle.cpp:69:20: warning: 'hipCtxGetCurrent' is deprecated: This API is marked as deprecated and might not be supported in future releases. For more details please refer https://github.com/ROCm/HIP/blob/develop/docs/reference/deprecated_api_list.md [-Wdeprecated-declarations]
+   69 |     HIP_ERROR_FUNC(hipCtxGetCurrent, err, &original_);
+      |                    ^
+/opt/rocm/core-7.14/include/hip/hip_runtime_api.h:6426:1: note: 'hipCtxGetCurrent' has been explicitly marked deprecated here
+ 6426 | HIP_DEPRECATED(HIP_DEPRECATED_MSG)
+      | ^
+/opt/rocm/core-7.14/include/hip/hip_runtime_api.h:662:44: note: expanded from macro 'HIP_DEPRECATED'
+  662 | #define HIP_DEPRECATED(msg) __attribute__((deprecated(msg)))
+      |                                            ^
+/tmp/tmp.1iVRyRWqpM/oneMath/src/blas/backends/rocblas/rocblas_scope_handle.cpp:70:20: warning: 'hipDevicePrimaryCtxRetain' is deprecated: This API is marked as deprecated and might not be supported in future releases. For more details please refer https://github.com/ROCm/HIP/blob/develop/docs/reference/deprecated_api_list.md [-Wdeprecated-declarations]
+   70 |     HIP_ERROR_FUNC(hipDevicePrimaryCtxRetain, err, &desired, hipDevice);
+      |                    ^
+/opt/rocm/core-7.14/include/hip/hip_runtime_api.h:6662:1: note: 'hipDevicePrimaryCtxRetain' has been explicitly marked deprecated here
+ 6662 | HIP_DEPRECATED(HIP_DEPRECATED_MSG)
+      | ^
+/opt/rocm/core-7.14/include/hip/hip_runtime_api.h:662:44: note: expanded from macro 'HIP_DEPRECATED'
+  662 | #define HIP_DEPRECATED(msg) __attribute__((deprecated(msg)))
+      |                                            ^
+/tmp/tmp.1iVRyRWqpM/oneMath/src/blas/backends/rocblas/rocblas_scope_handle.cpp:73:24: warning: 'hipCtxSetCurrent' is deprecated: This API is marked as deprecated and might not be supported in future releases. For more details please refer https://github.com/ROCm/HIP/blob/develop/docs/reference/deprecated_api_list.md [-Wdeprecated-declarations]
+   73 |         HIP_ERROR_FUNC(hipCtxSetCurrent, err, desired);
+      |                        ^
+/opt/rocm/core-7.14/include/hip/hip_runtime_api.h:6411:1: note: 'hipCtxSetCurrent' has been explicitly marked deprecated here
+ 6411 | HIP_DEPRECATED(HIP_DEPRECATED_MSG)
+      | ^
+/opt/rocm/core-7.14/include/hip/hip_runtime_api.h:662:44: note: expanded from macro 'HIP_DEPRECATED'
+  662 | #define HIP_DEPRECATED(msg) __attribute__((deprecated(msg)))
+      |                                            ^
+/tmp/tmp.1iVRyRWqpM/oneMath/src/blas/backends/rocblas/rocblas_scope_handle.cpp:87:24: warning: 'hipCtxSetCurrent' is deprecated: This API is marked as deprecated and might not be supported in future releases. For more details please refer https://github.com/ROCm/HIP/blob/develop/docs/reference/deprecated_api_list.md [-Wdeprecated-declarations]
+   87 |         HIP_ERROR_FUNC(hipCtxSetCurrent, err, original_);
+      |                        ^
+/opt/rocm/core-7.14/include/hip/hip_runtime_api.h:6411:1: note: 'hipCtxSetCurrent' has been explicitly marked deprecated here
+ 6411 | HIP_DEPRECATED(HIP_DEPRECATED_MSG)
+      | ^
+/opt/rocm/core-7.14/include/hip/hip_runtime_api.h:662:44: note: expanded from macro 'HIP_DEPRECATED'
+  662 | #define HIP_DEPRECATED(msg) __attribute__((deprecated(msg)))
+      |                                            ^
+/tmp/tmp.1iVRyRWqpM/oneMath/src/blas/backends/rocblas/rocblas_scope_handle.cpp:115:20: warning: 'hipDevicePrimaryCtxRetain' is deprecated: This API is marked as deprecated and might not be supported in future releases. For more details please refer https://github.com/ROCm/HIP/blob/develop/docs/reference/deprecated_api_list.md [-Wdeprecated-declarations]
+  115 |     HIP_ERROR_FUNC(hipDevicePrimaryCtxRetain, hipErr, &desired, hipDevice);
+      |                    ^
+/opt/rocm/core-7.14/include/hip/hip_runtime_api.h:6662:1: note: 'hipDevicePrimaryCtxRetain' has been explicitly marked deprecated here
+ 6662 | HIP_DEPRECATED(HIP_DEPRECATED_MSG)
+      | ^
+/opt/rocm/core-7.14/include/hip/hip_runtime_api.h:662:44: note: expanded from macro 'HIP_DEPRECATED'
+  662 | #define HIP_DEPRECATED(msg) __attribute__((deprecated(msg)))
+      |                                            ^
+5 warnings generated.
+/tmp/tmp.1iVRyRWqpM/oneMath/src/blas/backends/rocblas/rocblas_scope_handle.cpp:69:20: warning: 'hipCtxGetCurrent' is deprecated: This API is marked as deprecated and might not be supported in future releases. For more details please refer https://github.com/ROCm/HIP/blob/develop/docs/reference/deprecated_api_list.md [-Wdeprecated-declarations]
+   69 |     HIP_ERROR_FUNC(hipCtxGetCurrent, err, &original_);
+      |                    ^
+/opt/rocm/core-7.14/include/hip/hip_runtime_api.h:6426:1: note: 'hipCtxGetCurrent' has been explicitly marked deprecated here
+ 6426 | HIP_DEPRECATED(HIP_DEPRECATED_MSG)
+      | ^
+/opt/rocm/core-7.14/include/hip/hip_runtime_api.h:662:44: note: expanded from macro 'HIP_DEPRECATED'
+  662 | #define HIP_DEPRECATED(msg) __attribute__((deprecated(msg)))
+      |                                            ^
+/tmp/tmp.1iVRyRWqpM/oneMath/src/blas/backends/rocblas/rocblas_scope_handle.cpp:70:20: warning: 'hipDevicePrimaryCtxRetain' is deprecated: This API is marked as deprecated and might not be supported in future releases. For more details please refer https://github.com/ROCm/HIP/blob/develop/docs/reference/deprecated_api_list.md [-Wdeprecated-declarations]
+   70 |     HIP_ERROR_FUNC(hipDevicePrimaryCtxRetain, err, &desired, hipDevice);
+      |                    ^
+/opt/rocm/core-7.14/include/hip/hip_runtime_api.h:6662:1: note: 'hipDevicePrimaryCtxRetain' has been explicitly marked deprecated here
+ 6662 | HIP_DEPRECATED(HIP_DEPRECATED_MSG)
+      | ^
+/opt/rocm/core-7.14/include/hip/hip_runtime_api.h:662:44: note: expanded from macro 'HIP_DEPRECATED'
+  662 | #define HIP_DEPRECATED(msg) __attribute__((deprecated(msg)))
+      |                                            ^
+/tmp/tmp.1iVRyRWqpM/oneMath/src/blas/backends/rocblas/rocblas_scope_handle.cpp:73:24: warning: 'hipCtxSetCurrent' is deprecated: This API is marked as deprecated and might not be supported in future releases. For more details please refer https://github.com/ROCm/HIP/blob/develop/docs/reference/deprecated_api_list.md [-Wdeprecated-declarations]
+   73 |         HIP_ERROR_FUNC(hipCtxSetCurrent, err, desired);
+      |                        ^
+/opt/rocm/core-7.14/include/hip/hip_runtime_api.h:6411:1: note: 'hipCtxSetCurrent' has been explicitly marked deprecated here
+ 6411 | HIP_DEPRECATED(HIP_DEPRECATED_MSG)
+      | ^
+/opt/rocm/core-7.14/include/hip/hip_runtime_api.h:662:44: note: expanded from macro 'HIP_DEPRECATED'
+  662 | #define HIP_DEPRECATED(msg) __attribute__((deprecated(msg)))
+      |                                            ^
+/tmp/tmp.1iVRyRWqpM/oneMath/src/blas/backends/rocblas/rocblas_scope_handle.cpp:87:24: warning: 'hipCtxSetCurrent' is deprecated: This API is marked as deprecated and might not be supported in future releases. For more details please refer https://github.com/ROCm/HIP/blob/develop/docs/reference/deprecated_api_list.md [-Wdeprecated-declarations]
+   87 |         HIP_ERROR_FUNC(hipCtxSetCurrent, err, original_);
+      |                        ^
+/opt/rocm/core-7.14/include/hip/hip_runtime_api.h:6411:1: note: 'hipCtxSetCurrent' has been explicitly marked deprecated here
+ 6411 | HIP_DEPRECATED(HIP_DEPRECATED_MSG)
+      | ^
+/opt/rocm/core-7.14/include/hip/hip_runtime_api.h:662:44: note: expanded from macro 'HIP_DEPRECATED'
+  662 | #define HIP_DEPRECATED(msg) __attribute__((deprecated(msg)))
+      |                                            ^
+/tmp/tmp.1iVRyRWqpM/oneMath/src/blas/backends/rocblas/rocblas_scope_handle.cpp:115:20: warning: 'hipDevicePrimaryCtxRetain' is deprecated: This API is marked as deprecated and might not be supported in future releases. For more details please refer https://github.com/ROCm/HIP/blob/develop/docs/reference/deprecated_api_list.md [-Wdeprecated-declarations]
+  115 |     HIP_ERROR_FUNC(hipDevicePrimaryCtxRetain, hipErr, &desired, hipDevice);
+      |                    ^
+/opt/rocm/core-7.14/include/hip/hip_runtime_api.h:6662:1: note: 'hipDevicePrimaryCtxRetain' has been explicitly marked deprecated here
+ 6662 | HIP_DEPRECATED(HIP_DEPRECATED_MSG)
+      | ^
+/opt/rocm/core-7.14/include/hip/hip_runtime_api.h:662:44: note: expanded from macro 'HIP_DEPRECATED'
+  662 | #define HIP_DEPRECATED(msg) __attribute__((deprecated(msg)))
+      |                                            ^
+5 warnings generated.
+[3/12] Building CXX object bin/blas/backends/rocblas/CMakeFiles/onemath_blas_rocblas_obj.dir/rocblas_extensions.cpp.o
+[4/12] Building CXX object bin/blas/backends/rocblas/CMakeFiles/onemath_blas_rocblas_obj.dir/rocblas_level3.cpp.o
+[5/12] Building CXX object bin/blas/CMakeFiles/onemath_blas.dir/blas_loader.cpp.o
+[6/12] Building CXX object bin/blas/backends/rocblas/CMakeFiles/onemath_blas_rocblas_obj.dir/rocblas_level1.cpp.o
+/tmp/tmp.1iVRyRWqpM/oneMath/src/blas/backends/rocblas/rocblas_level1.cpp:395:12: warning: 'get_access' is deprecated: get_access for host_accessor is deprecated, please use get_host_access instead [-Wdeprecated-declarations]
+  395 |     result.get_access<sycl::access::mode::read_write>()[0] += sb;
+      |            ^
+/opt/sycl/bin/../include/sycl/buffer.hpp:710:37: note: 'get_access' has been explicitly marked deprecated here
+  710 |           accessor_property_list<>> get_access(const detail::code_location
+      |                                     ^
+/tmp/tmp.1iVRyRWqpM/oneMath/src/blas/backends/rocblas/rocblas_level1.cpp:395:12: warning: 'get_access<sycl::access::mode::read_write>' is deprecated: get_access for host_accessor is deprecated, please use get_host_access instead [-Wdeprecated-declarations]
+  395 |     result.get_access<sycl::access::mode::read_write>()[0] += sb;
+      |            ^
+/opt/sycl/bin/../include/sycl/buffer.hpp:704:3: note: 'get_access<sycl::access::mode::read_write>' has been explicitly marked deprecated here
+  704 |   __SYCL2020_DEPRECATED("get_access for host_accessor is deprecated, please "
+      |   ^
+/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'
+   75 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)
+      |                                        ^
+/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:66:38: note: expanded from macro '__SYCL_DEPRECATED'
+   66 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]
+      |                                      ^
+2 warnings generated.
+/tmp/tmp.1iVRyRWqpM/oneMath/src/blas/backends/rocblas/rocblas_level1.cpp:395:12: warning: 'get_access' is deprecated: get_access for host_accessor is deprecated, please use get_host_access instead [-Wdeprecated-declarations]
+  395 |     result.get_access<sycl::access::mode::read_write>()[0] += sb;
+      |            ^
+/opt/sycl/bin/../include/sycl/buffer.hpp:710:37: note: 'get_access' has been explicitly marked deprecated here
+  710 |           accessor_property_list<>> get_access(const detail::code_location
+      |                                     ^
+/tmp/tmp.1iVRyRWqpM/oneMath/src/blas/backends/rocblas/rocblas_level1.cpp:395:12: warning: 'get_access<sycl::access::mode::read_write>' is deprecated: get_access for host_accessor is deprecated, please use get_host_access instead [-Wdeprecated-declarations]
+  395 |     result.get_access<sycl::access::mode::read_write>()[0] += sb;
+      |            ^
+/opt/sycl/bin/../include/sycl/buffer.hpp:704:3: note: 'get_access<sycl::access::mode::read_write>' has been explicitly marked deprecated here
+  704 |   __SYCL2020_DEPRECATED("get_access for host_accessor is deprecated, please "
+      |   ^
+/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'
+   75 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)
+      |                                        ^
+/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:66:38: note: expanded from macro '__SYCL_DEPRECATED'
+   66 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]
+      |                                      ^
+2 warnings generated.
+[7/12] Building CXX object bin/blas/backends/rocblas/CMakeFiles/onemath_blas_rocblas_obj.dir/rocblas_batch.cpp.o
+[8/12] Building CXX object bin/blas/backends/rocblas/CMakeFiles/onemath_blas_rocblas_obj.dir/rocblas_level2.cpp.o
+[9/12] Linking CXX shared library lib/libonemath_blas_rocblas.so.0
+clang++: warning: linked binaries do not contain expected 'amdgcn-amd-amdhsa-gfx950' target; found targets: 'amdgpu9.50-amd-amdhsa-gfx950' [-Wsycl-target]
+[10/12] Creating library symlink lib/libonemath_blas_rocblas.so
+[11/12] Linking CXX shared library lib/libonemath.so.0
+clang++: warning: linked binaries do not contain expected 'amdgcn-amd-amdhsa-gfx950' target; found targets: 'amdgpu9.50-amd-amdhsa-gfx950' [-Wsycl-target]
+[12/12] Creating library symlink lib/libonemath.so
+-- Install configuration: "Release"
+-- Installing: /root/onemath-rocblas/include
+-- Installing: /root/onemath-rocblas/include/oneapi
+-- Installing: /root/onemath-rocblas/include/oneapi/mkl
+-- Installing: /root/onemath-rocblas/include/oneapi/mkl/dft.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/mkl/lapack.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/mkl/blas.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/mkl/rng
+-- Installing: /root/onemath-rocblas/include/oneapi/mkl/rng/device.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/mkl/rng.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/mkl/sparse_blas.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/mkl/namespace_alias.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/mkl.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math
+-- Installing: /root/onemath-rocblas/include/oneapi/math/dft
+-- Installing: /root/onemath-rocblas/include/oneapi/math/dft/types.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/dft/descriptor.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/dft/backward.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/dft/detail
+-- Installing: /root/onemath-rocblas/include/oneapi/math/dft/detail/rocfft
+-- Installing: /root/onemath-rocblas/include/oneapi/math/dft/detail/rocfft/onemath_dft_rocfft.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/dft/detail/armpl
+-- Installing: /root/onemath-rocblas/include/oneapi/math/dft/detail/armpl/onemath_dft_armpl.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/dft/detail/commit_impl.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/dft/detail/portfft
+-- Installing: /root/onemath-rocblas/include/oneapi/math/dft/detail/portfft/onemath_dft_portfft.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/dft/detail/external_workspace_helper.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/dft/detail/mklgpu
+-- Installing: /root/onemath-rocblas/include/oneapi/math/dft/detail/mklgpu/onemath_dft_mklgpu.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/dft/detail/descriptor_impl.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/dft/detail/dft_ct.hxx
+-- Installing: /root/onemath-rocblas/include/oneapi/math/dft/detail/cufft
+-- Installing: /root/onemath-rocblas/include/oneapi/math/dft/detail/cufft/onemath_dft_cufft.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/dft/detail/mklcpu
+-- Installing: /root/onemath-rocblas/include/oneapi/math/dft/detail/mklcpu/onemath_dft_mklcpu.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/dft/detail/types_impl.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/dft/detail/dft_loader.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/dft/forward.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/types.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/dft.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/sparse_blas
+-- Installing: /root/onemath-rocblas/include/oneapi/math/sparse_blas/matrix_view.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/sparse_blas/types.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/sparse_blas/detail
+-- Installing: /root/onemath-rocblas/include/oneapi/math/sparse_blas/detail/cusparse
+-- Installing: /root/onemath-rocblas/include/oneapi/math/sparse_blas/detail/cusparse/sparse_blas_ct.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/sparse_blas/detail/cusparse/onemath_sparse_blas_cusparse.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/sparse_blas/detail/helper_types.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/sparse_blas/detail/rocsparse
+-- Installing: /root/onemath-rocblas/include/oneapi/math/sparse_blas/detail/rocsparse/sparse_blas_ct.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/sparse_blas/detail/rocsparse/onemath_sparse_blas_rocsparse.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/sparse_blas/detail/sparse_blas_ct.hxx
+-- Installing: /root/onemath-rocblas/include/oneapi/math/sparse_blas/detail/mklgpu
+-- Installing: /root/onemath-rocblas/include/oneapi/math/sparse_blas/detail/mklgpu/onemath_sparse_blas_mklgpu.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/sparse_blas/detail/mklgpu/sparse_blas_ct.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/sparse_blas/detail/onemath_sparse_blas_backends.hxx
+-- Installing: /root/onemath-rocblas/include/oneapi/math/sparse_blas/detail/sparse_blas_rt.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/sparse_blas/detail/mklcpu
+-- Installing: /root/onemath-rocblas/include/oneapi/math/sparse_blas/detail/mklcpu/sparse_blas_ct.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/sparse_blas/detail/mklcpu/onemath_sparse_blas_mklcpu.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/sparse_blas/detail/operation_types.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/sparse_blas/detail/handles.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/functions.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/device
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/device/types.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/device/functions.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/device/distributions.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/device/detail
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/device/detail/mcg59_impl.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/device/detail/pcg64_dxsm_impl.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/device/detail/engine_base.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/device/detail/poisson_impl.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/device/detail/exponential_impl.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/device/detail/philox4x32x10_impl.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/device/detail/uniform_bits_impl.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/device/detail/bits_impl.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/device/detail/gamma_impl.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/device/detail/mcg31m1_impl.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/device/detail/mrg32k3a_skip_ahead_matrix.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/device/detail/bernoulli_impl.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/device/detail/geometric_impl.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/device/detail/uniform_impl.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/device/detail/lognormal_impl.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/device/detail/distribution_base.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/device/detail/vm_wrappers.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/device/detail/beta_impl.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/device/detail/mrg32k3a_impl.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/device/detail/gaussian_impl.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/device/engines.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/distributions.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/predicates.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/device.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/detail
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/detail/curand
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/detail/curand/onemath_rng_curand.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/detail/armpl
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/detail/armpl/onemath_rng_armpl.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/detail/engine_impl.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/detail/mklgpu
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/detail/mklgpu/onemath_rng_mklgpu.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/detail/rocrand
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/detail/rocrand/onemath_rng_rocrand.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/detail/rng_loader.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/detail/mklcpu
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/detail/mklcpu/onemath_rng_mklcpu.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng/engines.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack/types.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack/exceptions.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack/detail
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack/detail/mkl_common
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack/detail/mkl_common/onemath_lapack_backends.hxx
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack/detail/mkl_common/lapack_ct.hxx
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack/detail/cusolver
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack/detail/cusolver/lapack_ct.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack/detail/cusolver/onemath_lapack_cusolver.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack/detail/cusolver/onemath_lapack_cusolver.hxx
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack/detail/cusolver/lapack_ct.hxx
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack/detail/lapack_rt.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack/detail/armpl
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack/detail/armpl/lapack_ct.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack/detail/armpl/onemath_lapack_armpl.hxx
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack/detail/armpl/onemath_lapack_armpl.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack/detail/armpl/lapack_ct.hxx
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack/detail/rocsolver
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack/detail/rocsolver/lapack_ct.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack/detail/rocsolver/onemath_lapack_rocsolver.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack/detail/rocsolver/lapack_ct.hxx
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack/detail/rocsolver/onemath_lapack_rocsolver.hxx
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack/detail/lapack_loader.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack/detail/mklgpu
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack/detail/mklgpu/lapack_ct.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack/detail/mklgpu/onemath_lapack_mklgpu.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack/detail/mklcpu
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack/detail/mklcpu/lapack_ct.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/lapack/detail/mklcpu/onemath_lapack_mklcpu.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/exceptions.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/rng.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/sparse_blas.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas.hxx
+-- Installing: /root/onemath-rocblas/include/oneapi/math/bfloat16.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/detail
+-- Installing: /root/onemath-rocblas/include/oneapi/math/detail/backends.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/detail/backend_selector_predicates.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/detail/export.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/detail/backends_table.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/detail/backend_selector.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/detail/exceptions.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/detail/get_device_id.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/cublas
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/cublas/blas_ct.hxx
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/cublas/blas_ct.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/cublas/onemath_blas_cublas.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/cublas/onemath_blas_cublas.hxx
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/armpl
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/armpl/blas_ct.hxx
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/armpl/blas_ct.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/armpl/onemath_blas_armpl.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/onemath_blas_backends.hxx
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/blas_ct_backends.hxx
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/blas_ct_backends.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/generic
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/generic/blas_ct.hxx
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/generic/blas_ct.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/generic/onemath_blas_generic.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/mklgpu
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/mklgpu/onemath_blas_mklgpu.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/mklgpu/blas_ct.hxx
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/mklgpu/blas_ct.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/rocblas
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/rocblas/blas_ct.hxx
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/rocblas/blas_ct.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/rocblas/onemath_blas_rocblas.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/rocblas/onemath_blas_rocblas.hxx
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/blas_loader.hxx
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/netlib
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/netlib/blas_ct.hxx
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/netlib/blas_ct.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/netlib/onemath_blas_netlib.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/mklcpu
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/mklcpu/blas_ct.hxx
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/mklcpu/blas_ct.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/mklcpu/onemath_blas_mklcpu.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/blas_loader.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/openblas
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/openblas/blas_ct.hxx
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/openblas/blas_ct.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math/blas/detail/openblas/onemath_blas_openblas.hpp
+-- Installing: /root/onemath-rocblas/include/oneapi/math.hpp
+-- Installing: /root/onemath-rocblas/lib/cmake/oneMath/oneMathTargets.cmake
+-- Installing: /root/onemath-rocblas/lib/cmake/oneMath/oneMathTargets-release.cmake
+-- Installing: /root/onemath-rocblas/lib/cmake/oneMath/oneMathConfig.cmake
+-- Installing: /root/onemath-rocblas/lib/cmake/oneMath/oneMathConfigVersion.cmake
+-- Installing: /root/onemath-rocblas/lib/cmake/oneMath/FindCompiler.cmake
+-- Installing: /root/onemath-rocblas/include/oneapi/math/detail/config.hpp
+-- Installing: /root/onemath-rocblas/lib/libonemath.so.0
+-- Installing: /root/onemath-rocblas/lib/libonemath.so
+-- Installing: /root/onemath-rocblas/lib/libonemath_blas_rocblas.so.0
+-- Set non-toolchain portion of runtime path of "/root/onemath-rocblas/lib/libonemath_blas_rocblas.so.0" to "/root/onemath-rocblas/lib"
+-- Installing: /root/onemath-rocblas/lib/libonemath_blas_rocblas.so
+total 7696
+drwxr-xr-x 3 root root    4096 Oct 29 20:21 cmake
+lrwxrwxrwx 1 root root      15 Oct 29 20:21 libonemath.so -> libonemath.so.0
+-rw-r--r-- 1 root root 1020984 Oct 29 20:21 libonemath.so.0
+lrwxrwxrwx 1 root root      28 Oct 29 20:21 libonemath_blas_rocblas.so -> libonemath_blas_rocblas.so.0
+-rw-r--r-- 1 root root 6851952 Oct 29 20:21 libonemath_blas_rocblas.so.0

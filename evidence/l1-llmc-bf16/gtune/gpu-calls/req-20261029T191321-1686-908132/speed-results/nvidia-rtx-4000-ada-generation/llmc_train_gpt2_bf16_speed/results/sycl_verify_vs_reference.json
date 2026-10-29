@@ -1,0 +1,70 @@
+{
+  "tool": "verify",
+  "status": "ok",
+  "summary": "PASS: 1/1 case(s) match (worst max abs err 0.0322, atol 0.1)",
+  "evidence": {
+    "mode": "array",
+    "cases": [
+      {
+        "input": "/tmp/tmp.bBR1FH46Sz/task/args.txt",
+        "reference": {
+          "command": "cp /tmp/tmp.bBR1FH46Sz/task/recorded_losses.out /tmp/tmp.bBR1FH46Sz/out/work/v_sycl/case0_reference.out",
+          "returncode": 0,
+          "duration_s": 0.005623,
+          "stdout": "",
+          "stderr": "",
+          "cwd": "/tmp/tmp.bBR1FH46Sz/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "cuda:0"
+          },
+          "output_file": "/tmp/tmp.bBR1FH46Sz/out/work/v_sycl/case0_reference.out"
+        },
+        "candidate": {
+          "command": "python3 /tmp/tmp.bBR1FH46Sz/task/run_speed.py build/sycl /tmp/tmp.bBR1FH46Sz/task/args.txt /tmp/tmp.bBR1FH46Sz/out/work/v_sycl/case0_candidate.out",
+          "returncode": 0,
+          "duration_s": 29.837369,
+          "stdout": "{\"steps\": 30, \"ms_per_step_median\": 568.05, \"losses\": [4.284997, 4.801781, 4.419935, 3.601009, 3.656043, 3.907799, 4.043244, 3.580691, 3.904312, 3.5157, 3.961701, 3.723975, 3.941908, 3.803822, 3.647118, 3.448372, 3.94848, 3.761171, 3.503057, 3.609914, 3.567507, 3.565122, 3.109879, 3.29443, 3.672616, 3.504508, 3.797238, 3.428411, 3.313725, 3.259042]}\nkernel_ms=568.05\n=== profile (sycl, nsys, 10 steps): 40 kernels, 6584.5 ms of GPU time; top 15:\n 19.1%     1255.9 ms  x   288  matmul_batched_onemath(sycl::_V1::ext::oneapi::bfloat16 *, const sycl::_V1::ext::oneapi::bfloat16 *, const syc\n 18.5%     1216.8 ms  x   288  matmul_batched_onemath(sycl::_V1::ext::oneapi::bfloat16 *, const sycl::_V1::ext::oneapi::bfloat16 *, const syc\n 15.1%      997.5 ms  x   240  matmul_batched_onemath(sycl::_V1::ext::oneapi::bfloat16 *, const sycl::_V1::ext::oneapi::bfloat16 *, const syc\n 10.5%      691.3 ms  x    14  void fused_classifier_kernel<(bool)1>(sycl::_V1::ext::oneapi::bfloat16 *, float *, float, const int *, int, in\n  8.6%      565.0 ms  x   168  softmax_forward(sycl::_V1::ext::oneapi::bfloat16 *, float, const sycl::_V1::ext::oneapi::bfloat16 *, int, int,\n  7.6%      501.3 ms  x   120  softmax_autoregressive_backward_inplace(sycl::_V1::ext::oneapi::bfloat16 *, const sycl::_V1::ext::oneapi::bflo\n  6.3%      415.4 ms  x    10  void global_norm_squared<sycl::_V1::ext::oneapi::bfloat16>(float *, const T1 *, unsigned long, long, int, int,\n  2.0%      134.0 ms  x   686  matmul_onemath(sycl::_V1::ext::oneapi::bfloat16 *, const sycl::_V1::ext::oneapi::bfloat16 *, const sycl::_V1::\n  1.9%      126.5 ms  x   490  ampere_s1688gemm_bf16_128x128_ldg8_stages_32x1_nt\n  1.8%      115.9 ms  x   160  void adamw_update<sycl::_V1::ext::oneapi::bfloat16, sycl::_V1::ext::oneapi::bfloat16>(T1 *, float *, T2 *, flo\n  1.3%       87.6 ms  x   504  ampere_s1688gemm_bf16_128x128_ldg8_tn\n  1.3%       87.4 ms  x   480  ampere_s1688gemm_bf16_128x128_ldg8_stages_32x1_nn\n  1.0%       68.8 ms  x    14  ampere_s1688gemm_bf16_128x128_ldg8_stages_32x1_tn\n  0.7%       43.4 ms  x   288  gelu_forward(sycl::_V1::ext::oneapi::bfloat16 *, const sycl::_V1::ext::oneapi::bfloat16 *, unsigned long, sycl\n  0.6%       42.5 ms  x   490  void matmul_backward<sycl::_V1::ext::oneapi::bfloat16>(sycl::_V1::ext::oneapi::bfloat16 *, sycl::_V1::ext::one\n",
+          "stderr": "",
+          "cwd": "/tmp/tmp.bBR1FH46Sz/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "cuda:0"
+          },
+          "output_file": "/tmp/tmp.bBR1FH46Sz/out/work/v_sycl/case0_candidate.out"
+        },
+        "reference_format": "f32",
+        "candidate_format": "f32",
+        "mode": "array",
+        "stats": {
+          "n_reference": 30,
+          "n_candidate": 30,
+          "atol": 0.1,
+          "rtol": 0.0,
+          "max_ulp_allowed": null,
+          "passed": true,
+          "max_abs_err": 0.032225608825683594,
+          "rms_err": 0.014280204701755847,
+          "mean_abs_err": 0.011464269955952962,
+          "max_rel_err": 0.008629183282152203,
+          "max_ulp_f32": 134965,
+          "median_ulp_f32": 37910.5,
+          "exact_matches": 0,
+          "mismatches": 0,
+          "nan_mismatches": 0,
+          "reference_range": [
+            3.101262092590332,
+            4.8340067863464355
+          ],
+          "first_mismatches": []
+        },
+        "passed": true
+      }
+    ],
+    "work_dir": "/tmp/tmp.bBR1FH46Sz/out/work/v_sycl",
+    "passed_cases": 1,
+    "total_cases": 1,
+    "worst_max_abs_err": 0.032225608825683594
+  },
+  "limitations": [
+    "Equivalence is shown only for the inputs tested; other inputs/sizes may behave differently."
+  ]
+}

@@ -1,0 +1,11 @@
+{
+ "status": "ok",
+ "summary": "llm.c's test on NVIDIA RTX 2000 Ada Generation: PASS: 1/1 case(s) match (worst max abs err 0.0378, atol 0.05)\n  losses vs llm.c's CUDA test on the same GPU: PASS: 1/1 case(s) match (worst max abs err 0.0359, atol 0.05)\nspeed: no timing: native_verify_vs_reference fail: candidate exited with code 1; sycl_verify_vs_reference fail: candidate exited with code 1; sycl_verify_vs_native error: reference exited with code 1; sycl_benchmark fail: command failed on all 1 device(s); native_benchmark fail: command failed on all 1 device(s)\n\nGPU budget: $0.65 of $8.00 spent, call 10 of 30",
+ "evidence": {
+  "vendor": "nvidia",
+  "test_device": "NVIDIA RTX 2000 Ada Generation",
+  "speed_device": "NVIDIA RTX 2000 Ada Generation",
+  "test": "NVIDIA RTX 2000 Ada Generation: ok: PASS on NVIDIA RTX 2000 Ada Generation (cuda:0, nvidia): sycl_verify_vs_reference: PASS: 1/1 case(s) match (worst max abs err 0.0378, atol 0.05); sycl_verify_vs_native: PASS: 1/1 case(s) match (worst max abs err 0.0359, atol 0.05)",
+  "speed": "NVIDIA RTX 2000 Ada Generation: fail: FAIL on NVIDIA RTX 2000 Ada Generation (cuda:0, nvidia): sycl_verify_vs_reference: candidate exited with code 1; sycl_verify_vs_native: reference exited with code 1"
+ }
+}

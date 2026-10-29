@@ -1,0 +1,43 @@
+{
+  "tool": "verify",
+  "status": "fail",
+  "summary": "candidate exited with code 1",
+  "evidence": {
+    "mode": "array",
+    "cases": [
+      {
+        "input": "/tmp/tmp.D4jDii8z6S/task/args.txt",
+        "reference": {
+          "command": "cp /tmp/tmp.D4jDii8z6S/task/recorded_losses.out /tmp/tmp.D4jDii8z6S/out/work/v_sycl/case0_reference.out",
+          "returncode": 0,
+          "duration_s": 0.003615,
+          "stdout": "",
+          "stderr": "",
+          "cwd": "/tmp/tmp.D4jDii8z6S/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "cuda:0"
+          },
+          "output_file": "/tmp/tmp.D4jDii8z6S/out/work/v_sycl/case0_reference.out"
+        },
+        "candidate": {
+          "command": "python3 /tmp/tmp.D4jDii8z6S/task/run_speed.py build/sycl /tmp/tmp.D4jDii8z6S/task/args.txt /tmp/tmp.D4jDii8z6S/out/work/v_sycl/case0_candidate.out",
+          "returncode": 1,
+          "duration_s": 0.690787,
+          "stdout": "",
+          "stderr": "exit -6; expected per-step lines 'step N/M | loss L ... | X ms', got 0; output tail:  recompute             | 1                                                  |\n+-----------------------+----------------------------------------------------+\n| device                | NVIDIA GeForce RTX 4090                            |\n| peak TFlops           | 165.2                                              |\n| precision             | BF16                                               |\n+-----------------------+----------------------------------------------------+\n| weight init method    | gpt2_124M_bf16.bin                                 |\n| max_sequence_length T | 1024                                               |\n| vocab_size V          | 50257                                              |\n| padded_vocab_size Vp  | 50304                                              |\n| num_layers L          | 12                                                 |\n| num_heads NH          | 12                                                 |\n| channels C            | 768                                                |\n| num_parameters        | 124475904                                          |\n+-----------------------+----------------------------------------------------+\n| train_num_batches     | 30                                                 |\n| val_num_batches       | 2                                                  |\n+-----------------------+----------------------------------------------------+\n| run hellaswag         | no                                                 |\n+-----------------------+----------------------------------------------------+\n| Zero Optimization is disabled                                              |\n| num_processes         | 1                                                  |\n| zero_stage            | 0                                                  |\n+-----------------------+----------------------------------------------------+\nHellaSwag eval not found at dev/data/hellaswag/hellaswag_val.bin, skipping its evaluation\nYou can run `python dev/data/hellaswag.py` to export and use it with `-h 1`.\nnum_parameters: 124475904 => bytes: 248951808\nallocated 237 MiB for model parameters\nbatch_size B=4 * seq_len T=1024 * num_processes=1 and total_batch_size=4096\n=> setting grad_accum_steps=1\nallocating 237 MiB for parameter gradients\nallocating 2475 MiB for activations\nallocating 474 MiB for AdamW optimizer state m\nallocating 474 MiB for AdamW optimizer state v\nallocating 474 MiB for master copy of params\nmemory per sequence: 618 MiB\n\n",
+          "cwd": "/tmp/tmp.D4jDii8z6S/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "cuda:0"
+          },
+          "output_file": "/tmp/tmp.D4jDii8z6S/out/work/v_sycl/case0_candidate.out"
+        },
+        "passed": false,
+        "reason": "candidate exited with code 1"
+      }
+    ],
+    "work_dir": "/tmp/tmp.D4jDii8z6S/out/work/v_sycl"
+  },
+  "limitations": [
+    "Equivalence is shown only for the inputs tested; other inputs/sizes may behave differently."
+  ]
+}

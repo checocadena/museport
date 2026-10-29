@@ -1,0 +1,255 @@
+oneMath 1308c5e979daf0c80e3d6ae61c1e2de5ad0f2e4a with /opt/sycl/bin/clang++
+museport: applied onemath-cublas-bf16-gemm.patch
+-- CMAKE_BUILD_TYPE: Release
+-- The CXX compiler identification is Clang 24.0.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /opt/sycl/bin/clang++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- TARGET_DOMAINS: blas
+-- Looking for dpc++
+-- Performing Test is_dpcpp
+-- Performing Test is_dpcpp - Success
+-- Performing Test dpcpp_supports_nvptx64
+-- Performing Test dpcpp_supports_nvptx64 - Success
+CMake Warning (policy) at cmake/FindcuBLAS.cmake:20 (find_package):
+  Policy CMP0146 is not set: The FindCUDA module is removed.  Run "cmake
+  --help-policy CMP0146" for policy details.  Use the cmake_policy command to
+  set the policy and suppress this warning.
+Call Stack (most recent call first):
+  src/blas/backends/cublas/CMakeLists.txt:22 (find_package)
+This warning is for project developers.  Use -Wno-author or -Wno-policy to
+suppress it.
+
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE
+-- Found CUDA: /usr/local/cuda (found suitable version "12.4", minimum required is "10.0")
+-- Found cuBLAS: /usr/local/cuda/include
+-- Configuring done (0.7s)
+-- Generating done (0.0s)
+-- Build files have been written to: /tmp/tmp.Bsl2JzdC1y/oneMath/build
+[1/12] Building CXX object bin/blas/backends/cublas/CMakeFiles/onemath_blas_cublas_obj.dir/cublas_wrappers.cpp.o
+[2/12] Building CXX object bin/blas/backends/cublas/CMakeFiles/onemath_blas_cublas_obj.dir/cublas_scope_handle.cpp.o
+[3/12] Building CXX object bin/blas/backends/cublas/CMakeFiles/onemath_blas_cublas_obj.dir/cublas_extensions.cpp.o
+[4/12] Building CXX object bin/blas/backends/cublas/CMakeFiles/onemath_blas_cublas_obj.dir/cublas_batch.cpp.o
+[5/12] Building CXX object bin/blas/backends/cublas/CMakeFiles/onemath_blas_cublas_obj.dir/cublas_level3.cpp.o
+[6/12] Building CXX object bin/blas/CMakeFiles/onemath_blas.dir/blas_loader.cpp.o
+[7/12] Building CXX object bin/blas/backends/cublas/CMakeFiles/onemath_blas_cublas_obj.dir/cublas_level1.cpp.o
+[8/12] Building CXX object bin/blas/backends/cublas/CMakeFiles/onemath_blas_cublas_obj.dir/cublas_level2.cpp.o
+[9/12] Linking CXX shared library lib/libonemath_blas_cublas.so.0
+[10/12] Creating library symlink lib/libonemath_blas_cublas.so
+[11/12] Linking CXX shared library lib/libonemath.so.0
+[12/12] Creating library symlink lib/libonemath.so
+-- Install configuration: "Release"
+-- Installing: /root/onemath-cublas-patched/include
+-- Installing: /root/onemath-cublas-patched/include/oneapi
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/bfloat16.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas.hxx
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/armpl
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/armpl/blas_ct.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/armpl/blas_ct.hxx
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/armpl/onemath_blas_armpl.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/blas_ct_backends.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/blas_ct_backends.hxx
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/blas_loader.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/blas_loader.hxx
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/cublas
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/cublas/blas_ct.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/cublas/blas_ct.hxx
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/cublas/onemath_blas_cublas.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/cublas/onemath_blas_cublas.hxx
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/generic
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/generic/blas_ct.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/generic/blas_ct.hxx
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/generic/onemath_blas_generic.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/mklcpu
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/mklcpu/blas_ct.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/mklcpu/blas_ct.hxx
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/mklcpu/onemath_blas_mklcpu.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/mklgpu
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/mklgpu/blas_ct.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/mklgpu/blas_ct.hxx
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/mklgpu/onemath_blas_mklgpu.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/netlib
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/netlib/blas_ct.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/netlib/blas_ct.hxx
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/netlib/onemath_blas_netlib.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/onemath_blas_backends.hxx
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/openblas
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/openblas/blas_ct.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/openblas/blas_ct.hxx
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/openblas/onemath_blas_openblas.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/rocblas
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/rocblas/blas_ct.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/rocblas/blas_ct.hxx
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/rocblas/onemath_blas_rocblas.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/blas/detail/rocblas/onemath_blas_rocblas.hxx
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/detail
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/detail/backend_selector.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/detail/backend_selector_predicates.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/detail/backends.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/detail/backends_table.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/detail/exceptions.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/detail/export.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/detail/get_device_id.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/dft.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/dft
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/dft/backward.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/dft/descriptor.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/dft/detail
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/dft/detail/armpl
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/dft/detail/armpl/onemath_dft_armpl.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/dft/detail/commit_impl.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/dft/detail/cufft
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/dft/detail/cufft/onemath_dft_cufft.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/dft/detail/descriptor_impl.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/dft/detail/dft_ct.hxx
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/dft/detail/dft_loader.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/dft/detail/external_workspace_helper.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/dft/detail/mklcpu
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/dft/detail/mklcpu/onemath_dft_mklcpu.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/dft/detail/mklgpu
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/dft/detail/mklgpu/onemath_dft_mklgpu.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/dft/detail/portfft
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/dft/detail/portfft/onemath_dft_portfft.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/dft/detail/rocfft
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/dft/detail/rocfft/onemath_dft_rocfft.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/dft/detail/types_impl.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/dft/forward.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/dft/types.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/exceptions.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack/detail
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack/detail/armpl
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack/detail/armpl/lapack_ct.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack/detail/armpl/lapack_ct.hxx
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack/detail/armpl/onemath_lapack_armpl.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack/detail/armpl/onemath_lapack_armpl.hxx
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack/detail/cusolver
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack/detail/cusolver/lapack_ct.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack/detail/cusolver/lapack_ct.hxx
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack/detail/cusolver/onemath_lapack_cusolver.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack/detail/cusolver/onemath_lapack_cusolver.hxx
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack/detail/lapack_loader.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack/detail/lapack_rt.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack/detail/mkl_common
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack/detail/mkl_common/lapack_ct.hxx
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack/detail/mkl_common/onemath_lapack_backends.hxx
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack/detail/mklcpu
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack/detail/mklcpu/lapack_ct.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack/detail/mklcpu/onemath_lapack_mklcpu.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack/detail/mklgpu
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack/detail/mklgpu/lapack_ct.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack/detail/mklgpu/onemath_lapack_mklgpu.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack/detail/rocsolver
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack/detail/rocsolver/lapack_ct.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack/detail/rocsolver/lapack_ct.hxx
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack/detail/rocsolver/onemath_lapack_rocsolver.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack/detail/rocsolver/onemath_lapack_rocsolver.hxx
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack/exceptions.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/lapack/types.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/detail
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/detail/armpl
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/detail/armpl/onemath_rng_armpl.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/detail/curand
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/detail/curand/onemath_rng_curand.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/detail/engine_impl.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/detail/mklcpu
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/detail/mklcpu/onemath_rng_mklcpu.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/detail/mklgpu
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/detail/mklgpu/onemath_rng_mklgpu.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/detail/rng_loader.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/detail/rocrand
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/detail/rocrand/onemath_rng_rocrand.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/device.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/device
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/device/detail
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/device/detail/bernoulli_impl.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/device/detail/beta_impl.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/device/detail/bits_impl.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/device/detail/distribution_base.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/device/detail/engine_base.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/device/detail/exponential_impl.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/device/detail/gamma_impl.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/device/detail/gaussian_impl.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/device/detail/geometric_impl.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/device/detail/lognormal_impl.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/device/detail/mcg31m1_impl.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/device/detail/mcg59_impl.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/device/detail/mrg32k3a_impl.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/device/detail/mrg32k3a_skip_ahead_matrix.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/device/detail/pcg64_dxsm_impl.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/device/detail/philox4x32x10_impl.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/device/detail/poisson_impl.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/device/detail/uniform_bits_impl.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/device/detail/uniform_impl.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/device/detail/vm_wrappers.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/device/distributions.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/device/engines.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/device/functions.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/device/types.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/distributions.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/engines.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/functions.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/rng/predicates.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/sparse_blas.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/sparse_blas
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/sparse_blas/detail
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/sparse_blas/detail/cusparse
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/sparse_blas/detail/cusparse/onemath_sparse_blas_cusparse.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/sparse_blas/detail/cusparse/sparse_blas_ct.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/sparse_blas/detail/handles.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/sparse_blas/detail/helper_types.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/sparse_blas/detail/mklcpu
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/sparse_blas/detail/mklcpu/onemath_sparse_blas_mklcpu.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/sparse_blas/detail/mklcpu/sparse_blas_ct.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/sparse_blas/detail/mklgpu
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/sparse_blas/detail/mklgpu/onemath_sparse_blas_mklgpu.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/sparse_blas/detail/mklgpu/sparse_blas_ct.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/sparse_blas/detail/onemath_sparse_blas_backends.hxx
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/sparse_blas/detail/operation_types.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/sparse_blas/detail/rocsparse
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/sparse_blas/detail/rocsparse/onemath_sparse_blas_rocsparse.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/sparse_blas/detail/rocsparse/sparse_blas_ct.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/sparse_blas/detail/sparse_blas_ct.hxx
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/sparse_blas/detail/sparse_blas_rt.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/sparse_blas/matrix_view.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/sparse_blas/types.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/types.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/mkl.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/mkl
+-- Installing: /root/onemath-cublas-patched/include/oneapi/mkl/blas.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/mkl/dft.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/mkl/lapack.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/mkl/namespace_alias.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/mkl/rng.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/mkl/rng
+-- Installing: /root/onemath-cublas-patched/include/oneapi/mkl/rng/device.hpp
+-- Installing: /root/onemath-cublas-patched/include/oneapi/mkl/sparse_blas.hpp
+-- Installing: /root/onemath-cublas-patched/lib/cmake/oneMath/oneMathTargets.cmake
+-- Installing: /root/onemath-cublas-patched/lib/cmake/oneMath/oneMathTargets-release.cmake
+-- Installing: /root/onemath-cublas-patched/lib/cmake/oneMath/oneMathConfig.cmake
+-- Installing: /root/onemath-cublas-patched/lib/cmake/oneMath/oneMathConfigVersion.cmake
+-- Installing: /root/onemath-cublas-patched/lib/cmake/oneMath/FindCompiler.cmake
+-- Installing: /root/onemath-cublas-patched/include/oneapi/math/detail/config.hpp
+-- Installing: /root/onemath-cublas-patched/lib/libonemath.so.0
+-- Installing: /root/onemath-cublas-patched/lib/libonemath.so
+-- Installing: /root/onemath-cublas-patched/lib/libonemath_blas_cublas.so.0
+-- Set non-toolchain portion of runtime path of "/root/onemath-cublas-patched/lib/libonemath_blas_cublas.so.0" to "/root/onemath-cublas-patched/lib"
+-- Installing: /root/onemath-cublas-patched/lib/libonemath_blas_cublas.so
+total 6176
+drwxr-xr-x 3 root root      29 Oct 29 21:11 cmake
+lrwxrwxrwx 1 root root      15 Oct 29 21:11 libonemath.so -> libonemath.so.0
+-rw-r--r-- 1 root root 1017400 Oct 29 21:11 libonemath.so.0
+lrwxrwxrwx 1 root root      27 Oct 29 21:11 libonemath_blas_cublas.so -> libonemath_blas_cublas.so.0
+-rw-r--r-- 1 root root 5171240 Oct 29 21:11 libonemath_blas_cublas.so.0
