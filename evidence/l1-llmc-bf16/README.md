@@ -93,6 +93,32 @@ from the loop alone ([`independent-grade/`](independent-grade)):
   - The model runs on the SYCL device: 32 SYCL kernels in `llmc/*.h`, and 18 oneMath BLAS calls
     for the matmuls.
 
+## GPUs
+
+Muse's final files, unchanged, built with the toolkit's `gpu-test`, with oneMath built on each
+machine. Each run costs under $0.20.
+
+| GPU | Result |
+|---|---|
+| NVIDIA RTX 2000 Ada, oneMath as released | **aborts** in oneMath: its cuBLAS backend has no bf16 gemm ("not implemented"); llm.c's own CUDA test passes on the same GPU (worst loss 0.0254) ([attempt1](gpu/attempt1)) |
+| NVIDIA RTX 2000 Ada, oneMath with [our patch](../../patches/onemath-cublas-bf16-gemm.patch) | **PASS**: `overall okay: 1`; worst loss 0.0358 vs PyTorch and 0.0319 vs llm.c's own CUDA test on the same GPU ([nvidia](gpu/nvidia)) |
+| AMD Instinct MI350X, oneMath on rocBLAS | **FAIL by one tensor**: all 10 losses within 0.05 of PyTorch's, determinism OK, and 15 of 16 gradient tensors OK; `wpe`'s gradient is at 105% of llm.c's tightest threshold (4.27e-3 vs 4e-3), where the CPU run is at 83% ([amd](gpu/amd)) |
+
+- **The oneMath gap:** upstream oneMath's cuBLAS backend declares `gemm` with bf16 inputs and
+  an fp32 output, but throws "unimplemented" for it, for buffers and USM alike, while the
+  half-precision version calls `cublasGemmEx`. The patch routes bf16 to the same helper with
+  `CUDA_R_16BF`: two lines. It was written by Claude, the assistant running this project, not
+  by Muse; Muse's port found the gap. It applies to the oneMath commit museport builds and to
+  upstream `develop`.
+- **AMD:** llm.c's test comments say its gradient thresholds were set by hand, and that "the
+  actual errors can be hardware specific". The `wpe` gradient sums over only 4 sequences per
+  position, and on the MI350X rocBLAS accumulates in a different order. That is the likely
+  cause, but it is not proven, and by the check's rule this is a fail. AMD attempt 2 lost the
+  failing line to a wrapper that kept only the last 3,000 characters
+  ([attempt2](gpu/attempt2)); the committed wrapper now lists every failing check.
+- **Speed, rough:** one training step of the test (B=4, T=64) took about 82 ms on the MI350X
+  and about 2.5 s on the CPU. Not compared with CUDA.
+
 ## What else to know
 
 - **Not one pass:** the port took three runs. Run 1 was stopped by our setup before Muse wrote
@@ -104,8 +130,8 @@ from the loop alone ([`independent-grade/`](independent-grade)):
   - The wrapper crashed on a `-nan` loss. It was fixed mid-run, and since a NaN fails either way,
     no verdict changed.
   - From run 3, a failing test also shows its own printout.
-- **Scope:** CPU only so far. One machine, one run of the test. bf16 stochastic rounding and
+- **Scope:** one run of the test per device. bf16 stochastic rounding and
   llm.c's tolerances are as in llm.c. Speed was not compared.
 
 **Muse cost:** $14.52 in all (plan $0.18 and runs $0.70, $11.79 and $1.86), of the $80 cap.
-**GPU:** $0.008 of the $40 cap so far.
+**GPU:** $0.53 of the $40 cap (the proof $0.008 and five GPU runs, $0.52).
