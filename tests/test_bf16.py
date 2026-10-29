@@ -89,3 +89,19 @@ def test_a_nan_loss_is_read_not_crashed_on(tmp_path: Path) -> None:
     # C prints NaN as "-nan"; the first wrapper crashed on it (L1 run 2, turn 99)
     v = _run(tmp_path, None, loss="-nan")
     assert len(v) == 12 and all(x != x for x in v[2:])
+
+
+def test_a_failing_test_shows_its_own_output(tmp_path: Path) -> None:
+    task = tmp_path / "task"
+    task.mkdir()
+    (task / "run_test.py").write_text(RUN_TEST)
+    (task / "test_gpt2.cu").write_text(LLMC_TEST)
+    for f in ("gpt2_124M_bf16.bin", "gpt2_124M_debug_state.bin", "tiny_shakespeare_val.bin"):
+        (task / f).write_bytes(b"")
+    exe = tmp_path / "test"
+    exe.write_text("#!/bin/sh\necho 'TENSOR NOT OK: qkvw'\nfor i in 1 2 3 4 5 6 7 8 9 10; do echo "
+                   "\"step $i: loss 4.0\"; done\necho 'overall okay: 0'\n")
+    exe.chmod(exe.stat().st_mode | stat.S_IEXEC)
+    p = subprocess.run([sys.executable, str(task / "run_test.py"), str(exe), "x", "o.bin"],
+                       cwd=tmp_path, capture_output=True, text=True, check=True)
+    assert "test output tail" in p.stdout and "TENSOR NOT OK: qkvw" in p.stdout

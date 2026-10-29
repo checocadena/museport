@@ -98,6 +98,8 @@ vals = [1.0 if ok[-1] == "1" and p.returncode == 0 else 0.0,
         1.0 if tolerances_kept() else 0.0, *losses[:10]]
 Path(out).write_bytes(struct.pack(f"<{len(vals)}f", *vals))
 print("overall okay:", ok[-1], "| tolerances kept:", bool(vals[1]), "| losses:", losses[:10])
+if vals[0] != 1.0:  # the test's own printout (your program's output), to see which check failed
+    print("test output tail:\\n" + text[-3000:])
 '''.replace("__GRAD_TOLS__", "(" + ",\n             ".join(
     ", ".join(map(repr, GRAD_TOLS[i:i + 8])) for i in range(0, len(GRAD_TOLS), 8)) + ")")
 
@@ -187,6 +189,31 @@ def make_task(llmc: Path, data: Path, out: Path, *, no_migrate: bool = False) ->
     ref = _reference(test_src, out)
     task = {"name": "llmc_test_gpt2_bf16", "goal": NO_MIGRATE_GOAL if no_migrate else GOAL,
             **_base(test_src, ref)}
+    (out / "task.json").write_text(json.dumps(task, indent=2) + "\n")
+    return out / "task.json"
+
+
+# Run 3 continues run 2's port: the work dir starts with run 2's final files (``seed``), and the
+# goal says where run 2 stopped, in a note taken from run 2's own trace.
+CONTINUE_NOTE = (
+    " You are continuing your own earlier run, which ran out of turns: the work dir holds your "
+    "port as you left it (train_gpt2.cpp with train_part1-3.cpp, test_gpt2.cpp, llmc/*.h, and "
+    "your dbg_*.cpp debug programs). Where it stood: it compiles with zero helpers; the forward "
+    "pass matches (your test's step-1 loss was 5.250530 against PyTorch's 5.270009); training "
+    "goes to NaN from step 2 because something in the backward pass writes out of bounds into "
+    "the gradient buffer (your last bisection, with a sentinel in grads_memory: 738 bad values "
+    "after attention's backward, already present before its softmax backward step). Continue "
+    "from these files; delete the dbg_*.cpp files once the port passes. When the test fails, "
+    "the check now shows the tail of its own printout.")
+
+
+def make_continue_task(llmc: Path, data: Path, seed: Path, out: Path) -> Path:
+    """Run 3: the no-SYCLomatic task, starting from ``seed`` (run 2's final files)."""
+    make_task(llmc, data, out, no_migrate=True)
+    shutil.copytree(seed, out / "seed")
+    task = json.loads((out / "task.json").read_text())
+    task["goal"] += CONTINUE_NOTE
+    task["museport"]["seed"] = "seed"
     (out / "task.json").write_text(json.dumps(task, indent=2) + "\n")
     return out / "task.json"
 

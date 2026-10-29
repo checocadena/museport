@@ -59,3 +59,5 @@ vals = [1.0 if ok[-1] == "1" and p.returncode == 0 else 0.0,
         1.0 if tolerances_kept() else 0.0, *losses[:10]]
 Path(out).write_bytes(struct.pack(f"<{len(vals)}f", *vals))
 print("overall okay:", ok[-1], "| tolerances kept:", bool(vals[1]), "| losses:", losses[:10])
+if vals[0] != 1.0:  # the test's own printout (your program's output), to see which check failed
+    print("test output tail:\n" + text[-3000:])
