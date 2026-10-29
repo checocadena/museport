@@ -13,3 +13,8 @@
 [port] t1-encoder-forward: loop with muse-spark-1.3 (max 12 turns, cap $0.70); spent so far $0.6073
 [port] t1-encoder-forward: max_iterations in 12 turns, $0.1171
 [port] t1-encoder-backward: loop with muse-spark-1.3 (max 12 turns, cap $0.70); spent so far $0.7245
+[port] t1-encoder-backward: model_finished in 8 turns, $0.0790
+[port] t1-adamw: loop with muse-spark-1.3 (max 12 turns, cap $0.70); spent so far $0.8034
+[port] t1-adamw: model_finished in 9 turns, $0.0829
+[port] t1-fused-residual-forward: loop with muse-spark-1.3 (max 12 turns, cap $0.70); spent so far $0.8863
+[port] t1-fused-residual-forward: max_iterations in 12 turns, $0.2441

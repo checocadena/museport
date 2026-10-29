@@ -18,3 +18,6 @@
 [port] t1-adamw: model_finished in 7 turns, $0.0999
 [port] t1-fused-residual-forward: loop with muse-spark-1.3 (max 12 turns, cap $0.70); spent so far $0.8757
 [port] t1-fused-residual-forward: max_iterations in 12 turns, $0.2779
+[rerun] t1-gelu-backward: the first attempt ended on an API error (HTTP 502)
+[port] t1-gelu-backward: loop with muse-spark-1.3 (max 12 turns, cap $0.70); spent so far $0.0000
+[port] t1-gelu-backward: model_finished in 9 turns, $0.1078
