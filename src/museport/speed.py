@@ -71,9 +71,25 @@ def profile():
     pargs = Path(args).read_text().split()
     if "-x" in pargs:
         pargs[pargs.index("-x") + 1] = "10"
-    nsys = shutil.which("nsys") or next(iter(sorted(
-        glob.glob("/opt/nvidia/nsight-systems*/*/bin/nsys")
-        + glob.glob("/usr/local/cuda*/bin/nsys"))), None)
+    def find_nsys():
+        return shutil.which("nsys") or next(iter(sorted(
+            glob.glob("/opt/nvidia/nsight-systems*/*/bin/nsys")
+            + glob.glob("/usr/local/cuda*/bin/nsys"))), None)
+    nsys = find_nsys()
+    if not nsys and os.path.exists("/usr/local/cuda") and shutil.which("apt-get"):
+        # CUDA images often leave the profiler out; NVIDIA's apt repo has it
+        log = []
+        for cmd in ("apt-get update -qq",
+                    "apt-get install -y -qq --no-install-recommends nsight-systems-cli",
+                    "apt-get install -y -qq --no-install-recommends "
+                    "$(apt-cache search --names-only '^(cuda-)?nsight-systems' "
+                    "| sort -r | head -n 1 | cut -d' ' -f1)"):
+            r = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=600)
+            log.append(cmd.split()[2 if "install" in cmd else 1] + " rc=" + str(r.returncode))
+            nsys = find_nsys()
+            if nsys:
+                break
+        print("=== nsys install: " + ", ".join(log) + (" -> " + nsys if nsys else " -> none"))
     roc = shutil.which("rocprofv3") or next(iter(glob.glob("/opt/rocm*/bin/rocprofv3")), None)
     rows, tool = [], None
     with tempfile.TemporaryDirectory() as run:
