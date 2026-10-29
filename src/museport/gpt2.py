@@ -469,7 +469,7 @@ __PRE__
   git init -q "$SRC" \
     && git -C "$SRC" fetch -q --depth 1 https://github.com/uxlfoundation/oneMath.git __REF__ \
     && git -C "$SRC" checkout -q FETCH_HEAD
-  cmake -S "$SRC" -B "$SRC/build" -G Ninja -DCMAKE_BUILD_TYPE=Release \
+__PATCHES__  cmake -S "$SRC" -B "$SRC/build" -G Ninja -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_CXX_COMPILER="$CXX_BIN" -DCMAKE_C_COMPILER="$C_BIN" \
     -DENABLE_MKLCPU_BACKEND=OFF -DENABLE_MKLGPU_BACKEND=OFF __FLAGS__ \
     -DTARGET_DOMAINS=blas -DBUILD_FUNCTIONAL_TESTS=OFF -DBUILD_EXAMPLES=OFF \
@@ -530,11 +530,22 @@ ONEMATH_BACKENDS: dict[str, dict[str, Any]] = {
 }
 
 
-def onemath_gpu_setup(vendor: str) -> str:
+def onemath_gpu_setup(vendor: str, patches: tuple[str, ...] = ()) -> str:
+    """``patches``: diffs against oneMath, in the task dir next to the script, applied before
+    the build (a patched build gets its own install prefix)."""
     b = ONEMATH_BACKENDS[vendor]
-    return (ONEMATH_GPU_SETUP_TEMPLATE.replace("__REF__", ONEMATH_REF)
-            .replace("__BACKEND__", b["backend"]).replace("__VENDOR__", vendor.upper())
-            .replace("__FLAGS__", b["flags"]).replace("__PRE__", b["pre"]))
+    apply = "".join(
+        f'  git -C "$SRC" apply "$(cd "$(dirname "${{BASH_SOURCE[0]}}")" && pwd)/{p}" '
+        f'&& echo "museport: applied {p}" || echo "museport: {p} did NOT apply"\n'
+        for p in patches)
+    script = (ONEMATH_GPU_SETUP_TEMPLATE.replace("__REF__", ONEMATH_REF)
+              .replace("__BACKEND__", b["backend"]).replace("__VENDOR__", vendor.upper())
+              .replace("__FLAGS__", b["flags"]).replace("__PRE__", b["pre"])
+              .replace("__PATCHES__", apply))
+    if patches:
+        script = script.replace(f'ONEMATH_PREFIX="$HOME/onemath-{b["backend"]}"',
+                                f'ONEMATH_PREFIX="$HOME/onemath-{b["backend"]}-patched"')
+    return script
 
 
 ONEMATH_GPU_SETUP = onemath_gpu_setup("nvidia")

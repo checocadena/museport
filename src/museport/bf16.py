@@ -99,6 +99,9 @@ vals = [1.0 if ok[-1] == "1" and p.returncode == 0 else 0.0,
 Path(out).write_bytes(struct.pack(f"<{len(vals)}f", *vals))
 print("overall okay:", ok[-1], "| tolerances kept:", bool(vals[1]), "| losses:", losses[:10])
 if vals[0] != 1.0:  # the test's own printout (your program's output), to see which check failed
+    failed = [ln for ln in text.splitlines()
+              if re.search(r"NOT OK|MISMATCH|Nondeterminism|NaN|error", ln)]
+    print("failed checks:\\n" + "\\n".join(failed[:40]))
     print("test output tail:\\n" + text[-3000:])
 '''.replace("__GRAD_TOLS__", "(" + ",\n             ".join(
     ", ".join(map(repr, GRAD_TOLS[i:i + 8])) for i in range(0, len(GRAD_TOLS), 8)) + ")")
@@ -245,7 +248,7 @@ def make_proof_task(llmc: Path, out: Path, *, name: str = "llmc_test_gpt2_bf16_p
 
 
 def make_gpu_task(evidence_dir: Path, dest: Path, model: str, vendor: str = "nvidia",
-                  run: str = "run3") -> Path:
+                  run: str = "run3", onemath_patches: tuple[Path, ...] = ()) -> Path:
     """A ``remote-test`` task for the L1 port: the task (wrapper, reference), Muse's final files
     from ``run`` (``test_gpt2.cpp`` and what it includes), unchanged, the weights and debug state
     fetched on the machine, and oneMath built there for ``vendor``. On NVIDIA the native build
@@ -259,7 +262,9 @@ def make_gpu_task(evidence_dir: Path, dest: Path, model: str, vendor: str = "nvi
     shutil.copytree(evidence_dir / run / "port", dest / "agent_port")
     backend = ONEMATH_BACKENDS[vendor]
     setup = f"onemath_{backend['backend']}_setup.sh"
-    (dest / setup).write_text(onemath_gpu_setup(vendor))
+    for p in onemath_patches:
+        shutil.copyfile(p, dest / p.name)
+    (dest / setup).write_text(onemath_gpu_setup(vendor, tuple(p.name for p in onemath_patches)))
     task = json.loads((dest / "task.json").read_text())
     task.pop("goal", None)
     task["sycl_sources"] = ["agent_port/test_gpt2.cpp"]

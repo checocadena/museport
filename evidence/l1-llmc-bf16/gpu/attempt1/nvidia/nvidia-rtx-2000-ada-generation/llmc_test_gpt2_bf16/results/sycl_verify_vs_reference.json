@@ -1,0 +1,43 @@
+{
+  "tool": "verify",
+  "status": "fail",
+  "summary": "candidate exited with code 1",
+  "evidence": {
+    "mode": "array",
+    "cases": [
+      {
+        "input": "/tmp/tmp.amTEMPGZn1/task/test_args.txt",
+        "reference": {
+          "command": "cp /tmp/tmp.amTEMPGZn1/task/reference.out /tmp/tmp.amTEMPGZn1/out/work/v_sycl/case0_reference.out",
+          "returncode": 0,
+          "duration_s": 0.003199,
+          "stdout": "",
+          "stderr": "",
+          "cwd": "/tmp/tmp.amTEMPGZn1/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "cuda:0"
+          },
+          "output_file": "/tmp/tmp.amTEMPGZn1/out/work/v_sycl/case0_reference.out"
+        },
+        "candidate": {
+          "command": "python3 /tmp/tmp.amTEMPGZn1/task/run_test.py build/sycl /tmp/tmp.amTEMPGZn1/task/test_args.txt /tmp/tmp.amTEMPGZn1/out/work/v_sycl/case0_candidate.out",
+          "returncode": 1,
+          "duration_s": 0.938642,
+          "stdout": "",
+          "stderr": "exit -6; expected 'overall okay' and 10 step losses, got 0 and 0; output tail: terminate called after throwing an instance of 'oneapi::math::unimplemented'\n  what():  oneMath: blas/gemm: function is not implemented for column_major layout\n\n",
+          "cwd": "/tmp/tmp.amTEMPGZn1/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "cuda:0"
+          },
+          "output_file": "/tmp/tmp.amTEMPGZn1/out/work/v_sycl/case0_candidate.out"
+        },
+        "passed": false,
+        "reason": "candidate exited with code 1"
+      }
+    ],
+    "work_dir": "/tmp/tmp.amTEMPGZn1/out/work/v_sycl"
+  },
+  "limitations": [
+    "Equivalence is shown only for the inputs tested; other inputs/sizes may behave differently."
+  ]
+}
