@@ -1,15 +1,48 @@
-# L1: llm.c's main bf16 trainer, ported by Muse
+# L1: llm.c's main bf16 trainer, ported and tuned by Muse
 
 llm.c's production trainer at `f1e2ace`: `train_gpt2.cu`, `test_gpt2.cu` and the CUDA headers
 in `llmc/`. That is 12 CUDA files, 4,884 lines and 25 kernels, in bf16 mixed precision, with
 cuBLASLt matmuls, warp reductions and stochastic rounding. The scope is a single device without
 cuDNN, which are llm.c's defaults. Plan: [`docs/L1-PLAN.md`](../../docs/L1-PLAN.md).
 
-**Result:** Muse's SYCL port passes llm.c's own test on the CPU device: logits, all 16 gradient
-tensors, 10 training losses against PyTorch, and a bit-exact save, reload and replay, with
-llm.c's own bf16 tolerances. It took **three runs, 299 turns and $14.34**, plus a $0.18 plan.
-The third run continued from the second run's files. A clean rebuild outside the loop passes
-too.
+## Result
+
+1. **Port, in one run** ([run5](run5)): 125 turns, $5.67, from llm.c's CUDA alone, with a shell.
+   - **On the CPU:** llm.c's own test passes. That covers logits, all 16 gradient tensors, 10
+     training losses against PyTorch, and a bit-exact save, reload and replay, with llm.c's own
+     bf16 tolerances.
+   - **On GPUs:** it also passes on an AMD MI350X (worst loss 0.044) and an NVIDIA RTX 4000 Ada
+     (0.030). On an RTX 2000 Ada, one of llm.c's checks failed, and which one was not recorded
+     ([run5/gpu](run5/gpu)); the GPU-tuned port passes there.
+   - **Speed:** it took 36x CUDA's time per training step (RTX A5000).
+2. **Tuning without a GPU** ([tune](tune/README.md)): 192 turns, $10.39. The port moved to device
+   memory and its own attention kernels: AMD went from 1274 to 578 ms per step, and NVIDIA to
+   5.7x CUDA's time.
+3. **Tuning with GPUs** ([gtune](gtune/README.md)): 211 turns, $14.50, plus $3.50 of GPU over 23
+   calls. Muse got a `gpu_test` tool that builds its current code on a rented GPU and returns
+   llm.c's test result, ms per step next to llm.c's CUDA, and a per-kernel profile.
+
+| Final port, llm.c's trainer, B=4, T=1024 | ms per step | vs llm.c's CUDA, same GPU | llm.c's test |
+|---|---|---|---|
+| NVIDIA RTX 4090 | 49.8 | **1.14x** | PASS |
+| NVIDIA L4 | 160.1 | **1.14x** | PASS |
+| NVIDIA RTX 2000 Ada | 205.5 | **1.13x** | PASS |
+| NVIDIA RTX A4500, pure SYCL + oneMath (cuBLAS interop compiled out, our diagnostic) | 139.8 | **1.52x** | PASS |
+| AMD Instinct MI350X | **63.5** | no CUDA on AMD | PASS |
+
+**Read with these caveats** (details in [gtune/README.md](gtune/README.md#caveats)):
+
+- **The NVIDIA 1.13-1.14x calls NVIDIA's cuBLAS at runtime** through SYCL's backend interop, for
+  two gemm forms oneMath's cuBLAS backend lacks: batched bf16, and bf16 output. Without them, the
+  same code is 1.52x.
+- **llm.c's test does not run the fast paths as Muse left them.** Muse gates them to large
+  shapes (B·T > 1024) on a GPU. Forced on, llm.c's test still passes: on NVIDIA (0.029) and on
+  AMD (0.046, against a tolerance of 0.05).
+- **Rented GPUs vary** from call to call, so the ratio to CUDA on the same machine is the
+  comparison. Each number comes from one run.
+
+**Muse cost, L1 in all:** $50.66 (of the $80 cap): plan $0.18, runs 1-3 $14.35, run 4 $5.57, run 5
+$5.67, tuning $10.39 and $14.50.
 
 | Step | Result | Cost |
 |---|---|---|
@@ -17,8 +50,22 @@ too.
 | Prove the check (NVIDIA RTX 2000 Ada) | llm.c's CUDA test passes; a planted GELU bug fails ([check-proof.json](check-proof.json)) | $0.008 GPU |
 | [Run 1](run1) | stopped by the toolkit's 2M-token limit after 34 turns of reading; SYCLomatic could not parse the trainer | $0.70 |
 | [Run 2](run2) | 200 turns: the whole port written and compiling; forward pass right; training NaN | $11.79 |
-| [Run 3](run3), continuing run 2's files | **success** in 65 turns: `overall okay: 1`, worst loss 0.0326 from PyTorch's | $1.86 |
-| [Independent grade](independent-grade) | rebuilt outside the loop from Muse's files alone: PASS | $0 |
+| [Run 3](run3), continuing run 2's files | success in 65 turns, worst loss 0.0326 from PyTorch's | $1.86 |
+| [Run 4](run4), from scratch, with a shell | stopped by the loop's stuck rule at turn 132, mid-debugging: three different shell commands failed in a row. Failed shell commands no longer count | $5.57 |
+| [Run 5](run5), from scratch, with a shell | **success in one run**, 125 turns; rebuilt outside the loop: PASS (16/16 gradients) | $5.67 |
+| [Tuning, CPU only](tune/README.md) | success, 192 turns; AMD 1274 to 578 ms per step | $10.39 |
+| [Tuning with `gpu_test`](gtune/README.md) | success, 211 turns; NVIDIA 1.13-1.14x CUDA (1.52x pure oneMath), AMD 63 ms | $14.50 + $3.50 GPU |
+
+**Integrity, runs 4 onward:**
+
+- **No credentials:** the loop runs with no credentials in its environment
+  ([`scripts/clean-env.sh`](../../scripts/clean-env.sh)).
+- **Task folder:** fingerprinted before and after each run, and unchanged.
+- **Secrets:** evidence is checked for secrets before commit. Run 4's shell had printed a key
+  into its trace; it was redacted before any commit, and the key was reported for rotation.
+
+The sections below describe the hidden check, and runs 1-3 and their GPU results as first
+recorded.
 
 ## The hidden check
 
@@ -43,7 +90,7 @@ llm.c's own test, as Muse ports it (`test_gpt2.cpp`), run by a wrapper outside t
 The planted bug's losses stay within tolerance; only llm.c's own logit and gradient checks catch
 it, which is why the check needs `overall okay`.
 
-## How the three runs went
+## Runs 1-3: the first port, over three runs
 
 - **Run 1** (34 turns, $0.70) ran with SYCLomatic, which failed to parse the trainer:
   `nvtx3/nvToolsExt.h`, NVIDIA's profiling header, is not in its CUDA headers. Muse read the
@@ -70,7 +117,7 @@ it, which is why the check needs `overall okay`.
   - **Finish:** Muse deleted its debug programs, and the run stopped on success at turn 65:
     compile, verify, and 0 helpers in the work dir, on the same sources.
 
-## The independent grade
+## The independent grade (run 3)
 
 The check trusts what the compiled program prints, and the loop does not force that program to
 be built from `test_gpt2.cpp`. J3's check has the same gap. So the result above is not taken
@@ -93,7 +140,7 @@ from the loop alone ([`independent-grade/`](independent-grade)):
   - The model runs on the SYCL device: 32 SYCL kernels in `llmc/*.h`, and 18 oneMath BLAS calls
     for the matmuls.
 
-## GPUs
+## GPUs (run 3's port)
 
 Muse's final files, unchanged, built with the toolkit's `gpu-test`, with oneMath built on each
 machine. Each run costs under $0.20.
@@ -119,7 +166,7 @@ machine. Each run costs under $0.20.
 - **Speed, rough:** one training step of the test (B=4, T=64) took about 82 ms on the MI350X
   and about 2.5 s on the CPU. Not compared with CUDA.
 
-## What else to know
+## What else to know (runs 1-3)
 
 - **Not one pass:** the port took three runs. Run 1 was stopped by our setup before Muse wrote
   any code; run 3 continued run 2's files.
@@ -133,5 +180,5 @@ machine. Each run costs under $0.20.
 - **Scope:** one run of the test per device. bf16 stochastic rounding and
   llm.c's tolerances are as in llm.c. Speed was not compared.
 
-**Muse cost:** $14.52 in all (plan $0.18 and runs $0.70, $11.79 and $1.86), of the $80 cap.
-**GPU:** $0.53 of the $40 cap (the proof $0.008 and five GPU runs, $0.52).
+**Muse cost, runs 1-3:** $14.52 (plan $0.18 and runs $0.70, $11.79 and $1.86).
+**GPU, runs 1-3:** $0.53 (the proof $0.008 and five GPU runs, $0.52).

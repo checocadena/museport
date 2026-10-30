@@ -9,6 +9,11 @@ ports it piece by piece. Nothing counts as done until a check the model never se
 the output matches the original. The ports are then run on real NVIDIA GPUs against the
 original CUDA, and on an AMD MI350X against the hidden reference.
 
+The largest result: Muse ported **llm.c's production bf16 GPT-2 trainer** in one run. Then, with a
+tool that runs its code on rented GPUs, Muse tuned it to **1.13-1.14x llm.c's CUDA time on
+NVIDIA**, with llm.c's own test passing on NVIDIA and AMD
+([below](#llmcs-production-bf16-trainer-ported-in-one-run-then-tuned-on-real-gpus)).
+
 > **Status: built during the Meta Global AI Developer Hackathon (submissions due Nov 4, 2026).**
 > This repository was created on Oct 26, 2026, after the event's kickoff. Every commit in it
 > is hackathon work. See [What is new](#what-is-new-and-what-it-builds-on).
@@ -19,6 +24,9 @@ original CUDA, and on an AMD MI350X against the hidden reference.
   - `museport scan`, `plan`, `loop`, `port`, `gpu-tasks` and `report`;
   - the hidden-check harness for llm.c's kernels, the variant check, and the streaming Muse
     client;
+  - `museport loop --tune --gpu-queue` and `museport gpu-broker`: Muse's `gpu_test` tool,
+    which runs its code on rented NVIDIA and AMD GPUs with a profiler, with the keys and the
+    budget held outside the model's process;
   - every result under `evidence/`.
 
   This repository was created at the event and contains no earlier code or git history.
@@ -34,6 +42,54 @@ original CUDA, and on an AMD MI350X against the hidden reference.
   [karpathy/llm.c](https://github.com/karpathy/llm.c) and
   [ankan-ban/llama2.cu](https://github.com/ankan-ban/llama2.cu) (both MIT); see
   [`THIRD_PARTY.md`](THIRD_PARTY.md).
+
+## llm.c's production bf16 trainer, ported in one run, then tuned on real GPUs
+
+llm.c's main trainer, `train_gpt2.cu` with `test_gpt2.cu` and the CUDA headers in `llmc/`, is
+the code llm.c trains GPT-2 with. It is 12 files and 4,884 lines, in bf16 mixed precision, with
+cuBLASLt, warp reductions and stochastic rounding. The hidden check is llm.c's own test, as
+Muse ports it, with llm.c's bf16 tolerances. A guard fails any port that loosens them.
+[Full write-up](evidence/l1-llmc-bf16/README.md).
+
+1. **Port, in one run:** 125 turns, $5.67, from the CUDA alone, with a shell.
+   - **On the CPU:** llm.c's test passes. That covers logits, all 16 gradient tensors, 10
+     losses against PyTorch, and a bit-exact checkpoint replay.
+   - **On GPUs:** it also passes on an AMD MI350X and an NVIDIA RTX 4000 Ada.
+   - **Speed:** it was 36x slower than CUDA.
+2. **Tuning on the CPU:** $10.39. NVIDIA reached 5.7x CUDA's time, and AMD went from 1274 to
+   578 ms per step ([tune](evidence/l1-llmc-bf16/tune/README.md)).
+3. **Tuning with GPUs:** 211 turns, $14.50, plus $3.50 of GPU over 23 calls.
+   - **The tool:** each `gpu_test` call builds Muse's current code on a rented GPU. It returns
+     llm.c's test result, ms per step next to llm.c's CUDA on the same GPU, and an nsys kernel
+     profile.
+   - **What Muse did:** it profiled, rewrote the slow kernels, measured each change, and fixed
+     two crashes the GPU exposed ([gtune](evidence/l1-llmc-bf16/gtune/README.md)).
+
+| Final port: llm.c's trainer, B=4, T=1024, 30 steps | ms per step | vs llm.c's CUDA on the same GPU | llm.c's test |
+|---|---|---|---|
+| NVIDIA RTX 4090 | 49.8 | **1.14x** | PASS |
+| NVIDIA L4 | 160.1 | **1.14x** | PASS |
+| NVIDIA RTX 2000 Ada | 205.5 | **1.13x** | PASS |
+| NVIDIA RTX A4500, cuBLAS interop compiled out (pure SYCL + oneMath) | 139.8 | **1.52x** | PASS |
+| AMD Instinct MI350X | **63.5** | (llm.c's CUDA does not build on AMD) | PASS |
+
+**What to know:**
+
+- **cuBLAS on NVIDIA:** the NVIDIA 1.13-1.14x uses NVIDIA's cuBLAS at runtime, through SYCL's
+  backend interop, for two gemm forms that oneMath's cuBLAS backend lacks: batched bf16, and bf16
+  output. Pure SYCL + oneMath is 1.52x. That gap is a concrete upstream ask, like the bf16
+  gemm patch below.
+- **Fast paths and llm.c's test:** Muse uses the fast paths only for large shapes, so llm.c's
+  small test does not run them. We forced them on as a diagnostic, and llm.c's test passes on
+  NVIDIA and on AMD (worst loss 0.046, against a tolerance of 0.05).
+- **Not one pass overall:** the first port took three runs (runs 1-3), and run 4 stopped on the
+  loop's stuck rule. Run 5 is the one-run port.
+- **Measurement:** rented GPUs vary between calls, so compare ratios. Each number comes from one
+  run.
+- **A oneMath fix:** oneMath's cuBLAS backend throws "unimplemented" for bf16 gemm. The port
+  found it, and a two-line patch by us, not Muse, routes it to `cublasGemmEx`
+  ([patch](patches/onemath-cublas-bf16-gemm.patch)).
+- **Cost:** Muse $50.66 for all of L1; GPU about $5.70.
 
 ## Results (llm.c `dev/cuda`, `muse-spark-1.3`)
 
@@ -227,7 +283,8 @@ written by hand. Muse now writes them from the CUDA file alone, and each one is 
 - **Not proven:** `trimat_forward`. The GPU proof caught its masked-triangle mistake each time.
 - **Cost:** about $1.64–1.82 of Muse and $0.04 of GPU.
 
-**Limits of all results:** fp32 only, reduced sizes for the kernels, one run per item.
+**Limits of these results:** fp32 only, reduced sizes for the kernels, one run per item
+(the bf16 trainer above is full size).
 
 ## How we got here: the first runs
 
