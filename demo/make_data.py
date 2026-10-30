@@ -133,6 +133,7 @@ def _l1(l1: dict[str, object] | None) -> dict[str, object] | None:
                     "final": next(c for c in final if c["vendor"] == "amd")},  # type: ignore[attr-defined]
             "final_tests": [{"vendor": c["vendor"], "device": c["test_device"],
                              "pass": c["test"] == "PASS"} for c in final],  # type: ignore[attr-defined]
+            "portable": l1.get("portable"),  # type: ignore[union-attr]
             "forced": {k: diag[k]["test"] == "PASS" for k in ("forced_nvidia", "forced_amd")
                        if k in diag}}
 

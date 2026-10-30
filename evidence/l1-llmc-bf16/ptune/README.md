@@ -30,6 +30,17 @@ as training. That version, in [gpu-calls/](gpu-calls) with the exact files it bu
 | Speed, AMD MI300X (ours, 3 runs, [turn209-gpu/speed-amd](turn209-gpu/speed-amd)) | 190.8 ms per step, 30 losses within 0.015 of CUDA's recording |
 | Vendor interop or size thresholds in the source | none |
 
+**Timed again on Oct 30** ([speed/](speed), 3 runs each, the same files):
+
+| GPU | Port ms/step | llm.c CUDA ms/step | Ratio | Losses vs CUDA's recording |
+|---|---|---|---|---|
+| NVIDIA L4 | 199.9 | 142.4 | **1.40x** | within 0.023 |
+| NVIDIA RTX A4000 | 181.6 | 117.7 | **1.54x** | within 0.014 |
+| AMD Instinct MI350X | **63.3** | no CUDA on AMD | | within 0.016 |
+
+So the portable version runs at **1.40-1.55x** llm.c's CUDA time on NVIDIA. On the MI350X it
+matches the GPU-tuned port's 63.5 ms, which on AMD also ran without vendor code.
+
 **The final version** ([port/](port)) differs from turn 209's in `train_gpt2.cpp` and five
 headers: Muse kept changing rounding to match the CPU check. Graded outside the loop
 ([grade](independent-grade-final)), it fails llm.c's logit check, with `overall okay: 0`.
@@ -46,7 +57,7 @@ headers: Muse kept changing rounding to match the CPU check. Graded outside the 
 - **Why the loop's check failed:** on the CPU, the training-size paths that the test now runs
   are slow. The test took 105 minutes outside the loop, with two grades sharing the CPU, while
   the check allows 10 minutes.
-- **Different GPUs:** the AMD numbers come from an MI300X (no MI350X was available) and cannot be
+- **Different GPUs:** the first AMD numbers come from an MI300X (no MI350X was available then) and cannot be
   compared with the earlier 63.5 ms on an MI350X.
 - **One run per number:** the NVIDIA speed comes from Muse's single `gpu_test` call.
 
@@ -57,4 +68,4 @@ headers: Muse kept changing rounding to match the CPU check. Graded outside the 
 | Task folder before and after | unchanged ([task-before.sha256](task-before.sha256), [task-after.sha256](task-after.sha256)) |
 | Secrets | none |
 | Muse | $14.72 |
-| GPU | $0.03 (Muse's one call) + $0.35 (our AMD test and speed) |
+| GPU | $0.03 (Muse's one call) + $0.35 (our AMD test and speed) + $0.97 (the Oct 30 timings) |

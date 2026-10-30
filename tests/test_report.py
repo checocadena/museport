@@ -186,3 +186,13 @@ def test_l1_numbers_come_from_the_evidence() -> None:
     assert "1.13-1.21x" in html and "1.36-1.52x" in html and "63.5 ms" in html
     assert "$50.6" in html
     assert round(l1["diag"]["pair_pure"]["ratio"], 2) == 1.36  # same GPU as call 22 (1.13x)
+
+
+def test_l1_portable_version_comes_from_the_evidence() -> None:
+    """The pure-oneAPI run's portable version: Muse's call and our 3-run timings."""
+    from museport.report import load_l1
+
+    p = load_l1(ROOT / "evidence")["portable"]  # type: ignore[index]
+    assert [round(r, 2) for r in p["ratios"]] == [1.40, 1.54, 1.55]
+    assert p["cpu_pass"] and all(t["pass"] for t in p["tests"])
+    assert any(s["device"] == "AMD Instinct MI350X" and s["ms"] == 63.27 for s in p["speeds"])

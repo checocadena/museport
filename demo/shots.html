@@ -228,11 +228,13 @@ const SHOTS = {
     await sleep(6500);
     document.getElementById('p1').style.display = 'none';
     document.getElementById('hd').textContent = 'Then Muse tuned it, measuring on real GPUs';
+    const P = L.portable, pr = P.ratios, [qlo, qhi] = [pr[0], pr[pr.length - 1]];
+    const pdev = [...new Set([P.call, ...P.speeds].filter(c => c.ratio).map(c => dev(c.device)))].join(', ');
     const rows = [
       ['Run 5 port', dev(nv.run5.device), nv.run5.ratio, true],
       ['Tuned, no GPU to measure on', dev(nv.tune.device), nv.tune.ratio, true],
-      ['Tuned with gpu_test, pure SYCL + oneMath', nv.pure.map(c => dev(c.device)).join(', '), phi, false],
-      ['Tuned with gpu_test, + cuBLAS interop', fin.map(c => dev(c.device)).join(', '), hi, false],
+      ['Tuned with gpu_test: portable SYCL + oneMath', pdev, qhi, false],
+      ['… plus NVIDIA\'s own cuBLAS (vendor-specific)', fin.map(c => dev(c.device)).join(', '), hi, true],
     ];
     const W = r => Math.max(36, Math.log(r) / Math.log(40) * 1180 + 36);
     const p2 = document.getElementById('p2'); p2.style.display = 'block';
@@ -246,15 +248,17 @@ const SHOTS = {
       bars[i].style.width = bars[i].dataset.w + 'px';
       await sleep(900);
       document.getElementById('r' + i).textContent = i === 3 ? `${lo.toFixed(2)}–${hi.toFixed(2)}×`
-        : i === 2 ? `${plo.toFixed(2)}–${phi.toFixed(2)}×` : rows[i][2].toFixed(rows[i][2] >= 10 ? 0 : 2) + '×';
+        : i === 2 ? (qlo === qhi ? qlo.toFixed(2) : `${qlo.toFixed(2)}–${qhi.toFixed(2)}`) + '×'
+        : rows[i][2].toFixed(rows[i][2] >= 10 ? 0 : 2) + '×';
       await sleep(1700);
     }
-    document.querySelector('#ft span:last-child').textContent = "the cuBLAS interop row calls NVIDIA's cuBLAS at runtime; llm.c's test passes on every row";
+    document.querySelector('#ft span:last-child').textContent = "portable row: no vendor code, and llm.c's test runs the same code as training";
     await sleep(4500);
     document.getElementById('hd').textContent = 'And on an AMD Instinct MI350X';
-    p2.innerHTML = `<div class="row" style="margin-top:20px;gap:40px">${[['run 5', L.amd.run5.ms], ['tuned, no GPU', L.amd.tune.ms], ['tuned with gpu_test', L.amd.final.ms]]
+    const pamd = (P.speeds.find(c => /MI350X/.test(c.device)) || L.amd.final).ms;
+    p2.innerHTML = `<div class="row" style="margin-top:20px;gap:40px">${[['run 5', L.amd.run5.ms], ['tuned, no GPU', L.amd.tune.ms], ['portable, tuned with gpu_test', pamd]]
       .map((a, i) => `<div class="card in" style="flex:1;animation-delay:${i * .8}s"><div class="big ${i == 2 ? 'ok' : ''}">${a[1] < 100 ? a[1].toFixed(1) : Math.round(a[1])}</div><div class="label">ms per step · ${a[0]}</div></div>`).join('')}</div>
-      <div class="sub in" style="animation-delay:2.6s">llm.c's test passes on the MI350X. Muse: ${fmt$(L.gtune.cost)} for the GPU tuning run, ${L.gtune.gpu_calls} GPU calls for ${fmt$(L.gtune.gpu_usd)}.</div>`;
+      <div class="sub in" style="animation-delay:2.6s">The same portable source passes llm.c's test on the CPU, NVIDIA and AMD, with no vendor code.</div>`;
     document.querySelector('#ft span:last-child').textContent = "llm.c's CUDA does not build on AMD, so there is no CUDA time here";
   },
   // terminal replays of real command output (demo/sessions.json, written by demo/capture.py)

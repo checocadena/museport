@@ -234,6 +234,27 @@ def _l1_call(summary: str) -> dict[str, Any]:
             "ratio": ms / cuda_ms if ms and cuda_ms else None}
 
 
+def _l1_portable(d: Path) -> dict[str, Any] | None:
+    """The pure-oneAPI run's portable version (the one its gpu_test built): Muse's GPU call,
+    our tests and speed runs of the same files, and the CPU grade outside the loop."""
+    calls = sorted((d / "gpu-calls").glob("req-*"))
+    if not calls:
+        return None
+    call = _l1_call(json.loads((calls[0] / "result.json").read_text())["summary"])
+    speeds = [sp for sub in ("turn209-gpu/speed-amd", *(f"speed/{x.name}" for x in sorted(
+        (d / "speed").glob("*")) if x.is_dir())) if (sp := _l1_speed(d / sub))]
+    tests = [json.loads(f.read_text())
+             for f in sorted(d.glob("turn209-gpu/test-*/**/summary.json"))]
+    grade = d / "independent-grade-turn209" / "test-output.txt"
+    nv = [c for c in [call, *speeds] if c.get("ratio")]
+    return {"call": call, "speeds": speeds,
+            "tests": [{"device": call["test_device"], "pass": call["test"] == "PASS"}]
+            + [{"device": t["evidence"]["device"]["name"].split(" VF ")[0],
+                "pass": t["status"] == "ok"} for t in tests],
+            "cpu_pass": grade.exists() and "overall okay: 1" in grade.read_text(),
+            "ratios": sorted(c["ratio"] for c in nv)}
+
+
 def load_l1(evidence: Path) -> dict[str, Any] | None:
     """L1, llm.c's bf16 trainer (evidence/l1-llmc-bf16): each run, the speed of run 5's and
     the CPU-tuned port, every gpu_test call of the GPU tuning run (marking those that built
@@ -274,7 +295,7 @@ def load_l1(evidence: Path) -> dict[str, Any] | None:
             diag[f"pair_{name}"] = sp
     plan = d / "plan" / "plan.json"
     plan_cost = json.loads(plan.read_text()).get("cost_usd") if plan.exists() else 0.0
-    return {"runs": runs, "plan_cost": plan_cost,
+    return {"runs": runs, "plan_cost": plan_cost, "portable": _l1_portable(d / "ptune"),
             "muse_usd": (plan_cost or 0.0) + sum(r.get("cost_usd") or 0.0
                                                  for r in runs.values()),
             "speed": {f"{r}_{v}": _l1_speed(d / r / "gpu" / f"speed-{v}")
@@ -891,7 +912,15 @@ def _l1_section(l1: dict[str, Any] | None) -> str:
     lo, hi = (min(nv), max(nv)) if nv else (0.0, 0.0)
     plo, phi = (min(pure), max(pure)) if pure else (0.0, 0.0)
     r5 = runs.get("run5", {})
+    port = l1.get("portable") or {}
+    pr = port.get("ratios") or []
+    prange = (f"{pr[0]:.2f}x" if len(pr) == 1 else f"{pr[0]:.2f}-{pr[-1]:.2f}x") if pr else "?"
+    ptests = ", ".join(_dev(t["device"]) for t in port.get("tests", []) if t["pass"])
     facts = (
+        '<div><span class="eyebrow">Portable SYCL + oneMath</span><span class="v">'
+        f'{prange}</span><span class="d">llm.c\'s CUDA time on NVIDIA, no vendor code, and '
+        "llm.c's test runs training's code: passes on "
+        f"{'the CPU, ' if port.get('cpu_pass') else ''}{ptests}</span></div>"
         '<div><span class="eyebrow">Port, one run</span><span class="v">'
         f'{esc(r5.get("iterations"))} turns</span><span class="d">run 5, '
         f'{money(r5.get("cost_usd"))}: llm.c\'s test passes</span></div>'
@@ -919,6 +948,8 @@ def _l1_section(l1: dict[str, Any] | None) -> str:
         return (f"<tr><td>{esc(label)}</td><td>{_dev(s['device'])}</td><td>{s['ms']}</td>"
                 f"<td>{s.get('cuda_ms') or ''}</td><td><b>{_x(s.get('ratio'))}</b></td></tr>")
     speed_rows = (speed_row("run 5", sp.get("run5_nvidia")) + speed_row("run 5", sp.get("run5_amd"))
+                  + "".join(speed_row("portable (pure-oneAPI run, turn 209)", c)
+                            for c in [port["call"], *port.get("speeds", [])] if port)
                   + speed_row("tuned, no GPU", sp.get("tune_nvidia"))
                   + speed_row("tuned, no GPU", sp.get("tune_amd"))
                   + "".join(speed_row("tuned with gpu_test (final)", c) for c in final)
