@@ -17,8 +17,8 @@ compacting context. The task was rebuilt fresh, with today's test wrapper. The c
 - **Where Muse was:** debugging attention. Its last notes find that `permute_qkv` drops batches.
 
 **What it means:** the from-scratch port of llm.c's bf16 trainer succeeded in 1 of 2 clean
-runs with this setup: run 5 in 125 turns for $5.67, and run 6 not at all within $10. Run 5 was
-not luck-free. The "one run" claim is stated as 1 of 2.
+runs with this setup: run 5 in 125 turns for $5.67, and run 6 not at all within $10. Run 5's
+result does not reliably repeat, and the "one run" claim is stated as 1 of 2.
 
 Task folder unchanged ([task-before.sha256](task-before.sha256),
 [task-after.sha256](task-after.sha256)); no secrets. The test's checkpoint files (1.7 GB)
