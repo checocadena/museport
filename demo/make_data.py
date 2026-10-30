@@ -109,7 +109,30 @@ def main(evidence: Path) -> dict[str, object]:
                          "vs_native": g["vs_native"]} for g in p["gpu"]]}
                for p in (data["j3"] or {}).get("programs", [])],
         "j4": _j4(data["j4"], evidence),
+        "l1": _l1(data["l1"]),
     }
+
+
+def _l1(l1: dict[str, object] | None) -> dict[str, object] | None:
+    """L1, llm.c's bf16 trainer: run 5's one-run port, then each tuning stage's speed."""
+    if not l1:
+        return None
+    runs, sp, diag = l1["runs"], l1["speed"], l1["diag"]  # type: ignore[index]
+    final = l1["final"]  # type: ignore[index]
+    nv = [c for c in final if c["vendor"] == "nvidia" and c["ratio"]]  # type: ignore[attr-defined]
+    return {"run5": {"turns": runs["run5"]["iterations"], "cost": runs["run5"]["cost_usd"]},
+            "tune_cost": runs["tune"]["cost_usd"], "gtune": {
+                "turns": runs["gtune"]["iterations"], "cost": runs["gtune"]["cost_usd"],
+                "gpu_calls": len(l1["calls"]), "gpu_usd": l1["gpu_tuning_usd"]},  # type: ignore[arg-type,index]
+            "muse_usd": l1["muse_usd"],  # type: ignore[index]
+            "nvidia": {"run5": sp["run5_nvidia"], "tune": sp["tune_nvidia"],
+                       "final": nv, "pure": diag.get("pure")},
+            "amd": {"run5": sp["run5_amd"], "tune": sp["tune_amd"],
+                    "final": next(c for c in final if c["vendor"] == "amd")},  # type: ignore[attr-defined]
+            "final_tests": [{"vendor": c["vendor"], "device": c["test_device"],
+                             "pass": c["test"] == "PASS"} for c in final],  # type: ignore[attr-defined]
+            "forced": {k: diag[k]["test"] == "PASS" for k in ("forced_nvidia", "forced_amd")
+                       if k in diag}}
 
 
 def _j4(j4: dict[str, object] | None, evidence: Path) -> dict[str, object] | None:

@@ -22,21 +22,24 @@ capture on the laptop; every other shot is a rendered clip from `demo/out/`.
 
 | # | Time | Shot | Voiceover |
 |---|---|---|---|
-| 1 | 0:00-0:08 | `disclosure` | "Pre-existing: my open-source oneapi-agent-toolkit, the tools and agent loop. Built this week: Muse Port, where Meta's Muse plans and ports CUDA code, with hidden checks, GPU runs, and ports of GPT-2 and llama2.cu." **This is the required opening line.** |
-| 2 | 0:08-0:14 | `open` | "NVIDIA's CUDA locks code to one vendor. SYCL is the open standard. Moving code across is slow, and an AI port is only worth something if you can prove it's right." |
+| 1 | 0:00-0:08 | `disclosure` | "Pre-existing: my open-source oneapi-agent-toolkit, the SYCL tools and agent loop, used here as a pinned dependency. Built this week: Muse Port. Meta's Muse plans and ports CUDA code against hidden checks, then tunes it on real NVIDIA and AMD GPUs: llm.c's bf16 trainer, GPT-2 and llama2.cu." **This is the required opening line** (same as `docs/SUBMISSION.md`). |
+| 2 | 0:08-0:14 | `open` | "CUDA locks code to NVIDIA. SYCL is the open standard. An AI port is only worth something if you can prove it's right." |
 | 3 | 0:14-0:23 | `term_scan` | "Muse Port starts by reading the repository: Karpathy's llm.c, 22 CUDA files, 106 kernels, cuBLAS and cuDNN calls." |
-| 4 | 0:23-0:31 | `pipeline` | "Muse Spark writes a migration plan, and every file and kernel it names is checked against the scan: 23 items, 22 of 22 files, 0 issues. Then Muse ports each item inside an agent loop." |
-| 5 | 0:31-0:40 | `term_bug` | "Nothing counts as done until a check the model never sees agrees. Here it passes Muse's port, then catches a one-term slip: x cubed written as x squared." |
-| 6 | 0:40-0:59 | `replay` | "This is Muse porting GPT-2's training, llm.c's real code with the real 124-million-parameter weights: forward, backward and the AdamW update. It reads the source and writes 907 lines of SYCL in one go. The hidden check fails: the losses are off. Muse finds its own matrix-transpose mistake, fixes it, and all 10 training steps match PyTorch." |
-| 7 | 0:59-1:11 | `check` | "The check compares against PyTorch's own numbers, at llm.c's tolerance. It is strict: SYCLomatic's fast-math output fails on 14 rows, and the precise version passes." |
-| 8 | 1:11-1:19 | `fixes` | "We improved the loop itself. Same 19 kernels: loop success from 8 to 15, correct from 17 to 18, and cost down a third." |
-| 9 | 1:19-1:27 | `gpus` | "And the same SYCL source runs on both vendors: NVIDIA, checked against llm.c's own CUDA, and an AMD MI350X. GPT-2's training port runs on both too: it matches llm.c's CUDA step for step on NVIDIA, and PyTorch on AMD." |
-| 10 | 1:27-1:52 | **(rec)** the report site | Scroll the overview, open one port page and its turn-by-turn replay. "Every result is in a report built only from committed evidence." |
-| 11 | 1:52-1:58 | `numbers` | "18 of 19 kernel files correct, 17 passing on NVIDIA and 18 on AMD, and GPT-2 training ported for about three dollars, on a CPU, an NVIDIA GPU and an AMD GPU." |
-| 12 | 1:58-2:14 | **(rec)** `llm.c-sycl`: `make && ./test_gpt2fp32sycl`, sped up, ending on `overall okay: 1` | "Then the pieces go back together as llm.c-sycl: the kernels, llm.c's trainer, and llm.c's own test, which Muse ported too. One `make`, and llm.c's test prints 'overall okay' on a CPU, an NVIDIA GPU and an AMD GPU." |
-| 13 | 2:14-2:37 | **(rec)** `llama2-sycl`: `make llama2 && ./llama2 stories15M.bin 0.0 64 "Once upon a time"`, the story streaming out | "Then a repo it had never seen: llama2.cu, Llama 2 inference in one 772-line CUDA file. Muse planned it and ported it in one run, 20 turns, 45 cents. The story it writes is llama2.cu's own, byte for byte, on a CPU, an NVIDIA GPU and an AMD GPU." |
-| 14 | 2:37-2:54 | limits card (text on screen) | "Limits: fp32 for llm.c, reduced sizes, one run per item, short training runs; llama2.cu is one file, checked on two prompts. Muse now writes the hidden checks too, 16 of 17 proven. Next: bigger repos and longer training." |
-| 15 | 2:54-3:00 | `end` | "github.com/checocadena/museport." |
+| 4 | 0:23-0:30 | `pipeline` | "Muse writes a plan, checked against the scan: 23 items, 22 of 22 files, 0 issues. Then it ports each item in an agent loop." |
+| 5 | 0:30-0:39 | `term_bug` | "Nothing counts as done until a check the model never sees agrees. It passes Muse's port, and catches a one-term slip: x cubed written as x squared." |
+| 6 | 0:39-0:56 | `replay` | "Here Muse ports GPT-2's training step, with the real weights. 907 lines in one go. The check fails; Muse finds its own transpose mistake, fixes it, and all 10 steps match PyTorch." |
+| 7 | 0:56-1:05 | `check` | "The checks are strict: SYCLomatic's fast-math output fails on 14 rows; the precise version passes." |
+| 8 | 1:05-1:35 | `l1` | "The biggest test: llm.c's production trainer. bf16, cuBLASLt, warp reductions, 4,884 lines. Muse ported it in one run, 125 turns, under six dollars, and llm.c's own test passes. Then we gave Muse a tool that runs its code on rented GPUs, with a profiler. It went from 36 times CUDA's time to 1.5 with pure SYCL and oneMath, and 1.14 when it also calls cuBLAS. On an AMD MI350X: from 1,274 milliseconds a step to 63." |
+| 9 | 1:35-1:42 | `gpus` | "The kernels, GPT-2 and llm.c's own test run from the same SYCL source on NVIDIA, against llm.c's CUDA, and on AMD." |
+| 10 | 1:42-2:02 | **(rec)** the report site | Scroll the overview, open the "bf16 trainer" section and one port page's turn-by-turn replay. "Every result is in a report built only from committed evidence, down to each GPU call Muse made." |
+| 11 | 2:02-2:09 | `numbers` | "18 of 19 kernel files correct, 17 passing on NVIDIA, 18 on AMD, and GPT-2 training ported for about three dollars." |
+| 12 | 2:09-2:21 | **(rec)** `llm.c-sycl`: `make && ./test_gpt2fp32sycl`, sped up, ending on `overall okay: 1` | "The pieces go back together as llm.c-sycl. One make, and llm.c's own test prints 'overall okay'." |
+| 13 | 2:21-2:39 | **(rec)** `llama2-sycl`: `make llama2 && ./llama2 stories15M.bin 0.0 64 "Once upon a time"`, the story streaming out | "And a repo it had never seen: llama2.cu, one 772-line CUDA file. Ported in one run, 20 turns, 45 cents. The story is llama2.cu's own, byte for byte, on a CPU, an NVIDIA GPU and an AMD GPU." |
+| 14 | 2:39-2:53 | limits card (text on screen) | "Limits: the kernels are fp32 at reduced sizes, one run per item. On NVIDIA the trainer's 1.14 uses cuBLAS through SYCL interop; llm.c's test runs its fast paths only when we force them on, and passes; GPU numbers are single runs on rented machines." |
+| 15 | 2:53-2:59 | `end` | "github.com/checocadena/museport." |
+
+The `fixes` clip (the loop fixes, 8 to 15 loop successes) is still rendered but left out of the
+timeline to make room for `l1`; the report and README keep that result.
 
 Before recording, re-check every spoken number against `demo/data.json`, then re-run
 `make_data.py` and `render.mjs` once the evidence changes.
@@ -63,6 +66,19 @@ Three new results have no rendered clip of their own:
 The report shows all three, so the report recording (shot 10) can cover them: "Differential
 checks", "Hidden checks written by Muse" and "llm.c-sycl". J3 also gets its own recording,
 shot 12.
+
+**L1 (Oct 30): shot 8 is `l1`,** llm.c's production bf16 trainer, 30 s. Its numbers are in
+`data.json` under `l1`, all read from `evidence/l1-llmc-bf16` by `museport.report.load_l1`:
+- **Run 5:** 125 turns, $5.67.
+- **NVIDIA:** 36x CUDA's time (run 5, RTX A5000), 5.65x (tuned with no GPU), 1.52x (pure SYCL +
+  oneMath, our diagnostic) and 1.13-1.14x (with cuBLAS interop, the calls that built the final
+  port).
+- **AMD MI350X:** 1274, 578 and 63.5 ms per step.
+
+To make room, `term_scan`, `term_bug`, `replay`, `check`, `gpus`, the report recording, the
+llm.c-sycl recording, llama2-sycl and the limits card are shorter, and `fixes` is out. Total
+2:59. The rendered `l1` and `disclosure` were checked frame by frame; re-render all clips with
+`render.mjs` on the editing machine.
 
 ## Shots that need the author
 

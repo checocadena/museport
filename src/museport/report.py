@@ -90,7 +90,7 @@ def load(evidence: Path) -> dict[str, Any]:
     plan = json.loads(plan_file.read_text()) if plan_file.exists() else None
     return {"items": items, "batches": batches, "plan": plan, "gpt2": load_gpt2(evidence),
             "diff": load_diff(evidence), "specs": load_specs(evidence), "j3": load_j3(evidence),
-            "k1": load_k1(evidence), "j4": load_j4(evidence)}
+            "k1": load_k1(evidence), "j4": load_j4(evidence), "l1": load_l1(evidence)}
 
 
 def load_k1(evidence: Path) -> dict[str, Any] | None:
@@ -192,6 +192,91 @@ def load_j4(evidence: Path) -> dict[str, Any] | None:
             "gpu": [g for gs in _gpu_results(d).values() for g in gs],
             "fresh": [ln.split(": ", 1)[0] + ": " + ln.rsplit(": ", 1)[-1] for ln in fresh],
             "fresh_ok": bool(fresh) and all(ln.endswith("True") for ln in fresh)}
+
+
+L1_RUNS = ("run1", "run2", "run3", "run4", "run5", "tune", "gtune")
+
+
+def _l1_speed(d: Path) -> dict[str, Any] | None:
+    """A speed task's result folder: the GPU and llm.c's step timer (median ms per step) for
+    the port and, on NVIDIA, for llm.c's CUDA on the same GPU."""
+    summary = next(iter(sorted(d.rglob("summary.json"))), None)
+    if summary is None:
+        return None
+
+    def ms(name: str) -> float | None:
+        f = summary.parent / "results" / f"{name}.json"
+        if not f.exists():
+            return None
+        r = json.loads(f.read_text())
+        return r["evidence"]["results"][0].get("reported", {}).get("median") \
+            if r.get("status") == "ok" else None
+
+    s = json.loads(summary.read_text())
+    port, cuda = ms("sycl_benchmark"), ms("native_benchmark")
+    return {"device": s["evidence"]["device"]["name"].split(" VF ")[0],
+            "vendor": s["evidence"]["vendor"], "ms": port, "cuda_ms": cuda,
+            "ratio": port / cuda if port and cuda else None}
+
+
+def _l1_call(summary: str) -> dict[str, Any]:
+    """One gpu_test answer (the text Muse saw), as numbers."""
+    test = re.search(r"^llm.c's test on (.+?): (PASS|FAIL)", summary, re.M)
+    speed = re.search(r"^speed on (.+?): ([0-9.]+) ms per step", summary, re.M)
+    cuda = re.search(r"CUDA trainer: ([0-9.]+) ms", summary)
+    ms = float(speed.group(2)) if speed else None
+    cuda_ms = float(cuda.group(1)) if cuda else None
+    return {"test_device": test.group(1).split(" VF ")[0] if test else None,
+            "test": test.group(2) if test else
+            ("compile failed" if "compile FAILED" in summary else None),
+            "device": speed.group(1).split(" VF ")[0] if speed else None,
+            "ms": ms, "cuda_ms": cuda_ms,
+            "ratio": ms / cuda_ms if ms and cuda_ms else None}
+
+
+def load_l1(evidence: Path) -> dict[str, Any] | None:
+    """L1, llm.c's bf16 trainer (evidence/l1-llmc-bf16): each run, the speed of run 5's and
+    the CPU-tuned port, every gpu_test call of the GPU tuning run (marking those that built
+    the final port), and our diagnostics on the final port."""
+    d = evidence / "l1-llmc-bf16"
+    if not (d / "gtune" / "outcome.json").exists():
+        return None
+    runs = {r: json.loads((d / r / "outcome.json").read_text())
+            for r in L1_RUNS if (d / r / "outcome.json").exists()}
+    final = d / "gtune" / "port"
+
+    def same(port: Path) -> bool:
+        files = sorted(f.relative_to(final) for f in final.rglob("*") if f.is_file())
+        return files == sorted(f.relative_to(port) for f in port.rglob("*") if f.is_file()) \
+            and all((final / f).read_bytes() == (port / f).read_bytes() for f in files)
+
+    calls = []
+    for req in sorted((d / "gtune" / "gpu-calls").glob("req-*")):
+        c = _l1_call(json.loads((req / "result.json").read_text())["summary"])
+        cost = sum(float(v.get("evidence", {}).get("est_cost_usd") or 0) for v in
+                   json.loads((req / "remote.json").read_text()).values())
+        c |= {"request": req.name, "vendor": json.loads((req / "request.json").read_text())
+              ["vendor"], "final": same(req / "port"), "gpu_usd": cost,
+              "cublas": any("dlopen" in f.read_text() for f in (req / "port").rglob("*.hpp"))}
+        calls.append(c)
+    diag: dict[str, dict[str, Any]] = {}
+    results = d / "gtune" / "diagnostics" / "results.txt"
+    if results.exists():
+        for block in results.read_text().split("===== ")[1:]:
+            head, _, body = block.partition("\n")
+            name = "pure" if head.startswith("pure") else \
+                "forced_amd" if "amd" in head else "forced_nvidia"
+            if " ok" in head:
+                diag[name] = _l1_call(body)  # the last ok run of each variant
+    plan = d / "plan" / "plan.json"
+    plan_cost = json.loads(plan.read_text()).get("cost_usd") if plan.exists() else 0.0
+    return {"runs": runs, "plan_cost": plan_cost,
+            "muse_usd": (plan_cost or 0.0) + sum(r.get("cost_usd") or 0.0
+                                                 for r in runs.values()),
+            "speed": {f"{r}_{v}": _l1_speed(d / r / "gpu" / f"speed-{v}")
+                      for r in ("run5", "tune") for v in ("nvidia", "amd")},
+            "calls": calls, "final": [c for c in calls if c["final"]], "diag": diag,
+            "gpu_tuning_usd": sum(c["gpu_usd"] for c in calls)}
 
 
 def _fresh_clone(d: Path) -> dict[str, Any] | None:
@@ -520,8 +605,10 @@ def render_index(data: dict[str, Any]) -> str:
         '<a href="#gpt2">GPT-2</a><a href="#diff">Differential checks</a>'
         '<a href="#specs">Specs by Muse</a><a href="#j3">llm.c-sycl</a>'
         '<a href="#k1">Full training</a><a href="#j4">llama2.cu</a>'
+        '<a href="#l1">bf16 trainer</a>'
         '<a href="#first-runs">The first runs</a>'
         f'<a href="{REPO}">Repository</a></nav></header>',
+        _l1_section(data.get("l1")),
         '<section><h2>Results with the fixed loop</h2>' + _tier_head(True)
         + _tier_rows(current_table(items), True) + "</tbody></table></div>"
         '<p class="note"><b>Correct, 0 helpers</b>: the hidden grade. The final sources '
@@ -766,6 +853,126 @@ def _j3_section(j3: dict[str, Any] | None) -> str:
         "planted bugs must fail before a check grades Muse. A bug can keep every loss within "
         "1e-2 yet fail llm.c's test, so the test check also needs <code>overall okay: 1</code>."
         "</p></section>")
+
+
+L1_RUN_NOTES = {
+    "run1": "SYCLomatic could not parse the trainer; stopped by the toolkit's 2M-token limit "
+            "before writing code",
+    "run2": "the whole port written; forward pass right, training NaN at the turn limit",
+    "run3": "continued run 2's files: llm.c's test passes",
+    "run4": "from scratch, with a shell: stopped by the stuck rule mid-debugging",
+    "run5": "from scratch, with a shell: llm.c's test passes, in one run",
+    "tune": "tuning with no GPU: device memory, own attention kernels",
+    "gtune": "tuning with gpu_test: profiled, measured every change on real GPUs",
+}
+
+
+def _x(r: float | None) -> str:
+    return "" if r is None else f"{r:.2f}x"
+
+
+def _dev(name: str | None) -> str:
+    return esc((name or "").replace("NVIDIA ", "").replace(" Generation", "")
+               .replace("GeForce ", ""))
+
+
+def _l1_section(l1: dict[str, Any] | None) -> str:
+    if not l1:
+        return ""
+    runs, sp, final, diag = l1["runs"], l1["speed"], l1["final"], l1["diag"]
+    nv = [c for c in final if c["vendor"] == "nvidia" and c["ratio"]]
+    amd = next((c for c in final if c["vendor"] == "amd"), None)
+    lo, hi = (min(c["ratio"] for c in nv), max(c["ratio"] for c in nv)) if nv else (None, None)
+    r5 = runs.get("run5", {})
+    facts = (
+        '<div><span class="eyebrow">Port, one run</span><span class="v">'
+        f'{esc(r5.get("iterations"))} turns</span><span class="d">run 5, '
+        f'{money(r5.get("cost_usd"))}: llm.c\'s test passes</span></div>'
+        '<div><span class="eyebrow">NVIDIA, final</span><span class="v">'
+        f'{lo:.2f}-{hi:.2f}x</span><span class="d">llm.c\'s CUDA time, same GPU (with cuBLAS '
+        'interop)</span></div>'
+        '<div><span class="eyebrow">Pure SYCL + oneMath</span><span class="v">'
+        f'{_x((diag.get("pure") or {}).get("ratio"))}</span><span class="d">the final port, '
+        "cuBLAS interop compiled out (our diagnostic)</span></div>"
+        '<div><span class="eyebrow">AMD MI350X</span><span class="v">'
+        f'{amd["ms"] if amd else "?"} ms</span><span class="d">per step; run 5: '
+        f'{(sp.get("run5_amd") or {}).get("ms")} ms</span></div>'
+        f'<div><span class="eyebrow">Muse, all of L1</span><span class="v">'
+        f'{money(l1["muse_usd"])}</span><span class="d">plan and 7 runs; GPU tuning calls '
+        f'{money(l1["gpu_tuning_usd"])}</span></div>')
+    run_rows = "".join(
+        f"<tr><td>{esc(name)}</td><td>"
+        + pill(r.get("stop_reason", "?"), "ok" if r.get("stop_reason") == "success" else "warn")
+        + f"</td><td>{esc(r.get('iterations'))}</td><td>{money(r.get('cost_usd'))}</td>"
+        f"<td>{esc(L1_RUN_NOTES.get(name, ''))}</td></tr>" for name, r in runs.items())
+
+    def speed_row(label: str, s: dict[str, Any] | None) -> str:
+        if not s:
+            return ""
+        return (f"<tr><td>{esc(label)}</td><td>{_dev(s['device'])}</td><td>{s['ms']}</td>"
+                f"<td>{s.get('cuda_ms') or ''}</td><td><b>{_x(s.get('ratio'))}</b></td></tr>")
+    speed_rows = (speed_row("run 5", sp.get("run5_nvidia")) + speed_row("run 5", sp.get("run5_amd"))
+                  + speed_row("tuned, no GPU", sp.get("tune_nvidia"))
+                  + speed_row("tuned, no GPU", sp.get("tune_amd"))
+                  + "".join(speed_row("tuned with gpu_test (final)", c) for c in final)
+                  + speed_row("final, cuBLAS interop compiled out (ours)", diag.get("pure")))
+    call_rows = "".join(
+        f"<tr><td>{i}</td><td>{esc(c['vendor'])}</td><td>"
+        + (pill(c["test"], "ok" if c["test"] == "PASS" else "bad") if c["test"] else "")
+        + f"</td><td>{_dev(c['device'])}</td><td>{c['ms'] or ''}</td><td>{c['cuda_ms'] or ''}"
+        f"</td><td>{_x(c['ratio'])}</td><td>{'yes' if c['cublas'] else ''}</td>"
+        f"<td>{'final' if c['final'] else ''}</td></tr>"
+        for i, c in enumerate(l1["calls"], 1))
+    diag_rows = "".join(
+        f"<tr><td>{esc(label)}</td><td>{_dev(d.get('test_device'))}: "
+        + pill(d.get("test") or "?", "ok" if d.get("test") == "PASS" else "bad")
+        + f"</td><td>{_dev(d.get('device'))} {d.get('ms') or ''} ms {_x(d.get('ratio'))}</td></tr>"
+        for label, d in (
+            ("cuBLAS interop compiled out (pure SYCL + oneMath)", diag.get("pure")),
+            ("fast paths forced on for llm.c's test, NVIDIA", diag.get("forced_nvidia")),
+            ("fast paths forced on for llm.c's test, AMD", diag.get("forced_amd")))
+        if d)
+    ev = f'{REPO}/tree/main/evidence/l1-llmc-bf16'
+    return (
+        '<section id="l1"><h2>llm.c\'s production bf16 trainer: ported in one run, tuned on '
+        "real GPUs</h2>"
+        '<p class="note">llm.c\'s <code>train_gpt2.cu</code>, <code>test_gpt2.cu</code> and '
+        "<code>llmc/</code>: 12 CUDA files and 4,884 lines, in bf16 mixed precision with "
+        "cuBLASLt, warp reductions and stochastic rounding. The hidden check is llm.c's own "
+        "test, as Muse ports it, at llm.c's bf16 tolerances: logits, all 16 gradient tensors, "
+        "10 losses against PyTorch and a bit-exact checkpoint replay. A guard fails any port "
+        "that loosens a tolerance. For speed, Muse got a <code>gpu_test</code> tool: it builds "
+        "Muse's current code on a rented GPU and returns llm.c's test result there, llm.c's "
+        "step time next to llm.c's own CUDA on the same GPU, and an nsys kernel profile. A "
+        "broker outside the model's process holds the GPU keys and the budget.</p>"
+        f'<div class="facts">{facts}</div>'
+        "<h3>Speed: llm.c's trainer, B=4, T=1024, median ms per step over steps 6-30</h3>"
+        '<div class="scroll"><table><thead><tr><th>Port</th><th>GPU</th><th>Port ms</th>'
+        "<th>llm.c CUDA ms</th><th>CUDA's time ×</th></tr></thead><tbody>" + speed_rows
+        + "</tbody></table></div>"
+        '<p class="note"><b>Read with:</b> the NVIDIA numbers of the final port call NVIDIA\'s '
+        "cuBLAS at runtime through SYCL's backend interop, for two gemm forms oneMath's cuBLAS "
+        "backend lacks (batched bf16, bf16 output); pure SYCL + oneMath is the row below them. "
+        "Muse uses its fast paths only for large shapes, so llm.c's small test does not run "
+        "them; forced on, the test still passes (diagnostics below). Rented GPUs vary between "
+        "calls, so compare ratios; each number is one run. llm.c's CUDA does not build on "
+        "AMD, so AMD has no ratio.</p>"
+        "<h3>Runs</h3>"
+        '<div class="scroll"><table><thead><tr><th>Run</th><th>Stop</th><th>Turns</th>'
+        "<th>Muse</th><th>What happened</th></tr></thead><tbody>" + run_rows
+        + "</tbody></table></div>"
+        "<h3>Every gpu_test call of the GPU tuning run</h3>"
+        '<div class="scroll"><table><thead><tr><th>#</th><th>Vendor</th><th>llm.c\'s test'
+        "</th><th>Speed GPU</th><th>Port ms</th><th>CUDA ms</th><th>×</th><th>cuBLAS interop"
+        "</th><th></th></tr></thead><tbody>" + call_rows + "</tbody></table></div>"
+        '<p class="note"><b>final</b>: the call built exactly the final port. On AMD the '
+        "cuBLAS code compiles out. Each call keeps the code it built and the answer Muse saw."
+        "</p><h3>Our diagnostics on the final port</h3>"
+        '<div class="scroll"><table><thead><tr><th>Variant (a small edit by us, not Muse)'
+        "</th><th>llm.c's test</th><th>Speed</th></tr></thead><tbody>" + diag_rows
+        + "</tbody></table></div>"
+        f'<p class="note">Evidence: <a href="{ev}">evidence/l1-llmc-bf16</a>; the GPU tuning '
+        f'run: <a href="{ev}/gtune">gtune</a>.</p></section>')
 
 
 def _j4_section(j4: dict[str, Any] | None) -> str:

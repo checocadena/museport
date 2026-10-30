@@ -168,3 +168,19 @@ def test_j4_gets_a_section(tmp_path):
     assert section.count('pill bad">fail') == 2  # the planted bugs
     assert "vs llama2.cu" in section and "MI350X VF" in section
     assert "both stories identical" in section and "differs at byte 16" in section
+
+
+def test_l1_numbers_come_from_the_evidence() -> None:
+    """L1's report section (and the demo's numbers) read the committed runs and GPU calls."""
+    from museport.report import _l1_section, load_l1
+
+    l1 = load_l1(ROOT / "evidence")
+    assert l1 is not None and l1["runs"]["run5"]["stop_reason"] == "success"
+    assert len(l1["calls"]) == 23 and [c["vendor"] for c in l1["final"]] == [
+        "nvidia", "nvidia", "nvidia", "amd"]  # the calls that built exactly the final port
+    assert all(c["test"] == "PASS" for c in l1["final"])
+    assert round(l1["diag"]["pure"]["ratio"], 2) == 1.52
+    assert l1["diag"]["forced_amd"]["test"] == "PASS"
+    assert round(l1["speed"]["run5_nvidia"]["ratio"]) == 36
+    html = _l1_section(l1)
+    assert "1.13-1.14x" in html and "63.5 ms" in html and "$50.6" in html
