@@ -1,8 +1,11 @@
 # museport: oneMath's own BLAS unit tests on the cuBLAS backend, before and after the bf16
 # gemm patch. Sourced by gpu-test as the task's gpu_setup; everything printed lands in
 # setup.log, which comes back with the results.
-# No `set -e`/`set -u` here: this file is sourced, and they would leak into the runner that
-# packs the results afterwards (a first run lost its log that way).
+# This file is *sourced* by the runner, so everything runs in a subshell: no variable, option
+# or directory change may leak into the runner, which packs the results afterwards. (Two runs
+# lost their logs: `set -u` leaked, and so did a variable named HERE, the runner's own output
+# directory.)
+(
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ONEMATH_COMMIT=585e610ebf8101fab67c223c033611264efcd21e   # uxlfoundation/oneMath develop, 2026-10-23
 LAPACK_TAG=v3.12.1
@@ -69,3 +72,4 @@ run_suite patched-all '*'
 echo "== bf16 gemm tests, patched, full output $(el)"
 for api in ct rt; do grep -E "Bfloat16" "$W/patched-gemm-$api.log"; done
 echo "== done $(el)"
+)
