@@ -1,0 +1,76 @@
+In file included from test_gpt2.cpp:2:
+In file included from ./train_gpt2.cpp:35:
+./llmc/fused_classifier.hpp:53:12: warning: 'barrier' is deprecated: use sycl::group_barrier() free function instead [-Wdeprecated-declarations]
+   53 |         it.barrier(sycl::access::fence_space::local_space);
+      |            ^
+/opt/dpcpp/bin/compiler/../../include/sycl/nd_item.hpp:214:3: note: 'barrier' has been explicitly marked deprecated here
+  214 |   __SYCL2020_DEPRECATED("use sycl::group_barrier() free function instead")
+      |   ^
+/opt/dpcpp/bin/compiler/../../include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'
+   75 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)
+      |                                        ^
+/opt/dpcpp/bin/compiler/../../include/sycl/detail/defines_elementary.hpp:66:38: note: expanded from macro '__SYCL_DEPRECATED'
+   66 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]
+      |                                      ^
+In file included from test_gpt2.cpp:2:
+In file included from ./train_gpt2.cpp:35:
+./llmc/fused_classifier.hpp:53:12: warning: 'barrier' is deprecated: use sycl::group_barrier() free function instead [-Wdeprecated-declarations]
+   53 |         it.barrier(sycl::access::fence_space::local_space);
+      |            ^
+./llmc/fused_classifier.hpp:30:77: note: while substituting into a lambda expression here
+   30 |     q_.parallel_for(sycl::nd_range<1>(N * LS, LS), [=](sycl::nd_item<1> it) {
+      |                                                                             ^
+./llmc/fused_classifier.hpp:74:5: note: in instantiation of function template specialization 'fused_classifier_kernel<true>' requested here
+   74 |     fused_classifier_kernel<WriteDLogits>((floatX*)logits, losses, dloss, targets, B, T, V, P, q_);
+      |     ^
+./train_gpt2.cpp:642:5: note: in instantiation of function template specialization 'fused_classifier<sycl::ext::oneapi::bfloat16, true>' requested here
+  642 |     fused_classifier(acts.output, acts.losses, dloss, model->targets, B, T, V, Vp, False, q_sycl);
+      |     ^
+/opt/dpcpp/bin/compiler/../../include/sycl/nd_item.hpp:214:3: note: 'barrier' has been explicitly marked deprecated here
+  214 |   __SYCL2020_DEPRECATED("use sycl::group_barrier() free function instead")
+      |   ^
+/opt/dpcpp/bin/compiler/../../include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'
+   75 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)
+      |                                        ^
+/opt/dpcpp/bin/compiler/../../include/sycl/detail/defines_elementary.hpp:66:38: note: expanded from macro '__SYCL_DEPRECATED'
+   66 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]
+      |                                      ^
+2 warnings generated.
+In file included from test_gpt2.cpp:2:
+In file included from ./train_gpt2.cpp:35:
+./llmc/fused_classifier.hpp:53:12: warning: 'barrier' is deprecated: use sycl::group_barrier() free function instead [-Wdeprecated-declarations]
+   53 |         it.barrier(sycl::access::fence_space::local_space);
+      |            ^
+/opt/dpcpp/bin/compiler/../../include/sycl/nd_item.hpp:214:3: note: 'barrier' has been explicitly marked deprecated here
+  214 |   __SYCL2020_DEPRECATED("use sycl::group_barrier() free function instead")
+      |   ^
+/opt/dpcpp/bin/compiler/../../include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'
+   75 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)
+      |                                        ^
+/opt/dpcpp/bin/compiler/../../include/sycl/detail/defines_elementary.hpp:66:38: note: expanded from macro '__SYCL_DEPRECATED'
+   66 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]
+      |                                      ^
+In file included from test_gpt2.cpp:2:
+In file included from ./train_gpt2.cpp:35:
+./llmc/fused_classifier.hpp:53:12: warning: 'barrier' is deprecated: use sycl::group_barrier() free function instead [-Wdeprecated-declarations]
+   53 |         it.barrier(sycl::access::fence_space::local_space);
+      |            ^
+./llmc/fused_classifier.hpp:30:77: note: while substituting into a lambda expression here
+   30 |     q_.parallel_for(sycl::nd_range<1>(N * LS, LS), [=](sycl::nd_item<1> it) {
+      |                                                                             ^
+./llmc/fused_classifier.hpp:74:5: note: in instantiation of function template specialization 'fused_classifier_kernel<true>' requested here
+   74 |     fused_classifier_kernel<WriteDLogits>((floatX*)logits, losses, dloss, targets, B, T, V, P, q_);
+      |     ^
+./train_gpt2.cpp:642:5: note: in instantiation of function template specialization 'fused_classifier<sycl::ext::oneapi::bfloat16, true>' requested here
+  642 |     fused_classifier(acts.output, acts.losses, dloss, model->targets, B, T, V, Vp, False, q_sycl);
+      |     ^
+/opt/dpcpp/bin/compiler/../../include/sycl/nd_item.hpp:214:3: note: 'barrier' has been explicitly marked deprecated here
+  214 |   __SYCL2020_DEPRECATED("use sycl::group_barrier() free function instead")
+      |   ^
+/opt/dpcpp/bin/compiler/../../include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'
+   75 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)
+      |                                        ^
+/opt/dpcpp/bin/compiler/../../include/sycl/detail/defines_elementary.hpp:66:38: note: expanded from macro '__SYCL_DEPRECATED'
+   66 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]
+      |                                      ^
+2 warnings generated.
