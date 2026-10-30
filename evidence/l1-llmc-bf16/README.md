@@ -27,14 +27,16 @@ cuDNN, which are llm.c's defaults. Plan: [`docs/L1-PLAN.md`](../../docs/L1-PLAN.
 | NVIDIA RTX 4090 | 49.8 | **1.14x** | PASS |
 | NVIDIA L4 | 160.1 | **1.14x** | PASS |
 | NVIDIA RTX 2000 Ada | 205.5 | **1.13x** | PASS |
-| NVIDIA RTX A4500, pure SYCL + oneMath (cuBLAS interop compiled out, our diagnostic) | 139.8 | **1.52x** | PASS |
+| NVIDIA RTX A4500 (our 3-run repeat) | 113.3 | **1.21x** | PASS |
+| NVIDIA RTX 2000 Ada, pure SYCL + oneMath (cuBLAS interop compiled out, our diagnostic) | 250.6 | **1.36x** | PASS |
+| NVIDIA RTX A4500, pure SYCL + oneMath (our diagnostic) | 139.8 | **1.52x** | PASS |
 | AMD Instinct MI350X | **63.5** | no CUDA on AMD | PASS |
 
 **Read with these caveats** (details in [gtune/README.md](gtune/README.md#caveats)):
 
-- **The NVIDIA 1.13-1.14x calls NVIDIA's cuBLAS at runtime** through SYCL's backend interop, for
-  two gemm forms oneMath's cuBLAS backend lacks: batched bf16, and bf16 output. Without them, the
-  same code is 1.52x.
+- **The NVIDIA 1.13-1.21x calls NVIDIA's cuBLAS at runtime** through SYCL's backend interop, for
+  two bf16 gemm forms oneMath's API does not have on any backend: batched bf16, and bf16 output
+  (it has both for fp16). Without them, the same code is 1.36x (RTX 2000 Ada) to 1.52x (RTX A4500).
 - **llm.c's test does not run the fast paths as Muse left them.** Muse gates them to large
   shapes (B·T > 1024) on a GPU. Forced on, llm.c's test still passes: on NVIDIA (0.029) and on
   AMD (0.046, against a tolerance of 0.05).
@@ -54,7 +56,7 @@ $5.67, tuning $10.39 and $14.50.
 | [Run 4](run4), from scratch, with a shell | stopped by the loop's stuck rule at turn 132, mid-debugging: three different shell commands failed in a row. Failed shell commands no longer count | $5.57 |
 | [Run 5](run5), from scratch, with a shell | **success in one run**, 125 turns; rebuilt outside the loop: PASS (16/16 gradients) | $5.67 |
 | [Tuning, CPU only](tune/README.md) | success, 192 turns; AMD 1274 to 578 ms per step | $10.39 |
-| [Tuning with `gpu_test`](gtune/README.md) | success, 211 turns; NVIDIA 1.13-1.14x CUDA (1.52x pure oneMath), AMD 63 ms | $14.50 + $3.50 GPU |
+| [Tuning with `gpu_test`](gtune/README.md) | success, 211 turns; NVIDIA 1.13-1.21x CUDA (1.36-1.52x pure oneMath), AMD 63 ms | $14.50 + $3.50 GPU |
 
 **Integrity, runs 4 onward:**
 

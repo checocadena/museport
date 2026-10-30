@@ -126,7 +126,9 @@ def _l1(l1: dict[str, object] | None) -> dict[str, object] | None:
                 "gpu_calls": len(l1["calls"]), "gpu_usd": l1["gpu_tuning_usd"]},  # type: ignore[arg-type,index]
             "muse_usd": l1["muse_usd"],  # type: ignore[index]
             "nvidia": {"run5": sp["run5_nvidia"], "tune": sp["tune_nvidia"],
-                       "final": nv, "pure": diag.get("pure")},
+                       # the final port: Muse's calls, then our 3-run repeat on an RTX A4500
+                       "final": nv + ([diag["pair_interop"]] if "pair_interop" in diag else []),
+                       "pure": [d for k in ("pure", "pair_pure") if (d := diag.get(k))]},
             "amd": {"run5": sp["run5_amd"], "tune": sp["tune_amd"],
                     "final": next(c for c in final if c["vendor"] == "amd")},  # type: ignore[attr-defined]
             "final_tests": [{"vendor": c["vendor"], "device": c["test_device"],

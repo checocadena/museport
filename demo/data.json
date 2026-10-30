@@ -1379,16 +1379,32 @@
      "final": true,
      "gpu_usd": 0.017,
      "cublas": true
+    },
+    {
+     "device": "NVIDIA RTX A4500",
+     "vendor": "nvidia",
+     "ms": 113.33,
+     "cuda_ms": 93.64,
+     "ratio": 1.2102733874412643
     }
    ],
-   "pure": {
-    "test_device": "NVIDIA RTX 2000 Ada Generation",
-    "test": "PASS",
-    "device": "NVIDIA RTX A4500",
-    "ms": 139.8,
-    "cuda_ms": 91.8,
-    "ratio": 1.5228758169934642
-   }
+   "pure": [
+    {
+     "test_device": "NVIDIA RTX 2000 Ada Generation",
+     "test": "PASS",
+     "device": "NVIDIA RTX A4500",
+     "ms": 139.8,
+     "cuda_ms": 91.8,
+     "ratio": 1.5228758169934642
+    },
+    {
+     "device": "NVIDIA RTX 2000 Ada Generation",
+     "vendor": "nvidia",
+     "ms": 250.59,
+     "cuda_ms": 184.14,
+     "ratio": 1.3608667318344738
+    }
+   ]
   },
   "amd": {
    "run5": {

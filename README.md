@@ -10,7 +10,7 @@ the output matches the original. The ports are then run on real NVIDIA GPUs agai
 original CUDA, and on an AMD MI350X against the hidden reference.
 
 The largest result: Muse ported **llm.c's production bf16 GPT-2 trainer** in one run. Then, with a
-tool that runs its code on rented GPUs, Muse tuned it to **1.13-1.14x llm.c's CUDA time on
+tool that runs its code on rented GPUs, Muse tuned it to **1.13-1.21x llm.c's CUDA time on
 NVIDIA**, with llm.c's own test passing on NVIDIA and AMD
 ([below](#llmcs-production-bf16-trainer-ported-in-one-run-then-tuned-on-real-gpus)).
 
@@ -70,15 +70,18 @@ Muse ports it, with llm.c's bf16 tolerances. A guard fails any port that loosens
 | NVIDIA RTX 4090 | 49.8 | **1.14x** | PASS |
 | NVIDIA L4 | 160.1 | **1.14x** | PASS |
 | NVIDIA RTX 2000 Ada | 205.5 | **1.13x** | PASS |
-| NVIDIA RTX A4500, cuBLAS interop compiled out (pure SYCL + oneMath) | 139.8 | **1.52x** | PASS |
+| NVIDIA RTX A4500 (our 3-run repeat) | 113.3 | **1.21x** | PASS |
+| NVIDIA RTX 2000 Ada, cuBLAS interop compiled out (pure SYCL + oneMath; ours) | 250.6 | **1.36x** | PASS |
+| NVIDIA RTX A4500, cuBLAS interop compiled out (ours) | 139.8 | **1.52x** | PASS |
 | AMD Instinct MI350X | **63.5** | (llm.c's CUDA does not build on AMD) | PASS |
 
 **What to know:**
 
-- **cuBLAS on NVIDIA:** the NVIDIA 1.13-1.14x uses NVIDIA's cuBLAS at runtime, through SYCL's
-  backend interop, for two gemm forms that oneMath's cuBLAS backend lacks: batched bf16, and bf16
-  output. Pure SYCL + oneMath is 1.52x. That gap is a concrete upstream ask, like the bf16
-  gemm patch below.
+- **cuBLAS on NVIDIA:** the NVIDIA 1.13-1.21x uses NVIDIA's cuBLAS at runtime, through SYCL's
+  backend interop, for two bf16 gemm forms that oneMath's API does not have on any backend:
+  batched bf16, and bf16 output. oneMath has both for fp16. Pure SYCL + oneMath is 1.36x on the
+  RTX 2000 Ada (1.13x with cuBLAS) and 1.52x on the RTX A4500 (1.21x). That
+  gap is a concrete upstream ask, like the bf16 gemm patch below.
 - **Fast paths and llm.c's test:** Muse uses the fast paths only for large shapes, so llm.c's
   small test does not run them. We forced them on as a diagnostic, and llm.c's test passes on
   NVIDIA and on AMD (worst loss 0.046, against a tolerance of 0.05).

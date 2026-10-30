@@ -183,4 +183,6 @@ def test_l1_numbers_come_from_the_evidence() -> None:
     assert l1["diag"]["forced_amd"]["test"] == "PASS"
     assert round(l1["speed"]["run5_nvidia"]["ratio"]) == 36
     html = _l1_section(l1)
-    assert "1.13-1.14x" in html and "63.5 ms" in html and "$50.6" in html
+    assert "1.13-1.21x" in html and "1.36-1.52x" in html and "63.5 ms" in html
+    assert "$50.6" in html
+    assert round(l1["diag"]["pair_pure"]["ratio"], 2) == 1.36  # same GPU as call 22 (1.13x)
