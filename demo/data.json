@@ -1457,6 +1457,62 @@
     "pass": true
    }
   ],
+  "portable": {
+   "call": {
+    "test_device": "NVIDIA L4",
+    "test": "PASS",
+    "device": "NVIDIA RTX A4000",
+    "ms": 181.1,
+    "cuda_ms": 116.7,
+    "ratio": 1.5518423307626392
+   },
+   "speeds": [
+    {
+     "device": "AMD Instinct MI300X",
+     "vendor": "amd",
+     "ms": 190.84,
+     "cuda_ms": null,
+     "ratio": null
+    },
+    {
+     "device": "AMD Instinct MI350X",
+     "vendor": "amd",
+     "ms": 63.27,
+     "cuda_ms": null,
+     "ratio": null
+    },
+    {
+     "device": "NVIDIA L4",
+     "vendor": "nvidia",
+     "ms": 199.94,
+     "cuda_ms": 142.39,
+     "ratio": 1.404171641266943
+    },
+    {
+     "device": "NVIDIA RTX A4000",
+     "vendor": "nvidia",
+     "ms": 181.57,
+     "cuda_ms": 117.67,
+     "ratio": 1.5430441063992522
+    }
+   ],
+   "tests": [
+    {
+     "device": "NVIDIA L4",
+     "pass": true
+    },
+    {
+     "device": "AMD Instinct MI300X",
+     "pass": true
+    }
+   ],
+   "cpu_pass": true,
+   "ratios": [
+    1.404171641266943,
+    1.5430441063992522,
+    1.5518423307626392
+   ]
+  },
   "forced": {
    "forced_nvidia": true,
    "forced_amd": true

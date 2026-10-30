@@ -25,6 +25,10 @@ cuDNN, which are llm.c's defaults. Plan: [`docs/L1-PLAN.md`](../../docs/L1-PLAN.
 
 | Final port, llm.c's trainer, B=4, T=1024 | ms per step | vs llm.c's CUDA, same GPU | llm.c's test |
 |---|---|---|---|
+| **Portable SYCL + oneMath (no vendor code, test runs training's code), NVIDIA L4** | 199.9 | **1.40x** | PASS |
+| **Portable, NVIDIA RTX A4000** | 181.6 | **1.54x** | PASS |
+| **Portable, AMD Instinct MI350X** | **63.3** | (llm.c's CUDA does not build on AMD) | PASS |
+| *With NVIDIA's cuBLAS through SYCL interop (the GPU tuning run):* | | | |
 | NVIDIA RTX 4090 | 49.8 | **1.14x** | PASS |
 | NVIDIA L4 | 160.1 | **1.14x** | PASS |
 | NVIDIA RTX 2000 Ada | 205.5 | **1.13x** | PASS |

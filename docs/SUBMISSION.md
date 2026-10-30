@@ -14,7 +14,7 @@ llama2.cu, Llama 2 inference) to the open SYCL standard. A port counts as done o
 the model never sees agrees.
 
 The largest port is llm.c's production bf16 GPT-2 trainer. Muse ported it from the CUDA alone,
-then tuned it on rented GPUs. In portable SYCL + oneMath it trains at PORTABLE_RATIO llm.c's CUDA
+then tuned it on rented GPUs. In portable SYCL + oneMath it trains at 1.40-1.55x llm.c's CUDA
 time on NVIDIA, with llm.c's own test, running the same code that trains, passing on a CPU, an
 NVIDIA GPU and an AMD GPU. With NVIDIA's cuBLAS called directly it reaches 1.13-1.21x. The work
 also found a bug in oneMath, with a tested fix ready to send upstream.
@@ -84,7 +84,7 @@ lines, bf16, cuBLASLt, warp reductions, stochastic rounding)
   size-based code paths. The version Muse built at turn 209:
   - passes llm.c's test on the CPU, an NVIDIA L4 and an AMD MI300X, and the test runs the same
     code that trains;
-  - trains at **PORTABLE_RATIO llm.c's CUDA time** on NVIDIA (PORTABLE_DETAIL);
+  - trains at **1.40-1.55x llm.c's CUDA time** on NVIDIA (1.40x on an L4 and 1.54-1.55x on an RTX A4000, medians of 2-3 runs; 63.3 ms per step on an AMD MI350X);
   - that run's own loop did not succeed: Muse kept editing after that version, and its final code
     fails ([evidence](../evidence/l1-llmc-bf16/ptune/README.md)).
 - **Tuning with real GPUs and vendor libraries:** 211 turns, $14.50 of Muse, $3.50 of GPU
