@@ -13,9 +13,11 @@ Muse Port has Meta's Muse Spark plan and port real CUDA codebases (Karpathy's ll
 llama2.cu, Llama 2 inference) to the open SYCL standard. A port counts as done only when a check
 the model never sees agrees.
 
-The largest port is llm.c's production bf16 GPT-2 trainer. Muse ported it in one run. Then,
-measuring on rented GPUs, it tuned the trainer to 1.13-1.21x llm.c's CUDA time on NVIDIA
-(1.36-1.52x without vendor libraries), with llm.c's own test passing on NVIDIA and AMD.
+The largest port is llm.c's production bf16 GPT-2 trainer. Muse ported it from the CUDA alone,
+then tuned it on rented GPUs. In portable SYCL + oneMath it trains at PORTABLE_RATIO llm.c's CUDA
+time on NVIDIA, with llm.c's own test, running the same code that trains, passing on a CPU, an
+NVIDIA GPU and an AMD GPU. With NVIDIA's cuBLAS called directly it reaches 1.13-1.21x. The work
+also found a bug in oneMath, with a tested fix ready to send upstream.
 
 ## Opening line of the 3-minute video (required)
 
@@ -78,7 +80,14 @@ lines, bf16, cuBLASLt, warp reductions, stochastic rounding)
   - It passes on the CPU, an AMD MI350X and an NVIDIA RTX 4000 Ada, and a rebuild outside the
     loop passes too.
   - It ran at 36x CUDA's time.
-- **Tuning with real GPUs:** 211 turns, $14.50 of Muse, $3.50 of GPU
+- **Portable result (the headline):** a pure-oneAPI tuning run banned vendor libraries and
+  size-based code paths. The version Muse built at turn 209:
+  - passes llm.c's test on the CPU, an NVIDIA L4 and an AMD MI300X, and the test runs the same
+    code that trains;
+  - trains at **PORTABLE_RATIO llm.c's CUDA time** on NVIDIA (PORTABLE_DETAIL);
+  - that run's own loop did not succeed: Muse kept editing after that version, and its final code
+    fails ([evidence](../evidence/l1-llmc-bf16/ptune/README.md)).
+- **Tuning with real GPUs and vendor libraries:** 211 turns, $14.50 of Muse, $3.50 of GPU
   ([evidence](../evidence/l1-llmc-bf16/gtune/README.md)).
   - Muse profiled, rewrote its slow kernels, and checked each change on a GPU.
   - **NVIDIA:** 1.14x llm.c's CUDA time on an RTX 4090 (49.8 vs 43.5 ms per step) and on an
@@ -93,12 +102,11 @@ lines, bf16, cuBLASLt, warp reductions, stochastic rounding)
     Forced on, the test passes on NVIDIA and AMD (worst 0.046 against 0.05).
   - **Not one pass overall:** before run 5, the first port took three runs, and a repeat of
     run 5 (run 6) failed within $10: one-run success in 1 of 2 tries.
-  - **Pure oneAPI:** banning vendor interop and size thresholds, one version Muse built passes
-    llm.c's test on the CPU, NVIDIA and AMD at 1.55x CUDA, though that run's own loop did not
-    succeed ([evidence](../evidence/l1-llmc-bf16/ptune/README.md)).
 - **A oneMath bug:** its cuBLAS backend throws "unimplemented" for bf16 gemm. The port found it,
-  and a two-line patch by us routes it to `cublasGemmEx`
-  ([patch](../patches/onemath-cublas-bf16-gemm.patch)).
+  and a two-line patch by us routes it to `cublasGemmEx`. On oneMath's own BLAS unit tests (NVIDIA
+  L4), it turns the two bf16 gemm tests from skipped to passed and changes nothing else. A PR and
+  a feature request for the missing bf16 batched and bf16-output gemms are ready to send
+  ([upstream/onemath](../upstream/onemath/README.md)).
 - **Cost:** about $75.50 of Muse for all of L1, with every run's evidence, failures included.
 
 **llm.c kernels, with the fixed agent loop** (one run per file):

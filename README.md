@@ -9,10 +9,24 @@ ports it piece by piece. Nothing counts as done until a check the model never se
 the output matches the original. The ports are then run on real NVIDIA GPUs against the
 original CUDA, and on an AMD MI350X against the hidden reference.
 
-The largest result: Muse ported **llm.c's production bf16 GPT-2 trainer** in one run. Then, with a
-tool that runs its code on rented GPUs, Muse tuned it to **1.13-1.21x llm.c's CUDA time on
-NVIDIA**, with llm.c's own test passing on NVIDIA and AMD
-([below](#llmcs-production-bf16-trainer-ported-in-one-run-then-tuned-on-real-gpus)).
+## At a glance
+
+Every number below links to committed evidence; failures are published too.
+
+| What Muse did | Proven by | Evidence |
+|---|---|---|
+| Ported **llm.c's production bf16 GPT-2 trainer** (12 CUDA files, 4,884 lines) | llm.c's own test, at llm.c's bf16 tolerances, on a CPU, an NVIDIA GPU and an AMD GPU | [L1](evidence/l1-llmc-bf16/README.md) |
+| Tuned it on rented GPUs, in **portable SYCL + oneMath**, to **PORTABLE_RATIO llm.c's CUDA time** on NVIDIA, with llm.c's test running the same code that trains | llm.c's test on CPU, NVIDIA and AMD; timed beside llm.c's CUDA on the same GPU | [pure-oneAPI run](evidence/l1-llmc-bf16/ptune/README.md) |
+| With NVIDIA's cuBLAS called directly (vendor-specific): **1.13-1.21x** | the same | [GPU tuning run](evidence/l1-llmc-bf16/gtune/README.md) |
+| Ported **19 of llm.c's CUDA kernel files**: 18 correct, 17 pass on NVIDIA against llm.c's CUDA, 18 on AMD | hidden checks from llm.c's own CPU code | [results](#results-llmc-devcuda-muse-spark-13) |
+| Ported **GPT-2 training** (fp32) and reassembled the ports as **`llm.c-sycl`**, whose `make` builds llm.c's own test: `overall okay: 1` on CPU, NVIDIA and AMD | llm.c's test and PyTorch's numbers | [llm.c-sycl](#llmc-sycl-the-ports-put-back-together-as-a-repo) |
+| Ported a **second repo, llama2.cu**, in one run for $0.45: the stories match byte for byte on CPU, NVIDIA and AMD | llama2.cu's own output, recorded on NVIDIA | [llama2-sycl](#a-second-cuda-repo-one-772-line-file-end-to-end-llama2-sycl) |
+| Found a **bug in oneMath** (oneAPI's math library): bf16 gemm on NVIDIA throws `unimplemented`. Our 2-line fix turns oneMath's own bf16 tests from skipped to passed; a PR and a feature request are ready to send upstream | oneMath's BLAS unit tests, before and after | [upstream/onemath](upstream/onemath/README.md) |
+
+**Honest limits:** the one-run bf16 port succeeded in 1 of 2 tries. Speeds are single runs on
+rented GPUs whose model varies, so compare the ratios to CUDA on the same machine. The kernel
+ports are fp32 at reduced sizes. Every mistake we made and its fix is in
+[`docs/LESSONS.md`](docs/LESSONS.md).
 
 > **Status: built during the Meta Global AI Developer Hackathon (submissions due Nov 4, 2026).**
 > This repository was created on Oct 26, 2026, after the event's kickoff. Every commit in it
