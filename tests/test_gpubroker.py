@@ -155,3 +155,22 @@ def test_a_failing_test_shows_its_failed_checks_first() -> None:
     shown = failing(out)
     assert shown.startswith("failed checks:\nTENSOR NOT OK: wpe") and len(shown) < 3000
     assert shown.endswith("overall okay: 0")
+
+
+def test_a_pure_oneapi_broker_refuses_vendor_interop(tmp_path: Path) -> None:
+    from museport.gpubroker import VENDOR_INTEROP, forbidden
+
+    queue, calls = tmp_path / "q", []
+    queue.mkdir()
+    t = _serve(tmp_path, queue, _fake_remote(calls), forbid=VENDOR_INTEROP)
+    work = tmp_path / "gwork"
+    shutil.copytree(EV / "gtune" / "port", work)  # the final port, with its cuBLAS interop
+    r = submit(queue, work, "nvidia", timeout_s=30, poll_s=0.05)
+    (queue / "STOP").write_text("")
+    t.join(5)
+    # the tuned port with cuBLAS interop is refused before any GPU is rented
+    assert calls == [] and r.status == "error" and "batched_gemm.hpp" in r.summary
+    clean = tmp_path / "clean"
+    (clean / "llmc").mkdir(parents=True)
+    (clean / "llmc" / "matmul.hpp").write_text("oneapi::math::blas::column_major::gemm(q);\n")
+    assert forbidden(clean, VENDOR_INTEROP) == []

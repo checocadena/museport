@@ -189,6 +189,8 @@ def build_parser() -> argparse.ArgumentParser:
     gb.add_argument("--spent", type=float, default=0.0,
                     help="a restarted broker: GPU USD this session has already spent")
     gb.add_argument("--calls", type=int, default=0, help="... and calls it has already made")
+    gb.add_argument("--pure-oneapi", action="store_true",
+                    help="refuse ports that call vendor libraries or backend interop directly")
 
     rv = sub.add_parser("review", help="Muse reviews each finished port from the code alone "
                                        "(no test results); verdicts compared with the hidden "
@@ -295,12 +297,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.cmd == "gpu-broker":
         from pathlib import Path
 
-        from .gpubroker import serve
+        from .gpubroker import VENDOR_INTEROP, serve
 
         serve(Path(args.queue), llmc=Path(args.llmc), recorded=Path(args.recorded),
               evidence_dir=Path(args.evidence), run="tune", onemath_patch=Path(args.patch),
               budget_usd=args.budget, max_calls=args.max_calls, model=args.model,
               spent=args.spent, calls=args.calls,
+              forbid=VENDOR_INTEROP if args.pure_oneapi else None,
               log=lambda m: print(f"[gpu-broker] {m}", file=sys.stderr, flush=True))
         return 0
     if args.cmd == "gpt2-gpu-task":

@@ -343,6 +343,34 @@ GPU_TUNE_GOAL = (
     "test passes on the current sources.")
 
 
+# The third tuning run: the same tools, but SYCL and oneMath only, and the test must run the same
+# code as training. Numbers measured on 2026-10-29/30 for the seed (the GPU-tuned port).
+PURE_TUNE_GOAL = (
+    "Your work dir holds a SYCL 2020 port of llm.c's bf16 GPT-2 trainer (train_gpt2.cpp, "
+    "test_gpt2.cpp, llmc/*.hpp and llmc's plain-C headers). It passes llm.c's own test, the "
+    "hidden check, on the CPU here and on NVIDIA and AMD GPUs. On NVIDIA it reaches 1.13-1.21x "
+    "llm.c's CUDA step time, but only by calling NVIDIA's cuBLAS directly through SYCL backend "
+    "interop (llmc/batched_gemm.hpp: dlopen of libcublas, cublasGemmStridedBatchedEx and "
+    "cublasGemmEx). With that code compiled out it is 1.36x (RTX 2000 Ada) to 1.52x (RTX A4500). "
+    "This run is about portable code: make it as fast as you can using only SYCL 2020 (and "
+    "its standard or oneAPI extensions, such as sycl::ext::oneapi::experimental::matrix for "
+    "tensor cores) and oneMath, with no vendor library called directly and no backend interop. "
+    "First remove the cuBLAS interop; gpu_test refuses any port that contains dlopen, dlsym, "
+    "get_native, ext_oneapi_cuda/hip, cublas, rocblas or hipblas, without renting a GPU. Note "
+    "that oneMath's bf16 gemm has bf16 inputs and fp32 output only; it has no bf16 gemm_batch "
+    "and no bf16-output gemm, so the attention matmuls and bf16 outputs need your own kernels "
+    "or another approach. Second requirement: llm.c's test must run the same code paths as "
+    "training. Do not choose kernels by problem size, device or any condition that sends the "
+    "test's small shapes (B=4, T=64) to different code than training's (B=4, T=1024); the "
+    "current port does this (BT > 1024 and a work threshold in llmc/matmul.hpp) and it must go. "
+    "Keep llm.c's test exactly as it is (checks, tolerances, printout), its determinism, zero "
+    "dpct helpers, and the sources [test_gpt2.cpp] with -DENABLE_BF16. Measure with gpu_test "
+    "(profile=true shows the top kernels for your port and for llm.c's CUDA), undo changes that "
+    "do not help, and at the end check llm.c's test with gpu_test on both vendors. When you "
+    "have done what you can, call finish: the run ends only when you call finish and the test "
+    "passes on the current sources.")
+
+
 def make_tune_task(llmc: Path, data: Path, port: Path, out: Path,
                    goal: str = TUNE_GOAL) -> Path:
     """The tuning task: run 5's no-migrate, shell task with ``port``'s files as the seed (the
