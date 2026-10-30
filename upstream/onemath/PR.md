@@ -45,11 +45,22 @@ Fixes # (no issue filed; the reproduction is above)
 
 ## All Submissions
 
-- [x] Do all unit tests pass locally? Attach a log.
-  - Built at `develop` `585e610` with only the cuBLAS backend and the BLAS domain, and run on
-    UNIT_GPU with ONEAPI_DEVICE_SELECTOR=cuda:*, before and after this change.
-  - The BLAS tests, compile-time and run-time APIs: UNIT_SUMMARY.
-  - The `Bfloat16Bfloat16FloatPrecision` cases go from SKIPPED to PASSED: UNIT_BF16.
+- [ ] Do all unit tests pass locally? Attach a log.
+  - Not all pass, but the failures are the same with and without this change.
+  - **Setup:** built at `develop` `585e610` with only the cuBLAS backend and the BLAS domain,
+    and the whole BLAS suite run before and after this change. The run used an NVIDIA L4
+    (driver 595.91.07, CUDA 13.2), the intel/llvm nightly of 2026-10-30, and
+    `ONEAPI_DEVICE_SELECTOR=cuda:*`.
+  - **Compile-time and run-time APIs alike:** 323 passed, 88 failed and 575 skipped before;
+    **325 passed**, 88 failed and 573 skipped after.
+  - **The change:** in both APIs, `GemmTests.Bfloat16Bfloat16FloatPrecision/Column_Major` and
+    `GemmUsmTests.Bfloat16Bfloat16FloatPrecision/Column_Major` go from SKIPPED to OK. Nothing
+    else changes.
+  - **The 88 failures** are the same set before and after this change: level-1 tests (scal,
+    copy, swap, nrm2, ...), each failing within about 1 ms. Whatever runs first in a test
+    process fails this way on this setup; a run filtered to `*Gemm*` showed the same for gemm.
+    This looks like a start-up issue of this environment, unrelated to the change. I can rerun
+    on another setup if you want a clean baseline.
   - Log attached: `onemath-cublas-blas-tests.log`.
 
 ## Bug fixes
