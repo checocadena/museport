@@ -1311,5 +1311,139 @@
    }
   ],
   "fresh_clone_identical": true
+ },
+ "l1": {
+  "run5": {
+   "turns": 125,
+   "cost": 5.67271185
+  },
+  "tune_cost": 10.38925475,
+  "gtune": {
+   "turns": 211,
+   "cost": 14.502173050000001,
+   "gpu_calls": 23,
+   "gpu_usd": 3.4970000000000003
+  },
+  "muse_usd": 50.6455104,
+  "nvidia": {
+   "run5": {
+    "device": "NVIDIA RTX A5000",
+    "vendor": "nvidia",
+    "ms": 2890.85,
+    "cuda_ms": 80.31,
+    "ratio": 35.99613995766405
+   },
+   "tune": {
+    "device": "NVIDIA RTX 2000 Ada Generation",
+    "vendor": "nvidia",
+    "ms": 1058.32,
+    "cuda_ms": 187.19,
+    "ratio": 5.653720818419787
+   },
+   "final": [
+    {
+     "test_device": "NVIDIA L4",
+     "test": "PASS",
+     "device": "NVIDIA GeForce RTX 4090",
+     "ms": 49.8,
+     "cuda_ms": 43.5,
+     "ratio": 1.1448275862068964,
+     "request": "req-20261029T222142-1686-13486",
+     "vendor": "nvidia",
+     "final": true,
+     "gpu_usd": 0.05399999999999999,
+     "cublas": true
+    },
+    {
+     "test_device": "NVIDIA RTX 2000 Ada Generation",
+     "test": "PASS",
+     "device": "NVIDIA L4",
+     "ms": 160.1,
+     "cuda_ms": 140.6,
+     "ratio": 1.1386913229018492,
+     "request": "req-20261029T222420-1686-999121",
+     "vendor": "nvidia",
+     "final": true,
+     "gpu_usd": 0.074,
+     "cublas": true
+    },
+    {
+     "test_device": "NVIDIA RTX 2000 Ada Generation",
+     "test": "PASS",
+     "device": "NVIDIA RTX 2000 Ada Generation",
+     "ms": 205.5,
+     "cuda_ms": 181.9,
+     "ratio": 1.1297416162726772,
+     "request": "req-20261029T223337-1686-970413",
+     "vendor": "nvidia",
+     "final": true,
+     "gpu_usd": 0.017,
+     "cublas": true
+    }
+   ],
+   "pure": {
+    "test_device": "NVIDIA RTX 2000 Ada Generation",
+    "test": "PASS",
+    "device": "NVIDIA RTX A4500",
+    "ms": 139.8,
+    "cuda_ms": 91.8,
+    "ratio": 1.5228758169934642
+   }
+  },
+  "amd": {
+   "run5": {
+    "device": "AMD Instinct MI350X",
+    "vendor": "amd",
+    "ms": 1274.31,
+    "cuda_ms": null,
+    "ratio": null
+   },
+   "tune": {
+    "device": "AMD Instinct MI350X",
+    "vendor": "amd",
+    "ms": 577.86,
+    "cuda_ms": null,
+    "ratio": null
+   },
+   "final": {
+    "test_device": "AMD Instinct MI350X",
+    "test": "PASS",
+    "device": "AMD Instinct MI350X",
+    "ms": 63.5,
+    "cuda_ms": null,
+    "ratio": null,
+    "request": "req-20261029T223624-1686-651141",
+    "vendor": "amd",
+    "final": true,
+    "gpu_usd": 0.306,
+    "cublas": true
+   }
+  },
+  "final_tests": [
+   {
+    "vendor": "nvidia",
+    "device": "NVIDIA L4",
+    "pass": true
+   },
+   {
+    "vendor": "nvidia",
+    "device": "NVIDIA RTX 2000 Ada Generation",
+    "pass": true
+   },
+   {
+    "vendor": "nvidia",
+    "device": "NVIDIA RTX 2000 Ada Generation",
+    "pass": true
+   },
+   {
+    "vendor": "amd",
+    "device": "AMD Instinct MI350X",
+    "pass": true
+   }
+  ],
+  "forced": {
+   "forced_nvidia": true,
+   "forced_amd": true
+  }
  }
 }

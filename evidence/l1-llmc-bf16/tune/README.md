@@ -2,7 +2,9 @@
 
 **Start:** run 5's port, which passed llm.c's test but ran slowly:
 
-- 2850 ms per step on an NVIDIA RTX A5000, where llm.c's CUDA takes 79 ms (36x);
+- 2891 ms per step on an NVIDIA RTX A5000, where llm.c's CUDA takes 80.3 ms (36x;
+  [run5/gpu/speed-nvidia](../run5/gpu/speed-nvidia)). The goal Muse was given quoted 2850 and
+  79 ms, slightly off from the recorded medians; the ratio is the same;
 - 1274 ms per step on an AMD MI350X.
 
 **Goal ([goal.txt](goal.txt)):** make it faster while llm.c's test keeps passing. The goal named
@@ -58,7 +60,7 @@ llm.c's trainer: B=4, T=1024, 30 steps. Times are the median of llm.c's own step
 | NVIDIA RTX 2000 Ada | llm.c's CUDA (native) | 187 | 1x |
 | NVIDIA RTX 2000 Ada | run 3's port | 523 (CUDA there: 183) | 2.9x |
 | NVIDIA RTX 2000 Ada | **tuned port** | **1058** | **5.7x** |
-| NVIDIA RTX A5000 | run 5's port | 2850 (CUDA: 79) | 36x |
+| NVIDIA RTX A5000 | run 5's port | 2891 (CUDA: 80.3) | 36x |
 | AMD MI350X | run 3's port | 867 | |
 | AMD MI350X | run 5's port | 1274 | |
 | AMD MI350X | **tuned port** | **578** | |
