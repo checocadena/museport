@@ -1,0 +1,64 @@
+{
+  "tool": "verify",
+  "status": "ok",
+  "summary": "PASS: 1/1 case(s) match (worst max abs err 0.0107, atol 0.1)",
+  "evidence": {
+    "mode": "array",
+    "cases": [
+      {
+        "input": "/tmp/tmp.y1UKnvekQ0/task/args.txt",
+        "reference": {
+          "command": "cp /tmp/tmp.y1UKnvekQ0/task/recorded_losses.out /tmp/tmp.y1UKnvekQ0/out/work/v_native/case0_reference.out",
+          "returncode": 0,
+          "duration_s": 0.004328,
+          "stdout": "",
+          "stderr": "",
+          "cwd": "/tmp/tmp.y1UKnvekQ0/out/work",
+          "output_file": "/tmp/tmp.y1UKnvekQ0/out/work/v_native/case0_reference.out"
+        },
+        "candidate": {
+          "command": "python3 /tmp/tmp.y1UKnvekQ0/task/run_speed.py build/native /tmp/tmp.y1UKnvekQ0/task/args.txt /tmp/tmp.y1UKnvekQ0/out/work/v_native/case0_candidate.out",
+          "returncode": 0,
+          "duration_s": 3.787109,
+          "stdout": "{\"steps\": 30, \"ms_per_step_median\": 92.12, \"losses\": [4.285959, 4.83497, 4.398924, 3.597744, 3.653001, 3.913278, 4.034683, 3.563207, 3.892435, 3.500998, 3.935533, 3.708957, 3.928077, 3.791107, 3.640595, 3.424936, 3.930608, 3.728099, 3.480982, 3.597695, 3.569687, 3.570911, 3.100084, 3.293723, 3.658677, 3.502016, 3.779506, 3.432663, 3.313709, 3.255686]}\nkernel_ms=92.12\n",
+          "stderr": "",
+          "cwd": "/tmp/tmp.y1UKnvekQ0/out/work",
+          "output_file": "/tmp/tmp.y1UKnvekQ0/out/work/v_native/case0_candidate.out"
+        },
+        "reference_format": "f32",
+        "candidate_format": "f32",
+        "mode": "array",
+        "stats": {
+          "n_reference": 30,
+          "n_candidate": 30,
+          "atol": 0.1,
+          "rtol": 0.0,
+          "max_ulp_allowed": null,
+          "passed": true,
+          "max_abs_err": 0.01069021224975586,
+          "rms_err": 0.0037602347981561734,
+          "mean_abs_err": 0.0029938856760660807,
+          "max_rel_err": 0.002424296557680556,
+          "max_ulp_f32": 33214,
+          "median_ulp_f32": 10433.5,
+          "exact_matches": 0,
+          "mismatches": 0,
+          "nan_mismatches": 0,
+          "reference_range": [
+            3.101262092590332,
+            4.8340067863464355
+          ],
+          "first_mismatches": []
+        },
+        "passed": true
+      }
+    ],
+    "work_dir": "/tmp/tmp.y1UKnvekQ0/out/work/v_native",
+    "passed_cases": 1,
+    "total_cases": 1,
+    "worst_max_abs_err": 0.01069021224975586
+  },
+  "limitations": [
+    "Equivalence is shown only for the inputs tested; other inputs/sizes may behave differently."
+  ]
+}

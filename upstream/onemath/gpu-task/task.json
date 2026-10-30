@@ -1,0 +1,23 @@
+{
+  "name": "onemath_cublas_bf16_gemm_unit_tests",
+  "cuda_path": "write_one.cpp",
+  "reference_build": [
+    "true"
+  ],
+  "reference_cmd": "cp {task_dir}/reference.out {output}",
+  "candidate_cmd": "build/candidate {input} {output}",
+  "sycl_sources": [
+    "write_one.cpp"
+  ],
+  "inputs": [
+    "in.txt"
+  ],
+  "mode": "array",
+  "output_format": "f32",
+  "tolerance": 0.0,
+  "benchmark_runs": 0,
+  "gpu_setup": "run_tests.sh",
+  "museport": {
+    "note": "oneMath's BLAS unit tests on cuBLAS, before and after the patch; results in setup.log"
+  }
+}

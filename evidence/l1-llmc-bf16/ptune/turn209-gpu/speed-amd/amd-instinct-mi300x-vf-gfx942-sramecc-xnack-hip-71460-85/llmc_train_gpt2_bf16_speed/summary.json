@@ -1,0 +1,57 @@
+{
+  "tool": "gpu_test",
+  "status": "ok",
+  "summary": "PASS on AMD Instinct MI300X VF gfx942:sramecc+:xnack- [HIP 71460.85] (hip:0, amd): sycl_verify_vs_reference: PASS: 1/1 case(s) match (worst max abs err 0.0148, atol 0.1)",
+  "evidence": {
+    "task": "llmc_train_gpt2_bf16_speed",
+    "device": {
+      "backend": "hip",
+      "device_type": "gpu",
+      "index": 0,
+      "platform": "AMD HIP BACKEND",
+      "name": "AMD Instinct MI300X VF gfx942:sramecc+:xnack- [HIP 71460.85]",
+      "description": "AMD HIP BACKEND, AMD Instinct MI300X VF gfx942:sramecc+:xnack- [HIP 71460.85]",
+      "selector": "hip:0"
+    },
+    "vendor": "amd",
+    "amd_arch": "gfx942",
+    "cuda_arch": null,
+    "target_flags": [
+      "-fsycl-targets=amdgcn-amd-amdhsa",
+      "-Xsycl-target-backend=amdgcn-amd-amdhsa",
+      "--offload-arch=gfx942"
+    ],
+    "selector": "hip:0",
+    "steps": [
+      {
+        "step": "reference_build",
+        "status": "ok",
+        "summary": "exit 0: true"
+      },
+      {
+        "step": "native_build",
+        "status": "fail",
+        "summary": "exit 1: /opt/rocm/bin/hipcc -O2 -std=c++17 --offload-arch=gfx942 -I/tmp/tmp.FwYtoGXgAI/task /tmp/tmp.FwYtoGXgAI/out/work/train_gpt2.hip.cpp -o build/native"
+      },
+      {
+        "step": "sycl_compile",
+        "status": "ok",
+        "summary": "compiled 1 source(s) -> /tmp/tmp.FwYtoGXgAI/out/work/build/sycl (0 warning(s))"
+      },
+      {
+        "step": "sycl_verify_vs_reference",
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 0.0148, atol 0.1)"
+      },
+      {
+        "step": "sycl_benchmark",
+        "status": "ok",
+        "summary": "3 run(s) each; hip:0: median 6723.11 ms, p95 6771.93 ms"
+      }
+    ],
+    "results_dir": "/tmp/tmp.FwYtoGXgAI/out/results"
+  },
+  "limitations": [
+    "Benchmarks are single-process wall times plus program-reported kernel times; treat them as rough."
+  ]
+}

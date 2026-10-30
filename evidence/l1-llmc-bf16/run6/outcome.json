@@ -1,0 +1,27 @@
+{
+  "stop_reason": "budget",
+  "stop_detail": "cost budget exceeded: $10.1317 > $10.00",
+  "iterations": 197,
+  "usage": {
+    "input_tokens": 2868052,
+    "output_tokens": 255005,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 36418970
+  },
+  "cost_usd": 10.13168175,
+  "best": null,
+  "run_dir": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/l1run6/20261030T083943320906Z",
+  "trace": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/l1run6/20261030T083943320906Z/trace.jsonl",
+  "report": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/l1run6/20261030T083943320906Z/report.md",
+  "model": "muse-spark-1.3",
+  "baseline": false,
+  "shell": true,
+  "evaluation": {
+    "source_hash": "4f6a5e9346ea5e3e",
+    "compiled": true,
+    "verify_status": "timeout",
+    "verify_summary": "candidate timed out after 600.0s",
+    "helpers": 0,
+    "advisories": []
+  }
+}

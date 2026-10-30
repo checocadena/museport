@@ -29,13 +29,13 @@ capture on the laptop; every other shot is a rendered clip from `demo/out/`.
 | 5 | 0:30-0:39 | `term_bug` | "Nothing counts as done until a check the model never sees agrees. It passes Muse's port, and catches a one-term slip: x cubed written as x squared." |
 | 6 | 0:39-0:56 | `replay` | "Here Muse ports GPT-2's training step, with the real weights. 907 lines in one go. The check fails; Muse finds its own transpose mistake, fixes it, and all 10 steps match PyTorch." |
 | 7 | 0:56-1:05 | `check` | "The checks are strict: SYCLomatic's fast-math output fails on 14 rows; the precise version passes." |
-| 8 | 1:05-1:35 | `l1` | "The biggest test: llm.c's production trainer. bf16, cuBLASLt, warp reductions, 4,884 lines. Muse ported it in one run, 125 turns, under six dollars, and llm.c's own test passes. Then we gave Muse a tool that runs its code on rented GPUs, with a profiler. It went from 36 times CUDA's time to 1.5 with pure SYCL and oneMath, and 1.14 when it also calls cuBLAS. On an AMD MI350X: from 1,274 milliseconds a step to 63." |
+| 8 | 1:05-1:35 | `l1` | "The biggest test: llm.c's production trainer. bf16, cuBLASLt, warp reductions, 4,884 lines. Muse ported it in one run, 125 turns, under six dollars, and llm.c's own test passes. Then we gave Muse a tool that runs its code on rented GPUs, with a profiler. It went from 36 times CUDA's time to about 1.4 to 1.5 with pure SYCL and oneMath, and 1.13 to 1.21 when it also calls cuBLAS. On an AMD MI350X: from 1,274 milliseconds a step to 63." |
 | 9 | 1:35-1:42 | `gpus` | "The kernels, GPT-2 and llm.c's own test run from the same SYCL source on NVIDIA, against llm.c's CUDA, and on AMD." |
 | 10 | 1:42-2:02 | **(rec)** the report site | Scroll the overview, open the "bf16 trainer" section and one port page's turn-by-turn replay. "Every result is in a report built only from committed evidence, down to each GPU call Muse made." |
 | 11 | 2:02-2:09 | `numbers` | "18 of 19 kernel files correct, 17 passing on NVIDIA, 18 on AMD, and GPT-2 training ported for about three dollars." |
 | 12 | 2:09-2:21 | **(rec)** `llm.c-sycl`: `make && ./test_gpt2fp32sycl`, sped up, ending on `overall okay: 1` | "The pieces go back together as llm.c-sycl. One make, and llm.c's own test prints 'overall okay'." |
 | 13 | 2:21-2:39 | **(rec)** `llama2-sycl`: `make llama2 && ./llama2 stories15M.bin 0.0 64 "Once upon a time"`, the story streaming out | "And a repo it had never seen: llama2.cu, one 772-line CUDA file. Ported in one run, 20 turns, 45 cents. The story is llama2.cu's own, byte for byte, on a CPU, an NVIDIA GPU and an AMD GPU." |
-| 14 | 2:39-2:53 | limits card (text on screen) | "Limits: the kernels are fp32 at reduced sizes, one run per item. On NVIDIA the trainer's 1.14 uses cuBLAS through SYCL interop; llm.c's test runs its fast paths only when we force them on, and passes; GPU numbers are single runs on rented machines." |
+| 14 | 2:39-2:53 | limits card (text on screen) | "Limits: the kernels are fp32 at reduced sizes, one run per item. On NVIDIA the trainer's best numbers use cuBLAS through SYCL interop; llm.c's test runs its fast paths only when we force them on, and passes; GPU numbers are single runs on rented machines." |
 | 15 | 2:53-2:59 | `end` | "github.com/checocadena/museport." |
 
 The `fixes` clip (the loop fixes, 8 to 15 loop successes) is still rendered but left out of the
@@ -70,9 +70,9 @@ shot 12.
 **L1 (Oct 30): shot 8 is `l1`,** llm.c's production bf16 trainer, 30 s. Its numbers are in
 `data.json` under `l1`, all read from `evidence/l1-llmc-bf16` by `museport.report.load_l1`:
 - **Run 5:** 125 turns, $5.67.
-- **NVIDIA:** 36x CUDA's time (run 5, RTX A5000), 5.65x (tuned with no GPU), 1.52x (pure SYCL +
-  oneMath, our diagnostic) and 1.13-1.14x (with cuBLAS interop, the calls that built the final
-  port).
+- **NVIDIA:** 36x CUDA's time (run 5, RTX A5000), 5.65x (tuned with no GPU), 1.36-1.52x (pure
+  SYCL + oneMath, our diagnostics) and 1.13-1.21x (with cuBLAS interop: the calls that built the final
+  port, and our 3-run repeat on an RTX A4500).
 - **AMD MI350X:** 1274, 578 and 63.5 ms per step.
 
 To make room, `term_scan`, `term_bug`, `replay`, `check`, `gpus`, the report recording, the

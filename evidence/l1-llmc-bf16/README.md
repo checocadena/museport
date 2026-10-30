@@ -8,6 +8,7 @@ cuDNN, which are llm.c's defaults. Plan: [`docs/L1-PLAN.md`](../../docs/L1-PLAN.
 ## Result
 
 1. **Port, in one run** ([run5](run5)): 125 turns, $5.67, from llm.c's CUDA alone, with a shell.
+   A repeat with the same setup ([run6](run6/NOTES.md)) failed within $10, so this is 1 of 2.
    - **On the CPU:** llm.c's own test passes. That covers logits, all 16 gradient tensors, 10
      training losses against PyTorch, and a bit-exact save, reload and replay, with llm.c's own
      bf16 tolerances.
@@ -27,22 +28,24 @@ cuDNN, which are llm.c's defaults. Plan: [`docs/L1-PLAN.md`](../../docs/L1-PLAN.
 | NVIDIA RTX 4090 | 49.8 | **1.14x** | PASS |
 | NVIDIA L4 | 160.1 | **1.14x** | PASS |
 | NVIDIA RTX 2000 Ada | 205.5 | **1.13x** | PASS |
-| NVIDIA RTX A4500, pure SYCL + oneMath (cuBLAS interop compiled out, our diagnostic) | 139.8 | **1.52x** | PASS |
+| NVIDIA RTX A4500 (our 3-run repeat) | 113.3 | **1.21x** | PASS |
+| NVIDIA RTX 2000 Ada, pure SYCL + oneMath (cuBLAS interop compiled out, our diagnostic) | 250.6 | **1.36x** | PASS |
+| NVIDIA RTX A4500, pure SYCL + oneMath (our diagnostic) | 139.8 | **1.52x** | PASS |
 | AMD Instinct MI350X | **63.5** | no CUDA on AMD | PASS |
 
 **Read with these caveats** (details in [gtune/README.md](gtune/README.md#caveats)):
 
-- **The NVIDIA 1.13-1.14x calls NVIDIA's cuBLAS at runtime** through SYCL's backend interop, for
-  two gemm forms oneMath's cuBLAS backend lacks: batched bf16, and bf16 output. Without them, the
-  same code is 1.52x.
+- **The NVIDIA 1.13-1.21x calls NVIDIA's cuBLAS at runtime** through SYCL's backend interop, for
+  two bf16 gemm forms oneMath's API does not have on any backend: batched bf16, and bf16 output
+  (it has both for fp16). Without them, the same code is 1.36x (RTX 2000 Ada) to 1.52x (RTX A4500).
 - **llm.c's test does not run the fast paths as Muse left them.** Muse gates them to large
   shapes (B·T > 1024) on a GPU. Forced on, llm.c's test still passes: on NVIDIA (0.029) and on
   AMD (0.046, against a tolerance of 0.05).
 - **Rented GPUs vary** from call to call, so the ratio to CUDA on the same machine is the
   comparison. Each number comes from one run.
 
-**Muse cost, L1 in all:** $50.66 (of the $80 cap): plan $0.18, runs 1-3 $14.35, run 4 $5.57, run 5
-$5.67, tuning $10.39 and $14.50.
+**Muse cost, L1 in all:** $75.50 (of the $80 cap): plan $0.18, runs 1-3 $14.35, run 4 $5.57, run 5
+$5.67, run 6 $10.13, tuning $10.39, $14.50 and $14.72.
 
 | Step | Result | Cost |
 |---|---|---|
@@ -54,7 +57,9 @@ $5.67, tuning $10.39 and $14.50.
 | [Run 4](run4), from scratch, with a shell | stopped by the loop's stuck rule at turn 132, mid-debugging: three different shell commands failed in a row. Failed shell commands no longer count | $5.57 |
 | [Run 5](run5), from scratch, with a shell | **success in one run**, 125 turns; rebuilt outside the loop: PASS (16/16 gradients) | $5.67 |
 | [Tuning, CPU only](tune/README.md) | success, 192 turns; AMD 1274 to 578 ms per step | $10.39 |
-| [Tuning with `gpu_test`](gtune/README.md) | success, 211 turns; NVIDIA 1.13-1.14x CUDA (1.52x pure oneMath), AMD 63 ms | $14.50 + $3.50 GPU |
+| [Run 6](run6/NOTES.md), a repeat of run 5 | **failed**: $10 cap at turn 197; graded outside the loop, llm.c's test fails | $10.13 |
+| [Pure-oneAPI tuning](ptune/README.md), no vendor interop, no size thresholds | the run failed (300 turns), but its turn-209 version passes llm.c's test on CPU, an NVIDIA L4 and an AMD MI300X, at 1.55x CUDA on an RTX A4000 | $14.72 + $0.38 GPU |
+| [Tuning with `gpu_test`](gtune/README.md) | success, 211 turns; NVIDIA 1.13-1.21x CUDA (1.36-1.52x pure oneMath), AMD 63 ms | $14.50 + $3.50 GPU |
 
 **Integrity, runs 4 onward:**
 

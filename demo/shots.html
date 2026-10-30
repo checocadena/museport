@@ -214,7 +214,8 @@ const SHOTS = {
   // 30 s: L1, llm.c's production bf16 trainer: one-run port, then tuning with real GPUs
   async l1() {
     const L = D.l1, nv = L.nvidia, fin = nv.final;
-    const lo = Math.min(...fin.map(c => c.ratio)), hi = Math.max(...fin.map(c => c.ratio));
+    const rng = cs => [Math.min(...cs.map(c => c.ratio)), Math.max(...cs.map(c => c.ratio))];
+    const [lo, hi] = rng(fin), [plo, phi] = rng(nv.pure);
     const dev = d => d.replace('NVIDIA ', '').replace(' Generation', '').replace('GeForce ', '');
     h(`<div class="eyebrow">llm.c's production trainer · bf16 · 12 CUDA files, 4,884 lines</div>
        <h2 id="hd">Ported by Muse in one run</h2>
@@ -230,7 +231,7 @@ const SHOTS = {
     const rows = [
       ['Run 5 port', dev(nv.run5.device), nv.run5.ratio, true],
       ['Tuned, no GPU to measure on', dev(nv.tune.device), nv.tune.ratio, true],
-      ['Tuned with gpu_test, pure SYCL + oneMath', dev(nv.pure.device), nv.pure.ratio, false],
+      ['Tuned with gpu_test, pure SYCL + oneMath', nv.pure.map(c => dev(c.device)).join(', '), phi, false],
       ['Tuned with gpu_test, + cuBLAS interop', fin.map(c => dev(c.device)).join(', '), hi, false],
     ];
     const W = r => Math.max(36, Math.log(r) / Math.log(40) * 1180 + 36);
@@ -244,7 +245,8 @@ const SHOTS = {
     for (let i = 0; i < rows.length; i++) {
       bars[i].style.width = bars[i].dataset.w + 'px';
       await sleep(900);
-      document.getElementById('r' + i).textContent = i === 3 ? `${lo.toFixed(2)}–${hi.toFixed(2)}×` : rows[i][2].toFixed(rows[i][2] >= 10 ? 0 : 2) + '×';
+      document.getElementById('r' + i).textContent = i === 3 ? `${lo.toFixed(2)}–${hi.toFixed(2)}×`
+        : i === 2 ? `${plo.toFixed(2)}–${phi.toFixed(2)}×` : rows[i][2].toFixed(rows[i][2] >= 10 ? 0 : 2) + '×';
       await sleep(1700);
     }
     document.querySelector('#ft span:last-child').textContent = "the cuBLAS interop row calls NVIDIA's cuBLAS at runtime; llm.c's test passes on every row";

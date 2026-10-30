@@ -216,10 +216,11 @@ def serve(queue: Path, *, llmc: Path, recorded: Path, evidence_dir: Path, run: s
           onemath_patch: Path, budget_usd: float, max_calls: int, model: str,
           log: Callable[[str], None] = print, poll_s: float = 5,
           remote: Callable[..., Any] | None = None, spent: float = 0.0,
-          calls: int = 0) -> None:
+          calls: int = 0, forbid: str | None = None) -> None:
     """Answer requests in ``queue`` until a STOP file appears there. Every request and its
     results stay in the queue folder as evidence. ``spent`` and ``calls``: what a broker
-    restarted mid-session has already used."""
+    restarted mid-session has already used. ``forbid``: a regex; a port with a match in any
+    file is refused before a GPU is rented (e.g. vendor-library interop in a pure-oneAPI run)."""
     from oneapi_agent.remote import remote_test
 
     from .bf16 import make_gpu_task
@@ -242,6 +243,13 @@ def serve(queue: Path, *, llmc: Path, recorded: Path, evidence_dir: Path, run: s
                 f"GPU budget used: ${spent:.2f} of ${budget_usd:.2f}, {calls} of {max_calls} "
                 "calls; no more GPU runs in this session. Finish with what you have measured.")})
             continue
+        hits = forbidden(req / "port", forbid) if forbid else []
+        if hits:
+            _write(req, {"status": "error", "summary": (
+                "refused, no GPU used: this run allows only SYCL and oneMath, and these lines "
+                "match the forbidden pattern " + repr(forbid) + ":\n" + "\n".join(hits[:12]))})
+            log(f"{req.name}: refused ({len(hits)} forbidden lines)")
+            continue
         calls += 1
         patches = (onemath_patch,) if vendor == "nvidia" else ()
         # the request's port, laid out as make_gpu_task expects: <evidence>/<run>/port
@@ -263,6 +271,21 @@ def serve(queue: Path, *, llmc: Path, recorded: Path, evidence_dir: Path, run: s
             {k: v[0] for k, v in out.items()}, indent=1, default=str))
         _write(req, res)
         log(f"{req.name}: {res['summary'].splitlines()[1:3]} (${spent:.2f})")
+
+
+def forbidden(port: Path, pattern: str) -> list[str]:
+    """``file:line: text`` for each line of the port's sources that matches ``pattern``."""
+    rx = re.compile(pattern)
+    return [f"{f.relative_to(port)}:{i}: {line.strip()[:120]}"
+            for f in sorted(port.rglob("*")) if f.is_file() and f.suffix in SOURCE_SUFFIXES
+            for i, line in enumerate(f.read_text(errors="replace").splitlines(), 1)
+            if rx.search(line)]
+
+
+SOURCE_SUFFIXES = {".cpp", ".hpp", ".h", ".cc", ".cxx", ".hxx", ".inc"}
+# A pure-oneAPI run: no backend interop and no vendor BLAS called around oneMath.
+VENDOR_INTEROP = (r"dlopen|dlsym|get_native|ext_oneapi_cuda|ext_oneapi_hip|cublas|cuda_runtime|"
+                  r"rocblas|hipblas|\bhip_runtime")
 
 
 def _run_both(remote: Callable[..., Any], req: Path, vendor: str,

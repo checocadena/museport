@@ -5,8 +5,8 @@ How close to llm.c's CUDA can Muse get when it can measure?
 
 **Result:**
 
-- **NVIDIA:** from 5.3x CUDA's time to **1.13-1.14x**, using a runtime cuBLAS call for the matmuls,
-  and **1.52x** with that call compiled out (pure SYCL + oneMath).
+- **NVIDIA:** from 5.3x CUDA's time to **1.13-1.21x** across four GPUs, using a runtime cuBLAS
+  call for the matmuls, and **1.36-1.52x** with that call compiled out (pure SYCL + oneMath).
 - **AMD MI350X:** from 578 to **63 ms** per step.
 - **llm.c's test passes** on the CPU, on NVIDIA and on AMD, and llm.c's tolerances and test file
   are unchanged.
@@ -53,8 +53,8 @@ CUDA's. From there, in order (Muse's summary is in [trace.jsonl](trace.jsonl), t
    - **What it uses:** `libcublas` is `dlopen`ed, and calls are issued on the SYCL queue's native
      CUDA stream: `cublasGemmStridedBatchedEx` for attention and `cublasGemmEx` with bf16 output
      for the dense matmuls.
-   - **The gap it fills:** oneMath has neither on its cuBLAS backend. A batched bf16 gemm,
-     and a bf16-output gemm.
+   - **The gap it fills:** oneMath's API has neither a batched bf16 gemm nor a bf16-output
+     gemm, on any backend (it has both for fp16).
    - **On other toolchains:** the code compiles out. Its first version did not compile on AMD
      (call 18); Muse fixed it.
 
@@ -75,6 +75,7 @@ it:
 | NVIDIA L4 (call 21) | 160.1 | 140.6 | **1.14x** | PASS (on an RTX 2000 Ada) |
 | NVIDIA RTX 2000 Ada (call 22) | 205.5 | 181.9 | **1.13x** | PASS (on an RTX 2000 Ada) |
 | AMD Instinct MI350X (call 23) | **63.5** | no CUDA on AMD | | PASS, worst loss 0.036 |
+| NVIDIA RTX A4500 (our repeat, 3 runs) | 113.3 | 93.6 | **1.21x** | 30 losses within 0.023 of CUDA's |
 
 **Losses:** in every one of these, the port's 30 training losses are within 0.016 of llm.c's CUDA
 recording, and llm.c's test on NVIDIA also matches llm.c's own CUDA test on the same GPU.
@@ -95,6 +96,11 @@ pure variant in the first batch on its own budget rule, and it ran in the second
 | **Pure SYCL + oneMath:** cuBLAS interop compiled out (`kSyclCudaNativeOk = false`) | NVIDIA RTX 2000 Ada (test), RTX A4500 (speed) | PASS (0.038) | 139.8 vs CUDA 91.8 ms: **1.52x** |
 | **Fast paths forced on for llm.c's test:** large-shape gates set to 0 | NVIDIA RTX 2000 Ada | **PASS** (0.029; also vs CUDA's test) | 1.14x on an L4 |
 | same | AMD MI350X | **PASS** (0.046) | 63.1 ms, as unforced |
+| **Pure SYCL + oneMath** again, 3 runs ([pairs/pure](diagnostics/pairs/pure)) | NVIDIA RTX 2000 Ada | 30 losses within 0.021 of CUDA's recording | 250.6 vs CUDA 184.1 ms: **1.36x** |
+
+**Same-GPU pairs:** on an RTX 2000 Ada, the final port is 1.13x with cuBLAS (call 22) and 1.36x
+without it. On an RTX A4500 it is 1.21x ([pairs/interop](diagnostics/pairs/interop)) and 1.52x. So the
+two missing oneMath forms cost 0.23-0.31x of CUDA's time on these GPUs.
 
 ## Caveats
 
@@ -109,9 +115,9 @@ pure variant in the first batch on its own budget rule, and it ran in the second
   - **The forced-on diagnostic:** with the fast paths forced on, llm.c's test passes on NVIDIA
     (worst loss 0.029, all 16 gradients) and on AMD (0.046, close to the 0.05 tolerance). The gate is not hiding a failure on
     the final code.
-- **The 1.13-1.14x on NVIDIA uses NVIDIA's cuBLAS** at runtime, through SYCL's interop. It is
-  vendor-specific code inside a SYCL program. Pure SYCL + oneMath measures 1.52x. The difference
-  is the two gemm forms oneMath's cuBLAS backend lacks today.
+- **The 1.13-1.21x on NVIDIA uses NVIDIA's cuBLAS** at runtime, through SYCL's interop. It is
+  vendor-specific code inside a SYCL program. Pure SYCL + oneMath measures 1.36-1.52x. The difference
+  is the two bf16 gemm forms oneMath's API does not have today.
 - **Ratios, not absolute times:** the GPU model changes from call to call (it is whatever the
   provider has free). The ratio against llm.c's CUDA on the same machine is the comparison that
   holds.
@@ -139,4 +145,4 @@ pure variant in the first batch on its own budget rule, and it ran in the second
 | Muse, this run | 14.50 |
 | GPU, Muse's 23 calls | 3.50 |
 | GPU, our 3 broker smoke tests before the run | 0.15 |
-| GPU, our diagnostics | 0.38 |
+| GPU, our diagnostics | 0.42 |

@@ -268,6 +268,10 @@ def load_l1(evidence: Path) -> dict[str, Any] | None:
                 "forced_amd" if "amd" in head else "forced_nvidia"
             if " ok" in head:
                 diag[name] = _l1_call(body)  # the last ok run of each variant
+    pairs = d / "gtune" / "diagnostics" / "pairs"  # the final port and its pure variant, 3 runs
+    for name in ("interop", "pure"):
+        if (pairs / name).is_dir() and (sp := _l1_speed(pairs / name)):
+            diag[f"pair_{name}"] = sp
     plan = d / "plan" / "plan.json"
     plan_cost = json.loads(plan.read_text()).get("cost_usd") if plan.exists() else 0.0
     return {"runs": runs, "plan_cost": plan_cost,
@@ -880,20 +884,23 @@ def _l1_section(l1: dict[str, Any] | None) -> str:
     if not l1:
         return ""
     runs, sp, final, diag = l1["runs"], l1["speed"], l1["final"], l1["diag"]
-    nv = [c for c in final if c["vendor"] == "nvidia" and c["ratio"]]
+    nv = [c["ratio"] for c in final if c["vendor"] == "nvidia" and c["ratio"]]
+    nv += [diag["pair_interop"]["ratio"]] if diag.get("pair_interop") else []
+    pure = [d["ratio"] for k in ("pure", "pair_pure") if (d := diag.get(k)) and d.get("ratio")]
     amd = next((c for c in final if c["vendor"] == "amd"), None)
-    lo, hi = (min(c["ratio"] for c in nv), max(c["ratio"] for c in nv)) if nv else (None, None)
+    lo, hi = (min(nv), max(nv)) if nv else (0.0, 0.0)
+    plo, phi = (min(pure), max(pure)) if pure else (0.0, 0.0)
     r5 = runs.get("run5", {})
     facts = (
         '<div><span class="eyebrow">Port, one run</span><span class="v">'
         f'{esc(r5.get("iterations"))} turns</span><span class="d">run 5, '
         f'{money(r5.get("cost_usd"))}: llm.c\'s test passes</span></div>'
         '<div><span class="eyebrow">NVIDIA, final</span><span class="v">'
-        f'{lo:.2f}-{hi:.2f}x</span><span class="d">llm.c\'s CUDA time, same GPU (with cuBLAS '
-        'interop)</span></div>'
+        f'{lo:.2f}-{hi:.2f}x</span><span class="d">llm.c\'s CUDA time, same GPU, {len(nv)} '
+        "GPUs (with cuBLAS interop)</span></div>"
         '<div><span class="eyebrow">Pure SYCL + oneMath</span><span class="v">'
-        f'{_x((diag.get("pure") or {}).get("ratio"))}</span><span class="d">the final port, '
-        "cuBLAS interop compiled out (our diagnostic)</span></div>"
+        f'{plo:.2f}-{phi:.2f}x</span><span class="d">the final port, cuBLAS interop compiled '
+        f"out (our diagnostic), {len(pure)} GPUs</span></div>"
         '<div><span class="eyebrow">AMD MI350X</span><span class="v">'
         f'{amd["ms"] if amd else "?"} ms</span><span class="d">per step; run 5: '
         f'{(sp.get("run5_amd") or {}).get("ms")} ms</span></div>'
@@ -915,7 +922,10 @@ def _l1_section(l1: dict[str, Any] | None) -> str:
                   + speed_row("tuned, no GPU", sp.get("tune_nvidia"))
                   + speed_row("tuned, no GPU", sp.get("tune_amd"))
                   + "".join(speed_row("tuned with gpu_test (final)", c) for c in final)
-                  + speed_row("final, cuBLAS interop compiled out (ours)", diag.get("pure")))
+                  + speed_row("final, again (ours, 3 runs)", diag.get("pair_interop"))
+                  + speed_row("final, cuBLAS interop compiled out (ours)", diag.get("pure"))
+                  + speed_row("final, cuBLAS interop compiled out (ours, 3 runs)",
+                              diag.get("pair_pure")))
     call_rows = "".join(
         f"<tr><td>{i}</td><td>{esc(c['vendor'])}</td><td>"
         + (pill(c["test"], "ok" if c["test"] == "PASS" else "bad") if c["test"] else "")
@@ -951,8 +961,9 @@ def _l1_section(l1: dict[str, Any] | None) -> str:
         "<th>llm.c CUDA ms</th><th>CUDA's time ×</th></tr></thead><tbody>" + speed_rows
         + "</tbody></table></div>"
         '<p class="note"><b>Read with:</b> the NVIDIA numbers of the final port call NVIDIA\'s '
-        "cuBLAS at runtime through SYCL's backend interop, for two gemm forms oneMath's cuBLAS "
-        "backend lacks (batched bf16, bf16 output); pure SYCL + oneMath is the row below them. "
+        "cuBLAS at runtime through SYCL's backend interop, for two bf16 gemm forms oneMath's "
+        "API does not have (batched bf16, bf16 output; it has both for fp16); pure SYCL + "
+        "oneMath is the row below them. "
         "Muse uses its fast paths only for large shapes, so llm.c's small test does not run "
         "them; forced on, the test still passes (diagnostics below). Rented GPUs vary between "
         "calls, so compare ratios; each number is one run. llm.c's CUDA does not build on "
