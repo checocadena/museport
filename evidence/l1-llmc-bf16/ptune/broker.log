@@ -1,0 +1,2 @@
+[gpu-broker] req-20261030T100958-2029-223294: nvidia profile
+[gpu-broker] req-20261030T100958-2029-223294: ["  losses vs llm.c's CUDA test on the same GPU: PASS: 1/1 case(s) match (worst max abs err 0.0324, atol 0.05)", "speed on NVIDIA RTX A4000: 181.1 ms per step (median, steps 6-30); llm.c's CUDA trainer: 116.7 ms, 1.55x llm.c's CUDA time"] ($0.03)

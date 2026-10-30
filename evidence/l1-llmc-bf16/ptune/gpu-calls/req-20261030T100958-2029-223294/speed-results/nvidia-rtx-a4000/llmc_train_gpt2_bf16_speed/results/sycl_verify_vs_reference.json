@@ -1,0 +1,70 @@
+{
+  "tool": "verify",
+  "status": "ok",
+  "summary": "PASS: 1/1 case(s) match (worst max abs err 0.014, atol 0.1)",
+  "evidence": {
+    "mode": "array",
+    "cases": [
+      {
+        "input": "/tmp/tmp.tDSvjJVQe2/task/args.txt",
+        "reference": {
+          "command": "cp /tmp/tmp.tDSvjJVQe2/task/recorded_losses.out /tmp/tmp.tDSvjJVQe2/out/work/v_sycl/case0_reference.out",
+          "returncode": 0,
+          "duration_s": 0.003342,
+          "stdout": "",
+          "stderr": "",
+          "cwd": "/tmp/tmp.tDSvjJVQe2/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "cuda:0"
+          },
+          "output_file": "/tmp/tmp.tDSvjJVQe2/out/work/v_sycl/case0_reference.out"
+        },
+        "candidate": {
+          "command": "python3 /tmp/tmp.tDSvjJVQe2/task/run_speed.py build/sycl /tmp/tmp.tDSvjJVQe2/task/args.txt /tmp/tmp.tDSvjJVQe2/out/work/v_sycl/case0_candidate.out",
+          "returncode": 0,
+          "duration_s": 14.488629,
+          "stdout": "{\"steps\": 30, \"ms_per_step_median\": 178.88, \"losses\": [4.280137, 4.828693, 4.412648, 3.599669, 3.65064, 3.908095, 4.036632, 3.579128, 3.895642, 3.506178, 3.943399, 3.714264, 3.932527, 3.794273, 3.641337, 3.422737, 3.927498, 3.7333, 3.479186, 3.604285, 3.56777, 3.573545, 3.104536, 3.294955, 3.663684, 3.502358, 3.784439, 3.429549, 3.313191, 3.259191]}\nkernel_ms=178.88\n=== profile (sycl, nsys, 10 steps): 45 kernels, 2018.5 ms of GPU time; top 15:\n 11.2%      226.8 ms  x 13824  ampere_s1688gemm_bf16_128x64_sliced1x2_ldg8_tn\n  9.9%      199.6 ms  x 13824  ampere_s16816gemm_bf16_128x64_ldg8_stages_32x6_nn\n  8.3%      167.9 ms  x 11520  ampere_s16816gemm_bf16_128x64_ldg8_stages_32x6_nt\n  6.1%      123.6 ms  x   686  matmul_onemath(sycl::_V1::ext::oneapi::bfloat16 *, const sycl::_V1::ext::oneapi::bfloat16 *, const sycl::_V1::\n  5.4%      108.8 ms  x   336  ampere_s1688gemm_bf16_128x128_ldg8_tn\n  4.4%       89.8 ms  x   160  void adamw_update<sycl::_V1::ext::oneapi::bfloat16, sycl::_V1::ext::oneapi::bfloat16>(T1 *, float *, T2 *, flo\n  4.3%       86.0 ms  x    14  ampere_s16816gemm_bf16_256x128_ldg8_stages_32x3_tn\n  4.0%       80.2 ms  x   120  softmax_autoregressive_backward_inplace_fp32in(sycl::_V1::ext::oneapi::bfloat16 *, const sycl::_V1::ext::oneap\n  3.5%       70.2 ms  x   288  gelu_forward(sycl::_V1::ext::oneapi::bfloat16 *, const sycl::_V1::ext::oneapi::bfloat16 *, unsigned long, sycl\n  3.3%       67.2 ms  x   168  softmax_forward_fp32in(sycl::_V1::ext::oneapi::bfloat16 *, float, const float *, int, int, sycl::_V1::queue &)\n  3.2%       65.1 ms  x    14  void fused_classifier_kernel<(bool)1>(sycl::_V1::ext::oneapi::bfloat16 *, float *, float, const int *, int, in\n  3.1%       62.8 ms  x   336  void cutlass::Kernel2<cutlass_80_tensorop_s16816gemm_bf16_128x256_32x3_tn_align8>(T1::Params)\n  3.1%       61.8 ms  x   240  void cutlass::Kernel2<cutlass_80_tensorop_s16816gemm_bf16_128x256_32x3_nn_align8>(T1::Params)\n  2.9%       57.8 ms  x   240  ampere_s1688gemm_bf16_128x128_ldg8_stages_32x1_nn\n  2.2%       45.0 ms  x    10  ampere_s16816gemm_bf16_256x128_ldg8_stages_32x3_nt\n",
+          "stderr": "",
+          "cwd": "/tmp/tmp.tDSvjJVQe2/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "cuda:0"
+          },
+          "output_file": "/tmp/tmp.tDSvjJVQe2/out/work/v_sycl/case0_candidate.out"
+        },
+        "reference_format": "f32",
+        "candidate_format": "f32",
+        "mode": "array",
+        "stats": {
+          "n_reference": 30,
+          "n_candidate": 30,
+          "atol": 0.1,
+          "rtol": 0.0,
+          "max_ulp_allowed": null,
+          "passed": true,
+          "max_abs_err": 0.013957023620605469,
+          "rms_err": 0.004823391725517916,
+          "mean_abs_err": 0.0037578900655110678,
+          "max_rel_err": 0.003914825854783233,
+          "max_ulp_f32": 58540,
+          "median_ulp_f32": 11928.5,
+          "exact_matches": 0,
+          "mismatches": 0,
+          "nan_mismatches": 0,
+          "reference_range": [
+            3.101262092590332,
+            4.8340067863464355
+          ],
+          "first_mismatches": []
+        },
+        "passed": true
+      }
+    ],
+    "work_dir": "/tmp/tmp.tDSvjJVQe2/out/work/v_sycl",
+    "passed_cases": 1,
+    "total_cases": 1,
+    "worst_max_abs_err": 0.013957023620605469
+  },
+  "limitations": [
+    "Equivalence is shown only for the inputs tested; other inputs/sizes may behave differently."
+  ]
+}

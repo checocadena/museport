@@ -1,0 +1,27 @@
+{
+  "stop_reason": "max_iterations",
+  "stop_detail": "reached 300 iterations without meeting success conditions",
+  "iterations": 300,
+  "usage": {
+    "input_tokens": 3944992,
+    "output_tokens": 330153,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 55882430
+  },
+  "cost_usd": 14.71675475,
+  "best": null,
+  "run_dir": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/l1ptune/20261030T083943332738Z",
+  "trace": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/l1ptune/20261030T083943332738Z/trace.jsonl",
+  "report": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/l1ptune/20261030T083943332738Z/report.md",
+  "model": "muse-spark-1.3",
+  "baseline": false,
+  "shell": true,
+  "evaluation": {
+    "source_hash": "9cb429bbbb630645",
+    "compiled": true,
+    "verify_status": "timeout",
+    "verify_summary": "candidate timed out after 600.0s",
+    "helpers": 0,
+    "advisories": []
+  }
+}
