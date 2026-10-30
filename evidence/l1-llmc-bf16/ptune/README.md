@@ -47,7 +47,7 @@ headers: Muse kept changing rounding to match the CPU check. Graded outside the 
 
 ## What it means
 
-- **Portable, and the test checks what trains.** SYCL + oneMath alone reaches 1.55x CUDA's
+- **Portable, and the test checks what trains.** SYCL + oneMath alone reaches 1.40-1.55x CUDA's
   step time. The GPU-tuned port's 1.36-1.52x without interop used size thresholds; this one
   has none, and llm.c's test passes on a CPU, an NVIDIA GPU and an AMD GPU.
 - **The remaining gap is the one in the oneMath feature request.** The profile shows cuBLAS
@@ -59,7 +59,7 @@ headers: Muse kept changing rounding to match the CPU check. Graded outside the 
   the check allows 10 minutes.
 - **Different GPUs:** the first AMD numbers come from an MI300X (no MI350X was available then) and cannot be
   compared with the earlier 63.5 ms on an MI350X.
-- **One run per number:** the NVIDIA speed comes from Muse's single `gpu_test` call.
+- **Runs per number:** Muse's own NVIDIA timing is 2 runs; the Oct 30 timings are 3 runs each.
 
 ## Checks and cost
 
