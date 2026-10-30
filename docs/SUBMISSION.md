@@ -91,11 +91,15 @@ lines, bf16, cuBLASLt, warp reductions, stochastic rounding)
     measures 1.36x on the RTX 2000 Ada and 1.52x on the RTX A4500.
   - **Fast paths:** Muse keeps them for large shapes, so llm.c's small test does not run them.
     Forced on, the test passes on NVIDIA and AMD (worst 0.046 against 0.05).
-  - **Not one pass overall:** before run 5, the first port took three runs.
+  - **Not one pass overall:** before run 5, the first port took three runs, and a repeat of
+    run 5 (run 6) failed within $10: one-run success in 1 of 2 tries.
+  - **Pure oneAPI:** banning vendor interop and size thresholds, one version Muse built passes
+    llm.c's test on the CPU, NVIDIA and AMD at 1.55x CUDA, though that run's own loop did not
+    succeed ([evidence](../evidence/l1-llmc-bf16/ptune/README.md)).
 - **A oneMath bug:** its cuBLAS backend throws "unimplemented" for bf16 gemm. The port found it,
   and a two-line patch by us routes it to `cublasGemmEx`
   ([patch](../patches/onemath-cublas-bf16-gemm.patch)).
-- **Cost:** about $50.66 of Muse for all of L1, with every run's evidence.
+- **Cost:** about $75.50 of Muse for all of L1, with every run's evidence, failures included.
 
 **llm.c kernels, with the fixed agent loop** (one run per file):
 - 19 kernel files ported.
