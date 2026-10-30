@@ -1,7 +1,8 @@
 # museport: oneMath's own BLAS unit tests on the cuBLAS backend, before and after the bf16
 # gemm patch. Sourced by gpu-test as the task's gpu_setup; everything printed lands in
 # setup.log, which comes back with the results.
-set -u
+# No `set -e`/`set -u` here: this file is sourced, and they would leak into the runner that
+# packs the results afterwards (a first run lost its log that way).
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ONEMATH_COMMIT=585e610ebf8101fab67c223c033611264efcd21e   # uxlfoundation/oneMath develop, 2026-10-23
 LAPACK_TAG=v3.12.1
