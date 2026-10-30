@@ -1,0 +1,8 @@
+{
+  "command": "/opt/rocm/bin/hipcc -O2 -std=c++17 --offload-arch=gfx950 -I/tmp/tmp.fRVHsIcZ76/task /tmp/tmp.fRVHsIcZ76/out/work/train_gpt2.hip.cpp -o build/native",
+  "returncode": 1,
+  "duration_s": 0.348175,
+  "stdout": "",
+  "stderr": "In file included from /tmp/tmp.fRVHsIcZ76/out/work/train_gpt2.hip.cpp:38:\n/tmp/tmp.fRVHsIcZ76/out/work/llmc/cuda_common.h:14:10: fatal error: 'nvtx3/nvToolsExt.h' file not found\n   14 | #include <nvtx3/nvToolsExt.h>\n      |          ^~~~~~~~~~~~~~~~~~~~\n1 error generated when compiling for gfx950.\nfailed to execute:/opt/rocm/core-7.14/lib/llvm/bin/clang++  --offload-arch=gfx950 --driver-mode=g++ --hip-link  -O2 -std=c++17 -I/tmp/tmp.fRVHsIcZ76/task -x hip /tmp/tmp.fRVHsIcZ76/out/work/train_gpt2.hip.cpp -o \"build/native\"\n",
+  "cwd": "/tmp/tmp.fRVHsIcZ76/out/work"
+}

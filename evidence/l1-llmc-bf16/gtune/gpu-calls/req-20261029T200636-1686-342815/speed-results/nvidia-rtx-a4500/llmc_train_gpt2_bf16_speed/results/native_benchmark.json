@@ -1,0 +1,46 @@
+{
+  "tool": "benchmark",
+  "status": "ok",
+  "summary": "2 run(s) each; none: median 3836.27 ms, p95 3881.08 ms",
+  "evidence": {
+    "command": "python3 /tmp/tmp.JTgpZGw1gx/task/run_speed.py build/native /tmp/tmp.JTgpZGw1gx/task/args.txt /tmp/tmp.JTgpZGw1gx/out/work/bench_out.wav",
+    "runs": 2,
+    "warmup": 1,
+    "results": [
+      {
+        "selector": "none",
+        "status": "ok",
+        "wall_time_s": {
+          "n": 2,
+          "min": 3.7864775294438004,
+          "median": 3.836269026622176,
+          "p95": 3.881081374082714,
+          "max": 3.886060523800552,
+          "mean": 3.836269026622176,
+          "stdev": 0.07041581060052064
+        },
+        "samples_s": [
+          3.786478,
+          3.886061
+        ],
+        "reported": {
+          "n": 2,
+          "min": 96.38,
+          "median": 96.47,
+          "p95": 96.551,
+          "max": 96.56,
+          "mean": 96.47,
+          "stdev": 0.12727922061358338
+        },
+        "reported_samples": [
+          96.56,
+          96.38
+        ]
+      }
+    ]
+  },
+  "limitations": [
+    "Wall-clock time of the whole process (includes start-up, JIT compilation of SYCL kernels on first use, I/O). Use report_regex for in-program kernel timings.",
+    "Device selection uses ONEAPI_DEVICE_SELECTOR; it only takes effect if the program uses a default/selector-based sycl::queue."
+  ]
+}

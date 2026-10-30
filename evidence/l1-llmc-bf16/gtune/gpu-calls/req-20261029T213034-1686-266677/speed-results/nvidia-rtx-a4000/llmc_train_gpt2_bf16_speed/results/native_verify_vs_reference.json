@@ -1,0 +1,64 @@
+{
+  "tool": "verify",
+  "status": "ok",
+  "summary": "PASS: 1/1 case(s) match (worst max abs err 0.0151, atol 0.1)",
+  "evidence": {
+    "mode": "array",
+    "cases": [
+      {
+        "input": "/tmp/tmp.45g1bavllk/task/args.txt",
+        "reference": {
+          "command": "cp /tmp/tmp.45g1bavllk/task/recorded_losses.out /tmp/tmp.45g1bavllk/out/work/v_native/case0_reference.out",
+          "returncode": 0,
+          "duration_s": 0.005392,
+          "stdout": "",
+          "stderr": "",
+          "cwd": "/tmp/tmp.45g1bavllk/out/work",
+          "output_file": "/tmp/tmp.45g1bavllk/out/work/v_native/case0_reference.out"
+        },
+        "candidate": {
+          "command": "python3 /tmp/tmp.45g1bavllk/task/run_speed.py build/native /tmp/tmp.45g1bavllk/task/args.txt /tmp/tmp.45g1bavllk/out/work/v_native/case0_candidate.out",
+          "returncode": 0,
+          "duration_s": 4.669053,
+          "stdout": "{\"steps\": 30, \"ms_per_step_median\": 114.56, \"losses\": [4.285959, 4.836133, 4.403269, 3.595757, 3.653147, 3.916382, 4.033703, 3.566206, 3.893738, 3.503156, 3.933981, 3.70806, 3.929862, 3.791665, 3.639799, 3.425717, 3.928324, 3.729083, 3.483593, 3.599257, 3.566294, 3.569964, 3.100597, 3.292906, 3.659908, 3.501695, 3.781575, 3.442795, 3.314706, 3.265783]}\nkernel_ms=114.56\n",
+          "stderr": "",
+          "cwd": "/tmp/tmp.45g1bavllk/out/work",
+          "output_file": "/tmp/tmp.45g1bavllk/out/work/v_native/case0_candidate.out"
+        },
+        "reference_format": "f32",
+        "candidate_format": "f32",
+        "mode": "array",
+        "stats": {
+          "n_reference": 30,
+          "n_candidate": 30,
+          "atol": 0.1,
+          "rtol": 0.0,
+          "max_ulp_allowed": null,
+          "passed": true,
+          "max_abs_err": 0.015087127685546875,
+          "rms_err": 0.004851918364956127,
+          "mean_abs_err": 0.0032844781875610352,
+          "max_rel_err": 0.00440152080612379,
+          "max_ulp_f32": 63280,
+          "median_ulp_f32": 8047.0,
+          "exact_matches": 0,
+          "mismatches": 0,
+          "nan_mismatches": 0,
+          "reference_range": [
+            3.101262092590332,
+            4.8340067863464355
+          ],
+          "first_mismatches": []
+        },
+        "passed": true
+      }
+    ],
+    "work_dir": "/tmp/tmp.45g1bavllk/out/work/v_native",
+    "passed_cases": 1,
+    "total_cases": 1,
+    "worst_max_abs_err": 0.015087127685546875
+  },
+  "limitations": [
+    "Equivalence is shown only for the inputs tested; other inputs/sizes may behave differently."
+  ]
+}

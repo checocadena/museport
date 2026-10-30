@@ -1,0 +1,272 @@
+Multi-GPU support is disabled. Using a single GPU.
+[System]
+Device: Intel(R) Xeon(R) Processor @ 2.80GHz
+[State]
+batch_size: 4
+seq_len: 64
+| Zero Optimization is disabled                                              |
+allocating 237 MiB for parameter gradients
+allocating 87 MiB for activations
+allocating 474 MiB for AdamW optimizer state m
+allocating 474 MiB for AdamW optimizer state v
+allocating 474 MiB for master copy of params
+memory per sequence: 21 MiB
+-43.431618, -45.000000
+-39.836346, -41.250000
+-43.065910, -44.500000
+-42.828045, -44.250000
+-43.529541, -45.000000
+-44.318398, -46.000000
+-41.227425, -42.750000
+-41.270760, -42.750000
+-42.541393, -44.000000
+-42.394997, -44.000000
+OK (LOGITS)
+logit max diff: 18.663910
+---
+checking tensor: wte
+OK -0.002319 -0.002320
+OK 0.002045 0.002072
+OK 0.003265 0.003717
+OK 0.001549 0.001307
+OK 0.000896 0.000632
+OK -0.000244 0.000488
+OK 0.000057 -0.002491
+OK 0.001656 0.001262
+OK 0.000020 -0.000073
+OK 0.000401 0.000443
+TENSOR OK, max diff: 5.900e-01, with rel error: 7.647e-02 (calculated=  7.125000, ref=  7.714992), 77.75% of maximum error
+---
+checking tensor: wpe
+OK -0.004852 -0.005110
+OK 0.000021 -0.000012
+OK -0.003311 -0.003262
+OK 0.010376 0.009909
+OK 0.001495 0.002145
+OK -0.006104 -0.006592
+OK -0.001114 -0.000373
+OK -0.003998 -0.004309
+OK -0.002502 -0.002551
+OK 0.007568 0.007636
+TENSOR OK, max diff: 3.876e-03, with rel error: 4.231e+00 (calculated=  0.002960, ref= -0.000916), 95.19% of maximum error
+---
+checking tensor: ln1w
+OK -0.007874 -0.007523
+OK 0.009460 0.008643
+OK 0.005127 0.005029
+OK -0.011353 -0.011095
+OK -0.002457 -0.001664
+OK -0.003036 -0.002361
+OK -0.010742 -0.013797
+OK -0.001167 -0.001116
+OK -0.001228 -0.000627
+OK -0.007172 -0.006558
+TENSOR OK, max diff: 1.683e-01, with rel error: 1.475e-01 (calculated=  0.972656, ref=  1.140985), 89.82% of maximum error
+---
+checking tensor: ln1b
+OK -0.033691 -0.038458
+OK -0.032471 -0.030600
+OK 0.012329 0.010223
+OK 0.080078 0.080176
+OK -0.064941 -0.060901
+OK -0.036377 -0.040103
+OK 0.012146 0.015052
+OK -0.023804 -0.026089
+OK 0.063965 0.063407
+OK 0.070312 0.075045
+TENSOR OK, max diff: 3.322e-02, with rel error: 3.160e+00 (calculated= -0.022705, ref=  0.010513), 81.35% of maximum error
+---
+checking tensor: qkvw
+OK -0.000031 -0.000031
+OK -0.000029 -0.000025
+OK -0.000072 -0.000064
+OK 0.000072 0.000074
+OK 0.000018 0.000020
+OK -0.000088 -0.000087
+OK 0.000004 0.000003
+OK -0.000074 -0.000073
+OK -0.000037 -0.000044
+OK -0.000031 -0.000034
+TENSOR OK, max diff: 2.959e-02, with rel error: 1.902e-01 (calculated= -0.125977, ref= -0.155566), 47.50% of maximum error
+---
+checking tensor: qkvb
+OK -0.000496 -0.000411
+OK -0.000376 -0.000412
+OK 0.000098 0.000113
+OK -0.000500 -0.000565
+OK 0.000648 0.000570
+OK -0.000530 -0.000523
+OK 0.000319 0.000246
+OK -0.000412 -0.000427
+OK 0.000006 -0.000053
+OK -0.000546 -0.000537
+TENSOR OK, max diff: 2.607e-02, with rel error: 5.687e-01 (calculated= -0.019775, ref= -0.045849), 67.51% of maximum error
+---
+checking tensor: attrpojw
+OK 0.000086 0.000080
+OK -0.000026 -0.000005
+OK -0.000019 -0.000019
+OK 0.000007 0.000004
+OK 0.000027 0.000031
+OK -0.000006 0.000034
+OK 0.000085 0.000074
+OK -0.000024 -0.000047
+OK -0.000067 -0.000040
+OK 0.000026 0.000022
+TENSOR OK, max diff: 1.393e-02, with rel error: 8.858e-01 (calculated=  0.029663, ref=  0.015730), 65.59% of maximum error
+---
+checking tensor: attprojb
+OK 0.000124 0.000470
+OK -0.009644 -0.009979
+OK -0.001884 -0.001804
+OK 0.042236 0.037584
+OK -0.034668 -0.031239
+OK 0.000835 0.001326
+OK 0.000010 -0.000198
+OK -0.000144 -0.000391
+OK 0.005981 0.004921
+OK 0.028931 0.028530
+TENSOR OK, max diff: 9.240e-03, with rel error: 5.320e-01 (calculated=  0.026611, ref=  0.017371), 29.45% of maximum error
+---
+checking tensor: ln2w
+OK -0.016602 -0.018312
+OK 0.005127 0.004813
+OK 0.007935 0.008091
+OK -0.001472 -0.001470
+OK -0.002716 -0.002737
+OK 0.003510 0.003421
+OK -0.000648 -0.002570
+OK 0.087402 0.097834
+OK -0.007324 -0.006193
+OK -0.000961 -0.001030
+TENSOR OK, max diff: 1.085e-01, with rel error: 1.077e-01 (calculated= -0.898438, ref= -1.006907), 86.33% of maximum error
+---
+checking tensor: ln2b
+OK -0.023560 -0.026368
+OK -0.015259 -0.016695
+OK 0.001053 0.001074
+OK 0.040771 0.034711
+OK -0.030029 -0.028584
+OK -0.002609 -0.002565
+OK 0.065430 0.058315
+OK 0.048828 0.050246
+OK 0.024292 0.019844
+OK 0.024414 0.024464
+TENSOR OK, max diff: 1.281e-02, with rel error: 7.244e-02 (calculated=  0.164062, ref=  0.176875), 36.15% of maximum error
+---
+checking tensor: fcw
+OK 0.000414 0.000440
+OK 0.000021 -0.000000
+OK -0.000152 -0.000154
+OK -0.000138 -0.000165
+OK 0.000370 0.000405
+OK -0.000572 -0.000650
+OK 0.000441 0.000479
+OK 0.000858 0.000903
+OK -0.000387 -0.000449
+OK -0.000216 -0.000197
+TENSOR OK, max diff: 1.983e-02, with rel error: 1.784e-01 (calculated=  0.091309, ref=  0.111138), 51.13% of maximum error
+---
+checking tensor: fcb
+OK 0.003159 0.003293
+OK 0.001831 0.002043
+OK -0.001289 -0.001386
+OK 0.000454 0.000386
+OK 0.001709 0.001604
+OK -0.001854 -0.001810
+OK -0.000362 -0.000416
+OK -0.000150 -0.000097
+OK 0.000923 0.000938
+OK -0.001785 -0.002051
+TENSOR OK, max diff: 9.449e-03, with rel error: 1.601e-01 (calculated=  0.049561, ref=  0.059009), 27.35% of maximum error
+---
+checking tensor: fcprojw
+OK 0.000565 0.000681
+OK 0.000103 0.000073
+OK -0.000389 -0.000416
+OK -0.000023 -0.000061
+OK -0.000534 -0.000604
+OK -0.000067 -0.000087
+OK -0.000311 -0.000350
+OK -0.000110 -0.000169
+OK -0.000395 -0.000435
+OK -0.000238 -0.000289
+TENSOR OK, max diff: 1.265e-02, with rel error: 1.393e-01 (calculated=  0.078125, ref=  0.090774), 46.55% of maximum error
+---
+checking tensor: fcprojb
+OK 0.002991 0.003584
+OK -0.006927 -0.007158
+OK -0.001907 -0.001964
+OK 0.001450 0.001462
+OK 0.000744 0.001217
+OK 0.005005 0.005518
+OK -0.004883 -0.004662
+OK -0.003525 -0.004146
+OK 0.001556 0.001308
+OK 0.000313 0.000362
+TENSOR OK, max diff: 2.825e-03, with rel error: 5.508e-01 (calculated=  0.002304, ref=  0.005129), 27.15% of maximum error
+---
+checking tensor: lnfw
+OK 0.000018 -0.000022
+OK 0.000961 0.000811
+OK 0.001160 0.001161
+OK -0.002762 -0.002957
+OK 0.001282 0.001145
+OK 0.002899 0.002996
+OK 0.000896 0.000900
+OK 0.000599 0.000635
+OK -0.000462 -0.000443
+OK 0.002914 0.002749
+TENSOR OK, max diff: 1.068e-01, with rel error: 8.240e-01 (calculated= -0.236328, ref= -0.129568), 96.85% of maximum error
+---
+checking tensor: lnfb
+OK -0.010559 -0.011101
+OK 0.006836 0.008007
+OK -0.004242 -0.004769
+OK -0.002197 -0.002113
+OK -0.005341 -0.005905
+OK -0.007385 -0.008205
+OK -0.003006 -0.002258
+OK -0.001305 -0.001425
+OK -0.004456 -0.003727
+OK -0.003708 -0.002972
+TENSOR OK, max diff: 1.571e-02, with rel error: 5.093e+00 (calculated= -0.018799, ref= -0.003085), 77.62% of maximum error
+step 1: loss 5.268446 (took 4827.399479 ms)
+step 2: loss 4.039513 (took 3784.676562 ms)
+step 3: loss 3.325703 (took 3863.331541 ms)
+step 4: loss 2.726671 (took 2846.039037 ms)
+step 5: loss 2.191590 (took 2988.032249 ms)
+step 6: loss 1.678767 (took 2875.734550 ms)
+step 7: loss 1.195109 (took 2742.435191 ms)
+step 8: loss 0.771087 (took 2952.199110 ms)
+step 9: loss 0.423980 (took 2849.315271 ms)
+step 10: loss 0.206544 (took 3006.075611 ms)
+loss ok at step 1: 5.268447 5.270009
+loss ok at step 2: 4.039513 4.060681
+loss ok at step 3: 3.325704 3.320085
+loss ok at step 4: 2.726671 2.717550
+loss ok at step 5: 2.191590 2.181066
+loss ok at step 6: 1.678767 1.653923
+loss ok at step 7: 1.195109 1.168050
+loss ok at step 8: 0.771087 0.736873
+loss ok at step 9: 0.423980 0.401021
+loss ok at step 10: 0.206544 0.187493
+Writing model to test_gpt2cu_model.ckpt
+Writing state to test_gpt2cu_state.ckpt
+allocating 237 MiB for parameter gradients
+allocating 87 MiB for activations
+allocating 474 MiB for AdamW optimizer state m
+allocating 474 MiB for AdamW optimizer state v
+allocating 474 MiB for master copy of params
+memory per sequence: 21 MiB
+loss ok at step 0: 5.694284 5.694284
+loss ok at step 1: 6.794653 6.794653
+loss ok at step 2: 5.069751 5.069751
+loss ok at step 3: 4.707997 4.707997
+loss ok at step 4: 4.419648 4.419648
+loss ok at step 5: 4.418153 4.418153
+loss ok at step 6: 4.790661 4.790661
+loss ok at step 7: 4.846742 4.846742
+loss ok at step 8: 4.538237 4.538237
+loss ok at step 9: 4.116313 4.116313
+overall okay: 1

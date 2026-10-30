@@ -1,0 +1,25 @@
+{
+  "tool": "compile",
+  "status": "ok",
+  "summary": "compiled 1 source(s) -> /tmp/tmp.7vy243iDbm/out/work/build/sycl (0 warning(s))",
+  "evidence": {
+    "run": {
+      "command": "/opt/sycl/bin/clang++ -fsycl -O2 -I/root/onemath-rocblas/include -Wl,--no-as-needed -L/root/onemath-rocblas/lib -Wl,-rpath,/root/onemath-rocblas/lib -lonemath -DENABLE_BF16 -fsycl-targets=amdgcn-amd-amdhsa -Xsycl-target-backend=amdgcn-amd-amdhsa --offload-arch=gfx950 -I/tmp/tmp.7vy243iDbm/task /tmp/tmp.7vy243iDbm/task/agent_port/test_gpt2.cpp -o /tmp/tmp.7vy243iDbm/out/work/build/sycl",
+      "returncode": 0,
+      "duration_s": 6.075338,
+      "stdout": "",
+      "stderr": ""
+    },
+    "output": "/tmp/tmp.7vy243iDbm/out/work/build/sycl",
+    "dpct_include_added": null,
+    "diagnostics": [],
+    "counts": {
+      "error": 0,
+      "warning": 0,
+      "note": 0
+    }
+  },
+  "limitations": [
+    "A successful compile says nothing about numerical correctness; run verify."
+  ]
+}

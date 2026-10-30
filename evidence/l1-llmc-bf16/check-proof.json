@@ -1,0 +1,60 @@
+{
+ "reference": {
+  "values": [
+   1.0,
+   1.0,
+   5.270009,
+   4.060681,
+   3.320085,
+   2.71755,
+   2.181066,
+   1.653923,
+   1.16805,
+   0.736873,
+   0.401021,
+   0.187493
+  ],
+  "source": "1.0 overall okay, 1.0 tolerances kept, PyTorch's 10 losses from llm.c's test_gpt2.cu"
+ },
+ "tolerance": 0.05,
+ "rows": [
+  {
+   "candidate": "llm.c's own CUDA test (bf16), nvcc, RTX 2000 Ada",
+   "overall_okay": 1.0,
+   "tolerances_kept": 1.0,
+   "losses": [
+    5.248647,
+    4.053439,
+    3.299536,
+    2.707707,
+    2.191797,
+    1.660097,
+    1.19341,
+    0.757197,
+    0.426273,
+    0.201787
+   ],
+   "worst_loss_vs_pytorch": 0.02536,
+   "result": "PASS"
+  },
+  {
+   "candidate": "planted bug: GELU constant 0.04715 instead of 0.044715 in llmc/gelu.cuh (forward)",
+   "overall_okay": 0.0,
+   "tolerances_kept": 1.0,
+   "losses": [
+    5.267556,
+    4.049594,
+    3.321336,
+    2.711323,
+    2.192021,
+    1.656229,
+    1.17567,
+    0.75797,
+    0.415415,
+    0.200938
+   ],
+   "worst_loss_vs_pytorch": 0.021097,
+   "result": "FAIL"
+  }
+ ]
+}

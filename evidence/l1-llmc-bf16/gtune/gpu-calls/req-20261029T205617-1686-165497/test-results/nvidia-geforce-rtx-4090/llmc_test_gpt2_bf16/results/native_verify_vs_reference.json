@@ -1,0 +1,64 @@
+{
+  "tool": "verify",
+  "status": "ok",
+  "summary": "PASS: 1/1 case(s) match (worst max abs err 0.0216, atol 0.05)",
+  "evidence": {
+    "mode": "array",
+    "cases": [
+      {
+        "input": "/tmp/tmp.8nRLvj9sCI/task/test_args.txt",
+        "reference": {
+          "command": "cp /tmp/tmp.8nRLvj9sCI/task/reference.out /tmp/tmp.8nRLvj9sCI/out/work/v_native/case0_reference.out",
+          "returncode": 0,
+          "duration_s": 0.003933,
+          "stdout": "",
+          "stderr": "",
+          "cwd": "/tmp/tmp.8nRLvj9sCI/out/work",
+          "output_file": "/tmp/tmp.8nRLvj9sCI/out/work/v_native/case0_reference.out"
+        },
+        "candidate": {
+          "command": "python3 /tmp/tmp.8nRLvj9sCI/task/run_test.py build/native /tmp/tmp.8nRLvj9sCI/task/test_args.txt /tmp/tmp.8nRLvj9sCI/out/work/v_native/case0_candidate.out",
+          "returncode": 0,
+          "duration_s": 3.75565,
+          "stdout": "overall okay: 1 | tolerances kept: True | losses: [5.248424, 4.045633, 3.298917, 2.72222, 2.183827, 1.662657, 1.173264, 0.737852, 0.414451, 0.201264]\n",
+          "stderr": "",
+          "cwd": "/tmp/tmp.8nRLvj9sCI/out/work",
+          "output_file": "/tmp/tmp.8nRLvj9sCI/out/work/v_native/case0_candidate.out"
+        },
+        "reference_format": "f32",
+        "candidate_format": "f32",
+        "mode": "array",
+        "stats": {
+          "n_reference": 12,
+          "n_candidate": 12,
+          "atol": 0.05,
+          "rtol": 0.0,
+          "max_ulp_allowed": null,
+          "passed": true,
+          "max_abs_err": 0.02158498764038086,
+          "rms_err": 0.011705771597283695,
+          "mean_abs_err": 0.00894664724667867,
+          "max_rel_err": 0.07344806357939103,
+          "max_ulp_f32": 924156,
+          "median_ulp_f32": 37648.0,
+          "exact_matches": 2,
+          "mismatches": 0,
+          "nan_mismatches": 0,
+          "reference_range": [
+            0.1874929964542389,
+            5.2700090408325195
+          ],
+          "first_mismatches": []
+        },
+        "passed": true
+      }
+    ],
+    "work_dir": "/tmp/tmp.8nRLvj9sCI/out/work/v_native",
+    "passed_cases": 1,
+    "total_cases": 1,
+    "worst_max_abs_err": 0.02158498764038086
+  },
+  "limitations": [
+    "Equivalence is shown only for the inputs tested; other inputs/sizes may behave differently."
+  ]
+}

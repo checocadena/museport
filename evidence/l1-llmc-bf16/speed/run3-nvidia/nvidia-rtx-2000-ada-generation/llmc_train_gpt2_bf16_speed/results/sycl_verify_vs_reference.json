@@ -1,0 +1,70 @@
+{
+  "tool": "verify",
+  "status": "ok",
+  "summary": "PASS: 1/1 case(s) match (worst max abs err 0.0156, atol 0.1)",
+  "evidence": {
+    "mode": "array",
+    "cases": [
+      {
+        "input": "/tmp/tmp.IUmAzYqd3x/task/args.txt",
+        "reference": {
+          "command": "cp /tmp/tmp.IUmAzYqd3x/task/recorded_losses.out /tmp/tmp.IUmAzYqd3x/out/work/v_sycl/case0_reference.out",
+          "returncode": 0,
+          "duration_s": 0.003051,
+          "stdout": "",
+          "stderr": "",
+          "cwd": "/tmp/tmp.IUmAzYqd3x/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "cuda:0"
+          },
+          "output_file": "/tmp/tmp.IUmAzYqd3x/out/work/v_sycl/case0_reference.out"
+        },
+        "candidate": {
+          "command": "python3 /tmp/tmp.IUmAzYqd3x/task/run_speed.py build/sycl /tmp/tmp.IUmAzYqd3x/task/args.txt /tmp/tmp.IUmAzYqd3x/out/work/v_sycl/case0_candidate.out",
+          "returncode": 0,
+          "duration_s": 16.767375,
+          "stdout": "{\"steps\": 30, \"ms_per_step_median\": 525.59, \"losses\": [4.283748, 4.818446, 4.415954, 3.600713, 3.651322, 3.90576, 4.03535, 3.577902, 3.89801, 3.508421, 3.945009, 3.717533, 3.93054, 3.794855, 3.638776, 3.423, 3.925128, 3.730208, 3.483679, 3.601552, 3.570929, 3.57024, 3.098951, 3.292097, 3.664388, 3.50362, 3.787982, 3.429025, 3.314024, 3.255883]}\nkernel_ms=525.59\n",
+          "stderr": "",
+          "cwd": "/tmp/tmp.IUmAzYqd3x/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "cuda:0"
+          },
+          "output_file": "/tmp/tmp.IUmAzYqd3x/out/work/v_sycl/case0_candidate.out"
+        },
+        "reference_format": "f32",
+        "candidate_format": "f32",
+        "mode": "array",
+        "stats": {
+          "n_reference": 30,
+          "n_candidate": 30,
+          "atol": 0.1,
+          "rtol": 0.0,
+          "max_ulp_allowed": null,
+          "passed": true,
+          "max_abs_err": 0.015560626983642578,
+          "rms_err": 0.005696077194450954,
+          "mean_abs_err": 0.00409394105275472,
+          "max_rel_err": 0.0035709578236029224,
+          "max_ulp_f32": 53398,
+          "median_ulp_f32": 12046.0,
+          "exact_matches": 0,
+          "mismatches": 0,
+          "nan_mismatches": 0,
+          "reference_range": [
+            3.101262092590332,
+            4.8340067863464355
+          ],
+          "first_mismatches": []
+        },
+        "passed": true
+      }
+    ],
+    "work_dir": "/tmp/tmp.IUmAzYqd3x/out/work/v_sycl",
+    "passed_cases": 1,
+    "total_cases": 1,
+    "worst_max_abs_err": 0.015560626983642578
+  },
+  "limitations": [
+    "Equivalence is shown only for the inputs tested; other inputs/sizes may behave differently."
+  ]
+}

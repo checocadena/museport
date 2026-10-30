@@ -1,0 +1,12 @@
+--- llmc/batched_gemm.hpp	2026-10-29 22:17:00.575141920 +0000
++++ llmc/batched_gemm.hpp	2026-10-29 22:56:18.655142064 +0000
+@@ -34,8 +34,7 @@
+ static auto sycl_cuda_native_probe(Q& q, int)
+     -> decltype(sycl::get_native<sycl::backend::ext_oneapi_cuda>(q), std::true_type{});
+ static std::false_type sycl_cuda_native_probe(...);
+-static constexpr bool kSyclCudaNativeOk =
+-    decltype(sycl_cuda_native_probe(std::declval<sycl::queue&>(), 0))::value;
++static constexpr bool kSyclCudaNativeOk = false;  // museport diagnostic: cuBLAS interop off
+ 
+ // Minimal local declarations for the cuBLAS symbols we use (values from
+ // cublas_api.h / library_types.h; no CUDA headers needed). If a future

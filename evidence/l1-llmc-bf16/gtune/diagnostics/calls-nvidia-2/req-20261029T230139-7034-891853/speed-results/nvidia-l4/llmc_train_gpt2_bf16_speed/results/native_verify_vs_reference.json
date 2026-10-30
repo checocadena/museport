@@ -1,0 +1,64 @@
+{
+  "tool": "verify",
+  "status": "ok",
+  "summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 0.1)",
+  "evidence": {
+    "mode": "array",
+    "cases": [
+      {
+        "input": "/tmp/tmp.eGMpiAHz54/task/args.txt",
+        "reference": {
+          "command": "cp /tmp/tmp.eGMpiAHz54/task/recorded_losses.out /tmp/tmp.eGMpiAHz54/out/work/v_native/case0_reference.out",
+          "returncode": 0,
+          "duration_s": 0.003569,
+          "stdout": "",
+          "stderr": "",
+          "cwd": "/tmp/tmp.eGMpiAHz54/out/work",
+          "output_file": "/tmp/tmp.eGMpiAHz54/out/work/v_native/case0_reference.out"
+        },
+        "candidate": {
+          "command": "python3 /tmp/tmp.eGMpiAHz54/task/run_speed.py build/native /tmp/tmp.eGMpiAHz54/task/args.txt /tmp/tmp.eGMpiAHz54/out/work/v_native/case0_candidate.out",
+          "returncode": 0,
+          "duration_s": 5.338766,
+          "stdout": "{\"steps\": 30, \"ms_per_step_median\": 140.3, \"losses\": [4.283947, 4.834007, 4.409614, 3.602684, 3.653534, 3.918343, 4.035693, 3.565171, 3.897148, 3.499794, 3.937709, 3.710655, 3.930583, 3.791318, 3.637749, 3.423841, 3.927082, 3.728993, 3.483564, 3.597973, 3.566158, 3.57338, 3.101262, 3.297749, 3.663908, 3.509935, 3.783345, 3.427708, 3.31142, 3.25221]}\nkernel_ms=140.3\n",
+          "stderr": "",
+          "cwd": "/tmp/tmp.eGMpiAHz54/out/work",
+          "output_file": "/tmp/tmp.eGMpiAHz54/out/work/v_native/case0_candidate.out"
+        },
+        "reference_format": "f32",
+        "candidate_format": "f32",
+        "mode": "array",
+        "stats": {
+          "n_reference": 30,
+          "n_candidate": 30,
+          "atol": 0.1,
+          "rtol": 0.0,
+          "max_ulp_allowed": null,
+          "passed": true,
+          "max_abs_err": 0.0,
+          "rms_err": 0.0,
+          "mean_abs_err": 0.0,
+          "max_rel_err": 0.0,
+          "max_ulp_f32": 0,
+          "median_ulp_f32": 0.0,
+          "exact_matches": 30,
+          "mismatches": 0,
+          "nan_mismatches": 0,
+          "reference_range": [
+            3.101262092590332,
+            4.8340067863464355
+          ],
+          "first_mismatches": []
+        },
+        "passed": true
+      }
+    ],
+    "work_dir": "/tmp/tmp.eGMpiAHz54/out/work/v_native",
+    "passed_cases": 1,
+    "total_cases": 1,
+    "worst_max_abs_err": 0.0
+  },
+  "limitations": [
+    "Equivalence is shown only for the inputs tested; other inputs/sizes may behave differently."
+  ]
+}

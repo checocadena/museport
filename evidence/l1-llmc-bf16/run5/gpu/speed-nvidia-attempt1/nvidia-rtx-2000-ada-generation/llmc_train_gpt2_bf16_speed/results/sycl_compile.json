@@ -1,0 +1,53 @@
+{
+  "tool": "compile",
+  "status": "fail",
+  "summary": "compile failed with 3 error(s) at train_gpt2.cpp:None: undefined reference to `nvmlInit_v2'",
+  "evidence": {
+    "run": {
+      "command": "/opt/sycl/bin/clang++ -fsycl -O2 -I/root/onemath-cublas-patched/include -Wl,--no-as-needed -L/root/onemath-cublas-patched/lib -Wl,-rpath,/root/onemath-cublas-patched/lib -lonemath -DENABLE_BF16 -fsycl-targets=nvidia_gpu_sm_89 -I/tmp/tmp.pF3nVUC8ef/task /tmp/tmp.pF3nVUC8ef/task/agent_port/train_gpt2.cpp -o /tmp/tmp.pF3nVUC8ef/out/work/build/sycl",
+      "returncode": 1,
+      "duration_s": 20.272529,
+      "stdout": "",
+      "stderr": "/usr/bin/ld: /tmp/train_gpt2-27fd2a.o: in function `nvml_get_device()':\ntrain_gpt2.cpp:(.text+0x3922): undefined reference to `nvmlInit_v2'\n/usr/bin/ld: train_gpt2.cpp:(.text+0x3932): undefined reference to `nvmlDeviceGetHandleByIndex_v2'\n/usr/bin/ld: train_gpt2.cpp:(.text+0x3946): undefined reference to `nvmlErrorString'\n/usr/bin/ld: train_gpt2.cpp:(.text+0x395e): undefined reference to `nvmlErrorString'\n/usr/bin/ld: /tmp/train_gpt2-27fd2a.o: in function `get_gpu_utilization_info()':\ntrain_gpt2.cpp:(.text+0x39e5): undefined reference to `nvmlDeviceGetClockInfo'\n/usr/bin/ld: train_gpt2.cpp:(.text+0x39fe): undefined reference to `nvmlDeviceGetMaxClockInfo'\n/usr/bin/ld: train_gpt2.cpp:(.text+0x3a12): undefined reference to `nvmlDeviceGetPowerManagementLimit'\n/usr/bin/ld: train_gpt2.cpp:(.text+0x3a26): undefined reference to `nvmlDeviceGetPowerUsage'\n/usr/bin/ld: train_gpt2.cpp:(.text+0x3a3c): undefined reference to `nvmlDeviceGetTemperature'\n/usr/bin/ld: train_gpt2.cpp:(.text+0x3a55): undefined reference to `nvmlDeviceGetTemperatureThreshold'\n/usr/bin/ld: train_gpt2.cpp:(.text+0x3a6a): undefined reference to `nvmlDeviceGetCurrentClocksThrottleReasons'\n/usr/bin/ld: train_gpt2.cpp:(.text+0x3aac): undefined reference to `nvmlDeviceGetFanSpeed'\n/usr/bin/ld: train_gpt2.cpp:(.text+0x3ada): undefined reference to `nvmlDeviceGetSamples'\n/usr/bin/ld: train_gpt2.cpp:(.text+0x3bbf): undefined reference to `nvmlDeviceGetSamples'\n/usr/bin/ld: train_gpt2.cpp:(.text+0x3cba): undefined reference to `nvmlErrorString'\n/usr/bin/ld: train_gpt2.cpp:(.text+0x3cd5): undefined reference to `nvmlErrorString'\n/usr/bin/ld: train_gpt2.cpp:(.text+0x3cf0): undefined reference to `nvmlErrorString'\n/usr/bin/ld: train_gpt2.cpp:(.text+0x3d0b): undefined reference to `nvmlErrorString'\n/usr/bin/ld: train_gpt2.cpp:(.text+0x3d26): undefined reference to `nvmlErrorString'\n/usr/bin/ld: /tmp/train_gpt2-27fd2a.o:train_gpt2.cpp:(.text+0x3d3e): more undefined references to `nvmlErrorString' follow\nclang++: error: linker command failed with exit code 1 (use -v to see invocation)\n"
+    },
+    "output": "/tmp/tmp.pF3nVUC8ef/out/work/build/sycl",
+    "dpct_include_added": null,
+    "diagnostics": [
+      {
+        "file": "train_gpt2.cpp",
+        "line": null,
+        "column": null,
+        "severity": "error",
+        "message": "undefined reference to `nvmlInit_v2'",
+        "flag": null,
+        "snippet": null
+      },
+      {
+        "file": "train_gpt2.cpp",
+        "line": null,
+        "column": null,
+        "severity": "error",
+        "message": "undefined reference to `nvmlDeviceGetClockInfo'",
+        "flag": null,
+        "snippet": null
+      },
+      {
+        "file": null,
+        "line": null,
+        "column": null,
+        "severity": "error",
+        "message": "clang++: linker command failed with exit code 1 (use -v to see invocation)",
+        "flag": null,
+        "snippet": null
+      }
+    ],
+    "counts": {
+      "error": 3,
+      "warning": 0,
+      "note": 0
+    }
+  },
+  "limitations": [
+    "A successful compile says nothing about numerical correctness; run verify."
+  ]
+}

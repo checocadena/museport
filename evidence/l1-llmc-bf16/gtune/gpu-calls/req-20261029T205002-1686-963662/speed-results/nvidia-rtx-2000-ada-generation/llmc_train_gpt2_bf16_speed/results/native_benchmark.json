@@ -1,0 +1,29 @@
+{
+  "tool": "benchmark",
+  "status": "fail",
+  "summary": "command failed on all 1 device(s)",
+  "evidence": {
+    "command": "python3 /tmp/tmp.m6wULwePLA/task/run_speed.py build/native /tmp/tmp.m6wULwePLA/task/args.txt /tmp/tmp.m6wULwePLA/out/work/bench_out.wav",
+    "runs": 2,
+    "warmup": 1,
+    "results": [
+      {
+        "selector": "none",
+        "status": "fail",
+        "failure": {
+          "command": "python3 /tmp/tmp.m6wULwePLA/task/run_speed.py build/native /tmp/tmp.m6wULwePLA/task/args.txt /tmp/tmp.m6wULwePLA/out/work/bench_out.wav",
+          "returncode": 1,
+          "duration_s": 0.367594,
+          "stdout": "",
+          "stderr": "exit 1; expected per-step lines 'step N/M | loss L ... | X ms', got 0; output tail: ------------------------------------------------+\n| Parameter             | Value                                              |\n+-----------------------+----------------------------------------------------+\n| train data pattern    | dev/data/tinyshakespeare/tiny_shakespeare_train.bin |\n| val data pattern      | dev/data/tinyshakespeare/tiny_shakespeare_val.bin  |\n| output log dir        | NULL                                               |\n| checkpoint_every      | 0                                                  |\n| resume                | 0                                                  |\n| micro batch size B    | 4                                                  |\n| sequence length T     | 1024                                               |\n| total batch size      | 4096                                               |\n| LR scheduler          | cosine                                             |\n| learning rate (LR)    | 3.000000e-04                                       |\n| warmup iterations     | 0                                                  |\n| final LR fraction     | 1.000000e+00                                       |\n| weight decay          | 0.000000e+00                                       |\n| skip update lossz     | 0.000000                                           |\n| skip update gradz     | 0.000000                                           |\n| max_steps             | 30                                                 |\n| val_loss_every        | 1000                                               |\n| val_max_steps         | 2                                                  |\n| sample_every          | 0                                                  |\n| genT                  | 64                                                 |\n| overfit_single_batch  | 0                                                  |\n| use_master_weights    | enabled                                            |\n| gelu_fusion           | 0                                                  |\n| recompute             | 1                                                  |\n+-----------------------+----------------------------------------------------+\n| device                | NVIDIA RTX 2000 Ada Generation                     |\n| peak TFlops           | -1.0                                               |\n| precision             | BF16                                               |\n+-----------------------+----------------------------------------------------+\n\n",
+          "cwd": "/tmp/tmp.m6wULwePLA/out/work",
+          "run_index": 0
+        }
+      }
+    ]
+  },
+  "limitations": [
+    "Wall-clock time of the whole process (includes start-up, JIT compilation of SYCL kernels on first use, I/O). Use report_regex for in-program kernel timings.",
+    "Device selection uses ONEAPI_DEVICE_SELECTOR; it only takes effect if the program uses a default/selector-based sycl::queue."
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "stop_reason": "budget",
+  "stop_detail": "token budget exceeded: 2035568 > 2000000",
+  "iterations": 34,
+  "usage": {
+    "input_tokens": 184606,
+    "output_tokens": 45618,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1805344
+  },
+  "cost_usd": 0.6954355999999999,
+  "best": null,
+  "run_dir": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/l1runs/20261029T022715616715Z",
+  "trace": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/l1runs/20261029T022715616715Z/trace.jsonl",
+  "report": "/tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/l1runs/20261029T022715616715Z/report.md",
+  "model": "muse-spark-1.3",
+  "baseline": false,
+  "shell": false,
+  "evaluation": {
+    "source_hash": "ccc934baeaab770b",
+    "compiled": false,
+    "verify_status": null,
+    "verify_summary": null,
+    "helpers": null,
+    "note": "final sources do not compile: compile failed with 1 error(s) at /tmp/claude-0/-home-user/61dcfd45-e628-54eb-bcf3-8ee0da15b04b/scratchpad/l1runs/20261029T022715616715Z/work/migrated/llmc/cuda_common.h:15: 'nvtx3/nvToolsExt.h' file not found"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "tool": "verify",
+  "status": "ok",
+  "summary": "PASS: 1/1 case(s) match (worst max abs err 0.0321, atol 0.1)",
+  "evidence": {
+    "mode": "array",
+    "cases": [
+      {
+        "input": "/tmp/tmp.t4wJncHadP/task/args.txt",
+        "reference": {
+          "command": "python3 /tmp/tmp.t4wJncHadP/task/run_speed.py build/native /tmp/tmp.t4wJncHadP/task/args.txt /tmp/tmp.t4wJncHadP/out/work/v_sycl_native/case0_reference.out",
+          "returncode": 0,
+          "duration_s": 2.142316,
+          "stdout": "{\"steps\": 30, \"ms_per_step_median\": 44.03, \"losses\": [4.282888, 4.834426, 4.405624, 3.599122, 3.653845, 3.920515, 4.038335, 3.572477, 3.896014, 3.505024, 3.942089, 3.713672, 3.933589, 3.79275, 3.639683, 3.426868, 3.929638, 3.73059, 3.482303, 3.597163, 3.565998, 3.564515, 3.098561, 3.292732, 3.664551, 3.50117, 3.782763, 3.439631, 3.313218, 3.259937]}\nkernel_ms=44.03\n",
+          "stderr": "",
+          "cwd": "/tmp/tmp.t4wJncHadP/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "cuda:0"
+          },
+          "output_file": "/tmp/tmp.t4wJncHadP/out/work/v_sycl_native/case0_reference.out"
+        },
+        "candidate": {
+          "command": "python3 /tmp/tmp.t4wJncHadP/task/run_speed.py build/sycl /tmp/tmp.t4wJncHadP/task/args.txt /tmp/tmp.t4wJncHadP/out/work/v_sycl_native/case0_candidate.out",
+          "returncode": 0,
+          "duration_s": 2.933168,
+          "stdout": "{\"steps\": 30, \"ms_per_step_median\": 71.61, \"losses\": [4.281418, 4.802347, 4.413941, 3.598725, 3.653288, 3.909126, 4.040176, 3.578372, 3.901913, 3.511458, 3.952879, 3.717181, 3.930794, 3.796379, 3.63553, 3.428441, 3.932364, 3.734386, 3.484809, 3.607568, 3.573827, 3.563806, 3.100506, 3.29867, 3.672266, 3.517825, 3.795521, 3.438304, 3.312728, 3.258427]}\nkernel_ms=71.61\n",
+          "stderr": "",
+          "cwd": "/tmp/tmp.t4wJncHadP/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "cuda:0"
+          },
+          "output_file": "/tmp/tmp.t4wJncHadP/out/work/v_sycl_native/case0_candidate.out"
+        },
+        "reference_format": "f32",
+        "candidate_format": "f32",
+        "mode": "array",
+        "stats": {
+          "n_reference": 30,
+          "n_candidate": 30,
+          "atol": 0.1,
+          "rtol": 0.0,
+          "max_ulp_allowed": null,
+          "passed": true,
+          "max_abs_err": 0.03207874298095703,
+          "rms_err": 0.00867085543752528,
+          "mean_abs_err": 0.005901217460632324,
+          "max_rel_err": 0.0066354813313098965,
+          "max_ulp_f32": 69856,
+          "median_ulp_f32": 15571.5,
+          "exact_matches": 0,
+          "mismatches": 0,
+          "nan_mismatches": 0,
+          "reference_range": [
+            3.0985610485076904,
+            4.834425926208496
+          ],
+          "first_mismatches": []
+        },
+        "passed": true
+      }
+    ],
+    "work_dir": "/tmp/tmp.t4wJncHadP/out/work/v_sycl_native",
+    "passed_cases": 1,
+    "total_cases": 1,
+    "worst_max_abs_err": 0.03207874298095703
+  },
+  "limitations": [
+    "Equivalence is shown only for the inputs tested; other inputs/sizes may behave differently."
+  ]
+}

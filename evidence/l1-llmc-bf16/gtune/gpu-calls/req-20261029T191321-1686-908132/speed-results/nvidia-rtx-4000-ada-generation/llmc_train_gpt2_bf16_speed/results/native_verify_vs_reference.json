@@ -1,0 +1,64 @@
+{
+  "tool": "verify",
+  "status": "ok",
+  "summary": "PASS: 1/1 case(s) match (worst max abs err 0.00924, atol 0.1)",
+  "evidence": {
+    "mode": "array",
+    "cases": [
+      {
+        "input": "/tmp/tmp.bBR1FH46Sz/task/args.txt",
+        "reference": {
+          "command": "cp /tmp/tmp.bBR1FH46Sz/task/recorded_losses.out /tmp/tmp.bBR1FH46Sz/out/work/v_native/case0_reference.out",
+          "returncode": 0,
+          "duration_s": 0.005312,
+          "stdout": "",
+          "stderr": "",
+          "cwd": "/tmp/tmp.bBR1FH46Sz/out/work",
+          "output_file": "/tmp/tmp.bBR1FH46Sz/out/work/v_native/case0_reference.out"
+        },
+        "candidate": {
+          "command": "python3 /tmp/tmp.bBR1FH46Sz/task/run_speed.py build/native /tmp/tmp.bBR1FH46Sz/task/args.txt /tmp/tmp.bBR1FH46Sz/out/work/v_native/case0_candidate.out",
+          "returncode": 0,
+          "duration_s": 18.366477,
+          "stdout": "{\"steps\": 30, \"ms_per_step_median\": 105.52, \"losses\": [4.285959, 4.831959, 4.403946, 3.59837, 3.652364, 3.917095, 4.032872, 3.567996, 3.894871, 3.501936, 3.934152, 3.708408, 3.930674, 3.792387, 3.639277, 3.425197, 3.929045, 3.729866, 3.481916, 3.595241, 3.567684, 3.570549, 3.099669, 3.292741, 3.661587, 3.501029, 3.781737, 3.436949, 3.311854, 3.259932]}\nkernel_ms=105.52\n=== nsys install: sha256 ok, dpkg rc=0 -> /usr/local/bin/nsys\n=== profile (native, nsys, 10 steps): 29 kernels, 1178.6 ms of GPU time; top 15:\n 12.1%      142.8 ms  x   302  ampere_bf16_s1688gemm_bf16_128x128_ldg8_f2f_stages_32x1_tn\n 11.1%      130.6 ms  x   490  ampere_bf16_s1688gemm_bf16_128x128_ldg8_f2f_stages_32x1_nt\n  9.8%      116.0 ms  x   160  void adamw_kernel3<__nv_bfloat16, __nv_bfloat16>(T1 *, float *, T2 *, float *, float *, unsigned long, long, l\n  9.4%      111.1 ms  x   288  void cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_relu_bf16_64x64_32x6_nn_align8>(T1::Params)\n  7.8%       92.0 ms  x   240  void cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_relu_bf16_64x64_32x6_nt_align8>(T1::Params)\n  7.7%       90.6 ms  x   480  ampere_bf16_s1688gemm_bf16_128x128_ldg8_f2f_stages_32x1_nn\n  7.6%       89.6 ms  x   504  ampere_bf16_s1688gemm_bf16_128x128_ldg8_relu_f2f_tn\n  5.9%       69.9 ms  x   120  softmax_autoregressive_backward_inplace_kernel(__nv_bfloat16 *, const __nv_bfloat16 *, int, int, int, float)\n  5.1%       59.7 ms  x   168  softmax_forward_kernel5(__nv_bfloat16 *, float, const __nv_bfloat16 *, int, int)\n  3.5%       40.8 ms  x    10  void cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_relu_bf16_256x64_32x4_nn_align8>(T1::Params)\n  3.2%       37.2 ms  x    14  void fused_classifier_kernel5<(bool)1, (bool)0>(__nv_bfloat16 *, float *, __nv_bfloat16 *, float, const int *,\n  3.1%       36.5 ms  x   168  void cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_relu_bf16_256x128_32x3_tn_align8>(T1::Params)\n  3.0%       35.5 ms  x   288  gelu_forward_kernel2(__nv_bfloat16 *, const __nv_bfloat16 *)\n  2.2%       25.7 ms  x   120  gelu_backward_inplace_kernel(__nv_bfloat16 *, const __nv_bfloat16 *)\n  1.8%       20.9 ms  x   168  permute_kernel(__nv_bfloat16 *, __nv_bfloat16 *, __nv_bfloat16 *, const __nv_bfloat16 *, int, int, int, int)\n",
+          "stderr": "",
+          "cwd": "/tmp/tmp.bBR1FH46Sz/out/work",
+          "output_file": "/tmp/tmp.bBR1FH46Sz/out/work/v_native/case0_candidate.out"
+        },
+        "reference_format": "f32",
+        "candidate_format": "f32",
+        "mode": "array",
+        "stats": {
+          "n_reference": 30,
+          "n_candidate": 30,
+          "atol": 0.1,
+          "rtol": 0.0,
+          "max_ulp_allowed": null,
+          "passed": true,
+          "max_abs_err": 0.009241104125976562,
+          "rms_err": 0.0036327417533153113,
+          "mean_abs_err": 0.00282595952351888,
+          "max_rel_err": 0.0026960010500214618,
+          "max_ulp_f32": 38760,
+          "median_ulp_f32": 7572.5,
+          "exact_matches": 0,
+          "mismatches": 0,
+          "nan_mismatches": 0,
+          "reference_range": [
+            3.101262092590332,
+            4.8340067863464355
+          ],
+          "first_mismatches": []
+        },
+        "passed": true
+      }
+    ],
+    "work_dir": "/tmp/tmp.bBR1FH46Sz/out/work/v_native",
+    "passed_cases": 1,
+    "total_cases": 1,
+    "worst_max_abs_err": 0.009241104125976562
+  },
+  "limitations": [
+    "Equivalence is shown only for the inputs tested; other inputs/sizes may behave differently."
+  ]
+}

@@ -1,0 +1,46 @@
+[gpu-broker] req-20261029T191321-1686-908132: nvidia profile
+[gpu-broker] req-20261029T191321-1686-908132: ["  losses vs llm.c's CUDA test on the same GPU: PASS: 1/1 case(s) match (worst max abs err 0.0314, atol 0.05)", "speed on NVIDIA RTX 4000 Ada Generation: 572.9 ms per step (median, steps 6-30); llm.c's CUDA trainer: 107.4 ms, 5.33x llm.c's CUDA time"] ($0.03)
+[gpu-broker] req-20261029T193139-1686-865792: nvidia
+[gpu-broker] req-20261029T193139-1686-865792: ['62', 'OK 0.000881 0.001217'] ($0.06)
+[gpu-broker] req-20261029T200636-1686-342815: nvidia
+[gpu-broker] req-20261029T200636-1686-342815: ['failed checks:', 'TENSOR NOT OK, max diff: 8.944e-02, with rel error: 2.304e-01 (calculated= -0.298828, ref= -0.388266), 110.86% of maximum error'] ($0.08)
+[gpu-broker] req-20261029T201456-1686-300451: nvidia
+[gpu-broker] req-20261029T201456-1686-300451: ["  losses vs llm.c's CUDA test on the same GPU: FAIL: 0/1 case(s) match; first failure: 1 of 12 element(s) outside tolerance", "speed on NVIDIA RTX 2000 Ada Generation: 502.0 ms per step (median, steps 6-30); llm.c's CUDA trainer: 186.7 ms, 2.69x llm.c's CUDA time"] ($0.12)
+[gpu-broker] req-20261029T201856-1686-182044: amd
+[gpu-broker] req-20261029T201856-1686-182044: ['speed on AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85]: 592.0 ms per step (median, steps 6-30)', "  30 training losses vs llm.c's CUDA recording: PASS: 1/1 case(s) match (worst max abs err 0.0332, atol 0.1)"] ($0.47)
+[gpu-broker] req-20261029T202320-1686-585997: nvidia profile
+[gpu-broker] req-20261029T202320-1686-585997: ["  losses vs llm.c's CUDA test on the same GPU: FAIL: 0/1 case(s) match; first failure: 1 of 12 element(s) outside tolerance", "speed on NVIDIA L4: 419.8 ms per step (median, steps 6-30); llm.c's CUDA trainer: 143.2 ms, 2.93x llm.c's CUDA time"] ($0.52)
+[gpu-broker] req-20261029T203132-1686-228909: nvidia
+[gpu-broker] req-20261029T203132-1686-228909: ["  losses vs llm.c's CUDA test on the same GPU: PASS: 1/1 case(s) match (worst max abs err 0.0325, atol 0.05)", "speed on NVIDIA RTX A4000: 258.5 ms per step (median, steps 6-30); llm.c's CUDA trainer: 116.5 ms, 2.22x llm.c's CUDA time"] ($0.55)
+[gpu-broker] req-20261029T203951-1686-230321: nvidia
+[gpu-broker] req-20261029T203951-1686-230321: ["  losses vs llm.c's CUDA test on the same GPU: PASS: 1/1 case(s) match (worst max abs err 0.044, atol 0.05)", "speed on NVIDIA L4: 235.1 ms per step (median, steps 6-30); llm.c's CUDA trainer: 161.8 ms, 1.45x llm.c's CUDA time"] ($0.59)
+[gpu-broker] req-20261029T204249-1686-21561: nvidia profile
+[gpu-broker] req-20261029T204249-1686-21561: ["  losses vs llm.c's CUDA test on the same GPU: PASS: 1/1 case(s) match (worst max abs err 0.0359, atol 0.05)", "speed on NVIDIA L4: 223.7 ms per step (median, steps 6-30); llm.c's CUDA trainer: 143.6 ms, 1.56x llm.c's CUDA time"] ($0.62)
+[gpu-broker] req-20261029T205002-1686-963662: nvidia
+[gpu-broker] req-20261029T205002-1686-963662: ["  losses vs llm.c's CUDA test on the same GPU: PASS: 1/1 case(s) match (worst max abs err 0.0359, atol 0.05)", 'speed: no timing: native_verify_vs_reference fail: candidate exited with code 1; sycl_verify_vs_reference fail: candidate exited with code 1; sycl_verify_vs_native error: reference exited with code 1; sycl_benchmark fail: command failed on all 1 device(s); native_benchmark fail: command failed on all 1 device(s)'] ($0.65)
+[gpu-broker] req-20261029T205617-1686-165497: nvidia
+[gpu-broker] req-20261029T205617-1686-165497: ["  losses vs llm.c's CUDA test on the same GPU: PASS: 1/1 case(s) match (worst max abs err 0.0314, atol 0.05)", "speed on NVIDIA L4: 200.1 ms per step (median, steps 6-30); llm.c's CUDA trainer: 142.4 ms, 1.40x llm.c's CUDA time"] ($0.71)
+[gpu-broker] req-20261029T205916-1686-591663: nvidia profile
+[gpu-broker] req-20261029T205916-1686-591663: ["  losses vs llm.c's CUDA test on the same GPU: PASS: 1/1 case(s) match (worst max abs err 0.0314, atol 0.05)", "speed on NVIDIA GeForce RTX 4090: 71.6 ms per step (median, steps 6-30); llm.c's CUDA trainer: 44.1 ms, 1.62x llm.c's CUDA time"] ($0.78)
+[gpu-broker] req-20261029T210706-1686-852077: nvidia
+[gpu-broker] req-20261029T210706-1686-852077: ["  losses vs llm.c's CUDA test on the same GPU: PASS: 1/1 case(s) match (worst max abs err 0.0458, atol 0.05)", "speed on NVIDIA GeForce RTX 4090: 71.8 ms per step (median, steps 6-30); llm.c's CUDA trainer: 44.2 ms, 1.62x llm.c's CUDA time"] ($0.82)
+[gpu-broker] req-20261029T210937-1686-208615: nvidia profile
+[gpu-broker] req-20261029T210937-1686-208615: ["  losses vs llm.c's CUDA test on the same GPU: PASS: 1/1 case(s) match (worst max abs err 0.0359, atol 0.05)", "speed on NVIDIA RTX A4000: 178.1 ms per step (median, steps 6-30); llm.c's CUDA trainer: 113.7 ms, 1.57x llm.c's CUDA time"] ($0.84)
+[gpu-broker] req-20261029T211656-1686-871143: nvidia profile
+[gpu-broker] req-20261029T211656-1686-871143: ["  losses vs llm.c's CUDA test on the same GPU: PASS: 1/1 case(s) match (worst max abs err 0.0321, atol 0.05)", "speed on NVIDIA RTX 4000 Ada Generation: 144.7 ms per step (median, steps 6-30); llm.c's CUDA trainer: 107.4 ms, 1.35x llm.c's CUDA time"] ($0.87)
+[gpu-broker] req-20261029T212450-1686-393070: nvidia
+[gpu-broker] req-20261029T212450-1686-393070: ["  losses vs llm.c's CUDA test on the same GPU: PASS: 1/1 case(s) match (worst max abs err 0.0314, atol 0.05)", 'speed: no timing: sycl_verify_vs_reference fail: candidate exited with code 1; sycl_verify_vs_native fail: candidate exited with code 1; sycl_benchmark fail: command failed on all 1 device(s)'] ($0.94)
+[gpu-broker] req-20261029T213034-1686-266677: nvidia
+[gpu-broker] req-20261029T213034-1686-266677: ["  losses vs llm.c's CUDA test on the same GPU: PASS: 1/1 case(s) match (worst max abs err 0.0359, atol 0.05)", "speed on NVIDIA RTX A4000: 154.1 ms per step (median, steps 6-30); llm.c's CUDA trainer: 116.7 ms, 1.32x llm.c's CUDA time"] ($0.96)
+[gpu-broker] req-20261029T213423-1686-838385: amd
+[gpu-broker] req-20261029T213423-1686-838385: ["speed: no timing: native_build fail: exit 1: /opt/rocm/bin/hipcc -O2 -std=c++17 --offload-arch=gfx950 -I/tmp/tmp.fRVHsIcZ76/task /tmp/tmp.fRVHsIcZ76/out/work/train_gpt2.hip.cpp -o build/native; sycl_compile fail: compile failed with 2 error(s) at /tmp/tmp.fRVHsIcZ76/task/agent_port/llmc/batched_gemm.hpp:99: no matching function for call to 'get_native'", ''] ($1.99)
+[gpu-broker] req-20261029T215617-1686-135977: amd
+[gpu-broker] req-20261029T215617-1686-135977: ['speed on AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85]: 63.0 ms per step (median, steps 6-30)', "  30 training losses vs llm.c's CUDA recording: PASS: 1/1 case(s) match (worst max abs err 0.0155, atol 0.1)"] ($3.05)
+[gpu-broker] req-20261029T222142-1686-13486: nvidia
+[gpu-broker] req-20261029T222142-1686-13486: ["  losses vs llm.c's CUDA test on the same GPU: PASS: 1/1 case(s) match (worst max abs err 0.044, atol 0.05)", "speed on NVIDIA GeForce RTX 4090: 49.8 ms per step (median, steps 6-30); llm.c's CUDA trainer: 43.5 ms, 1.14x llm.c's CUDA time"] ($3.10)
+[gpu-broker] req-20261029T222420-1686-999121: nvidia profile
+[gpu-broker] req-20261029T222420-1686-999121: ["  losses vs llm.c's CUDA test on the same GPU: PASS: 1/1 case(s) match (worst max abs err 0.0359, atol 0.05)", "speed on NVIDIA L4: 160.1 ms per step (median, steps 6-30); llm.c's CUDA trainer: 140.6 ms, 1.14x llm.c's CUDA time"] ($3.17)
+[gpu-broker] req-20261029T223337-1686-970413: nvidia
+[gpu-broker] req-20261029T223337-1686-970413: ["  losses vs llm.c's CUDA test on the same GPU: PASS: 1/1 case(s) match (worst max abs err 0.0359, atol 0.05)", "speed on NVIDIA RTX 2000 Ada Generation: 205.5 ms per step (median, steps 6-30); llm.c's CUDA trainer: 181.9 ms, 1.13x llm.c's CUDA time"] ($3.19)
+[gpu-broker] req-20261029T223624-1686-651141: amd
+[gpu-broker] req-20261029T223624-1686-651141: ['speed on AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85]: 63.5 ms per step (median, steps 6-30)', "  30 training losses vs llm.c's CUDA recording: PASS: 1/1 case(s) match (worst max abs err 0.0155, atol 0.1)"] ($3.50)

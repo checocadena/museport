@@ -1,0 +1,70 @@
+{
+  "tool": "verify",
+  "status": "ok",
+  "summary": "PASS: 1/1 case(s) match (worst max abs err 0.0121, atol 0.1)",
+  "evidence": {
+    "mode": "array",
+    "cases": [
+      {
+        "input": "/tmp/tmp.XcZh52xmeK/task/args.txt",
+        "reference": {
+          "command": "cp /tmp/tmp.XcZh52xmeK/task/recorded_losses.out /tmp/tmp.XcZh52xmeK/out/work/v_sycl/case0_reference.out",
+          "returncode": 0,
+          "duration_s": 0.003315,
+          "stdout": "",
+          "stderr": "",
+          "cwd": "/tmp/tmp.XcZh52xmeK/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "cuda:0"
+          },
+          "output_file": "/tmp/tmp.XcZh52xmeK/out/work/v_sycl/case0_reference.out"
+        },
+        "candidate": {
+          "command": "python3 /tmp/tmp.XcZh52xmeK/task/run_speed.py build/sycl /tmp/tmp.XcZh52xmeK/task/args.txt /tmp/tmp.XcZh52xmeK/out/work/v_sycl/case0_candidate.out",
+          "returncode": 0,
+          "duration_s": 12.018237,
+          "stdout": "{\"steps\": 30, \"ms_per_step_median\": 159.33, \"losses\": [4.282257, 4.8289, 4.417735, 3.603369, 3.651977, 3.907582, 4.03832, 3.577307, 3.89373, 3.507624, 3.9423, 3.718049, 3.931852, 3.795199, 3.637068, 3.422641, 3.928515, 3.728785, 3.478861, 3.600866, 3.566403, 3.568129, 3.099993, 3.293145, 3.661074, 3.499926, 3.786584, 3.429244, 3.311983, 3.257304]}\nkernel_ms=159.33\n=== profile (sycl, nsys, 10 steps): 40 kernels, 1778.5 ms of GPU time; top 15:\n 12.9%      229.6 ms  x   470  ampere_bf16_s1688gemm_bf16_128x128_ldg8_f2f_stages_32x1_tn\n  9.7%      172.8 ms  x   288  void cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_relu_bf16_64x64_32x6_nn_align8>(T1::Params)\n  8.6%      153.0 ms  x   160  void adamw_update<sycl::_V1::ext::oneapi::bfloat16, sycl::_V1::ext::oneapi::bfloat16>(T1 *, float *, T2 *, flo\n  7.2%      127.5 ms  x   250  ampere_bf16_s1688gemm_bf16_128x128_ldg8_f2f_stages_32x1_nt\n  7.1%      126.9 ms  x   480  ampere_bf16_s1688gemm_bf16_128x128_ldg8_f2f_stages_32x1_nn\n  7.1%      126.7 ms  x   240  void cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_relu_bf16_64x64_32x6_nt_align8>(T1::Params)\n  6.9%      122.7 ms  x   686  matmul_onemath(sycl::_V1::ext::oneapi::bfloat16 *, const sycl::_V1::ext::oneapi::bfloat16 *, const sycl::_V1::\n  5.8%      103.8 ms  x   504  ampere_bf16_s1688gemm_bf16_128x128_ldg8_f2f_tn\n  5.1%       91.3 ms  x   120  softmax_autoregressive_backward_inplace(sycl::_V1::ext::oneapi::bfloat16 *, const sycl::_V1::ext::oneapi::bflo\n  4.7%       83.3 ms  x   168  softmax_forward(sycl::_V1::ext::oneapi::bfloat16 *, float, const sycl::_V1::ext::oneapi::bfloat16 *, int, int,\n  3.1%       54.6 ms  x    14  void fused_classifier_kernel<(bool)1>(sycl::_V1::ext::oneapi::bfloat16 *, float *, float, const int *, int, in\n  2.5%       45.0 ms  x    10  void cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_relu_bf16_256x64_32x4_nn_align8>(T1::Params)\n  2.5%       44.1 ms  x   288  gelu_forward(sycl::_V1::ext::oneapi::bfloat16 *, const sycl::_V1::ext::oneapi::bfloat16 *, unsigned long, sycl\n  2.3%       40.9 ms  x   240  ampere_bf16_s16816gemm_bf16_256x128_ldg8_f2f_stages_32x3_nt\n  2.2%       39.6 ms  x   120  gelu_backward_inplace(sycl::_V1::ext::oneapi::bfloat16 *, const sycl::_V1::ext::oneapi::bfloat16 *, unsigned l\n",
+          "stderr": "",
+          "cwd": "/tmp/tmp.XcZh52xmeK/out/work",
+          "env_overrides": {
+            "ONEAPI_DEVICE_SELECTOR": "cuda:0"
+          },
+          "output_file": "/tmp/tmp.XcZh52xmeK/out/work/v_sycl/case0_candidate.out"
+        },
+        "reference_format": "f32",
+        "candidate_format": "f32",
+        "mode": "array",
+        "stats": {
+          "n_reference": 30,
+          "n_candidate": 30,
+          "atol": 0.1,
+          "rtol": 0.0,
+          "max_ulp_allowed": null,
+          "passed": true,
+          "max_abs_err": 0.012135982513427734,
+          "rms_err": 0.005051158462645778,
+          "mean_abs_err": 0.0038942734400431315,
+          "max_rel_err": 0.0034040393860638217,
+          "max_ulp_f32": 50902,
+          "median_ulp_f32": 12010.5,
+          "exact_matches": 0,
+          "mismatches": 0,
+          "nan_mismatches": 0,
+          "reference_range": [
+            3.101262092590332,
+            4.8340067863464355
+          ],
+          "first_mismatches": []
+        },
+        "passed": true
+      }
+    ],
+    "work_dir": "/tmp/tmp.XcZh52xmeK/out/work/v_sycl",
+    "passed_cases": 1,
+    "total_cases": 1,
+    "worst_max_abs_err": 0.012135982513427734
+  },
+  "limitations": [
+    "Equivalence is shown only for the inputs tested; other inputs/sizes may behave differently."
+  ]
+}

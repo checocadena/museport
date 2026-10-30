@@ -1,0 +1,1 @@
+[gpu_test] ok: PASS on AMD Instinct MI350X VF gfx950:sramecc+:xnack- [HIP 71460.85] (hip:0, amd): sycl_verify_vs_reference: PASS: 1/1 case(s) match (worst max abs err 0.0162, atol 0.1)

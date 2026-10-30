@@ -1,0 +1,11 @@
+{
+ "status": "ok",
+ "summary": "llm.c's test on NVIDIA L4: PASS: 1/1 case(s) match (worst max abs err 0.0319, atol 0.05)\n  losses vs llm.c's CUDA test on the same GPU: PASS: 1/1 case(s) match (worst max abs err 0.044, atol 0.05)\nspeed on NVIDIA GeForce RTX 4090: 49.8 ms per step (median, steps 6-30); llm.c's CUDA trainer: 43.5 ms, 1.14x llm.c's CUDA time\n  30 training losses vs llm.c's CUDA recording: PASS: 1/1 case(s) match (worst max abs err 0.0324, atol 0.1)\nGPU budget: $3.10 of $8.00 spent, call 20 of 30",
+ "evidence": {
+  "vendor": "nvidia",
+  "test_device": "NVIDIA L4",
+  "speed_device": "NVIDIA GeForce RTX 4090",
+  "test": "NVIDIA L4: ok: PASS on NVIDIA L4 (cuda:0, nvidia): sycl_verify_vs_reference: PASS: 1/1 case(s) match (worst max abs err 0.0319, atol 0.05); sycl_verify_vs_native: PASS: 1/1 case(s) match (worst max abs err 0.044, atol 0.05)",
+  "speed": "NVIDIA GeForce RTX 4090: ok: PASS on NVIDIA GeForce RTX 4090 (cuda:0, nvidia): sycl_verify_vs_reference: PASS: 1/1 case(s) match (worst max abs err 0.0324, atol 0.1); sycl_verify_vs_native: PASS: 1/1 case(s) match (worst max abs err 0.0328, atol 0.1)"
+ }
+}

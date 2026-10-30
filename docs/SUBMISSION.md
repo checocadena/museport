@@ -10,15 +10,19 @@ README before pasting.
 ## One line
 
 Muse Port has Meta's Muse Spark plan and port real CUDA codebases (Karpathy's llm.c, and
-llama2.cu, Llama 2 inference) to the open SYCL standard. A port counts as done only when a check the model never sees agrees. The
-ports then run on NVIDIA and AMD GPUs, including GPT-2 training, and go back together as a
-repo whose build passes llm.c's own test on a CPU, an NVIDIA GPU and an AMD GPU.
+llama2.cu, Llama 2 inference) to the open SYCL standard. A port counts as done only when a check
+the model never sees agrees.
+
+The largest port is llm.c's production bf16 GPT-2 trainer. Muse ported it in one run. Then,
+measuring on rented GPUs, it tuned the trainer to 1.13-1.14x llm.c's CUDA time on NVIDIA
+(1.52x without vendor libraries), with llm.c's own test passing on NVIDIA and AMD.
 
 ## Opening line of the 3-minute video (required)
 
 > "Pre-existing: my open-source oneapi-agent-toolkit, the SYCL tools and agent loop, used here
 > as a pinned dependency. Built this week: Muse Port. Meta's Muse plans and ports CUDA code
-> against hidden checks, with reports, NVIDIA and AMD runs, and ports of GPT-2 and llama2.cu."
+> against hidden checks, then tunes it on real NVIDIA and AMD GPUs: llm.c's bf16 trainer,
+> GPT-2 and llama2.cu."
 
 ## What it does
 
@@ -41,6 +45,13 @@ repo whose build passes llm.c's own test on a CPU, an NVIDIA GPU and an AMD GPU.
    for byte. `museport llama2-sycl assemble` does the same for llama2.cu, a second repo.
 6. **`museport report`:** a static site built only from the committed evidence: results,
    every port, and a turn-by-turn replay of Muse's work.
+7. **`museport loop --tune --gpu-queue` with `museport gpu-broker`:** Muse tunes a passing
+   port for speed with a `gpu_test` tool.
+   - **What one call does:** it builds Muse's current code on a rented NVIDIA or AMD GPU, runs
+     llm.c's test there, and times training next to llm.c's CUDA on the same machine. It can
+     also return an nsys kernel profile.
+   - **Keys and budget:** a separate broker holds the GPU keys and the budget, so the model's
+     process has no credentials. Success still requires llm.c's test to pass.
 
 ## How Meta's models are used
 
@@ -57,6 +68,33 @@ repo whose build passes llm.c's own test on a CPU, an NVIDIA GPU and an AMD GPU.
   All three are documented in the evidence.
 
 ## Results (measured; evidence in the repository)
+
+**llm.c's production bf16 trainer** (`train_gpt2.cu`, `test_gpt2.cu`, `llmc/`: 12 files, 4,884
+lines, bf16, cuBLASLt, warp reductions, stochastic rounding)
+([evidence](../evidence/l1-llmc-bf16/README.md)):
+- **Port in one run:** 125 turns, $5.67, from the CUDA alone.
+  - llm.c's own test passes: logits, all 16 gradient tensors, 10 losses against PyTorch and a
+    bit-exact checkpoint replay, at llm.c's bf16 tolerances.
+  - It passes on the CPU, an AMD MI350X and an NVIDIA RTX 4000 Ada, and a rebuild outside the
+    loop passes too.
+  - It ran at 36x CUDA's time.
+- **Tuning with real GPUs:** 211 turns, $14.50 of Muse, $3.50 of GPU
+  ([evidence](../evidence/l1-llmc-bf16/gtune/README.md)).
+  - Muse profiled, rewrote its slow kernels, and checked each change on a GPU.
+  - **NVIDIA:** 1.14x llm.c's CUDA time on an RTX 4090 (49.8 vs 43.5 ms per step) and on an
+    L4, and 1.13x on an RTX 2000 Ada.
+  - **AMD MI350X:** 63.5 ms per step.
+  - llm.c's test passes on both vendors.
+- **Honest limits:**
+  - **cuBLAS on NVIDIA:** the NVIDIA numbers call cuBLAS at runtime through SYCL's interop, for
+    two gemm forms oneMath's cuBLAS backend lacks. Pure SYCL + oneMath measures 1.52x.
+  - **Fast paths:** Muse keeps them for large shapes, so llm.c's small test does not run them.
+    Forced on, the test passes on NVIDIA and AMD (worst 0.046 against 0.05).
+  - **Not one pass overall:** before run 5, the first port took three runs.
+- **A oneMath bug:** its cuBLAS backend throws "unimplemented" for bf16 gemm. The port found it,
+  and a two-line patch by us routes it to `cublasGemmEx`
+  ([patch](../patches/onemath-cublas-bf16-gemm.patch)).
+- **Cost:** about $50.66 of Muse for all of L1, with every run's evidence.
 
 **llm.c kernels, with the fixed agent loop** (one run per file):
 - 19 kernel files ported.
@@ -173,6 +211,9 @@ Python, not CUDA. Muse Port had never run on it. It is much smaller than llm.c.
 - **Variant check:** it catches a port that copies one implementation into several kernel
   variants.
 - **Grounded planning:** every claim in Muse's plan is checked against a deterministic scan.
+- **GPU feedback without credentials in the agent:** the loop runs in a clean environment. Its
+  `gpu_test` tool writes a request to a queue, and a broker with the GPU keys and a hard budget
+  answers it. Every call keeps the exact code it built and the result Muse saw.
 - **Toolkit changes made this week:** ten pull requests in the pre-existing toolkit, each
   logged in `docs/CHANGES-TO-TOOLKIT.md`:
   - Meta API alignment;
@@ -188,13 +229,14 @@ Python, not CUDA. Muse Port had never run on it. It is much smaller than llm.c.
 
 ## Limits
 
-- fp32 only, at reduced sizes for most kernels; one run per item.
+- The kernel ports are fp32, at reduced sizes; one run per item. The bf16 trainer is full size;
+  its speeds are single runs on rented GPUs whose model varies between calls.
 - AMD is checked against the reference only: llm.c's CUDA doesn't convert to HIP
   automatically (errors quoted in the evidence).
 - GPT-2 stages 1 and 2 ran on the CPU device only; stage 3, the trainer and the test also on
   one NVIDIA and one AMD GPU. The trainer was checked on 10 short steps, not a long run.
-- Muse's GPT-2 ports are lean rewrites with simple kernels, not llm.c's tuned kernels.
-  Performance was not compared.
+- Muse's fp32 GPT-2 ports are lean rewrites with simple kernels, and their speed was not
+  compared. The bf16 trainer's speed was (above).
 - `llm.c-sycl`'s and `llama2-sycl`'s Makefiles were written by hand; Muse did not convert the
   builds. Each repo has its own assembler (`museport llmc-sycl` and `llama2-sycl assemble`).
 - `llama2-sycl` is checked on two prompts of 64 greedy steps with the 15M model; its Makefile's

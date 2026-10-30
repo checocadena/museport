@@ -1,0 +1,38 @@
+--- llmc/matmul.hpp	2026-10-29 22:17:07.674437759 +0000
++++ llmc/matmul.hpp	2026-10-29 22:56:18.619795171 +0000
+@@ -86,7 +86,7 @@
+     NVTX_RANGE_FN();
+     // Interop path needs plain overwrite semantics and no dgelu epilogue
+     // (the dgelu path is dead with the default gelu_fusion=0 anyway).
+-    bool use_lib = !accumulate && !backward_gelu && BT > 1024 && !q.get_device().is_cpu()
++    bool use_lib = !accumulate && !backward_gelu && BT > 0 && !q.get_device().is_cpu()
+         && sycl_gemm_lib(out, inp, weight, (int64_t)BT, (int64_t)OC, (int64_t)C, false, true, q);
+     size_t N = (size_t)OC * BT;
+     bool has_bias = (bias != nullptr);
+@@ -259,7 +259,7 @@
+     // NOTE: on the library path the fp32 result is left in tmp_fp32 and the
+     // caller fuses the bf16 convert into its consumer; the plain convert below
+     // only remains for callers that need bf16 out (none in attention anymore).
+-    if (work >= (size_t)2 * 1024 * 1024 && !q.get_device().is_cpu()) {
++    if (work >= (size_t)0 && !q.get_device().is_cpu()) {
+         // Fast path: single strided-batched cuBLAS launch (NVIDIA, 1 = bf16
+         // out, 2 = fp32 out); returns 0 anywhere else so the oneMath loop
+         // below runs instead. Accumulating/odd-stride callers cannot use the
+@@ -422,7 +422,7 @@
+     {
+         int BT = B * T;
+         bool fused_dgelu = (gelu_fusion >= 2 && pre_gelu);
+-        bool use_lib = BT > 1024 && !fused_dgelu && !q.get_device().is_cpu()
++        bool use_lib = BT > 0 && !fused_dgelu && !q.get_device().is_cpu()
+             && sycl_gemm_lib(dinp, dout, weight, (int64_t)BT, (int64_t)C, (int64_t)OC, false, false, q);
+         if (use_lib) {
+             if (gelu_fusion < 2 && pre_gelu) {
+@@ -470,7 +470,7 @@
+     // A=dout transposed, B=inp plain.
+     {
+         int BT = B * T;
+-        bool use_lib = BT > 1024 && !q.get_device().is_cpu()
++        bool use_lib = BT > 0 && !q.get_device().is_cpu()
+             && sycl_gemm_lib(dweight, dout, inp, (int64_t)OC, (int64_t)C, (int64_t)BT, true, false, q, true);
+         if (!use_lib) {
+         using namespace oneapi::math;

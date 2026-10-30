@@ -1,0 +1,64 @@
+{
+  "tool": "verify",
+  "status": "ok",
+  "summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 0.1)",
+  "evidence": {
+    "mode": "array",
+    "cases": [
+      {
+        "input": "/tmp/tmp.KuAZJYcW6W/task/args.txt",
+        "reference": {
+          "command": "cp /tmp/tmp.KuAZJYcW6W/task/recorded_losses.out /tmp/tmp.KuAZJYcW6W/out/work/v_native/case0_reference.out",
+          "returncode": 0,
+          "duration_s": 0.002588,
+          "stdout": "",
+          "stderr": "",
+          "cwd": "/tmp/tmp.KuAZJYcW6W/out/work",
+          "output_file": "/tmp/tmp.KuAZJYcW6W/out/work/v_native/case0_reference.out"
+        },
+        "candidate": {
+          "command": "python3 /tmp/tmp.KuAZJYcW6W/task/run_speed.py build/native /tmp/tmp.KuAZJYcW6W/task/args.txt /tmp/tmp.KuAZJYcW6W/out/work/v_native/case0_candidate.out",
+          "returncode": 0,
+          "duration_s": 17.137928,
+          "stdout": "{\"steps\": 30, \"ms_per_step_median\": 142.06, \"losses\": [4.283947, 4.834007, 4.409614, 3.602684, 3.653534, 3.918343, 4.035693, 3.565171, 3.897148, 3.499794, 3.937709, 3.710655, 3.930583, 3.791318, 3.637749, 3.423841, 3.927082, 3.728993, 3.483564, 3.597973, 3.566158, 3.57338, 3.101262, 3.297749, 3.663908, 3.509935, 3.783345, 3.427708, 3.31142, 3.25221]}\nkernel_ms=142.06\n=== nsys install: sha256 ok, dpkg rc=0 -> /usr/local/bin/nsys\n=== profile (native, nsys, 10 steps): 31 kernels, 1575.7 ms of GPU time; top 15:\n 11.6%      182.8 ms  x   302  ampere_bf16_s1688gemm_bf16_128x128_ldg8_f2f_stages_32x1_tn\n 10.1%      159.3 ms  x   288  void cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_relu_bf16_64x64_32x6_nn_align8>(T1::Params)\n  9.6%      151.4 ms  x   160  void adamw_kernel3<__nv_bfloat16, __nv_bfloat16>(T1 *, float *, T2 *, float *, float *, unsigned long, long, l\n  8.3%      131.5 ms  x   250  ampere_bf16_s1688gemm_bf16_128x128_ldg8_f2f_stages_32x1_nt\n  8.3%      131.2 ms  x   480  ampere_bf16_s1688gemm_bf16_128x128_ldg8_f2f_stages_32x1_nn\n  8.0%      125.6 ms  x   240  void cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_relu_bf16_64x64_32x6_nt_align8>(T1::Params)\n  7.2%      114.1 ms  x   504  ampere_bf16_s1688gemm_bf16_128x128_ldg8_relu_f2f_tn\n  5.8%       91.5 ms  x   120  softmax_autoregressive_backward_inplace_kernel(__nv_bfloat16 *, const __nv_bfloat16 *, int, int, int, float)\n  5.3%       84.0 ms  x   168  softmax_forward_kernel5(__nv_bfloat16 *, float, const __nv_bfloat16 *, int, int)\n  3.6%       56.0 ms  x   168  ampere_bf16_s1688gemm_bf16_128x128_ldg8_relu_f2f_stages_32x1_tn\n  3.1%       49.5 ms  x    14  void fused_classifier_kernel5<(bool)1, (bool)0>(__nv_bfloat16 *, float *, __nv_bfloat16 *, float, const int *,\n  3.0%       47.3 ms  x    10  void cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_relu_bf16_256x64_32x4_nn_align8>(T1::Params)\n  2.7%       42.2 ms  x   240  ampere_bf16_s16816gemm_bf16_256x128_ldg8_f2f_stages_32x3_nt\n  2.5%       39.0 ms  x   288  gelu_forward_kernel2(__nv_bfloat16 *, const __nv_bfloat16 *)\n  2.1%       32.6 ms  x   120  gelu_backward_inplace_kernel(__nv_bfloat16 *, const __nv_bfloat16 *)\n",
+          "stderr": "",
+          "cwd": "/tmp/tmp.KuAZJYcW6W/out/work",
+          "output_file": "/tmp/tmp.KuAZJYcW6W/out/work/v_native/case0_candidate.out"
+        },
+        "reference_format": "f32",
+        "candidate_format": "f32",
+        "mode": "array",
+        "stats": {
+          "n_reference": 30,
+          "n_candidate": 30,
+          "atol": 0.1,
+          "rtol": 0.0,
+          "max_ulp_allowed": null,
+          "passed": true,
+          "max_abs_err": 0.0,
+          "rms_err": 0.0,
+          "mean_abs_err": 0.0,
+          "max_rel_err": 0.0,
+          "max_ulp_f32": 0,
+          "median_ulp_f32": 0.0,
+          "exact_matches": 30,
+          "mismatches": 0,
+          "nan_mismatches": 0,
+          "reference_range": [
+            3.101262092590332,
+            4.8340067863464355
+          ],
+          "first_mismatches": []
+        },
+        "passed": true
+      }
+    ],
+    "work_dir": "/tmp/tmp.KuAZJYcW6W/out/work/v_native",
+    "passed_cases": 1,
+    "total_cases": 1,
+    "worst_max_abs_err": 0.0
+  },
+  "limitations": [
+    "Equivalence is shown only for the inputs tested; other inputs/sizes may behave differently."
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "tool": "gpu_test",
+  "status": "ok",
+  "summary": "recorded 1 output(s) of the original CUDA on NVIDIA RTX 2000 Ada Generation (nvidia); two runs identical: PASS: 1/1 case(s) match (worst max abs err 0, atol 0)",
+  "evidence": {
+    "task": "llmc_test_gpt2_bf16_gelu_bug",
+    "device": {
+      "backend": "cuda",
+      "device_type": "gpu",
+      "index": 0,
+      "platform": "NVIDIA CUDA BACKEND",
+      "name": "NVIDIA RTX 2000 Ada Generation",
+      "description": "NVIDIA CUDA BACKEND, NVIDIA RTX 2000 Ada Generation 8.9 [CUDA 13.2]",
+      "selector": "cuda:0"
+    },
+    "vendor": "nvidia",
+    "recorded": [
+      {
+        "case": 0,
+        "input": "test_args.txt",
+        "file": "recorded/case0.out",
+        "bytes": 48,
+        "sha256": "08acf74622499315ded9c2e0de6f83a372697bafb589344ade48e2dd2a03b967"
+      }
+    ],
+    "deterministic": true,
+    "repeat": {
+      "mode": "array",
+      "cases": [
+        {
+          "input": "/tmp/tmp.oE9pvkhXR8/task/test_args.txt",
+          "reference": {
+            "command": "python3 /tmp/tmp.oE9pvkhXR8/task/run_test.py build/native /tmp/tmp.oE9pvkhXR8/task/test_args.txt /tmp/tmp.oE9pvkhXR8/out/work/v_record/case0_reference.out",
+            "returncode": 0,
+            "duration_s": 3.582762,
+            "stdout": "overall okay: 0 | tolerances kept: True | losses: [5.267556, 4.049594, 3.321336, 2.711323, 2.192021, 1.656229, 1.17567, 0.75797, 0.415415, 0.200938]\n",
+            "stderr": "",
+            "cwd": "/tmp/tmp.oE9pvkhXR8/out/work",
+            "output_file": "/tmp/tmp.oE9pvkhXR8/out/work/v_record/case0_reference.out"
+          },
+          "candidate": {
+            "command": "python3 /tmp/tmp.oE9pvkhXR8/task/run_test.py build/native /tmp/tmp.oE9pvkhXR8/task/test_args.txt /tmp/tmp.oE9pvkhXR8/out/work/v_record/case0_candidate.out",
+            "returncode": 0,
+            "duration_s": 3.511999,
+            "stdout": "overall okay: 0 | tolerances kept: True | losses: [5.267556, 4.049594, 3.321336, 2.711323, 2.192021, 1.656229, 1.17567, 0.75797, 0.415415, 0.200938]\n",
+            "stderr": "",
+            "cwd": "/tmp/tmp.oE9pvkhXR8/out/work",
+            "output_file": "/tmp/tmp.oE9pvkhXR8/out/work/v_record/case0_candidate.out"
+          },
+          "reference_format": "f32",
+          "candidate_format": "f32",
+          "mode": "array",
+          "stats": {
+            "n_reference": 12,
+            "n_candidate": 12,
+            "atol": 0.0,
+            "rtol": 0.0,
+            "max_ulp_allowed": null,
+            "passed": true,
+            "max_abs_err": 0.0,
+            "rms_err": 0.0,
+            "mean_abs_err": 0.0,
+            "max_rel_err": 0.0,
+            "max_ulp_f32": 0,
+            "median_ulp_f32": 0.0,
+            "exact_matches": 12,
+            "mismatches": 0,
+            "nan_mismatches": 0,
+            "reference_range": [
+              0.0,
+              5.267556190490723
+            ],
+            "first_mismatches": []
+          },
+          "passed": true
+        }
+      ],
+      "work_dir": "/tmp/tmp.oE9pvkhXR8/out/work/v_record",
+      "passed_cases": 1,
+      "total_cases": 1,
+      "worst_max_abs_err": 0.0
+    },
+    "steps": [
+      {
+        "step": "reference_build",
+        "status": "ok",
+        "summary": "exit 0: true"
+      },
+      {
+        "step": "native_build",
+        "status": "ok",
+        "summary": "exit 0: /usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.oE9pvkhXR8/task /tmp/tmp.oE9pvkhXR8/task/test_gpt2.cu --use_fast_math -DENABLE_BF16 -lcublas -lcublasLt -L/usr/local/cuda/lib64/stubs -lnvidia-ml -o build/native"
+      },
+      {
+        "step": "native_repeat",
+        "status": "ok",
+        "summary": "PASS: 1/1 case(s) match (worst max abs err 0, atol 0)"
+      }
+    ]
+  },
+  "limitations": [
+    "A recorded reference is the original program's own output on one GPU: it is only as right as that program, and a non-deterministic program needs a tolerance at least as wide as its run-to-run difference."
+  ]
+}
