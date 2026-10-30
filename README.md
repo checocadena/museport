@@ -1,13 +1,50 @@
+<div align="center">
+
 # Muse Port
 
-**Meta's Muse models plan and port real CUDA projects to the open SYCL standard, and prove
-every step.**
+**Meta's Muse plans and ports real CUDA projects to the open SYCL standard, and proves every step.**
+
+[![CI](https://github.com/checocadena/museport/actions/workflows/ci.yml/badge.svg)](https://github.com/checocadena/museport/actions/workflows/ci.yml)
+[![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
+[![Python 3.11 | 3.13](https://img.shields.io/badge/python-3.11%20%7C%203.13-3776AB?logo=python&logoColor=white)](pyproject.toml)
+[![SYCL 2020](https://img.shields.io/badge/SYCL-2020-0071C5)](https://www.khronos.org/sycl/)
+[![oneAPI · oneMath](https://img.shields.io/badge/oneAPI-oneMath-0071C5)](https://github.com/uxlfoundation/oneMath)
+[![Model: muse-spark-1.3](https://img.shields.io/badge/model-muse--spark--1.3-0866FF?logo=meta&logoColor=white)](docs/SUBMISSION.md#how-metas-models-are-used)
+<br>
+[![GPUs: NVIDIA | AMD](https://img.shields.io/badge/runs%20on-CPU%20%7C%20NVIDIA%20%7C%20AMD-555)](#at-a-glance)
+[![llm.c bf16 trainer: 1.40–1.55x CUDA](https://img.shields.io/badge/llm.c%20bf16%20trainer-1.40%E2%80%931.55x%20CUDA%2C%20portable-2ea44f)](evidence/l1-llmc-bf16/ptune/README.md)
+[![Evidence: committed](https://img.shields.io/badge/every%20number-committed%20evidence-2ea44f)](evidence)
+[![Meta Global AI Developer Hackathon 2026](https://img.shields.io/badge/Meta%20Global%20AI%20Developer%20Hackathon-2026-0866FF)](#what-is-new-and-what-it-builds-on)
+
+<img src="docs/img/l1-speed.png" alt="llm.c's bf16 trainer: time per training step as a multiple of llm.c's CUDA on the same NVIDIA GPU. Run 5 port 36x; tuned without a GPU 5.65x; tuned with gpu_test in portable SYCL + oneMath 1.40-1.55x; plus NVIDIA's cuBLAS 1.13-1.21x." width="820">
+
+</div>
 
 Muse Port reads a whole CUDA repository, plans its migration off NVIDIA (kernels, NVIDIA
 library calls and their oneAPI equivalents, CUDA-only assumptions), then drives an agent that
 ports it piece by piece. Nothing counts as done until a check the model never sees confirms
 the output matches the original. The ports are then run on real NVIDIA GPUs against the
-original CUDA, and on an AMD MI350X against the hidden reference.
+original CUDA, and on AMD Instinct GPUs against the hidden reference.
+
+```mermaid
+flowchart LR
+  A["CUDA repo"] --> B["museport scan<br/>(no model)"]
+  B --> C["Muse plans<br/>grounded against the scan"]
+  C --> D["Muse ports, item by item<br/>agent loop: write, compile, verify"]
+  D --> E{"Hidden check<br/>the model never sees"}
+  E -- fail --> D
+  E -- pass --> F["Real GPUs<br/>NVIDIA vs the original CUDA<br/>AMD vs the reference"]
+  F --> G["Report<br/>built only from committed evidence"]
+  D -. "gpu_test: time and profile<br/>on rented GPUs" .-> F
+```
+
+**Contents:** [At a glance](#at-a-glance) ·
+[llm.c's bf16 trainer](#llmcs-production-bf16-trainer-ported-in-one-run-then-tuned-on-real-gpus) ·
+[Kernel results](#results-llmc-devcuda-muse-spark-13) ·
+[GPT-2](#gpt-2-llmcs-real-training-program) ·
+[llm.c-sycl](#llmc-sycl-the-ports-put-back-together-as-a-repo) ·
+[llama2-sycl](#a-second-cuda-repo-one-772-line-file-end-to-end-llama2-sycl) ·
+[Try it](#try-it) · [Lessons](docs/LESSONS.md) · [Submission](docs/SUBMISSION.md)
 
 ## At a glance
 
@@ -23,8 +60,8 @@ Every number below links to committed evidence; failures are published too.
 | Ported a **second repo, llama2.cu**, in one run for $0.45: the stories match byte for byte on CPU, NVIDIA and AMD | llama2.cu's own output, recorded on NVIDIA | [llama2-sycl](#a-second-cuda-repo-one-772-line-file-end-to-end-llama2-sycl) |
 | Found a **bug in oneMath** (oneAPI's math library): bf16 gemm on NVIDIA throws `unimplemented`. Our 2-line fix turns oneMath's own bf16 tests from skipped to passed; a PR and a feature request are ready to send upstream | oneMath's BLAS unit tests, before and after | [upstream/onemath](upstream/onemath/README.md) |
 
-**Honest limits:** the one-run bf16 port succeeded in 1 of 2 tries. Speeds are single runs on
-rented GPUs whose model varies, so compare the ratios to CUDA on the same machine. The kernel
+**Honest limits:** the one-run bf16 port succeeded in 1 of 2 tries. Speeds are medians of 2-3
+runs on rented GPUs whose model varies, so compare the ratios to CUDA on the same machine. The kernel
 ports are fp32 at reduced sizes. Every mistake we made and its fix is in
 [`docs/LESSONS.md`](docs/LESSONS.md).
 
