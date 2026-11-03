@@ -38,7 +38,17 @@ as training. That version, in [gpu-calls/](gpu-calls) with the exact files it bu
 | NVIDIA RTX A4000 | 181.6 | 117.7 | **1.54x** | within 0.014 |
 | AMD Instinct MI350X | **63.3** | no CUDA on AMD | | within 0.016 |
 
-So the portable version runs at **1.40-1.55x** llm.c's CUDA time on NVIDIA. On the MI350X it
+**Timed on an H100 on Nov 3** ([speed/nvidia-h100](speed/nvidia-h100), 3 runs, the same files):
+
+| GPU | Port ms/step | llm.c CUDA ms/step | Ratio | Losses vs CUDA's recording |
+|---|---|---|---|---|
+| NVIDIA H100 80GB HBM3 | 49.5 | 17.1 | **2.90x** | within 0.018 |
+
+On the fastest GPU the gap is twice as large: the port runs 4.0x faster than on the L4, llm.c's
+CUDA 8.3x. Not measured yet: where the H100's time goes (no profile was taken).
+
+So the portable version runs at **1.40-1.55x** llm.c's CUDA time on an L4 and an RTX A4000,
+and at **2.90x** on an H100. On the MI350X it
 matches the GPU-tuned port's 63.5 ms, which on AMD also ran without vendor code.
 
 **The final version** ([port/](port)) differs from turn 209's in `train_gpt2.cpp` and five
@@ -68,4 +78,4 @@ headers: Muse kept changing rounding to match the CPU check. Graded outside the 
 | Task folder before and after | unchanged ([task-before.sha256](task-before.sha256), [task-after.sha256](task-after.sha256)) |
 | Secrets | none |
 | Muse | $14.72 |
-| GPU | $0.03 (Muse's one call) + $0.35 (our AMD test and speed) + $0.97 (the Oct 30 timings) |
+| GPU | $0.03 (Muse's one call) + $0.35 (our AMD test and speed) + $0.97 (the Oct 30 timings) + $0.16 (the H100 timing, the tool's estimate at $3.99/h) |

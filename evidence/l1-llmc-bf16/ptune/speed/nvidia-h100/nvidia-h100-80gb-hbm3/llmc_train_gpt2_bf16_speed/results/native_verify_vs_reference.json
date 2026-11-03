@@ -1,0 +1,64 @@
+{
+  "tool": "verify",
+  "status": "ok",
+  "summary": "PASS: 1/1 case(s) match (worst max abs err 0.0115, atol 0.1)",
+  "evidence": {
+    "mode": "array",
+    "cases": [
+      {
+        "input": "/tmp/tmp.Qwc6MxiK6s/task/args.txt",
+        "reference": {
+          "command": "cp /tmp/tmp.Qwc6MxiK6s/task/recorded_losses.out /tmp/tmp.Qwc6MxiK6s/out/work/v_native/case0_reference.out",
+          "returncode": 0,
+          "duration_s": 0.003088,
+          "stdout": "",
+          "stderr": "",
+          "cwd": "/tmp/tmp.Qwc6MxiK6s/out/work",
+          "output_file": "/tmp/tmp.Qwc6MxiK6s/out/work/v_native/case0_reference.out"
+        },
+        "candidate": {
+          "command": "python3 /tmp/tmp.Qwc6MxiK6s/task/run_speed.py build/native /tmp/tmp.Qwc6MxiK6s/task/args.txt /tmp/tmp.Qwc6MxiK6s/out/work/v_native/case0_candidate.out",
+          "returncode": 0,
+          "duration_s": 1.608057,
+          "stdout": "{\"steps\": 30, \"ms_per_step_median\": 17.15, \"losses\": [4.284247, 4.830252, 4.405701, 3.595244, 3.656287, 3.91956, 4.03418, 3.566972, 3.896063, 3.503042, 3.935821, 3.710784, 3.932044, 3.791296, 3.640382, 3.423571, 3.930525, 3.731719, 3.48234, 3.598515, 3.565954, 3.579284, 3.101613, 3.296715, 3.665221, 3.513267, 3.787135, 3.439242, 3.321339, 3.256886]}\nkernel_ms=17.15\n",
+          "stderr": "",
+          "cwd": "/tmp/tmp.Qwc6MxiK6s/out/work",
+          "output_file": "/tmp/tmp.Qwc6MxiK6s/out/work/v_native/case0_candidate.out"
+        },
+        "reference_format": "f32",
+        "candidate_format": "f32",
+        "mode": "array",
+        "stats": {
+          "n_reference": 30,
+          "n_candidate": 30,
+          "atol": 0.1,
+          "rtol": 0.0,
+          "max_ulp_allowed": null,
+          "passed": true,
+          "max_abs_err": 0.011533975601196289,
+          "rms_err": 0.003922313708590482,
+          "mean_abs_err": 0.0027806361516316733,
+          "max_rel_err": 0.003364923704770079,
+          "max_ulp_f32": 48377,
+          "median_ulp_f32": 7714.0,
+          "exact_matches": 0,
+          "mismatches": 0,
+          "nan_mismatches": 0,
+          "reference_range": [
+            3.101262092590332,
+            4.8340067863464355
+          ],
+          "first_mismatches": []
+        },
+        "passed": true
+      }
+    ],
+    "work_dir": "/tmp/tmp.Qwc6MxiK6s/out/work/v_native",
+    "passed_cases": 1,
+    "total_cases": 1,
+    "worst_max_abs_err": 0.011533975601196289
+  },
+  "limitations": [
+    "Equivalence is shown only for the inputs tested; other inputs/sizes may behave differently."
+  ]
+}
