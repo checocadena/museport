@@ -993,7 +993,8 @@ def _l1_section(l1: dict[str, Any] | None) -> str:
         + "</tbody></table></div>"
         '<p class="note"><b>Read with:</b> the NVIDIA numbers of the final port call NVIDIA\'s '
         "cuBLAS at runtime through SYCL's backend interop, for two bf16 gemm forms oneMath's "
-        "API does not have (batched bf16, bf16 output; it has both for fp16); pure SYCL + "
+        "released API does not have yet (batched bf16, bf16 output; it has both for fp16, and "
+        "both are under review upstream in oneMath #785 and #770); pure SYCL + "
         "oneMath is the row below them. "
         "Muse uses its fast paths only for large shapes, so llm.c's small test does not run "
         "them; forced on, the test still passes (diagnostics below). Rented GPUs vary between "

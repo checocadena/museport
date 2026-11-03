@@ -40,8 +40,8 @@ cuDNN, which are llm.c's defaults. Plan: [`docs/L1-PLAN.md`](../../docs/L1-PLAN.
 **Read with these caveats** (details in [gtune/README.md](gtune/README.md#caveats)):
 
 - **The NVIDIA 1.13-1.21x calls NVIDIA's cuBLAS at runtime** through SYCL's backend interop, for
-  two bf16 gemm forms oneMath's API does not have on any backend: batched bf16, and bf16 output
-  (it has both for fp16). Without them, the same code is 1.36x (RTX 2000 Ada) to 1.52x (RTX A4500).
+  two bf16 gemm forms oneMath's released API does not have yet: batched bf16, and bf16 output
+  (it has both for fp16; both are under review upstream in [#785](https://github.com/uxlfoundation/oneMath/pull/785) and [#770](https://github.com/uxlfoundation/oneMath/pull/770)). Without them, the same code is 1.36x (RTX 2000 Ada) to 1.52x (RTX A4500).
 - **llm.c's test does not run the fast paths as Muse left them.** Muse gates them to large
   shapes (B·T > 1024) on a GPU. Forced on, llm.c's test still passes: on NVIDIA (0.029) and on
   AMD (0.046, against a tolerance of 0.05).

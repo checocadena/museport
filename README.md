@@ -58,7 +58,7 @@ Every number below links to committed evidence; failures are published too.
 | Ported **19 of llm.c's CUDA kernel files**: 18 correct, 17 pass on NVIDIA against llm.c's CUDA, 18 on AMD | hidden checks from llm.c's own CPU code | [results](#results-llmc-devcuda-muse-spark-13) |
 | Ported **GPT-2 training** (fp32) and reassembled the ports as **`llm.c-sycl`**, whose `make` builds llm.c's own test: `overall okay: 1` on CPU, NVIDIA and AMD | llm.c's test and PyTorch's numbers | [llm.c-sycl](#llmc-sycl-the-ports-put-back-together-as-a-repo) |
 | Ported a **second repo, llama2.cu**, in one run for $0.45: the stories match byte for byte on CPU, NVIDIA and AMD | llama2.cu's own output, recorded on NVIDIA | [llama2-sycl](#a-second-cuda-repo-one-772-line-file-end-to-end-llama2-sycl) |
-| Found a **bug in oneMath** (oneAPI's math library): bf16 gemm on NVIDIA throws `unimplemented`. Our 2-line fix turns oneMath's own bf16 tests from skipped to passed; a PR and a feature request are ready to send upstream | oneMath's BLAS unit tests, before and after | [upstream/onemath](upstream/onemath/README.md) |
+| Found a **bug in oneMath** (oneAPI's math library): bf16 gemm on NVIDIA throws `unimplemented`. Our 2-line fix turns oneMath's own bf16 tests from skipped to passed, and is **submitted upstream as [uxlfoundation/oneMath#793](https://github.com/uxlfoundation/oneMath/pull/793)** | oneMath's BLAS unit tests, before and after | [upstream/onemath](upstream/onemath/README.md) |
 
 **Honest limits:** the one-run bf16 port succeeded in 1 of 2 tries. Speeds are medians of 2-3
 runs on rented GPUs whose model varies, so compare the ratios to CUDA on the same machine. The kernel
@@ -137,10 +137,10 @@ Muse ports it, with llm.c's bf16 tolerances. A guard fails any port that loosens
 **What to know:**
 
 - **cuBLAS on NVIDIA:** the NVIDIA 1.13-1.21x uses NVIDIA's cuBLAS at runtime, through SYCL's
-  backend interop, for two bf16 gemm forms that oneMath's API does not have on any backend:
-  batched bf16, and bf16 output. oneMath has both for fp16. Pure SYCL + oneMath is 1.36x on the
-  RTX 2000 Ada (1.13x with cuBLAS) and 1.52x on the RTX A4500 (1.21x). That
-  gap is a concrete upstream ask, like the bf16 gemm patch below.
+  backend interop, for two bf16 gemm forms that oneMath's released API does not have yet:
+  batched bf16, and bf16 output (it has both for fp16; both are under review upstream in [#785](https://github.com/uxlfoundation/oneMath/pull/785)
+  and [#770](https://github.com/uxlfoundation/oneMath/pull/770)). Pure SYCL + oneMath is 1.36x on the RTX 2000 Ada (1.13x with cuBLAS) and 1.52x on
+  the RTX A4500 (1.21x). Our bf16 gemm fix is submitted as [uxlfoundation/oneMath#793](https://github.com/uxlfoundation/oneMath/pull/793).
 - **Fast paths and llm.c's test:** Muse uses the fast paths only for large shapes, so llm.c's
   small test does not run them. We forced them on as a diagnostic, and llm.c's test passes on
   NVIDIA and on AMD (worst loss 0.046, against a tolerance of 0.05).

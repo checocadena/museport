@@ -17,7 +17,7 @@ The largest port is llm.c's production bf16 GPT-2 trainer. Muse ported it from t
 then tuned it on rented GPUs. In portable SYCL + oneMath it trains at 1.40-1.55x llm.c's CUDA
 time on NVIDIA, with llm.c's own test, running the same code that trains, passing on a CPU, an
 NVIDIA GPU and an AMD GPU. With NVIDIA's cuBLAS called directly it reaches 1.13-1.21x. The work
-also found a bug in oneMath, with a tested fix ready to send upstream.
+also found a bug in oneMath; the tested fix is submitted upstream as uxlfoundation/oneMath#793.
 
 ## Opening line of the 3-minute video (required)
 
@@ -96,7 +96,8 @@ lines, bf16, cuBLASLt, warp reductions, stochastic rounding)
   - llm.c's test passes on both vendors.
 - **Honest limits:**
   - **cuBLAS on NVIDIA:** the NVIDIA numbers call cuBLAS at runtime through SYCL's interop, for
-    two bf16 gemm forms oneMath's API does not have (it has them for fp16). Pure SYCL + oneMath
+    two bf16 gemm forms oneMath's released API does not have yet (it has them for fp16; both are
+    under review upstream in oneMath #785 and #770). Pure SYCL + oneMath
     measures 1.36x on the RTX 2000 Ada and 1.52x on the RTX A4500.
   - **Fast paths:** Muse keeps them for large shapes, so llm.c's small test does not run them.
     Forced on, the test passes on NVIDIA and AMD (worst 0.046 against 0.05).
@@ -104,8 +105,8 @@ lines, bf16, cuBLASLt, warp reductions, stochastic rounding)
     run 5 (run 6) failed within $10: one-run success in 1 of 2 tries.
 - **A oneMath bug:** its cuBLAS backend throws "unimplemented" for bf16 gemm. The port found it,
   and a two-line patch by us routes it to `cublasGemmEx`. On oneMath's own BLAS unit tests (NVIDIA
-  L4), it turns the two bf16 gemm tests from skipped to passed and changes nothing else. A PR and
-  a feature request for the missing bf16 batched and bf16-output gemms are ready to send
+  L4), it turns the two bf16 gemm tests from skipped to passed and changes nothing else.
+  **Submitted upstream:** [uxlfoundation/oneMath#793](https://github.com/uxlfoundation/oneMath/pull/793), passing oneMath's pre-commit checks, with the test log
   ([upstream/onemath](../upstream/onemath/README.md)).
 - **Cost:** about $75.50 of Muse for all of L1, with every run's evidence, failures included.
 

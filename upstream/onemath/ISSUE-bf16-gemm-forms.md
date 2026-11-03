@@ -1,4 +1,7 @@
-<!-- Draft for https://github.com/uxlfoundation/oneMath/issues/new (template: "Request a feature").
+<!-- NOT FILED: oneMath already has open PRs for exactly these forms, #785 (bf16 gemm_batch)
+     and #770 (bf16-output gemm). Kept for the measurements, which could be offered as a comment
+     on those PRs.
+     Draft for https://github.com/uxlfoundation/oneMath/issues/new (template: "Request a feature").
      Title: BLAS: bf16 gemm_batch and bf16-output gemm (parity with fp16) -->
 
 # Summary
