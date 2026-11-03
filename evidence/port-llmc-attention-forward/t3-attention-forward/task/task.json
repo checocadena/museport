@@ -1,0 +1,65 @@
+{
+  "name": "llmc_attention_forward",
+  "goal": "Port attention_forward_harness.cu (llm.c dev/cuda/attention_forward.cu, fp32 build) to idiomatic SYCL 2020 with zero dpct helpers. Keep every kernel variant k in [1, 2, 3, 4, 5, 6] as its own SYCL kernel, computed on the SYCL device, and keep the program's contract: `build/candidate <input> <output> B T C NH` reads the inputs and writes each variant's outputs in order as raw float32, exactly as the CUDA main does. A hidden reference checks the output (atol 0.001 + rtol FLT_EPSILON*|ref|, llm.c's own fp32 rule). Success requires compile, verify and a zero-helper scan_helpers of the whole work directory (path '.') on the same sources: migrate's output under migrated/ counts, so delete it (delete_file) once your own port is done. migrate's output can be long: read it in parts (read_file offset/limit) or work from the CUDA harness. cuBLAS calls go to oneMath (oneapi::math::blas, #include <oneapi/math.hpp>; the compile flags already link -lonemath), not to oneapi::mkl product APIs. Use oneapi::math::blas::column_major, as cuBLAS itself is column-major (swap the operands for row-major data): oneMath's cuBLAS backend does not implement row_major, so a row_major call aborts on NVIDIA GPUs even though it runs on the CPU.",
+  "cuda_path": "attention_forward_harness.cu",
+  "include_dirs": [
+    "."
+  ],
+  "reference_build": [
+    "g++",
+    "-O2",
+    "-std=c++17",
+    "{task_dir}/attention_forward_ref.cpp",
+    "-o",
+    "build/reference"
+  ],
+  "reference_cmd": "build/reference {input} {output} 2 128 768 12",
+  "candidate_cmd": "build/candidate {input} {output} 2 128 768 12",
+  "inputs": [
+    "input.bin"
+  ],
+  "mode": "array",
+  "output_format": "f32",
+  "base_flags": [
+    "-O2",
+    "-I${ONEMATH_PREFIX}/include",
+    "-Wl,--no-as-needed",
+    "-L${ONEMATH_PREFIX}/lib",
+    "-Wl,-rpath,${ONEMATH_PREFIX}/lib",
+    "-lonemath"
+  ],
+  "native_flags": [
+    "-lcublas"
+  ],
+  "tolerance": 0.001,
+  "rtol": 1.1920929e-07,
+  "museport": {
+    "source": "karpathy/llm.c dev/cuda/attention_forward.cu",
+    "variants": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "sizes": {
+      "B": 2,
+      "T": 128,
+      "C": 768,
+      "NH": 12
+    },
+    "note": "B=2, T=128 (llm.c: B=8, T=1024); C=768, NH=12 as in llm.c. Only out is compared, as llm.c does for every variant (it checks att and preatt for some variants only). Tolerance 1e-3 is llm.c's for variants 1-4; 5-6 (1e-2 in llm.c, for bf16) run in fp32 here and are held to 1e-3. Variant 6 skips its permutes only after llm.c's first validation run, so here it computes the same as 5. cuBLAS runs in fp32 (CUBLAS_DEFAULT_MATH). Variant 10 (cuDNN) is not built: it needs ENABLE_CUDNN. llm.c's file only builds in bf16; the fp32 build defines CUBLAS_LOWP as CUDA_R_32F (an option common.h's comment names) and CUBLAS_LOWP_COMPUTE as CUBLAS_COMPUTE_32F.",
+    "check_flags": [
+      "-DMKL_ILP64",
+      "-I${ONEMKL_PREFIX}/include",
+      "-Wl,--no-as-needed",
+      "-L${ONEMKL_PREFIX}/lib",
+      "-Wl,-rpath,${ONEMKL_PREFIX}/lib",
+      "-lmkl_sycl_blas",
+      "-lmkl_intel_ilp64",
+      "-lmkl_sequential",
+      "-lmkl_core"
+    ]
+  }
+}
