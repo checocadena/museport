@@ -343,9 +343,10 @@ TIER3: dict[str, KernelSpec] = {s.file: s for s in (
              "Tolerance 1e-3 is llm.c's for variants 1-4; 5-6 (1e-2 in llm.c, for bf16) run in "
              "fp32 here and are held to 1e-3. Variant 6 skips its permutes only after llm.c's "
              "first validation run, so here it computes the same as 5. cuBLAS runs in fp32 "
-             "(CUBLAS_DEFAULT_MATH). Variant 10 (cuDNN) is not built: it needs ENABLE_CUDNN. llm.c's "
-             "file only builds in bf16; the fp32 build defines CUBLAS_LOWP as CUDA_R_32F (an "
-             "option common.h's comment names) and CUBLAS_LOWP_COMPUTE as CUBLAS_COMPUTE_32F."),
+             "(CUBLAS_DEFAULT_MATH). Variant 10 (cuDNN) is not built: it needs ENABLE_CUDNN. "
+             "llm.c's file only builds in bf16; the fp32 build defines CUBLAS_LOWP as "
+             "CUDA_R_32F (an option common.h's comment names) and CUBLAS_LOWP_COMPUTE as "
+             "CUBLAS_COMPUTE_32F."),
     KernelSpec(
         file="attention_backward.cu",
         cpu_functions=("attention_forward_cpu", "attention_backward_cpu"),
