@@ -193,6 +193,6 @@ def test_l1_portable_version_comes_from_the_evidence() -> None:
     from museport.report import load_l1
 
     p = load_l1(ROOT / "evidence")["portable"]  # type: ignore[index]
-    assert [round(r, 2) for r in p["ratios"]] == [1.40, 1.54, 1.55]
+    assert [round(r, 2) for r in p["ratios"]] == [1.40, 1.54, 1.55, 2.90]  # L4, A4000, Muse, H100
     assert p["cpu_pass"] and all(t["pass"] for t in p["tests"])
     assert any(s["device"] == "AMD Instinct MI350X" and s["ms"] == 63.27 for s in p["speeds"])

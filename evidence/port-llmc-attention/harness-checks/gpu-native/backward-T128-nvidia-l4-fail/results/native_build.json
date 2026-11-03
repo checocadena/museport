@@ -1,0 +1,8 @@
+{
+  "command": "/usr/local/cuda/bin/nvcc -O2 -std=c++17 -arch=native -I/tmp/tmp.fZX37In9a1/task /tmp/tmp.fZX37In9a1/task/attention_backward_harness.cu -lcublas -o build/native",
+  "returncode": 0,
+  "duration_s": 3.67681,
+  "stdout": "",
+  "stderr": "",
+  "cwd": "/tmp/tmp.fZX37In9a1/out/work"
+}

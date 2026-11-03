@@ -1,0 +1,61 @@
+[port] t3-attention-forward: harness check FAIL
+{
+  "model": "muse-spark-1.3",
+  "spent_usd": 0.0,
+  "items": [
+    {
+      "item": "t3-attention-backward",
+      "file": "attention_backward.cu",
+      "task": "t3-attention-backward/task/task.json",
+      "harness_check": {
+        "ok": false,
+        "failed": "verify",
+        "steps": {
+          "reference_build": {
+            "returncode": 0,
+            "stderr": ""
+          },
+          "migrate": {
+            "status": "ok",
+            "summary": "migrated 1 CUDA file(s) -> 2 file(s); 43 DPCT warning(s) (DPCT1005x2, DPCT1009x1, DPCT1010x4, DPCT1024x2, DPCT1049x13, DPCT1051x2, DPCT1065x6, DPCT1093x2, DPCT1098x7, DPCT1110x3, DPCT1118x1)"
+          },
+          "compile": {
+            "status": "ok",
+            "summary": "compiled 1 source(s) -> /home/user/museport-hackathon/runs/att-check/t3-attention-backward/check/build/candidate (866 warning(s))"
+          },
+          "verify": {
+            "status": "fail",
+            "summary": "FAIL: 0/1 case(s) match; first failure: 249613 of 4718592 element(s) outside tolerance"
+          }
+        },
+        "evidence": "{\"mode\": \"array\", \"cases\": [{\"input\": \"/home/user/museport-hackathon/runs/att-check/t3-attention-backward/task/input.bin\", \"reference\": {\"command\": \"build/reference /home/user/museport-hackathon/runs/att-check/t3-attention-backward/task/input.bin /home/user/museport-hackathon/runs/att-check/t3-attention-backward/check/verify_out/case0_reference.out 2 128 768 12\", \"returncode\": 0, \"duration_s\": 0.286849, \"stdout\": \"\", \"stderr\": \"\", \"cwd\": \"/home/user/museport-hackathon/runs/att-check/t3-attention-backward/check\", \"output_file\": \"/home/user/museport-hackathon/runs/att-check/t3-attention-backward/check/verify_out/case0_reference.out\"}, \"candidate\": {\"command\": \"build/candidate /home/user/museport-hackathon/runs/att-check/t3-attention-backward/task/input.bin /home/user/museport-hackathon/runs/att-check/t3-attention-backward/check/verify_out/case0_candidate.out 2 128 768 12\", \"returncode\": 0, \"duration_s\": 23.810694, \"stdout\": \"\", \"stderr\": \"\", \"cwd\": \"/home/user/museport-hackathon/runs/att-check/t3-attention-backward/check\", \"output_file\": \"/home/user/museport-hackathon/runs/att-check/t3-attention-backward/check/verify_out/case0_candidate.out\"}, \"reference_format\": \"f32\", \"candidate_format\": \"f32\", \"mode\": \"array\", \"stats\": {\"n_reference\": 4718592, \"n_candidate\": 4718592, \"atol\": 0.001, \"rtol\": 1.1920929e-07, \"max_ulp_allowed\": null, \"passed\": false, \"max_abs_err\": 0.30809929966926575, \"rms_err\": 0.0015562979449105264, \"mean_abs_err\": 0.0002353433066429859, \"max_rel_err\": null, \"max_ulp_f32\": 2069169175, \"median_ulp_f32\": 1627.0, \"exact_matches\": 9947, \"mismatches\": 249613, \"nan_mismatches\": 0, \"reference_range\": [-2.3126654624938965, 2.5939183235168457], \"first_mismatches\": [{\"index\": 2949120, \"reference\": 0.0, \"candidate\": 0.1766425222158432, \"abs_err\": 0.1766425222158432}, {\"index\": 2949121, \"reference\": 0.0, \"candidate\": -0.02090206928551197, \"abs_err\": 0.02090206928551197}, {\"index\": 2949122, \"reference\": 0.0, \"candidate\": 0.145665243268013, \"abs_err\": 0.145665243268013}, {\"index\": 2949123, \"reference\": 0.0, \"candidate\": 0.07427877932786942, \"abs_err\": 0.07427877932786942}, {\"index\": 2949124, \"reference\": 0.0, \"candidate\": -0.15181781351566315, \"abs_err\": 0.15181781351566315}, {\"index\": 2949125, \"reference\": 0.0, \"candidate\": 0.05292166769504547, \"abs_err\": 0.05292166769504547}, {\"index\": 2949126, \"reference\": 0.0, \"candidate\": -0.03350662812590599, \"abs_err\": 0.03350662812590599}, {\"index\": 2949127, \"reference\": 0.0, \"candidate\": -0.10299238562583923, \"abs_err\": 0.10299238562583923}, {\"index\": 2949128, \"reference\": 0.0, \"candidate\": 0.009052441455423832, \"abs_err\": 0.009052441455423832}, {\"index\": 2949129, \"reference\": 0.0, \"candidate\": -0.13337954878807068, \"abs_err\": 0.13337954878807068}], \"reason\": \"249613 of 4718592 element(s) outside tolerance\"}, \"passed\": false, \"reason\": \"249613 of 4718592 element(s) outside tolerance\"}], \"work_dir\": \"/home/user/museport-hackathon/runs/att-check/t3-attention-backward/check/verify_out\", \"passed_cases\": 0,"
+      },
+      "status": "harness_check_failed"
+    },
+    {
+      "item": "t3-attention-forward",
+      "file": "attention_forward.cu",
+      "task": "t3-attention-forward/task/task.json",
+      "harness_check": {
+        "ok": false,
+        "failed": "compile",
+        "steps": {
+          "reference_build": {
+            "returncode": 0,
+            "stderr": "/home/user/museport-hackathon/runs/att-check/t3-attention-forward/task/attention_forward_ref.cpp:12: warning: \"CUDNN_16BIT\" redefined\n   12 | #define CUDNN_16BIT fe::DataType_t::HALF\n      | \n/home/user/museport-hackathon/runs/att-check/t3-attention-forward/task/attention_forward_ref.cpp:11: note: this is the location of the previous definition\n   11 | #define CUDNN_16BIT fe::DataType_t::BFLOAT16\n      | \n"
+          },
+          "migrate": {
+            "status": "ok",
+            "summary": "migrated 1 CUDA file(s) -> 2 file(s); 48 DPCT warning(s) (DPCT1005x2, DPCT1009x1, DPCT1010x1, DPCT1024x2, DPCT1049x15, DPCT1051x2, DPCT1065x6, DPCT1083x2, DPCT1093x2, DPCT1096x2, DPCT1098x7, DPCT1110x2, DPCT1118x3, DPCT1121x1)"
+          },
+          "compile": {
+            "status": "fail",
+            "summary": "compile failed with 1 error(s) at /home/user/museport-hackathon/runs/att-check/t3-attention-forward/check/migrated/attention_forward_harness.dp.cpp:852: use of undeclared identifier 'cudaDevAttrMaxSharedMemoryPerBlock'"
+          }
+        },
+        "evidence": "{\"run\": {\"command\": \"/opt/dpcpp/bin/icpx -fsycl -O2 -I/opt/onemath/include -Wl,--no-as-needed -L/opt/onemath/lib -Wl,-rpath,/opt/onemath/lib -lonemath -I/home/user/museport-hackathon/runs/att-check/t3-attention-forward/task -DMKL_ILP64 -I/opt/onemkl/include -Wl,--no-as-needed -L/opt/onemkl/lib -Wl,-rpath,/opt/onemkl/lib -lmkl_sycl_blas -lmkl_intel_ilp64 -lmkl_sequential -lmkl_core -I/opt/syclomatic/include /home/user/museport-hackathon/runs/att-check/t3-attention-forward/check/migrated/attention_forward_harness.dp.cpp -o /home/user/museport-hackathon/runs/att-check/t3-attention-forward/check/build/candidate\", \"returncode\": 1, \"duration_s\": 9.009178, \"stdout\": \"\", \"stderr\": \"In file included from /home/user/museport-hackathon/runs/att-check/t3-attention-forward/check/migrated/attention_forward_harness.dp.cpp:48:\\nIn file included from /opt/onemkl/include/sycl/sycl.hpp:60:\\nIn file included from /opt/onemkl/include/sycl/detail/core.hpp:21:\\nIn file included from /opt/onemkl/include/sycl/accessor.hpp:11:\\n/opt/onemkl/include/sycl/access/access.hpp:79:63: warning: 'constant_buffer' is deprecated: use 'target::device' instead [-Wdeprecated-declarations]\\n   79 | inline constexpr mode_target_tag_t<access_mode::read, target::constant_buffer>\\n      |                                                               ^\\n/opt/onemkl/include/sycl/access/access.hpp:24:19: note: 'constant_buffer' has been explicitly marked deprecated here\\n   24 |   constant_buffer __SYCL2020_DEPRECATED(\\\"use 'target::device' instead\\\") = 2015,\\n      |                   ^\\n/opt/onemkl/include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'\\n   75 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)\\n      |                                        ^\\n/opt/onemkl/include/sycl/detail/defines_elementary.hpp:66:38: note: expanded from macro '__SYCL_DEPRECATED'\\n   66 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]\\n      |                                      ^\\nIn file included from /home/user/museport-hackathon/runs/att-check/t3-attention-forward/check/migrated/attention_forward_harness.dp.cpp:48:\\nIn file included from /opt/onemkl/include/sycl/sycl.hpp:60:\\nIn file included from /opt/onemkl/include/sycl/detail/core.hpp:21:\\nIn file included from /opt/onemkl/include/sycl/accessor.hpp:11:\\n/opt/onemkl/include/sycl/access/access.hpp:91:31: warning: 'host_buffer' is deprecated: use 'host_accessor' instead [-Wdeprecated-declarations]\\n   91 |   return T == access::target::host_buffer || T == access::target::host_image;\\n      |                               ^\\n/opt/onemkl/include/sycl/access/access.hpp:27:15: note: 'host_buffer' has been explicitly marked deprecated here\\n   27 |   host_buffer __SYCL2020_DEPRECATED(\\\"use 'host_accessor' instead\\\") = 2018,\\n      |               ^\\n/opt/onemkl/include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'\\n   75 | #define __SYCL20"
+      },
+      "status": "harness_check_failed"
+    }
+  ]
+}

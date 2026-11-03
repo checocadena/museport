@@ -121,10 +121,11 @@ def test_tier2_fields_host_prep_prelude_device_count_and_includes():
         outputs=(Array("out", "N", init="zeros", device_count="1024"),),
         cpu_call="scale_cpu(out, inp, shift, N)", gpu_call="scale(k, d_out, d_inp, d_shift, N, 32)",
         tol=1e-5, host_prep="inp[0] *= 2;", gpu_prelude="int extra = 1;",
-        extra_includes=("<cuda_bf16.h>",))
+        extra_includes=("<cuda_bf16.h>",), extra_defines=("CUBLAS_LOWP CUDA_R_32F",))
     src = (MINI / "scale.cu").read_text()
     h = harness_source(spec, src)
     assert h.index("#include <cuda_bf16.h>") < h.index('#include "common.h"')
+    assert h.index("#define CUBLAS_LOWP CUDA_R_32F") < h.index('#include "common.h"')
     assert "cudaMalloc(&d_out, sizeof(float) * (size_t)(1024))" in h
     assert h.index("inp[0] *= 2;") < h.index("cudaMalloc(&d_inp")  # before the upload
     assert h.index("int extra = 1;") < h.index("const int variants[]")

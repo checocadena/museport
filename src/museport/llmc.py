@@ -52,6 +52,7 @@ class KernelSpec:
     gpu_prelude: str = ""  # C run in the harness main before the variants (device setup)
     keep_in_harness: tuple[str, ...] = ()  # CPU functions the harness keeps (input setup only)
     extra_includes: tuple[str, ...] = ()  # headers the fp32 build needs (put before common.h)
+    extra_defines: tuple[str, ...] = ()  # macros the fp32 build needs (put before common.h)
     keep_cublas: bool = False  # Tier 3: common.h keeps its cuBLAS setup (the file calls cuBLAS)
     keep_cublaslt: bool = False  # ...and its cuBLASLt setup (only files that call cuBLASLt)
     output_post: str = ""  # C run on the host outputs in both mains before they are written
@@ -318,6 +319,79 @@ TIER3: dict[str, KernelSpec] = {s.file: s for s in (
         check_flags=ONEMKL_CHECK_FLAGS,
         note="B=4, T=64 (llm.c: B=8, T=1024); OC=3072 as in llm.c. fp32 build (llm.c builds it "
              "in bf16); variant 5 exists only in fp32, variant 6 does not exist."),
+    KernelSpec(
+        file="attention_forward.cu", cpu_functions=("attention_forward_cpu",),
+        variants=(1, 2, 3, 4, 5, 6), sizes=(("B", 2), ("T", 128), ("C", 768), ("NH", 12)),
+        inputs=(Array("inp", "B*T*3*C"),), outputs=(Array("out", "B*T*C", init="zeros"),),
+        host_prep="float* preatt = (float*)malloc(sizeof(float) * (size_t)B * NH * T * T); "
+                  "float* att = (float*)malloc(sizeof(float) * (size_t)B * NH * T * T);",
+        gpu_prelude="float* d_stats; float* d_vaccum; float* d_qkvr; float* d_preatt; "
+                    "float* d_att; "
+                    "cudaCheck(cudaMalloc(&d_stats, sizeof(float) * (size_t)B * NH * T)); "
+                    "cudaCheck(cudaMalloc(&d_vaccum, sizeof(float) * (size_t)B * T * C)); "
+                    "cudaCheck(cudaMalloc(&d_qkvr, sizeof(float) * (size_t)B * T * 3 * C)); "
+                    "cudaCheck(cudaMalloc(&d_preatt, sizeof(float) * (size_t)B * NH * T * T)); "
+                    "cudaCheck(cudaMalloc(&d_att, sizeof(float) * (size_t)B * NH * T * T)); "
+                    "cublasCheck(cublasSetMathMode(cublas_handle, CUBLAS_DEFAULT_MATH));",
+        cpu_call="attention_forward_cpu(out, preatt, att, inp, B, T, C, NH)",
+        gpu_call="attention_forward(k, d_out, d_stats, d_vaccum, d_qkvr, d_preatt, d_att, d_inp, "
+                 "B, T, C, NH, 256)",
+        extra_defines=("CUBLAS_LOWP CUDA_R_32F", "CUBLAS_LOWP_COMPUTE CUBLAS_COMPUTE_32F"),
+        tol=1e-3, keep_cublas=True, base_flags=ONEMATH_FLAGS, check_flags=ONEMKL_CHECK_FLAGS,
+        note="B=2, T=128 (llm.c: B=8, T=1024); C=768, NH=12 as in llm.c. Only out is compared, "
+             "as llm.c does for every variant (it checks att and preatt for some variants only). "
+             "Tolerance 1e-3 is llm.c's for variants 1-4; 5-6 (1e-2 in llm.c, for bf16) run in "
+             "fp32 here and are held to 1e-3. Variant 6 skips its permutes only after llm.c's "
+             "first validation run, so here it computes the same as 5. cuBLAS runs in fp32 "
+             "(CUBLAS_DEFAULT_MATH). Variant 10 (cuDNN) is not built: it needs ENABLE_CUDNN. "
+             "llm.c's file only builds in bf16; the fp32 build defines CUBLAS_LOWP as "
+             "CUDA_R_32F (an option common.h's comment names) and CUBLAS_LOWP_COMPUTE as "
+             "CUBLAS_COMPUTE_32F."),
+    KernelSpec(
+        file="attention_backward.cu",
+        cpu_functions=("attention_forward_cpu", "attention_backward_cpu"),
+        keep_in_harness=("attention_forward_cpu",),
+        variants=(1, 2, 3, 4, 5, 6, 7, 8), sizes=(("B", 2), ("T", 256), ("C", 768), ("NH", 12)),
+        inputs=(Array("inp", "B*T*3*C"), Array("dout", "B*T*C")),
+        outputs=(Array("dinp", "B*T*3*C", init="zeros"),),
+        host_prep="float* fwd_out = (float*)malloc(sizeof(float) * (size_t)B * T * C); "
+                  "float* preatt = (float*)malloc(sizeof(float) * (size_t)B * NH * T * T); "
+                  "float* att = (float*)malloc(sizeof(float) * (size_t)B * NH * T * T); "
+                  "attention_forward_cpu(fwd_out, preatt, att, inp, B, T, C, NH); "
+                  "float* dpreatt = (float*)calloc((size_t)B * NH * T * T, sizeof(float)); "
+                  "float* datt = (float*)calloc((size_t)B * NH * T * T, sizeof(float));",
+        gpu_prelude="float *d_qkvr, *d_preatt, *d_att, *d_vaccum, *d_fwd_out, *d_dqkvr, "
+                    "*d_dpreatt, *d_datt, *d_dvaccum; "
+                    "cudaCheck(cudaMalloc(&d_qkvr, sizeof(float) * (size_t)B * T * 3 * C)); "
+                    "cudaCheck(cudaMalloc(&d_preatt, sizeof(float) * (size_t)B * NH * T * T)); "
+                    "cudaCheck(cudaMalloc(&d_att, sizeof(float) * (size_t)B * NH * T * T)); "
+                    "cudaCheck(cudaMalloc(&d_vaccum, sizeof(float) * (size_t)B * T * C)); "
+                    "cudaCheck(cudaMalloc(&d_fwd_out, sizeof(float) * (size_t)B * T * C)); "
+                    "cudaCheck(cudaMalloc(&d_dqkvr, sizeof(float) * (size_t)B * T * 3 * C)); "
+                    "cudaCheck(cudaMalloc(&d_dpreatt, sizeof(float) * (size_t)B * NH * T * T)); "
+                    "cudaCheck(cudaMalloc(&d_datt, sizeof(float) * (size_t)B * NH * T * T)); "
+                    "cudaCheck(cudaMalloc(&d_dvaccum, sizeof(float) * (size_t)B * T * C)); "
+                    "cudaCheck(cudaMemset(d_att, 0, sizeof(float) * (size_t)B * NH * T * T)); "
+                    "cublasCheck(cublasSetMathMode(cublas_handle, CUBLAS_DEFAULT_MATH)); "
+                    "attention_forward(d_fwd_out, d_vaccum, d_qkvr, d_preatt, d_att, d_inp, "
+                    "B, T, C, NH, 256); cudaCheck(cudaDeviceSynchronize());",
+        cpu_call="attention_backward_cpu(dinp, dpreatt, datt, dout, inp, att, B, T, C, NH)",
+        gpu_call="cudaCheck(cudaMemset(d_dqkvr, 0, sizeof(float) * (size_t)B * T * 3 * C)); "
+                 "cudaCheck(cudaMemset(d_dpreatt, 0, sizeof(float) * (size_t)B * NH * T * T)); "
+                 "cudaCheck(cudaMemset(d_datt, 0, sizeof(float) * (size_t)B * NH * T * T)); "
+                 "cudaCheck(cudaMemset(d_dvaccum, 0, sizeof(float) * (size_t)B * T * C)); "
+                 "attention_backward(k, d_dinp, d_dqkvr, d_dpreatt, d_datt, d_dvaccum, d_dout, "
+                 "d_inp, d_qkvr, d_preatt, d_att, d_vaccum, B, T, C, NH, 256)",
+        tol=1e-3, keep_cublas=True, base_flags=ONEMATH_FLAGS, check_flags=ONEMKL_CHECK_FLAGS,
+        note="B=2, T=256 (llm.c: B=4, T=1024); C=768, NH=12 as in llm.c. T stays a multiple "
+             "of the block size 256, as llm.c's is: variant 6 writes up to the next multiple of "
+             "the block size in each row, so with T=128 it writes into the next row. att is "
+             "zeroed before the forward pass, which writes only its lower triangle; variant 6 "
+             "reads the upper one (in llm.c it is fresh cudaMalloc memory). dinp, the gradient "
+             "llm.c checks last, is compared at llm.c's 1e-3. As in llm.c, the backward pass "
+             "runs on the GPU forward pass's buffers and the CPU reference on the CPU forward "
+             "pass's; the scratch gradients are zeroed before each variant, since the kernels "
+             "accumulate. cuBLAS runs in fp32 (CUBLAS_DEFAULT_MATH)."),
 )}
 
 SPECS: dict[str, KernelSpec] = {**TIER1, **TIER2, **TIER3}

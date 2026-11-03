@@ -1,0 +1,8 @@
+{
+  "command": "g++ -O2 -std=c++17 /tmp/tmp.xHkXZEB2pd/task/attention_forward_ref.cpp -o build/reference",
+  "returncode": 0,
+  "duration_s": 0.177851,
+  "stdout": "",
+  "stderr": "/tmp/tmp.xHkXZEB2pd/task/attention_forward_ref.cpp:12: warning: \"CUDNN_16BIT\" redefined\n   12 | #define CUDNN_16BIT fe::DataType_t::HALF\n      | \n/tmp/tmp.xHkXZEB2pd/task/attention_forward_ref.cpp:11: note: this is the location of the previous definition\n   11 | #define CUDNN_16BIT fe::DataType_t::BFLOAT16\n      | \n",
+  "cwd": "/tmp/tmp.xHkXZEB2pd/out/work"
+}

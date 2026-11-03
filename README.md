@@ -53,7 +53,7 @@ Every number below links to committed evidence; failures are published too.
 | What Muse did | Proven by | Evidence |
 |---|---|---|
 | Ported **llm.c's production bf16 GPT-2 trainer** (12 CUDA files, 4,884 lines) | llm.c's own test, at llm.c's bf16 tolerances, on a CPU, an NVIDIA GPU and an AMD GPU | [L1](evidence/l1-llmc-bf16/README.md) |
-| Tuned it on rented GPUs, in **portable SYCL + oneMath**, to **1.40-1.55x llm.c's CUDA time** on NVIDIA, with llm.c's test running the same code that trains | llm.c's test on CPU, NVIDIA and AMD; timed beside llm.c's CUDA on the same GPU | [pure-oneAPI run](evidence/l1-llmc-bf16/ptune/README.md) |
+| Tuned it on rented GPUs, in **portable SYCL + oneMath**, to **1.40-1.55x llm.c's CUDA time** on an NVIDIA L4 and RTX A4000 (**2.90x on an H100**), with llm.c's test running the same code that trains | llm.c's test on CPU, NVIDIA and AMD; timed beside llm.c's CUDA on the same GPU | [pure-oneAPI run](evidence/l1-llmc-bf16/ptune/README.md) |
 | With NVIDIA's cuBLAS called directly (vendor-specific): **1.13-1.21x** | the same | [GPU tuning run](evidence/l1-llmc-bf16/gtune/README.md) |
 | Ported **19 of llm.c's CUDA kernel files**: 18 correct, 17 pass on NVIDIA against llm.c's CUDA, 18 on AMD | hidden checks from llm.c's own CPU code | [results](#results-llmc-devcuda-muse-spark-13) |
 | Ported **GPT-2 training** (fp32) and reassembled the ports as **`llm.c-sycl`**, whose `make` builds llm.c's own test: `overall okay: 1` on CPU, NVIDIA and AMD | llm.c's test and PyTorch's numbers | [llm.c-sycl](#llmc-sycl-the-ports-put-back-together-as-a-repo) |
@@ -64,6 +64,19 @@ Every number below links to committed evidence; failures are published too.
 runs on rented GPUs whose model varies, so compare the ratios to CUDA on the same machine. The kernel
 ports are fp32 at reduced sizes. Every mistake we made and its fix is in
 [`docs/LESSONS.md`](docs/LESSONS.md).
+
+## What is ported, and what is not
+
+llm.c at `f1e2ace`, file by file. "Ported" means a hidden check confirmed it, as described below.
+
+| llm.c | Ported | Why not, and the oneAPI path |
+|---|---|---|
+| `train_gpt2.cu` + `test_gpt2.cu` and the 11 CUDA headers in `llmc/`: the production **bf16 trainer** and its test | ✅ passes llm.c's own test on CPU, NVIDIA and AMD | |
+| `train_gpt2_fp32.cu` + `test_gpt2_fp32.cu`: the **fp32 trainer** and its test | ✅ in [`llm.c-sycl`](llm.c-sycl/README.md) | |
+| `dev/cuda/`: 22 standalone kernel experiments | ✅ 20 of 22 attempted, 19 pass their hidden check | `attention_backward.cu` was ported on Nov 3 ([evidence](evidence/port-llmc-attention/README.md)); GPUs not run yet. `attention_forward.cu`: Muse's run was cut off at turn 5 when the connection to Meta's API dropped, and has not been retried; its hidden check is proven. `nccl_all_reduce.cu`: see the next row. |
+| `dev/cuda/nccl_all_reduce.cu` and multi-GPU training (NCCL, MPI, ZeRO sharding in `llmc/zero.cuh`) | ❌ | Out of scope: single GPU only, and testing needs 2+ GPUs. The oneAPI path is oneCCL or GPU-aware MPI. |
+| `llmc/cudnn_att.cpp`: cuDNN flash attention | ❌ | Off by default in llm.c (`USE_CUDNN=0`), and cuDNN is NVIDIA-only. The ported trainer uses llm.c's default attention instead. The oneAPI path is oneDNN's fused attention or a SYCL flash-attention kernel (`joint_matrix`). |
+| `profile_gpt2.cu`: one training step under NVIDIA's profiler | ❌ | Not attempted. Our `gpu_test` tool profiles the ported trainer with nsys. |
 
 > **Status: built during the Meta Global AI Developer Hackathon (submissions due Nov 4, 2026).**
 > This repository was created on Oct 26, 2026, after the event's kickoff. Every commit in it
@@ -118,12 +131,14 @@ Muse ports it, with llm.c's bf16 tolerances. A guard fails any port that loosens
 4. **Tuning in portable SYCL + oneMath:** $14.72; vendor libraries and size-based code paths
    banned ([ptune](evidence/l1-llmc-bf16/ptune/README.md)). The run's own loop did not
    succeed, but the version Muse built at turn 209 passes llm.c's test on the CPU, NVIDIA and
-   AMD, with the test running the same code that trains. It runs at 1.40-1.55x CUDA's time.
+   AMD, with the test running the same code that trains. It runs at 1.40-1.55x CUDA's time on
+   an L4 and RTX A4000, and at 2.90x on an H100.
 
 | Final port: llm.c's trainer, B=4, T=1024, 30 steps | ms per step | vs llm.c's CUDA on the same GPU | llm.c's test |
 |---|---|---|---|
 | **Portable SYCL + oneMath (no vendor code, test runs training's code), NVIDIA L4** | 199.9 | **1.40x** | PASS |
 | **Portable, NVIDIA RTX A4000** | 181.6 | **1.54x** | PASS |
+| **Portable, NVIDIA H100 80GB HBM3** | 49.5 | **2.90x** (CUDA: 17.1) | PASS |
 | **Portable, AMD Instinct MI350X** | **63.3** | (llm.c's CUDA does not build on AMD) | PASS |
 | *With NVIDIA's cuBLAS through SYCL interop (the GPU tuning run):* | | | |
 | NVIDIA RTX 4090 | 49.8 | **1.14x** | PASS |
