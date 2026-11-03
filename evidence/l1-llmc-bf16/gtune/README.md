@@ -53,8 +53,8 @@ CUDA's. From there, in order (Muse's summary is in [trace.jsonl](trace.jsonl), t
    - **What it uses:** `libcublas` is `dlopen`ed, and calls are issued on the SYCL queue's native
      CUDA stream: `cublasGemmStridedBatchedEx` for attention and `cublasGemmEx` with bf16 output
      for the dense matmuls.
-   - **The gap it fills:** oneMath's API has neither a batched bf16 gemm nor a bf16-output
-     gemm, on any backend (it has both for fp16).
+   - **The gap it fills:** oneMath's released API has neither a batched bf16 gemm nor a
+     bf16-output gemm (it has both for fp16). Both are under review upstream ([#785](https://github.com/uxlfoundation/oneMath/pull/785), [#770](https://github.com/uxlfoundation/oneMath/pull/770)).
    - **On other toolchains:** the code compiles out. Its first version did not compile on AMD
      (call 18); Muse fixed it.
 
@@ -117,7 +117,7 @@ two missing oneMath forms cost 0.23-0.31x of CUDA's time on these GPUs.
     the final code.
 - **The 1.13-1.21x on NVIDIA uses NVIDIA's cuBLAS** at runtime, through SYCL's interop. It is
   vendor-specific code inside a SYCL program. Pure SYCL + oneMath measures 1.36-1.52x. The difference
-  is the two bf16 gemm forms oneMath's API does not have today.
+  is the two bf16 gemm forms oneMath's released API does not have yet ([#785](https://github.com/uxlfoundation/oneMath/pull/785) and [#770](https://github.com/uxlfoundation/oneMath/pull/770) add them).
 - **Ratios, not absolute times:** the GPU model changes from call to call (it is whatever the
   provider has free). The ratio against llm.c's CUDA on the same machine is the comparison that
   holds.
