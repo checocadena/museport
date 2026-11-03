@@ -174,9 +174,11 @@ def reference_source(spec: KernelSpec, original: str) -> str:
 def harness_source(spec: KernelSpec, original: str) -> str:
     src = re.sub(r"^#define\s+ENABLE_BF16\s*$",
                  "// museport: fp32 build (#define ENABLE_BF16 removed)", original, flags=re.M)
-    if spec.extra_includes:
+    if spec.extra_includes or spec.extra_defines:
         inc = "".join(f"#include {h}  // museport: needed by the fp32 build\n"
                       for h in spec.extra_includes)
+        inc += "".join(f"#define {d}  // museport: needed by the fp32 build\n"
+                       for d in spec.extra_defines)
         src, n = re.subn(r'^#include "common\.h"', lambda m: inc + m.group(0), src, count=1,
                          flags=re.M)
         if n != 1:

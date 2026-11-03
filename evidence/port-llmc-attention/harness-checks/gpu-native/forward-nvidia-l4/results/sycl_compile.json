@@ -1,0 +1,62 @@
+{
+  "tool": "compile",
+  "status": "ok",
+  "summary": "compiled 1 source(s) -> /tmp/tmp.xHkXZEB2pd/out/work/build/sycl (2 warning(s))",
+  "evidence": {
+    "run": {
+      "command": "/opt/sycl/bin/clang++ -fsycl -O2 -fsycl-targets=nvidia_gpu_sm_89 -I/tmp/tmp.xHkXZEB2pd/task /tmp/tmp.xHkXZEB2pd/task/attention_forward_ref.cpp -o /tmp/tmp.xHkXZEB2pd/out/work/build/sycl",
+      "returncode": 0,
+      "duration_s": 0.655946,
+      "stdout": "",
+      "stderr": "/tmp/tmp.xHkXZEB2pd/task/attention_forward_ref.cpp:12:9: warning: 'CUDNN_16BIT' macro redefined [-Wmacro-redefined]\n   12 | #define CUDNN_16BIT fe::DataType_t::HALF\n      |         ^\n/tmp/tmp.xHkXZEB2pd/task/attention_forward_ref.cpp:11:9: note: previous definition is here\n   11 | #define CUDNN_16BIT fe::DataType_t::BFLOAT16\n      |         ^\n1 warning generated.\n/tmp/tmp.xHkXZEB2pd/task/attention_forward_ref.cpp:12:9: warning: 'CUDNN_16BIT' macro redefined [-Wmacro-redefined]\n   12 | #define CUDNN_16BIT fe::DataType_t::HALF\n      |         ^\n/tmp/tmp.xHkXZEB2pd/task/attention_forward_ref.cpp:11:9: note: previous definition is here\n   11 | #define CUDNN_16BIT fe::DataType_t::BFLOAT16\n      |         ^\n1 warning generated.\n"
+    },
+    "output": "/tmp/tmp.xHkXZEB2pd/out/work/build/sycl",
+    "dpct_include_added": null,
+    "diagnostics": [
+      {
+        "file": "/tmp/tmp.xHkXZEB2pd/task/attention_forward_ref.cpp",
+        "line": 12,
+        "column": 9,
+        "severity": "warning",
+        "message": "'CUDNN_16BIT' macro redefined",
+        "flag": "-Wmacro-redefined",
+        "snippet": "#define CUDNN_16BIT fe::DataType_t::HALF"
+      },
+      {
+        "file": "/tmp/tmp.xHkXZEB2pd/task/attention_forward_ref.cpp",
+        "line": 11,
+        "column": 9,
+        "severity": "note",
+        "message": "previous definition is here",
+        "flag": null,
+        "snippet": "#define CUDNN_16BIT fe::DataType_t::BFLOAT16"
+      },
+      {
+        "file": "/tmp/tmp.xHkXZEB2pd/task/attention_forward_ref.cpp",
+        "line": 12,
+        "column": 9,
+        "severity": "warning",
+        "message": "'CUDNN_16BIT' macro redefined",
+        "flag": "-Wmacro-redefined",
+        "snippet": "#define CUDNN_16BIT fe::DataType_t::HALF"
+      },
+      {
+        "file": "/tmp/tmp.xHkXZEB2pd/task/attention_forward_ref.cpp",
+        "line": 11,
+        "column": 9,
+        "severity": "note",
+        "message": "previous definition is here",
+        "flag": null,
+        "snippet": "#define CUDNN_16BIT fe::DataType_t::BFLOAT16"
+      }
+    ],
+    "counts": {
+      "error": 0,
+      "warning": 2,
+      "note": 2
+    }
+  },
+  "limitations": [
+    "A successful compile says nothing about numerical correctness; run verify."
+  ]
+}
