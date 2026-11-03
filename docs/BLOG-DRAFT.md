@@ -57,7 +57,7 @@ about 1.5x of hand-tuned CUDA. On an H100 the gap is larger, and I'd rather show
 hide it.
 
 **It ported the kernel experiments.** Every file in llm.c's `dev/cuda/` except the multi-GPU
-one now has a Muse port that passes its hidden check, with llm.c's kernel variants kept (one
+one now has a Muse port that passes its hidden check (one of them, `softmax_forward`, on a rerun), with llm.c's kernel variants kept (one
 port still shares one implementation across variants; the README says which). The ones that
 call cuBLAS now call oneMath. The two attention files were the last: while building their hidden
 checks I found two bugs in llm.c's own kernels (one writes past the end of a row when the
