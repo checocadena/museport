@@ -162,6 +162,7 @@ footer { padding-block: 10px 14px; display: grid; gap: 10px; }
     <label><input id="mirror" type="checkbox"> Mirror (for teleprompter glass)</label>
     <label>Words a second <input id="wps" type="number" min="1.5" max="4" step="0.1" value="2.6" style="width:5em"></label>
     <span class="spacer" style="flex:1"></span>
+    <button id="resetScript">Use the latest built-in script</button>
     <button id="clearTakes">Delete all takes</button>
     <button id="closeScript">Done</button>
   </div>
@@ -200,6 +201,7 @@ Next, I'd love access to Intel GPUs, to port even more. The most interesting par
 Doing this for more projects is a great route to open AI that runs on more than NVIDIA. Thanks for watching!`;
 
 const $ = id => document.getElementById(id);
+let builtIn = DEFAULT_SCRIPT;
 const S = { lines: [], i: 0, takes: {}, sel: {}, recording: false };
 // takes[i] = [{id, blob, secs, type}], sel[i] = id of the kept take
 
@@ -413,9 +415,12 @@ $('play').onclick = play; $('keep').onclick = keep; $('export').onclick = export
 $('prev').onclick = () => go(-1); $('next-btn').onclick = () => go(1);
 $('openScript').onclick = () => { $('drawer').hidden = false; $('script').focus(); };
 $('closeScript').onclick = () => {
-  const text = $('script').value; S.lines = parseScript(text); ls.set('script', text);
+  const text = $('script').value; S.lines = parseScript(text);
+  // keep only a script you edited; an unedited one follows the built-in script as it changes
+  ls.set('script', text.trim() === builtIn.trim() ? null : text);
   S.i = Math.min(S.i, Math.max(0, S.lines.length - 1)); $('drawer').hidden = true; render();
 };
+$('resetScript').onclick = () => { $('script').value = builtIn; say('Built-in script loaded. Press Done to use it.'); };
 $('clearTakes').onclick = () => {
   if ($('clearTakes').dataset.armed) { S.takes = {}; S.sel = {}; dropAll(); ls.set('sel', {}); render();
     $('clearTakes').textContent = 'Delete all takes'; delete $('clearTakes').dataset.armed; say('All takes deleted.'); }
@@ -435,7 +440,18 @@ document.addEventListener('keydown', e => {
 document.addEventListener('visibilitychange', () => { if (!document.hidden && S.recording) wakeLock(); });
 
 (async () => {
-  const text = ls.get('script', DEFAULT_SCRIPT);
+  // The built-in script: when the page is hosted next to the film (https), its current
+  // lines.json, so a pushed script change shows up on reload; otherwise the copy below.
+  if (location.protocol.startsWith('http')) {
+    try {
+      const r = await fetch('../remotion/public/lines.json', { cache: 'no-store' });
+      if (r.ok) builtIn = (await r.json()).map(x => x.text).join('\n\n');
+    } catch {}
+  }
+  let saved = ls.get('script', null);
+  // Earlier versions saved the built-in script itself on Done; those copies are not edits.
+  if (typeof saved === 'string' && /^Pre-existing: my open-source/.test(saved.trim())) saved = null;
+  const text = saved || builtIn;
   $('script').value = text; S.lines = parseScript(text);
   S.i = Math.min(ls.get('i', 0), S.lines.length - 1); S.sel = ls.get('sel', {});
   $('size').value = ls.get('size', window.innerWidth < 600 ? 34 : 52); applySize();
