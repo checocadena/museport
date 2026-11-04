@@ -1,5 +1,12 @@
 # Demo video: script and shot list (3:00 max)
 
+**Nov 4: the film is now built in Remotion, from the voiceover:
+[`demo/remotion/`](remotion/README.md).** Its 15-line script is
+[`remotion/public/lines.json`](remotion/public/lines.json), with the numbers current as of
+Nov 3 (the H100, 21 of 22 kernel files, the oneMath fix), and `tests/test_film.py` checks them
+against the evidence. The rest of this page is the earlier Resolve plan; its clips are reused
+as shots 1 and 3-7.
+
 This is plan item I1. Every number on screen comes from `demo/data.json`, which
 `demo/make_data.py` builds from the committed evidence. The terminal shots replay real output
 that `demo/capture.py` recorded.

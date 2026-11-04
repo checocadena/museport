@@ -1,0 +1,11 @@
+node_modules/
+out/
+public/clips/
+public/vo/
+public/vo-raw/
+public/music.*
+public/report/
+public/vo-lengths.json
+public/vo-words.json
+public/clips.json
+public/assets.json
