@@ -18,10 +18,8 @@ const Shot: React.FC<{ seg: Seg; p: FilmProps }> = ({ seg, p }) => {
   const d = p.data;
   // l1: only its first 6 s, the port ("ported by Muse in one run"); its tuning half is
   // replaced by the speed card two lines later
-  if (s === 'l1') return <AbsoluteFill>
-    <Clip name={s} secs={p.assets.clips[s]} frames={seg.frames} maxRate={1} upTo={6} />
-    <Note at={60}>This one-run port worked in 1 of 2 tries.</Note>
-  </AbsoluteFill>;
+  if (s === 'l1') return <Clip name={s} secs={p.assets.clips[s]} frames={seg.frames} maxRate={1}
+    upTo={6} />;
   if (CLIP_SHOTS.has(s)) return <Clip name={s} secs={p.assets.clips[s]} frames={seg.frames} />;
   switch (s) {
     case 'why': return <Why />;

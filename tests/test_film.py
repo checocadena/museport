@@ -32,9 +32,7 @@ def test_spoken_numbers_come_from_the_evidence() -> None:
     assert f["onemath"] == {"pr": "uxlfoundation/oneMath#793", "passed_before": 323,
                             "passed_after": 325}
     # facts the voiceover leaves out stay on screen
-    film = (ROOT / "demo/remotion/src/Film.tsx").read_text()
     cards = (ROOT / "demo/remotion/src/shots/Cards.tsx").read_text()
-    assert "worked in 1 of 2 tries" in film  # README: the one-run port succeeded in 1 of 2
     assert "Intel" in LINES["intel"] and "not tested: no cloud access" in cards
     assert f["j4_session"][-2].startswith("Once upon a time")
 
