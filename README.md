@@ -15,6 +15,12 @@
 [![llm.c bf16 trainer: 1.40–1.55x CUDA](https://img.shields.io/badge/llm.c%20bf16%20trainer-1.40%E2%80%931.55x%20CUDA%2C%20portable-2ea44f)](evidence/l1-llmc-bf16/ptune/README.md)
 [![Evidence: committed](https://img.shields.io/badge/every%20number-committed%20evidence-2ea44f)](evidence)
 [![Meta Global AI Developer Hackathon 2026](https://img.shields.io/badge/Meta%20Global%20AI%20Developer%20Hackathon-2026-0866FF)](#what-is-new-and-what-it-builds-on)
+[![Demo video](https://img.shields.io/badge/demo-watch%20on%20YouTube-FF0000?logo=youtube&logoColor=white)](https://youtu.be/uBpT5IuxPOY)
+[![Evidence report PDF](https://img.shields.io/badge/evidence%20report-PDF-555)](docs/museport-report.pdf)
+
+<a href="https://youtu.be/uBpT5IuxPOY"><img src="docs/img/demo-video.png" alt="Muse Port demo video on YouTube: CUDA to any GPU. Meta's Muse ported Karpathy's GPT-2 trainer." width="640"></a>
+
+**▶ [Watch the demo (2:20)](https://youtu.be/uBpT5IuxPOY)** · **[Evidence report (PDF, 14 pages)](docs/museport-report.pdf)**
 
 <img src="docs/img/l1-speed.png" alt="llm.c's bf16 trainer: time per training step as a multiple of llm.c's CUDA on the same NVIDIA GPU. Run 5 port 36x; tuned without a GPU 5.65x; tuned with gpu_test in portable SYCL + oneMath 1.40-1.55x; plus NVIDIA's cuBLAS 1.13-1.21x." width="820">
 
