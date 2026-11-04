@@ -13,20 +13,31 @@ export type FilmProps = { lines: Line[]; assets: Assets; data: Data };
 
 const CLIP_SHOTS = new Set(['disclosure', 'term_scan', 'pipeline', 'term_bug', 'replay', 'l1']);
 
+// The frame (within the shot) where a word is spoken, from Whisper's timings: cards reveal
+// their parts as the voice names them. `fallback` when the take or the word is missing.
+export type Cue = (re: RegExp, fallback: number, last?: boolean) => number;
+const cueFor = (seg: Seg, p: FilmProps): Cue => (re, fallback, last) => {
+  const ws = p.assets.words[String(seg.line.n)] ?? [];
+  const hits = ws.filter(w => re.test(w.w));
+  const w = last ? hits[hits.length - 1] : hits[0];
+  return w ? seg.voFrom + Math.round(w.t0 * FPS) : fallback;
+};
+
 const Shot: React.FC<{ seg: Seg; p: FilmProps }> = ({ seg, p }) => {
   const s = seg.line.shot;
   const d = p.data;
+  const cue = cueFor(seg, p);
   // l1: only its first 6 s, the port ("ported by Muse in one run"); its tuning half is
   // replaced by the speed card two lines later
   if (s === 'l1') return <Clip name={s} secs={p.assets.clips[s]} frames={seg.frames} maxRate={1}
     upTo={6} />;
   if (CLIP_SHOTS.has(s)) return <Clip name={s} secs={p.assets.clips[s]} frames={seg.frames} />;
   switch (s) {
-    case 'why': return <Why />;
-    case 'hook': return <Hook />;
+    case 'why': return <Why cue={cue} />;
+    case 'hook': return <Hook cue={cue} />;
     case 'intel': return <Intel />;
-    case 'rent': return <Rent d={d} />;
-    case 'future': return <Future />;
+    case 'rent': return <Rent d={d} cue={cue} />;
+    case 'future': return <Future cue={cue} />;
     case 'speed': return <Speed d={d} />;
     case 'tuning': return <Tuning d={d} />;
     case 'kernels': return <Kernels d={d} />;
@@ -37,7 +48,7 @@ const Shot: React.FC<{ seg: Seg; p: FilmProps }> = ({ seg, p }) => {
     case 'onemath': return <OneMath d={d} />;
     case 'report': return <Report have={p.assets.report} />;
     case 'limits': return <Limits />;
-    case 'end': return <End />;
+    case 'end': return <End credit={p.assets.musicCredit} />;
     default: return <AbsoluteFill style={{ background: C.bad }}>unknown shot {s}</AbsoluteFill>;
   }
 };
@@ -89,7 +100,7 @@ const Captions: React.FC<{ seg: Seg; p: FilmProps }> = ({ seg, p }) => {
 const BED = 0.32;
 const DIP = Math.pow(10, -4 / 20);
 const ramp = (x: number) => 0.5 - 0.5 * Math.cos(Math.PI * Math.min(1, Math.max(0, x)));
-function musicVolume(frame: number, segs: Seg[], total: number): number {
+function musicVolume(frame: number, segs: Seg[], total: number, bed = BED): number {
   const r = 0.5 * FPS;
   let duck = 0;
   for (const s of segs) {
@@ -99,7 +110,7 @@ function musicVolume(frame: number, segs: Seg[], total: number): number {
     const v = frame < a ? ramp((frame - (a - r)) / r) : frame > b ? ramp(((b + r) - frame) / r) : 1;
     duck = Math.max(duck, v);
   }
-  const level = BED * (1 - duck + duck * DIP);
+  const level = bed * (1 - duck + duck * DIP);
   const fadeIn = ramp(frame / (1.5 * FPS));
   const fadeOut = ramp((total - frame) / (3 * FPS));
   return level * fadeIn * fadeOut;
@@ -123,7 +134,7 @@ export const Film: React.FC<FilmProps> = (p) => {
       ))}
       {p.assets.music && (
         <Audio src={staticFile(p.assets.music)} loop
-          volume={f => musicVolume(f, segs, total)} />
+          volume={f => musicVolume(f, segs, total, p.assets.musicGain)} />
       )}
     </AbsoluteFill>
   );

@@ -11,6 +11,8 @@ export type Assets = {
   words: Record<string, Word[]>; // Whisper word timings per take
   clips: Record<string, number>; // rendered clip name -> seconds, for clips in public/clips/
   music: string | null; // public/ file name of the music bed, if any
+  musicGain?: number; // linear gain for the bed between lines (it dips 4 dB under the voice)
+  musicCredit?: string; // shown on the end card, as the track's license requires
   report: boolean; // public/report/overview.png exists
 };
 export type Seg = {

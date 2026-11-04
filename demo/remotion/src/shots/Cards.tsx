@@ -6,6 +6,8 @@ import { AbsoluteFill, Easing, Img, interpolate, staticFile, useCurrentFrame,
 import { C, F } from '../theme';
 import { Count, Eyebrow, Rise, Source, Stage } from './common';
 
+type Cue = (re: RegExp, fallback: number, last?: boolean) => number;
+
 type Film = {
   devcuda: { files: number; attempted: number; correct: number; nvidia: number };
   portable_speeds: { device: string; ratio: number; ms: number; cuda_ms: number }[];
@@ -21,9 +23,11 @@ export type Data = { film: Film };
 
 const short = (d: string) => d.replace(/^NVIDIA (GeForce )?/, '').replace(/ 80GB HBM3$/, '');
 
-export const Hook: React.FC = () => {
+export const Hook: React.FC<{ cue: Cue }> = ({ cue }) => {
   const f = useCurrentFrame();
   const chips = ['NVIDIA', 'AMD', 'CPU'];
+  // each chip lights as it is said ("on NVIDIA, AMD, and CPUs": the last NVIDIA)
+  const at = [cue(/NVIDIA/i, 70, true), cue(/AMD/i, 90, true), cue(/CPU/i, 110, true)];
   return (
     <Stage>
       <Eyebrow>Meta's Muse · CUDA → SYCL (oneAPI)</Eyebrow>
@@ -32,14 +36,14 @@ export const Hook: React.FC = () => {
         <span style={{ color: C.muted }}>off NVIDIA-only CUDA.</span></div></Rise>
       <div style={{ display: 'flex', gap: 28, marginTop: 70 }}>
         {chips.map((c, i) => {
-          const on = f > 70 + i * 20;
+          const on = f >= at[i];
           return <div key={c} style={{ padding: '22px 44px', borderRadius: 16, fontSize: 44,
             fontWeight: 700, border: `2px solid ${on ? C.ok : C.line}`,
             color: on ? C.ok : C.muted, background: on ? 'rgba(60,207,142,.08)' : C.panel,
             transition: 'none' }}>{on ? '✓ ' : ''}{c}</div>;
         })}
       </div>
-      <Rise at={150} style={{ marginTop: 60 }}>
+      <Rise at={at[2] + 18} style={{ marginTop: 60 }}>
         <span style={{ fontFamily: F.mono, fontSize: 40, color: C.ok }}>overall okay: 1</span>
         <span style={{ fontSize: 28, color: C.muted, marginLeft: 24 }}>
           llm.c's own test, on the ported code</span>
@@ -214,7 +218,7 @@ export const Limits: React.FC = () => {
   );
 };
 
-export const End: React.FC = () => (
+export const End: React.FC<{ credit?: string }> = ({ credit }) => (
   <Stage pad="0">
     <AbsoluteFill style={{ alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
       <Rise at={4}><div style={{ fontFamily: F.display, fontSize: 84, fontWeight: 700,
@@ -224,6 +228,8 @@ export const End: React.FC = () => (
         github.com/checocadena/museport</div></Rise>
       <Rise at={44}><div style={{ fontSize: 28, marginTop: 30, color: C.muted }}>
         Meta Global AI Developer Hackathon 2026 · muse-spark-1.3</div></Rise>
+      {credit && <Rise at={60}><div style={{ fontSize: 22, marginTop: 50, color: C.muted }}>
+        {credit}</div></Rise>}
     </AbsoluteFill>
   </Stage>
 );
@@ -236,18 +242,19 @@ const Chip: React.FC<{ on: boolean; label: string; note?: string; tone?: string 
   </div>
 );
 
-export const Why: React.FC = () => (
+export const Why: React.FC<{ cue: Cue }> = ({ cue }) => (
   <Stage>
     <Eyebrow>Why Muse Port</Eyebrow>
     <Rise at={6}><div style={{ fontFamily: F.display, fontSize: 88, fontWeight: 700, lineHeight: 1.1,
       marginTop: 40 }}>Code that only runs on NVIDIA,<br />
       <span style={{ color: C.ok }}>running on other GPUs and CPUs.</span></div></Rise>
     <div style={{ display: 'flex', gap: 22, marginTop: 80, flexWrap: 'wrap' }}>
-      {['leaner', 'cheaper', 'runs on anybody\'s machine'].map((w, i) => (
-        <Rise key={w} at={120 + i * 40}><div style={{ fontSize: 46, padding: '14px 30px',
+      {([['leaner', /leaner/i], ['cheaper', /cheaper/i], ['runs on anybody\'s machine', /anybody/i]] as
+        [string, RegExp][]).map(([w, re], i) => (
+        <Rise key={w} at={cue(re, 120 + i * 40)}><div style={{ fontSize: 46, padding: '14px 30px',
           border: `1px solid ${C.line}`, borderRadius: 999, color: C.fg }}>{w}</div></Rise>))}
     </div>
-    <Rise at={300}><div style={{ fontSize: 36, color: C.muted, marginTop: 60 }}>
+    <Rise at={cue(/^AI$/i, 300, true)}><div style={{ fontSize: 36, color: C.muted, marginTop: 60 }}>
       …and AI does the porting.</div></Rise>
   </Stage>
 );
@@ -267,7 +274,8 @@ export const Intel: React.FC = () => (
   </Stage>
 );
 
-export const Rent: React.FC<{ d: Data }> = ({ d }) => {
+export const Rent: React.FC<{ d: Data; cue: Cue }> = ({ d, cue }) => {
+  const at = [cue(/GPUs/i, 10), cue(/cap/i, 55), cue(/deleted/i, 100)];
   const steps: [string, string][] = [
     ['Rent', 'a GPU on Runpod or DigitalOcean, with a spending cap'],
     ['Test', "build Muse's code, run llm.c's test, time it next to CUDA"],
@@ -280,7 +288,7 @@ export const Rent: React.FC<{ d: Data }> = ({ d }) => {
       <Eyebrow>The agent rents its own GPUs</Eyebrow>
       <div style={{ display: 'flex', gap: 30, marginTop: 70, alignItems: 'stretch', flexWrap: 'wrap' }}>
         {steps.map(([h, t], i) => (
-          <Rise key={h} at={10 + i * 45} style={{ flex: 1, minWidth: 420 }}>
+          <Rise key={h} at={at[i]} style={{ flex: 1, minWidth: 420 }}>
             <div style={{ background: C.panel, border: `1px solid ${C.line}`, borderRadius: 18,
               padding: '34px 36px', height: '100%' }}>
               <div style={{ fontFamily: F.mono, fontSize: 24, color: C.accent }}>{String(i + 1).padStart(2, '0')}</div>
@@ -289,19 +297,19 @@ export const Rent: React.FC<{ d: Data }> = ({ d }) => {
             </div>
           </Rise>))}
       </div>
-      <Rise at={170}><div style={{ fontSize: 34, marginTop: 50, color: C.fg }}>
+      <Rise at={at[2] + 30}><div style={{ fontSize: 34, marginTop: 50, color: C.fg }}>
         In the GPU tuning run, Muse made <b>{g.calls}</b> GPU calls, about{' '}
         <b>${g.usd.toFixed(2)}</b> of GPU time in all.</div></Rise>
     </Stage>
   );
 };
 
-export const Future: React.FC = () => (
+export const Future: React.FC<{ cue: Cue }> = ({ cue }) => (
   <Stage>
     <Eyebrow>Next</Eyebrow>
     <div style={{ marginTop: 50, display: 'grid', gap: 30 }}>
       <Rise at={6}><div style={{ fontSize: 64 }}>Intel GPUs, and more repos.</div></Rise>
-      <Rise at={90}><div style={{ fontFamily: F.display, fontSize: 92, fontWeight: 700, lineHeight: 1.1,
+      <Rise at={cue(/agent/i, 90)}><div style={{ fontFamily: F.display, fontSize: 92, fontWeight: 700, lineHeight: 1.1,
         marginTop: 30 }}>An agent that <span style={{ color: C.accent }}>ports</span> the code,<br />
         then <span style={{ color: C.ok }}>tunes</span> it on real hardware.</div></Rise>
     </div>

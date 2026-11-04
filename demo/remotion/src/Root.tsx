@@ -17,12 +17,15 @@ async function json<T>(name: string, fallback: T): Promise<T> {
 }
 
 async function load(): Promise<FilmProps> {
-  const manifest = await json<{ music?: string | null; report?: boolean }>('assets.json', {});
+  const manifest = await json<{ music?: string | null; report?: boolean; musicGain?: number;
+    musicCredit?: string }>('assets.json', {});
   const assets: Assets = {
     voLengths: await json('vo-lengths.json', {}),
     words: await json('vo-words.json', {}),
     clips: await json('clips.json', {}),
     music: manifest.music ?? null,
+    musicGain: manifest.musicGain,
+    musicCredit: manifest.musicCredit,
     report: manifest.report ?? false,
   };
   return { lines: await json('lines.json', []), assets, data: await json('film-data.json', {} as never) };

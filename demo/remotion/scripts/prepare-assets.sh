@@ -46,8 +46,13 @@ rm -rf "$SITE"
 
 echo "== manifest"
 music=$(cd "$PUB" && ls music.wav music.mp3 music.m4a 2>/dev/null | head -1 || true)
-python3 - "$music" > "$PUB/assets.json" <<'EOF'
+python3 - "$music" "$PUB/music.json" > "$PUB/assets.json" <<'EOF'
 import json, sys
-print(json.dumps({"music": sys.argv[1] or None, "report": True}))
+from pathlib import Path
+m = {"music": sys.argv[1] or None, "report": True}
+extra = Path(sys.argv[2])  # optional: {"musicGain": 0.18, "musicCredit": "..."}
+if m["music"] and extra.exists():
+    m.update(json.loads(extra.read_text()))
+print(json.dumps(m))
 EOF
 cat "$PUB/assets.json"
