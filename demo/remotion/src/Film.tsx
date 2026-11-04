@@ -18,8 +18,11 @@ const Shot: React.FC<{ seg: Seg; p: FilmProps }> = ({ seg, p }) => {
   const d = p.data;
   // l1: only its first 6 s, the port ("ported by Muse in one run"); its tuning half is
   // replaced by the speed card two lines later
-  if (CLIP_SHOTS.has(s)) return <Clip name={s} secs={p.assets.clips[s]} frames={seg.frames}
-    maxRate={s === 'l1' ? 1 : undefined} upTo={s === 'l1' ? 6 : undefined} />;
+  if (s === 'l1') return <AbsoluteFill>
+    <Clip name={s} secs={p.assets.clips[s]} frames={seg.frames} maxRate={1} upTo={6} />
+    <Note at={60}>This one-run port worked in 1 of 2 tries.</Note>
+  </AbsoluteFill>;
+  if (CLIP_SHOTS.has(s)) return <Clip name={s} secs={p.assets.clips[s]} frames={seg.frames} />;
   switch (s) {
     case 'why': return <Why />;
     case 'hook': return <Hook />;
@@ -38,6 +41,16 @@ const Shot: React.FC<{ seg: Seg; p: FilmProps }> = ({ seg, p }) => {
     case 'end': return <End />;
     default: return <AbsoluteFill style={{ background: C.bad }}>unknown shot {s}</AbsoluteFill>;
   }
+};
+
+// An on-screen fact the voiceover leaves out (kept honest without re-recording).
+const Note: React.FC<{ at: number; children: React.ReactNode }> = ({ at, children }) => {
+  const f = useCurrentFrame();
+  const o = interpolate(f, [at, at + 15], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
+  return <AbsoluteFill style={{ alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 190 }}>
+    <div style={{ opacity: o, fontFamily: F.body, fontSize: 36, color: C.warn, border: `1px solid ${C.warn}`,
+      borderRadius: 12, padding: '12px 26px', background: 'rgba(10,12,17,.85)' }}>{children}</div>
+  </AbsoluteFill>;
 };
 
 // Short cross-fade into each shot.

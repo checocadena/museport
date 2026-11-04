@@ -21,10 +21,12 @@ also found a bug in oneMath; the tested fix is submitted upstream as uxlfoundati
 
 ## Opening line of the 3-minute video (required)
 
-> "Hey everyone, welcome. Today I'm showing you Muse Port. A quick note first: before the
-> hackathon, I built an open-source toolkit, oneapi-agent-toolkit, with the bare-bones tools
-> for an agent to port code. It's a dependency here. Everything on top of it, I built this
-> week."
+> "Hello everyone, welcome. Today I'll be showing you Muse Port. Before the hackathon, I built
+> an open-source toolkit with the bare-bones tools for an agent to port code. It's a dependency
+> here, but everything on top of it, I built this week."
+
+The first shot names the pre-existing project on screen: `oneapi-agent-toolkit`, with what it
+provides, beside what Muse Port adds.
 
 ## What it does
 

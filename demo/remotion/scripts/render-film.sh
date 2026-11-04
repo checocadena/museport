@@ -13,8 +13,10 @@ args=(render src/index.ts Film "$RAW" --codec=h264 --crf=17 --x264-preset=slow
       --jpeg-quality=95)
 [ -n "${CHROME:-}" ] && args+=(--browser-executable="$CHROME")
 npx remotion "${args[@]}"
-# move the index to the front so the file starts playing before it has fully loaded
-ffmpeg -y -loglevel error -i "$RAW" -c copy -movflags +faststart "$OUT"
+# the whole film to -16 LUFS (web level; the silences between lines pull the average down),
+# and the index to the front so the file starts playing before it has fully loaded
+ffmpeg -y -loglevel error -i "$RAW" -c:v copy -af loudnorm=I=-16:TP=-1.5:LRA=11 -ar 48000 \
+  -c:a aac -b:a 256k -movflags +faststart "$OUT"
 rm -f "$RAW"
 ffprobe -v error -show_entries format=duration:stream=codec_name,width,height \
   -of default=nw=1 "$OUT"
