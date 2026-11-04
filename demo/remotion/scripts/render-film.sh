@@ -21,3 +21,6 @@ rm -f "$RAW"
 ffprobe -v error -show_entries format=duration:stream=codec_name,width,height \
   -of default=nw=1 "$OUT"
 echo "film: $OUT"
+# the YouTube thumbnail beside it
+npx remotion still src/index.ts Thumbnail "${OUT%.mp4}-thumbnail.png" ${CHROME:+--browser-executable="$CHROME"} --log=error
+echo "thumbnail: ${OUT%.mp4}-thumbnail.png"

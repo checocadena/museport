@@ -40,7 +40,8 @@ export function layout(lines: Line[], a: Assets): { segs: Seg[]; total: number }
 }
 
 // Caption chunks: sentences, and long sentences split at a comma, as in BALI's chunks().
-export type Chunk = { text: string; t0: number; t1: number }; // seconds from the take's start
+export type Chunk = { text: string; t0: number; t1: number; words: { w: string; t0: number }[] };
+// (seconds from the take's start)
 export function chunks(line: Line, secs: number, words?: Word[]): Chunk[] {
   const parts: string[] = [];
   // sentence ends only where punctuation is followed by a space or the end (not "llm.c", "2.9")
@@ -70,7 +71,15 @@ export function chunks(line: Line, secs: number, words?: Word[]): Chunk[] {
       t0 = (acc / total) * secs;
       t1 = ((acc + counts[i]) / total) * secs;
     }
-    out.push({ text: p, t0, t1 });
+    // each word's start, for the word-by-word highlight
+    const ws = p.split(/\s+/).map((w, j) => {
+      const g = k + j;
+      const wt = words && words.length
+        ? words[Math.min(words.length - 1, Math.round((g * words.length) / total))].t0
+        : (g / total) * secs;
+      return { w, t0: wt };
+    });
+    out.push({ text: p, t0, t1, words: ws });
     k += counts[i];
     acc += counts[i];
   });

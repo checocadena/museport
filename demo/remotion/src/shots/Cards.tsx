@@ -12,6 +12,7 @@ type Film = {
   amd: { device: string; before_ms: number; after_ms: number };
   run5: { device: string; ratio: number };
   gpu_calls: { calls: number; usd: number };
+  tuning: { ratio: number; pass: boolean; cublas: boolean }[];
   onemath: { pr: string; passed_before: number; passed_after: number };
   j3_test: string[];
   j4_session: string[];
@@ -306,3 +307,59 @@ export const Future: React.FC = () => (
     </div>
   </Stage>
 );
+
+// Muse tuning its own port: every timed NVIDIA gpu_test call of the GPU tuning run, in order,
+// after the one-run port's starting point. Log scale; 1x is llm.c's CUDA on the same GPU.
+export const Tuning: React.FC<{ d: Data }> = ({ d }) => {
+  const f = useCurrentFrame();
+  const W = 1640, H = 560, L = 110, R = 40, T = 30, B = 60;
+  const pts = [{ ratio: d.film.run5.ratio, pass: true, cublas: false, start: true },
+    ...d.film.tuning.map(t => ({ ...t, start: false }))];
+  const lo = Math.log(1), hi = Math.log(40);
+  const x = (i: number) => L + (i / (pts.length - 1)) * (W - L - R);
+  const y = (r: number) => T + ((hi - Math.log(r)) / (hi - lo)) * (H - T - B);
+  const at = (i: number) => 24 + i * 11; // frame each point appears
+  const shown = pts.filter((_, i) => f >= at(i));
+  const path = shown.map((p, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(p.ratio).toFixed(1)}`).join(' ');
+  // the headline: the best portable result so far (cuBLAS calls are vendor-specific)
+  const portable = shown.filter(p => !p.cublas && p.pass);
+  const best = portable.length ? Math.min(...portable.map(p => p.ratio)) : undefined;
+  const sp = d.film.portable_speeds;
+  return (
+    <Stage pad="80px 140px 170px">
+      <Source>evidence/l1-llmc-bf16/gtune · every gpu_test call</Source>
+      <Eyebrow>Muse tuning its own port on rented NVIDIA GPUs</Eyebrow>
+      <div style={{ display: 'flex', alignItems: 'baseline', gap: 24, marginTop: 18 }}>
+        <span style={{ fontFamily: F.mono, fontSize: 84, fontWeight: 700,
+          color: best !== undefined && best < 2 ? C.ok : C.fg }}>
+          {best !== undefined ? `${best < 10 ? best.toFixed(2) : Math.round(best)}x` : ''}</span>
+        <span style={{ fontSize: 30, color: C.muted }}>CUDA's time per training step, best portable so far</span>
+      </div>
+      <svg width={W} height={H} style={{ marginTop: 6, overflow: 'visible' }}>
+        {[1, 2, 5, 10, 40].map(r => (
+          <g key={r}>
+            <line x1={L} x2={W - R} y1={y(r)} y2={y(r)} stroke={r === 1 ? C.fg : C.line}
+              strokeWidth={r === 1 ? 2 : 1} strokeDasharray={r === 1 ? '0' : '4 6'} />
+            <text x={L - 18} y={y(r) + 9} textAnchor="end" fill={C.muted} fontSize={24}
+              fontFamily={F.mono}>{r}x</text>
+          </g>))}
+        <text x={W - R} y={y(1) + 34} textAnchor="end" fill={C.fg} fontSize={22}
+          fontFamily={F.body}>llm.c's CUDA on the same GPU</text>
+        <path d={path} fill="none" stroke={C.accent} strokeWidth={3} opacity={0.7} />
+        {shown.map((p, i) => (
+          <circle key={i} cx={x(i)} cy={y(p.ratio)} r={p.start ? 12 : 10}
+            fill={p.cublas ? C.bg : p.pass ? C.ok : C.bad}
+            stroke={p.cublas ? C.warn : p.pass ? C.ok : C.bad} strokeWidth={p.cublas ? 3 : 0} />))}
+        {f >= at(0) && <text x={x(0) + 22} y={y(pts[0].ratio) + 8} fill={C.muted} fontSize={24}
+          fontFamily={F.body}>the one-run port</text>}
+      </svg>
+      <div style={{ display: 'flex', gap: 34, fontSize: 24, color: C.muted, marginTop: 4, flexWrap: 'wrap' }}>
+        <span><span style={{ color: C.ok }}>●</span> test passed</span>
+        <span><span style={{ color: C.bad }}>●</span> test failed</span>
+        <span><span style={{ color: C.warn }}>○</span> calls NVIDIA's cuBLAS (vendor-specific)</span>
+        <span style={{ color: C.fg }}>Portable, no vendor code: {sp.map(s =>
+          `${s.ratio.toFixed(2)}x ${short(s.device)}`).join(' · ')}</span>
+      </div>
+    </Stage>
+  );
+};

@@ -7,7 +7,7 @@ import { C, F, FPS } from './theme';
 import { Assets, chunks, Line, layout, Seg } from './timeline';
 import { Clip } from './shots/Clip';
 import { Data, End, Future, Hook, Intel, Kernels, Limits, OneMath, Rent, Report, Speed, Terminal,
-  Why } from './shots/Cards';
+  Tuning, Why } from './shots/Cards';
 
 export type FilmProps = { lines: Line[]; assets: Assets; data: Data };
 
@@ -28,6 +28,7 @@ const Shot: React.FC<{ seg: Seg; p: FilmProps }> = ({ seg, p }) => {
     case 'rent': return <Rent d={d} />;
     case 'future': return <Future />;
     case 'speed': return <Speed d={d} />;
+    case 'tuning': return <Tuning d={d} />;
     case 'kernels': return <Kernels d={d} />;
     case 'j3': return <Terminal cmd="make && ./test_gpt2fp32sycl" lines={d.film.j3_test}
       source="evidence/j3-fresh-clone/test.log" frames={seg.frames} />;
@@ -69,9 +70,16 @@ const Captions: React.FC<{ seg: Seg; p: FilmProps }> = ({ seg, p }) => {
     { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
   return (
     <AbsoluteFill style={{ justifyContent: 'flex-end', alignItems: 'center', paddingBottom: 54 }}>
-      <div style={{ maxWidth: 1500, textAlign: 'center', fontFamily: F.body, fontSize: 44,
-        fontWeight: 600, lineHeight: 1.3, color: '#fff', background: 'rgba(0,0,0,.72)',
-        padding: '14px 30px', borderRadius: 12, opacity: fade }}>{cur.text}</div>
+      <div style={{ maxWidth: 1500, textAlign: 'center', fontFamily: F.body, fontSize: 46,
+        fontWeight: 600, lineHeight: 1.3, background: 'rgba(0,0,0,.72)',
+        padding: '14px 30px', borderRadius: 12, opacity: fade }}>
+        {cur.words.map((w, i) => {
+          const said = t >= w.t0;
+          const now = said && (i === cur.words.length - 1 || t < cur.words[i + 1].t0);
+          return <span key={i} style={{ color: now ? C.ok : said ? '#fff' : 'rgba(255,255,255,.55)' }}>
+            {w.w}{i < cur.words.length - 1 ? ' ' : ''}</span>;
+        })}
+      </div>
     </AbsoluteFill>
   );
 };

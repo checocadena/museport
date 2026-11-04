@@ -21,14 +21,16 @@ def _film() -> dict:
 
 def test_spoken_numbers_come_from_the_evidence() -> None:
     f = _film()
-    assert round(f["run5"]["ratio"]) == 36 and "36 times slower than CUDA" in LINES["speed"]
+    assert round(f["run5"]["ratio"]) == 36 and "36 times slower than CUDA" in LINES["tuning"]
     ratios = {s["device"]: round(s["ratio"], 2) for s in f["portable_speeds"]}
     mid = [r for d, r in ratios.items() if "H100" not in d]
     assert mid and all(1.3 <= r <= 1.6 for r in mid)
-    assert "about one and a half times on mid-range NVIDIA" in LINES["speed"]
+    assert "about one and a half times on mid-range NVIDIA" in LINES["tuning"]
     assert ratios["NVIDIA H100 80GB HBM3"] > 2  # shown on the speed card
     assert round(f["amd"]["before_ms"]) == 1274 and int(f["amd"]["after_ms"]) == 63
     assert f["gpu_calls"]["calls"] == 23
+    best = min(t["ratio"] for t in f["tuning"] if t["pass"] and not t["cublas"])
+    assert 1.3 <= best <= 1.6  # the chart's headline: the best portable run, "about one and a half"
     assert f["onemath"] == {"pr": "uxlfoundation/oneMath#793", "passed_before": 323,
                             "passed_after": 325}
     # facts the voiceover leaves out stay on screen

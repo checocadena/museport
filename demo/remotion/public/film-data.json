@@ -1562,6 +1562,93 @@
    "device": "NVIDIA RTX A5000",
    "ratio": 35.99613995766405
   },
+  "tuning": [
+   {
+    "ratio": 5.334264432029794,
+    "pass": true,
+    "cublas": false
+   },
+   {
+    "ratio": 3.0926784059314176,
+    "pass": false,
+    "cublas": false
+   },
+   {
+    "ratio": 6.212435233160622,
+    "pass": false,
+    "cublas": false
+   },
+   {
+    "ratio": 2.688805570433851,
+    "pass": true,
+    "cublas": false
+   },
+   {
+    "ratio": 2.931564245810056,
+    "pass": true,
+    "cublas": false
+   },
+   {
+    "ratio": 2.218884120171674,
+    "pass": true,
+    "cublas": false
+   },
+   {
+    "ratio": 1.4530284301606922,
+    "pass": true,
+    "cublas": false
+   },
+   {
+    "ratio": 1.557799442896936,
+    "pass": true,
+    "cublas": false
+   },
+   {
+    "ratio": 1.405196629213483,
+    "pass": true,
+    "cublas": false
+   },
+   {
+    "ratio": 1.6235827664399092,
+    "pass": true,
+    "cublas": false
+   },
+   {
+    "ratio": 1.6244343891402713,
+    "pass": true,
+    "cublas": true
+   },
+   {
+    "ratio": 1.5664028144239226,
+    "pass": true,
+    "cublas": true
+   },
+   {
+    "ratio": 1.3472998137802605,
+    "pass": true,
+    "cublas": true
+   },
+   {
+    "ratio": 1.3204798628963152,
+    "pass": true,
+    "cublas": true
+   },
+   {
+    "ratio": 1.1448275862068964,
+    "pass": true,
+    "cublas": true
+   },
+   {
+    "ratio": 1.1386913229018492,
+    "pass": true,
+    "cublas": true
+   },
+   {
+    "ratio": 1.1297416162726772,
+    "pass": true,
+    "cublas": true
+   }
+  ],
   "gpu_calls": {
    "calls": 23,
    "usd": 3.4970000000000003

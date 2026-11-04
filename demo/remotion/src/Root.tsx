@@ -1,6 +1,7 @@
 import React from 'react';
-import { Composition, staticFile } from 'remotion';
+import { Composition, Still, staticFile } from 'remotion';
 import { Film, FilmProps } from './Film';
+import { Thumbnail } from './Thumbnail';
 import { FPS } from './theme';
 import { Assets, layout } from './timeline';
 
@@ -28,6 +29,8 @@ async function load(): Promise<FilmProps> {
 }
 
 export const Root: React.FC = () => (
+  <>
+  <Still id="Thumbnail" component={Thumbnail} width={1280} height={720} />
   <Composition
     id="Film"
     component={Film as unknown as React.FC<Record<string, unknown>>}
@@ -42,4 +45,5 @@ export const Root: React.FC = () => (
         props: props as unknown as Record<string, unknown> };
     }}
   />
+  </>
 );

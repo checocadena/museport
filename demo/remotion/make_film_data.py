@@ -27,6 +27,11 @@ def _make_data():  # demo/make_data.py is a script, not a package module
     return mod
 
 
+def _load_l1(ev: Path) -> dict:
+    from museport.report import load_l1
+    return load_l1(ev)
+
+
 def _attention() -> list[dict[str, object]]:
     rows = []
     for d in ("port-llmc-attention", "port-llmc-attention-forward"):
@@ -84,6 +89,9 @@ def main() -> dict[str, object]:
         # the one-run port, before tuning: its time per step as a multiple of llm.c's CUDA
         "run5": {"device": data["l1"]["nvidia"]["run5"]["device"],
                  "ratio": data["l1"]["nvidia"]["run5"]["ratio"]},
+        # every timed NVIDIA gpu_test call of the GPU tuning run, in order, for the tuning chart
+        "tuning": [{"ratio": c["ratio"], "pass": c["test"] == "PASS", "cublas": c["cublas"]}
+                   for c in _load_l1(EV)["calls"] if c["vendor"] == "nvidia" and c["ratio"]],
         # Muse's own GPU calls during the GPU tuning run, rented and deleted by the broker
         "gpu_calls": {"calls": data["l1"]["gtune"]["gpu_calls"],
                       "usd": data["l1"]["gtune"]["gpu_usd"]},
