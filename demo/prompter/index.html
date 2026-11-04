@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Cuecard</title>
+<meta name="description" content="A line-by-line voiceover prompter: read a line, record it, keep your best take, export every take named by line number.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a prompter stage that fills the screen; a control strip pinned to the bottom like a
+   recorder's transport; the script editor slides over it. Dark first: a prompter is read in a
+   dim room and must not light up the reader's face. */
+:root {
+  --ground: #0e0f0c;      /* near-black with a green bias, like an unlit monitor */
+  --panel: #191b16;
+  --rule: #2c2f27;
+  --ink: #f3efe2;         /* warm paper white: easier on the eyes than pure white */
+  --dim: #8d907f;
+  --tally: #ff3b2f;       /* the broadcast "on air" red */
+  --go: #8fe388;          /* a kept take */
+  --warn: #ffc24b;
+  --f-read: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif; /* built for legibility */
+  --f-data: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; }
+body {
+  margin: 0; background: var(--ground); color: var(--ink); font-family: var(--f-read);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
+  display: grid; grid-template-rows: auto 1fr auto; overflow: hidden;
+}
+button, input, textarea, select { font: inherit; color: inherit; }
+button {
+  background: var(--panel); border: 1px solid var(--rule); border-radius: 10px;
+  padding: 10px 14px; cursor: pointer; min-height: 44px;
+}
+button:hover { border-color: var(--dim); }
+button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+button:disabled { opacity: .4; cursor: default; }
+
+/* top bar */
+header { display: flex; align-items: center; gap: 14px; padding-block: 12px; flex-wrap: wrap; }
+.brand { font-weight: 700; letter-spacing: .02em; }
+.counter { font-family: var(--f-data); color: var(--dim); font-variant-numeric: tabular-nums; }
+.tally {
+  font-family: var(--f-data); font-size: 13px; letter-spacing: .14em; padding: 4px 10px;
+  border-radius: 6px; border: 1px solid var(--rule); color: var(--dim);
+}
+.tally.on { background: var(--tally); border-color: var(--tally); color: #fff; }
+header .spacer { flex: 1; }
+.dots { display: flex; gap: 5px; flex-wrap: wrap; }
+.dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid var(--dim); padding: 0;
+  min-height: 0; }
+.dot.has { background: var(--dim); }
+.dot.kept { background: var(--go); border-color: var(--go); }
+.dot.cur { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+/* prompter stage */
+main { position: relative; overflow: hidden; display: flex; flex-direction: column;
+  justify-content: center; min-height: 0; }
+#line {
+  font-size: var(--size, 52px); line-height: 1.32; font-weight: 400; max-width: 30ch;
+  margin-inline: auto; text-wrap: pretty; transition: opacity .2s;
+}
+#line.mirror { transform: scaleX(-1); }
+#next { color: var(--dim); font-size: calc(var(--size, 52px) * .42); max-width: 60ch;
+  margin: 28px auto 0; text-wrap: pretty; }
+#next b { font-family: var(--f-data); font-weight: 400; font-size: 13px; letter-spacing: .14em;
+  display: block; margin-bottom: 6px; }
+#count { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--f-data);
+  font-size: 28vmin; color: var(--tally); background: rgba(14,15,12,.82); }
+.est { text-align: center; color: var(--dim); font-family: var(--f-data); font-size: 13px;
+  margin-top: 18px; font-variant-numeric: tabular-nums; }
+
+/* transport */
+footer { padding-block: 10px 14px; display: grid; gap: 10px; }
+.meter { position: relative; height: 10px; background: var(--panel); border-radius: 5px; overflow: hidden; }
+.meter i { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--go); }
+.meter i.hot { background: var(--tally); }
+.meter i.low { background: var(--warn); }
+.meter s { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--ink); left: 0; }
+.meterlabel { font-family: var(--f-data); font-size: 12px; color: var(--dim); display: flex;
+  justify-content: space-between; font-variant-numeric: tabular-nums; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+#rec { background: var(--tally); border-color: var(--tally); color: #fff; font-weight: 700;
+  min-width: 128px; }
+#rec.stop { background: var(--ink); color: var(--ground); border-color: var(--ink); }
+.takes { display: flex; gap: 6px; flex-wrap: wrap; }
+.take { font-family: var(--f-data); font-size: 13px; padding: 6px 10px; min-height: 36px; }
+.take.kept { border-color: var(--go); color: var(--go); }
+.take.sel { outline: 2px solid var(--ink); }
+.hint { color: var(--dim); font-size: 13px; }
+.hint kbd { font-family: var(--f-data); border: 1px solid var(--rule); border-radius: 4px; padding: 0 5px; }
+
+/* script drawer */
+#drawer { position: fixed; inset: 0; background: var(--ground); padding: 16px max(16px, env(safe-area-inset-left, 0px));
+  display: grid; grid-template-rows: auto 1fr auto; gap: 12px; z-index: 5; }
+#drawer textarea { width: 100%; height: 100%; background: var(--panel); border: 1px solid var(--rule);
+  border-radius: 10px; padding: 14px; font-size: 17px; line-height: 1.5; resize: none; }
+#drawer h2 { margin: 0; font-size: 20px; }
+#drawer p { margin: 4px 0 0; color: var(--dim); font-size: 14px; max-width: 70ch; }
+.set { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; font-size: 14px; color: var(--dim); }
+.set label { display: flex; gap: 6px; align-items: center; }
+#msg { font-size: 14px; color: var(--warn); min-height: 1em; }
+@media (max-width: 600px) { #next { display: none; } .hint { display: none; } }
+@media (prefers-reduced-motion: reduce) { #line { transition: none; } }
+</style>
+</head>
+<body>
+<header>
+  <span class="brand">Cuecard</span>
+  <span class="counter" id="counter">1 / 1</span>
+  <span class="tally" id="tally">STANDBY</span>
+  <span class="spacer"></span>
+  <div class="dots" id="dots" aria-label="Lines"></div>
+  <button id="openScript">Script</button>
+</header>
+
+<main>
+  <div id="line" aria-live="polite"></div>
+  <div class="est" id="est"></div>
+  <div id="next"></div>
+  <div id="count" hidden></div>
+</main>
+
+<footer>
+  <div>
+    <div class="meter" aria-hidden="true"><i id="lvl"></i><s id="peak"></s></div>
+    <div class="meterlabel"><span id="lvltext">mic off</span><span id="lvladvice"></span></div>
+  </div>
+  <div class="row">
+    <button id="prev" aria-label="Previous line">←</button>
+    <button id="rec">● Record</button>
+    <button id="play" disabled>▶ Play</button>
+    <button id="keep" disabled>★ Keep</button>
+    <button id="next-btn" aria-label="Next line">→</button>
+    <div class="takes" id="takes"></div>
+  </div>
+  <div class="row">
+    <button id="export">Download kept takes</button>
+    <span class="hint"><kbd>Space</kbd> record/stop · <kbd>P</kbd> play · <kbd>K</kbd> keep · <kbd>←</kbd><kbd>→</kbd> line</span>
+  </div>
+  <div id="msg" role="status"></div>
+</footer>
+
+<section id="drawer" hidden>
+  <div>
+    <h2>Script</h2>
+    <p>One line per paragraph: leave a blank line between lines. Each line becomes one take,
+      exported as 01, 02, 03… in this order. A JSON list with a "text" field per line
+      (like demo/remotion/public/lines.json) also works.</p>
+  </div>
+  <textarea id="script" spellcheck="true"></textarea>
+  <div class="set">
+    <label>Text size <input id="size" type="range" min="28" max="96" value="52"></label>
+    <label><input id="countin" type="checkbox" checked> 3-second count-in</label>
+    <label><input id="mirror" type="checkbox"> Mirror (for teleprompter glass)</label>
+    <label>Words a second <input id="wps" type="number" min="1.5" max="4" step="0.1" value="2.6" style="width:5em"></label>
+    <span class="spacer" style="flex:1"></span>
+    <button id="clearTakes">Delete all takes</button>
+    <button id="closeScript">Done</button>
+  </div>
+</section>
+
+<script>
+// The Muse Port film's 15 lines (demo/remotion/public/lines.json), so the app opens ready.
+const DEFAULT_SCRIPT = `Pre-existing: my open-source oneapi-agent-toolkit, the SYCL tools and agent loop, used here as a pinned dependency. Built this week: Muse Port. Meta's Muse plans and ports CUDA code against hidden checks, then tunes it on real NVIDIA and AMD GPUs: llm.c's bf16 trainer, GPT-2 and llama2.cu.
+
+Karpathy's GPT-2 trainer only runs on NVIDIA. Meta's Muse moved it to open SYCL, and it runs on NVIDIA, AMD and CPUs. And every step is proven.
+
+Muse Port starts by reading the whole repository: llm.c, 22 CUDA files, 106 kernels.
+
+Muse writes a plan, checked against that scan. Then it ports each item in an agent loop.
+
+Nothing counts until a check the model never sees agrees. It even catches a one-term slip.
+
+Here Muse ports GPT-2's training step. The check fails, Muse finds its own transpose mistake, fixes it, and all 10 steps match PyTorch.
+
+The big test: llm.c's production trainer. Almost five thousand lines of bf16 CUDA, ported in one run, and llm.c's own test passes.
+
+Then Muse tuned it on rented GPUs, in portable code. On mid-range NVIDIA cards, it takes about one and a half times CUDA's time. On an H100, 2.9 times. On AMD, 1,274 milliseconds a step, down to 63.
+
+It ported 21 of llm.c's 22 kernel files. 20 pass their hidden check, and 19 also pass on NVIDIA against llm.c's own CUDA.
+
+Put back together as llm.c-sycl, llm.c's own test prints: overall okay.
+
+And a repo it had never seen, llama2.cu: ported in one run for 45 cents. The story matches, byte for byte, on CPU, NVIDIA and AMD.
+
+Along the way, Muse's port hit a bug in oneMath, the open math library behind oneAPI. The fix is submitted upstream.
+
+Every number is in a report built only from committed evidence, failures included.
+
+The limits: the one-run trainer port worked one time in two. Kernels are fp32 at reduced sizes. And on an H100, portable code is still 2.9 times slower.
+
+Moving AI off one vendor's GPUs, with proof. github.com/checocadena/museport.`;
+
+const $ = id => document.getElementById(id);
+const S = { lines: [], i: 0, takes: {}, sel: {}, recording: false };
+// takes[i] = [{id, blob, secs, type}], sel[i] = id of the kept take
+
+// ---------- storage: takes survive a reload (IndexedDB), settings in localStorage ----------
+let db = null;
+function idb() {
+  return new Promise(res => {
+    try {
+      const r = indexedDB.open('cuecard', 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('takes', { keyPath: 'id' });
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => res(null);
+    } catch { res(null); }
+  });
+}
+function tx(mode) { return db ? db.transaction('takes', mode).objectStore('takes') : null; }
+function saveTake(t) { try { tx('readwrite')?.put(t); } catch {} }
+function dropAll() { try { tx('readwrite')?.clear(); } catch {} }
+function loadTakes() {
+  return new Promise(res => {
+    const st = tx('readonly'); if (!st) return res([]);
+    const r = st.getAll(); r.onsuccess = () => res(r.result || []); r.onerror = () => res([]);
+  });
+}
+const ls = {
+  get(k, d) { try { const v = localStorage.getItem('cuecard.' + k); return v === null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v) { try { localStorage.setItem('cuecard.' + k, JSON.stringify(v)); } catch {} },
+};
+
+// ---------- script ----------
+function parseScript(text) {
+  const t = text.trim();
+  if (t.startsWith('[')) {
+    try { return JSON.parse(t).map(x => (typeof x === 'string' ? x : x.text)).filter(Boolean); } catch {}
+  }
+  return t.split(/\n\s*\n/).map(s => s.replace(/\s+/g, ' ').trim()).filter(Boolean);
+}
+const key = i => `${S.lines.length}:${i}:${S.lines[i]?.slice(0, 40)}`; // a take belongs to its line's text
+const pad = i => String(i + 1).padStart(2, '0');
+const wps = () => Number($('wps').value) || 2.6;
+
+// ---------- render ----------
+function render() {
+  const n = S.lines.length, i = S.i, line = S.lines[i] || 'Open Script to add your lines.';
+  $('counter').textContent = `${i + 1} / ${n}`;
+  $('line').textContent = line;
+  const words = line.split(/\s+/).length;
+  $('est').textContent = `line ${pad(i)} · ${words} words · about ${(words / wps()).toFixed(1)} s at your pace`;
+  $('next').innerHTML = i + 1 < n ? '<b>NEXT</b>' : '';
+  if (i + 1 < n) $('next').append(document.createTextNode(S.lines[i + 1]));
+  $('dots').replaceChildren(...S.lines.map((_, j) => {
+    const b = document.createElement('button');
+    const has = (S.takes[key(j)] || []).length;
+    b.className = 'dot' + (has ? ' has' : '') + (S.sel[key(j)] ? ' kept' : '') + (j === i ? ' cur' : '');
+    b.title = `Line ${pad(j)}`; b.setAttribute('aria-label', `Line ${pad(j)}`);
+    b.onclick = () => { S.i = j; render(); };
+    return b;
+  }));
+  const takes = S.takes[key(i)] || [];
+  $('takes').replaceChildren(...takes.map((t, k) => {
+    const b = document.createElement('button');
+    b.className = 'take' + (S.sel[key(i)] === t.id ? ' kept' : '') + (cur === t.id ? ' sel' : '');
+    b.textContent = `${S.sel[key(i)] === t.id ? '★ ' : ''}take ${k + 1} · ${t.secs.toFixed(1)}s`;
+    b.onclick = () => { cur = t.id; play(); render(); };
+    return b;
+  }));
+  $('play').disabled = !takes.length || S.recording;
+  $('keep').disabled = !takes.length || S.recording;
+  $('prev').disabled = S.recording; $('next-btn').disabled = S.recording;
+  const kept = Object.keys(S.sel).filter(k => S.lines.some((_, j) => key(j) === k)).length;
+  $('export').textContent = `Download kept takes (${kept} of ${n})`;
+  $('export').disabled = !kept;
+}
+let cur = null; // the selected take on this line
+
+// ---------- microphone and meter ----------
+let stream = null, actx = null, analyser = null, buf = null, peak = -120, peakAt = 0;
+async function mic() {
+  if (stream) return true;
+  try {
+    // Raw voice: no echo cancellation, noise suppression or auto gain. They pump and smear a
+    // voice; the cleanup script (prepare-voice.sh) denoises and levels it properly afterwards.
+    stream = await navigator.mediaDevices.getUserMedia({ audio: {
+      echoCancellation: false, noiseSuppression: false, autoGainControl: false,
+      channelCount: 1, sampleRate: 48000 } });
+  } catch (e) {
+    say(location.protocol === 'http:' && location.hostname !== 'localhost'
+      ? 'The microphone needs https or localhost. Open this file directly in Chrome, or serve it over https.'
+      : 'Microphone blocked. Allow it in the browser’s site settings, then try again.');
+    return false;
+  }
+  actx = new (window.AudioContext || window.webkitAudioContext)();
+  analyser = actx.createAnalyser(); analyser.fftSize = 2048;
+  actx.createMediaStreamSource(stream).connect(analyser);
+  buf = new Float32Array(analyser.fftSize);
+  meter();
+  return true;
+}
+function meter() {
+  analyser.getFloatTimeDomainData(buf);
+  let sum = 0, mx = 0;
+  for (const v of buf) { sum += v * v; mx = Math.max(mx, Math.abs(v)); }
+  const rms = Math.sqrt(sum / buf.length), db = 20 * Math.log10(rms + 1e-9), pk = 20 * Math.log10(mx + 1e-9);
+  const pos = x => Math.max(0, Math.min(100, (x + 60) / 60 * 100)); // -60..0 dBFS
+  const now = performance.now();
+  if (pk > peak || now - peakAt > 1500) { peak = pk; peakAt = now; }
+  $('lvl').style.width = pos(db) + '%';
+  $('lvl').className = pk > -1 ? 'hot' : (db < -40 && S.recording ? 'low' : '');
+  $('peak').style.left = pos(peak) + '%';
+  const show = x => (x < -90 ? '−∞' : x.toFixed(0));
+  $('lvltext').textContent = `level ${show(db)} dBFS · peak ${show(peak)}`;
+  $('lvladvice').textContent = peak > -1 ? 'clipping: move the mic back'
+    : (S.recording && db < -40 ? 'quiet: move closer' : '');
+  requestAnimationFrame(meter);
+}
+
+// ---------- recording ----------
+let rec = null, chunks = [], t0 = 0;
+function pickType() {
+  for (const t of ['audio/webm;codecs=opus', 'audio/mp4', 'audio/webm', 'audio/ogg;codecs=opus'])
+    if (window.MediaRecorder?.isTypeSupported?.(t)) return t;
+  return '';
+}
+async function countIn() {
+  if (!$('countin').checked) return;
+  const c = $('count'); c.hidden = false;
+  for (const n of [3, 2, 1]) { c.textContent = n; await new Promise(r => setTimeout(r, 700)); }
+  c.hidden = true;
+}
+async function startRec() {
+  if (!(await mic())) return;
+  if (actx.state === 'suspended') await actx.resume();
+  await countIn();
+  const type = pickType();
+  rec = new MediaRecorder(stream, { ...(type ? { mimeType: type } : {}), audioBitsPerSecond: 192000 });
+  chunks = [];
+  rec.ondataavailable = e => e.data.size && chunks.push(e.data);
+  rec.onstop = () => {
+    const blob = new Blob(chunks, { type: rec.mimeType || type || 'audio/webm' });
+    const t = { id: Date.now() + '-' + Math.random().toString(36).slice(2, 7), line: key(S.i),
+      blob, secs: (performance.now() - t0) / 1000, type: blob.type };
+    (S.takes[t.line] ||= []).push(t); cur = t.id;
+    if (!S.sel[t.line]) S.sel[t.line] = t.id;  // the first take is kept until you keep another
+    saveTake(t); ls.set('sel', S.sel); render();
+  };
+  rec.start(); t0 = performance.now();
+  S.recording = true; $('tally').textContent = 'ON AIR'; $('tally').classList.add('on');
+  $('rec').textContent = '■ Stop'; $('rec').classList.add('stop'); say(''); render();
+  wakeLock();
+}
+function stopRec() {
+  if (!rec || rec.state === 'inactive') return;
+  rec.stop(); S.recording = false;
+  $('tally').textContent = 'STANDBY'; $('tally').classList.remove('on');
+  $('rec').textContent = '● Record'; $('rec').classList.remove('stop'); render();
+}
+let audio = null;
+function play() {
+  const t = (S.takes[key(S.i)] || []).find(x => x.id === cur) || (S.takes[key(S.i)] || []).slice(-1)[0];
+  if (!t) return;
+  audio?.pause(); audio = new Audio(URL.createObjectURL(t.blob)); audio.play().catch(() => {});
+}
+function keep() { if (!cur) return; S.sel[key(S.i)] = cur; ls.set('sel', S.sel); render(); say('Kept.'); }
+let lock = null;
+async function wakeLock() { try { lock = await navigator.wakeLock?.request('screen'); } catch {} }
+
+// ---------- export: one zip, each kept take named by its line number ----------
+const CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n;
+  for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+function crc32(b) { let c = 0xffffffff; for (let i = 0; i < b.length; i++) c = CRC[(c ^ b[i]) & 255] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; }
+async function zip(files) { // stored (no compression): audio is already compressed
+  const enc = new TextEncoder(), parts = [], dir = []; let off = 0;
+  for (const f of files) {
+    const data = new Uint8Array(await f.blob.arrayBuffer()), name = enc.encode(f.name), crc = crc32(data);
+    const h = new DataView(new ArrayBuffer(30));
+    h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint32(14, crc, true);
+    h.setUint32(18, data.length, true); h.setUint32(22, data.length, true); h.setUint16(26, name.length, true);
+    parts.push(h, name, data);
+    const c = new DataView(new ArrayBuffer(46));
+    c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true);
+    c.setUint32(16, crc, true); c.setUint32(20, data.length, true); c.setUint32(24, data.length, true);
+    c.setUint16(28, name.length, true); c.setUint32(42, off, true);
+    dir.push(c, name); off += 30 + name.length + data.length;
+  }
+  const size = dir.reduce((s, p) => s + p.byteLength, 0), e = new DataView(new ArrayBuffer(22));
+  e.setUint32(0, 0x06054b50, true); e.setUint16(8, files.length, true); e.setUint16(10, files.length, true);
+  e.setUint32(12, size, true); e.setUint32(16, off, true);
+  return new Blob([...parts, ...dir, e], { type: 'application/zip' });
+}
+const ext = t => /mp4|aac|m4a/.test(t) ? 'm4a' : /ogg/.test(t) ? 'ogg' : 'webm';
+async function exportZip() {
+  const files = [];
+  S.lines.forEach((_, j) => {
+    const t = (S.takes[key(j)] || []).find(x => x.id === S.sel[key(j)]);
+    if (t) files.push({ name: `${pad(j)}.${ext(t.type)}`, blob: t.blob });
+  });
+  if (!files.length) return say('Keep at least one take first.');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(await zip(files)); a.download = 'takes.zip';
+  document.body.append(a); a.click(); a.remove();
+  const missing = S.lines.length - files.length;
+  say(`Downloaded takes.zip: ${files.length} takes${missing ? `, ${missing} lines still without one` : ''}. Unzip into public/vo-raw/.`);
+}
+
+function say(m) { $('msg').textContent = m; }
+function go(d) { if (S.recording) return; S.i = Math.max(0, Math.min(S.lines.length - 1, S.i + d)); cur = null; ls.set('i', S.i); render(); }
+
+// ---------- wiring ----------
+$('rec').onclick = () => (S.recording ? stopRec() : startRec());
+$('play').onclick = play; $('keep').onclick = keep; $('export').onclick = exportZip;
+$('prev').onclick = () => go(-1); $('next-btn').onclick = () => go(1);
+$('openScript').onclick = () => { $('drawer').hidden = false; $('script').focus(); };
+$('closeScript').onclick = () => {
+  const text = $('script').value; S.lines = parseScript(text); ls.set('script', text);
+  S.i = Math.min(S.i, Math.max(0, S.lines.length - 1)); $('drawer').hidden = true; render();
+};
+$('clearTakes').onclick = () => {
+  if ($('clearTakes').dataset.armed) { S.takes = {}; S.sel = {}; dropAll(); ls.set('sel', {}); render();
+    $('clearTakes').textContent = 'Delete all takes'; delete $('clearTakes').dataset.armed; say('All takes deleted.'); }
+  else { $('clearTakes').dataset.armed = 1; $('clearTakes').textContent = 'Tap again to delete every take'; }
+};
+const applySize = () => { document.documentElement.style.setProperty('--size', $('size').value + 'px'); ls.set('size', $('size').value); };
+$('size').oninput = applySize;
+$('mirror').onchange = () => { $('line').classList.toggle('mirror', $('mirror').checked); ls.set('mirror', $('mirror').checked); };
+$('countin').onchange = () => ls.set('countin', $('countin').checked);
+$('wps').onchange = () => { ls.set('wps', $('wps').value); render(); };
+document.addEventListener('keydown', e => {
+  if (!$('drawer').hidden || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.code === 'Space') { e.preventDefault(); S.recording ? stopRec() : startRec(); }
+  else if (e.key === 'ArrowRight') go(1); else if (e.key === 'ArrowLeft') go(-1);
+  else if (e.key.toLowerCase() === 'p') play(); else if (e.key.toLowerCase() === 'k') keep();
+});
+document.addEventListener('visibilitychange', () => { if (!document.hidden && S.recording) wakeLock(); });
+
+(async () => {
+  const text = ls.get('script', DEFAULT_SCRIPT);
+  $('script').value = text; S.lines = parseScript(text);
+  S.i = Math.min(ls.get('i', 0), S.lines.length - 1); S.sel = ls.get('sel', {});
+  $('size').value = ls.get('size', window.innerWidth < 600 ? 34 : 52); applySize();
+  $('mirror').checked = ls.get('mirror', false); $('line').classList.toggle('mirror', $('mirror').checked);
+  $('countin').checked = ls.get('countin', true); $('wps').value = ls.get('wps', 2.6);
+  db = await idb();
+  for (const t of await loadTakes()) (S.takes[t.line] ||= []).push(t);
+  for (const k in S.takes) S.takes[k].sort((a, b) => a.id.localeCompare(b.id));
+  render();
+})();
+</script>
+</body>
+</html>

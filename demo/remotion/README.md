@@ -43,8 +43,11 @@ scripts/prepare-assets.sh          # numbers, the six clips, the report capture 
 npm run studio                     # preview: lines without a take use an estimated length
 ```
 
-**Voiceover.** Record each line of `public/lines.json` on the phone, one file per line,
-named by its `n`: `public/vo-raw/01.m4a` … `15.m4a`. Then:
+**Voiceover.** Record with [Cuecard](../prompter/index.html), the prompter in `demo/prompter/`:
+open `demo/prompter/index.html` in Chrome (no install, no server), read each line off the
+screen, record, play it back, keep your best take, then **Download kept takes**. It already
+has these 15 lines; the zip holds `01.webm` … `15.webm`. Unzip it into `public/vo-raw/`.
+(Any recorder works too: one file per line, named by its `n`, such as `01.m4a`.) Then:
 
 ```bash
 scripts/prepare-voice.sh           # cleans each take into public/vo/vo-NN.wav, measures it
