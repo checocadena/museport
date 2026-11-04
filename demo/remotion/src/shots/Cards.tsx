@@ -43,11 +43,6 @@ export const Hook: React.FC<{ cue: Cue }> = ({ cue }) => {
             transition: 'none' }}>{on ? '✓ ' : ''}{c}</div>;
         })}
       </div>
-      <Rise at={at[2] + 18} style={{ marginTop: 60 }}>
-        <span style={{ fontFamily: F.mono, fontSize: 40, color: C.ok }}>overall okay: 1</span>
-        <span style={{ fontSize: 28, color: C.muted, marginLeft: 24 }}>
-          llm.c's own test, on the ported code</span>
-      </Rise>
     </Stage>
   );
 };
