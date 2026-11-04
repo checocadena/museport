@@ -1,0 +1,998 @@
+{
+  "tool": "compile",
+  "status": "ok",
+  "summary": "compiled 1 source(s) -> /tmp/tmp.142mqNNZFT/out/work/build/sycl (18 warning(s))",
+  "evidence": {
+    "run": {
+      "command": "/opt/sycl/bin/clang++ -fsycl -O2 -I/root/onemath-cublas/include -Wl,--no-as-needed -L/root/onemath-cublas/lib -Wl,-rpath,/root/onemath-cublas/lib -lonemath -fsycl-targets=nvidia_gpu_sm_89 -I/tmp/tmp.142mqNNZFT/task /tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp -o /tmp/tmp.142mqNNZFT/out/work/build/sycl",
+      "returncode": 0,
+      "duration_s": 16.860319,
+      "stdout": "",
+      "stderr": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp:412:15: warning: 'barrier' is deprecated: use sycl::group_barrier() free function instead [-Wdeprecated-declarations]\n  412 |            it.barrier(sycl::access::fence_space::local_space);\n      |               ^\n/opt/sycl/bin/../include/sycl/nd_item.hpp:206:3: note: 'barrier' has been explicitly marked deprecated here\n  206 |   __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")\n      |   ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'\n   75 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)\n      |                                        ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:66:38: note: expanded from macro '__SYCL_DEPRECATED'\n   66 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]\n      |                                      ^\n/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp:412:48: warning: 'fence_space' is deprecated: Removed in SYCL 2020 [-Wdeprecated-declarations]\n  412 |            it.barrier(sycl::access::fence_space::local_space);\n      |                                                ^\n/opt/sycl/bin/../include/sycl/access/access.hpp:56:12: note: 'fence_space' has been explicitly marked deprecated here\n   56 | enum class __SYCL2020_DEPRECATED(\"Removed in SYCL 2020\") fence_space {\n      |            ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'\n   75 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)\n      |                                        ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:66:38: note: expanded from macro '__SYCL_DEPRECATED'\n   66 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]\n      |                                      ^\n/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp:412:50: warning: 'local_space' is deprecated: Removed in SYCL 2020 [-Wdeprecated-declarations]\n  412 |            it.barrier(sycl::access::fence_space::local_space);\n      |                                                  ^\n/opt/sycl/bin/../include/sycl/access/access.hpp:56:12: note: 'fence_space' has been explicitly marked deprecated here\n   56 | enum class __SYCL2020_DEPRECATED(\"Removed in SYCL 2020\") fence_space {\n      |            ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'\n   75 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)\n      |                                        ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:66:38: note: expanded from macro '__SYCL_DEPRECATED'\n   66 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]\n      |                                      ^\n/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp:412:15: warning: 'barrier' is deprecated: use sycl::group_barri\n...[13892 chars truncated]...\ns been explicitly marked deprecated here\n  206 |   __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")\n      |   ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'\n   75 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)\n      |                                        ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:66:38: note: expanded from macro '__SYCL_DEPRECATED'\n   66 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]\n      |                                      ^\n/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp:412:15: warning: 'barrier' is deprecated: use sycl::group_barrier() free function instead [-Wdeprecated-declarations]\n  412 |            it.barrier(sycl::access::fence_space::local_space);\n      |               ^\n/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp:379:46: note: while substituting into a lambda expression here\n  379 |                     [=](sycl::nd_item<1> it) {\n      |                                              ^\n/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp:376:34: note: while substituting into a lambda expression here\n  376 |   q.submit([&](sycl::handler &h) {\n      |                                  ^\n/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp:425:14: note: in instantiation of function template specialization 'launch_softmax_bwd6_impl<64>' requested here\n  425 |     case 64: launch_softmax_bwd6_impl<64>(q, dpreatt, datt, att, B, T, C, NH); break;\n      |              ^\n/opt/sycl/bin/../include/sycl/nd_item.hpp:206:3: note: 'barrier' has been explicitly marked deprecated here\n  206 |   __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")\n      |   ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'\n   75 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)\n      |                                        ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:66:38: note: expanded from macro '__SYCL_DEPRECATED'\n   66 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]\n      |                                      ^\n/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp:412:15: warning: 'barrier' is deprecated: use sycl::group_barrier() free function instead [-Wdeprecated-declarations]\n  412 |            it.barrier(sycl::access::fence_space::local_space);\n      |               ^\n/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp:379:46: note: while substituting into a lambda expression here\n  379 |                     [=](sycl::nd_item<1> it) {\n      |                                              ^\n/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp:376:34: note: while substituting into a lambda expression here\n  376 |   q.submit([&](sycl::handler &h) {\n      |                                  ^\n/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp:426:15: note: in instantiation of function template specialization 'launch_softmax_bwd6_impl<128>' requested here\n  426 |     case 128: launch_softmax_bwd6_impl<128>(q, dpreatt, datt, att, B, T, C, NH); break;\n      |               ^\n/opt/sycl/bin/../include/sycl/nd_item.hpp:206:3: note: 'barrier' has been explicitly marked deprecated here\n  206 |   __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")\n      |   ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'\n   75 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)\n      |                                        ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:66:38: note: expanded from macro '__SYCL_DEPRECATED'\n   66 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]\n      |                                      ^\n/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp:412:15: warning: 'barrier' is deprecated: use sycl::group_barrier() free function instead [-Wdeprecated-declarations]\n  412 |            it.barrier(sycl::access::fence_space::local_space);\n      |               ^\n/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp:379:46: note: while substituting into a lambda expression here\n  379 |                     [=](sycl::nd_item<1> it) {\n      |                                              ^\n/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp:376:34: note: while substituting into a lambda expression here\n  376 |   q.submit([&](sycl::handler &h) {\n      |                                  ^\n/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp:427:15: note: in instantiation of function template specialization 'launch_softmax_bwd6_impl<256>' requested here\n  427 |     case 256: launch_softmax_bwd6_impl<256>(q, dpreatt, datt, att, B, T, C, NH); break;\n      |               ^\n/opt/sycl/bin/../include/sycl/nd_item.hpp:206:3: note: 'barrier' has been explicitly marked deprecated here\n  206 |   __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")\n      |   ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'\n   75 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)\n      |                                        ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:66:38: note: expanded from macro '__SYCL_DEPRECATED'\n   66 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]\n      |                                      ^\n/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp:412:15: warning: 'barrier' is deprecated: use sycl::group_barrier() free function instead [-Wdeprecated-declarations]\n  412 |            it.barrier(sycl::access::fence_space::local_space);\n      |               ^\n/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp:379:46: note: while substituting into a lambda expression here\n  379 |                     [=](sycl::nd_item<1> it) {\n      |                                              ^\n/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp:376:34: note: while substituting into a lambda expression here\n  376 |   q.submit([&](sycl::handler &h) {\n      |                                  ^\n/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp:428:15: note: in instantiation of function template specialization 'launch_softmax_bwd6_impl<512>' requested here\n  428 |     case 512: launch_softmax_bwd6_impl<512>(q, dpreatt, datt, att, B, T, C, NH); break;\n      |               ^\n/opt/sycl/bin/../include/sycl/nd_item.hpp:206:3: note: 'barrier' has been explicitly marked deprecated here\n  206 |   __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")\n      |   ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'\n   75 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)\n      |                                        ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:66:38: note: expanded from macro '__SYCL_DEPRECATED'\n   66 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]\n      |                                      ^\n/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp:412:15: warning: 'barrier' is deprecated: use sycl::group_barrier() free function instead [-Wdeprecated-declarations]\n  412 |            it.barrier(sycl::access::fence_space::local_space);\n      |               ^\n/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp:379:46: note: while substituting into a lambda expression here\n  379 |                     [=](sycl::nd_item<1> it) {\n      |                                              ^\n/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp:376:34: note: while substituting into a lambda expression here\n  376 |   q.submit([&](sycl::handler &h) {\n      |                                  ^\n/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp:429:16: note: in instantiation of function template specialization 'launch_softmax_bwd6_impl<1024>' requested here\n  429 |     case 1024: launch_softmax_bwd6_impl<1024>(q, dpreatt, datt, att, B, T, C, NH); break;\n      |                ^\n/opt/sycl/bin/../include/sycl/nd_item.hpp:206:3: note: 'barrier' has been explicitly marked deprecated here\n  206 |   __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")\n      |   ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:75:40: note: expanded from macro '__SYCL2020_DEPRECATED'\n   75 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)\n      |                                        ^\n/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp:66:38: note: expanded from macro '__SYCL_DEPRECATED'\n   66 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]\n      |                                      ^\n9 warnings generated.\n"
+    },
+    "output": "/tmp/tmp.142mqNNZFT/out/work/build/sycl",
+    "dpct_include_added": null,
+    "diagnostics": [
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 412,
+        "column": 15,
+        "severity": "warning",
+        "message": "'barrier' is deprecated: use sycl::group_barrier() free function instead",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "           it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/nd_item.hpp",
+        "line": 206,
+        "column": 3,
+        "severity": "note",
+        "message": "'barrier' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "  __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 412,
+        "column": 48,
+        "severity": "warning",
+        "message": "'fence_space' is deprecated: Removed in SYCL 2020",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "           it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/access/access.hpp",
+        "line": 56,
+        "column": 12,
+        "severity": "note",
+        "message": "'fence_space' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "enum class __SYCL2020_DEPRECATED(\"Removed in SYCL 2020\") fence_space {"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 412,
+        "column": 50,
+        "severity": "warning",
+        "message": "'local_space' is deprecated: Removed in SYCL 2020",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "           it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/access/access.hpp",
+        "line": 56,
+        "column": 12,
+        "severity": "note",
+        "message": "'fence_space' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "enum class __SYCL2020_DEPRECATED(\"Removed in SYCL 2020\") fence_space {"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 412,
+        "column": 15,
+        "severity": "warning",
+        "message": "'barrier' is deprecated: use sycl::group_barrier() free function instead",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "           it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 379,
+        "column": 46,
+        "severity": "note",
+        "message": "while substituting into a lambda expression here",
+        "flag": null,
+        "snippet": "                    [=](sycl::nd_item<1> it) {"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 376,
+        "column": 34,
+        "severity": "note",
+        "message": "while substituting into a lambda expression here",
+        "flag": null,
+        "snippet": "  q.submit([&](sycl::handler &h) {"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 424,
+        "column": 14,
+        "severity": "note",
+        "message": "in instantiation of function template specialization 'launch_softmax_bwd6_impl<32>' requested here",
+        "flag": null,
+        "snippet": "    case 32: launch_softmax_bwd6_impl<32>(q, dpreatt, datt, att, B, T, C, NH); break;"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/nd_item.hpp",
+        "line": 206,
+        "column": 3,
+        "severity": "note",
+        "message": "'barrier' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "  __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 412,
+        "column": 15,
+        "severity": "warning",
+        "message": "'barrier' is deprecated: use sycl::group_barrier() free function instead",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "           it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 379,
+        "column": 46,
+        "severity": "note",
+        "message": "while substituting into a lambda expression here",
+        "flag": null,
+        "snippet": "                    [=](sycl::nd_item<1> it) {"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 376,
+        "column": 34,
+        "severity": "note",
+        "message": "while substituting into a lambda expression here",
+        "flag": null,
+        "snippet": "  q.submit([&](sycl::handler &h) {"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 425,
+        "column": 14,
+        "severity": "note",
+        "message": "in instantiation of function template specialization 'launch_softmax_bwd6_impl<64>' requested here",
+        "flag": null,
+        "snippet": "    case 64: launch_softmax_bwd6_impl<64>(q, dpreatt, datt, att, B, T, C, NH); break;"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/nd_item.hpp",
+        "line": 206,
+        "column": 3,
+        "severity": "note",
+        "message": "'barrier' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "  __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 412,
+        "column": 15,
+        "severity": "warning",
+        "message": "'barrier' is deprecated: use sycl::group_barrier() free function instead",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "           it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 379,
+        "column": 46,
+        "severity": "note",
+        "message": "while substituting into a lambda expression here",
+        "flag": null,
+        "snippet": "                    [=](sycl::nd_item<1> it) {"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 376,
+        "column": 34,
+        "severity": "note",
+        "message": "while substituting into a lambda expression here",
+        "flag": null,
+        "snippet": "  q.submit([&](sycl::handler &h) {"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 426,
+        "column": 15,
+        "severity": "note",
+        "message": "in instantiation of function template specialization 'launch_softmax_bwd6_impl<128>' requested here",
+        "flag": null,
+        "snippet": "    case 128: launch_softmax_bwd6_impl<128>(q, dpreatt, datt, att, B, T, C, NH); break;"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/nd_item.hpp",
+        "line": 206,
+        "column": 3,
+        "severity": "note",
+        "message": "'barrier' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "  __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 412,
+        "column": 15,
+        "severity": "warning",
+        "message": "'barrier' is deprecated: use sycl::group_barrier() free function instead",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "           it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 379,
+        "column": 46,
+        "severity": "note",
+        "message": "while substituting into a lambda expression here",
+        "flag": null,
+        "snippet": "                    [=](sycl::nd_item<1> it) {"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 376,
+        "column": 34,
+        "severity": "note",
+        "message": "while substituting into a lambda expression here",
+        "flag": null,
+        "snippet": "  q.submit([&](sycl::handler &h) {"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 427,
+        "column": 15,
+        "severity": "note",
+        "message": "in instantiation of function template specialization 'launch_softmax_bwd6_impl<256>' requested here",
+        "flag": null,
+        "snippet": "    case 256: launch_softmax_bwd6_impl<256>(q, dpreatt, datt, att, B, T, C, NH); break;"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/nd_item.hpp",
+        "line": 206,
+        "column": 3,
+        "severity": "note",
+        "message": "'barrier' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "  __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 412,
+        "column": 15,
+        "severity": "warning",
+        "message": "'barrier' is deprecated: use sycl::group_barrier() free function instead",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "           it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 379,
+        "column": 46,
+        "severity": "note",
+        "message": "while substituting into a lambda expression here",
+        "flag": null,
+        "snippet": "                    [=](sycl::nd_item<1> it) {"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 376,
+        "column": 34,
+        "severity": "note",
+        "message": "while substituting into a lambda expression here",
+        "flag": null,
+        "snippet": "  q.submit([&](sycl::handler &h) {"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 428,
+        "column": 15,
+        "severity": "note",
+        "message": "in instantiation of function template specialization 'launch_softmax_bwd6_impl<512>' requested here",
+        "flag": null,
+        "snippet": "    case 512: launch_softmax_bwd6_impl<512>(q, dpreatt, datt, att, B, T, C, NH); break;"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/nd_item.hpp",
+        "line": 206,
+        "column": 3,
+        "severity": "note",
+        "message": "'barrier' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "  __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 412,
+        "column": 15,
+        "severity": "warning",
+        "message": "'barrier' is deprecated: use sycl::group_barrier() free function instead",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "           it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 379,
+        "column": 46,
+        "severity": "note",
+        "message": "while substituting into a lambda expression here",
+        "flag": null,
+        "snippet": "                    [=](sycl::nd_item<1> it) {"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 376,
+        "column": 34,
+        "severity": "note",
+        "message": "while substituting into a lambda expression here",
+        "flag": null,
+        "snippet": "  q.submit([&](sycl::handler &h) {"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 429,
+        "column": 16,
+        "severity": "note",
+        "message": "in instantiation of function template specialization 'launch_softmax_bwd6_impl<1024>' requested here",
+        "flag": null,
+        "snippet": "    case 1024: launch_softmax_bwd6_impl<1024>(q, dpreatt, datt, att, B, T, C, NH); break;"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/nd_item.hpp",
+        "line": 206,
+        "column": 3,
+        "severity": "note",
+        "message": "'barrier' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "  __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 412,
+        "column": 15,
+        "severity": "warning",
+        "message": "'barrier' is deprecated: use sycl::group_barrier() free function instead",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "           it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/nd_item.hpp",
+        "line": 206,
+        "column": 3,
+        "severity": "note",
+        "message": "'barrier' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "  __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 412,
+        "column": 48,
+        "severity": "warning",
+        "message": "'fence_space' is deprecated: Removed in SYCL 2020",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "           it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/access/access.hpp",
+        "line": 56,
+        "column": 12,
+        "severity": "note",
+        "message": "'fence_space' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "enum class __SYCL2020_DEPRECATED(\"Removed in SYCL 2020\") fence_space {"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 412,
+        "column": 50,
+        "severity": "warning",
+        "message": "'local_space' is deprecated: Removed in SYCL 2020",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "           it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/access/access.hpp",
+        "line": 56,
+        "column": 12,
+        "severity": "note",
+        "message": "'fence_space' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "enum class __SYCL2020_DEPRECATED(\"Removed in SYCL 2020\") fence_space {"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 412,
+        "column": 15,
+        "severity": "warning",
+        "message": "'barrier' is deprecated: use sycl::group_barrier() free function instead",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "           it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 379,
+        "column": 46,
+        "severity": "note",
+        "message": "while substituting into a lambda expression here",
+        "flag": null,
+        "snippet": "                    [=](sycl::nd_item<1> it) {"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 376,
+        "column": 34,
+        "severity": "note",
+        "message": "while substituting into a lambda expression here",
+        "flag": null,
+        "snippet": "  q.submit([&](sycl::handler &h) {"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 424,
+        "column": 14,
+        "severity": "note",
+        "message": "in instantiation of function template specialization 'launch_softmax_bwd6_impl<32>' requested here",
+        "flag": null,
+        "snippet": "    case 32: launch_softmax_bwd6_impl<32>(q, dpreatt, datt, att, B, T, C, NH); break;"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/nd_item.hpp",
+        "line": 206,
+        "column": 3,
+        "severity": "note",
+        "message": "'barrier' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "  __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 412,
+        "column": 15,
+        "severity": "warning",
+        "message": "'barrier' is deprecated: use sycl::group_barrier() free function instead",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "           it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 379,
+        "column": 46,
+        "severity": "note",
+        "message": "while substituting into a lambda expression here",
+        "flag": null,
+        "snippet": "                    [=](sycl::nd_item<1> it) {"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 376,
+        "column": 34,
+        "severity": "note",
+        "message": "while substituting into a lambda expression here",
+        "flag": null,
+        "snippet": "  q.submit([&](sycl::handler &h) {"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 425,
+        "column": 14,
+        "severity": "note",
+        "message": "in instantiation of function template specialization 'launch_softmax_bwd6_impl<64>' requested here",
+        "flag": null,
+        "snippet": "    case 64: launch_softmax_bwd6_impl<64>(q, dpreatt, datt, att, B, T, C, NH); break;"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/nd_item.hpp",
+        "line": 206,
+        "column": 3,
+        "severity": "note",
+        "message": "'barrier' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "  __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 412,
+        "column": 15,
+        "severity": "warning",
+        "message": "'barrier' is deprecated: use sycl::group_barrier() free function instead",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "           it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 379,
+        "column": 46,
+        "severity": "note",
+        "message": "while substituting into a lambda expression here",
+        "flag": null,
+        "snippet": "                    [=](sycl::nd_item<1> it) {"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 376,
+        "column": 34,
+        "severity": "note",
+        "message": "while substituting into a lambda expression here",
+        "flag": null,
+        "snippet": "  q.submit([&](sycl::handler &h) {"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 426,
+        "column": 15,
+        "severity": "note",
+        "message": "in instantiation of function template specialization 'launch_softmax_bwd6_impl<128>' requested here",
+        "flag": null,
+        "snippet": "    case 128: launch_softmax_bwd6_impl<128>(q, dpreatt, datt, att, B, T, C, NH); break;"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/nd_item.hpp",
+        "line": 206,
+        "column": 3,
+        "severity": "note",
+        "message": "'barrier' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "  __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 412,
+        "column": 15,
+        "severity": "warning",
+        "message": "'barrier' is deprecated: use sycl::group_barrier() free function instead",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "           it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 379,
+        "column": 46,
+        "severity": "note",
+        "message": "while substituting into a lambda expression here",
+        "flag": null,
+        "snippet": "                    [=](sycl::nd_item<1> it) {"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 376,
+        "column": 34,
+        "severity": "note",
+        "message": "while substituting into a lambda expression here",
+        "flag": null,
+        "snippet": "  q.submit([&](sycl::handler &h) {"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 427,
+        "column": 15,
+        "severity": "note",
+        "message": "in instantiation of function template specialization 'launch_softmax_bwd6_impl<256>' requested here",
+        "flag": null,
+        "snippet": "    case 256: launch_softmax_bwd6_impl<256>(q, dpreatt, datt, att, B, T, C, NH); break;"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/nd_item.hpp",
+        "line": 206,
+        "column": 3,
+        "severity": "note",
+        "message": "'barrier' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "  __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 412,
+        "column": 15,
+        "severity": "warning",
+        "message": "'barrier' is deprecated: use sycl::group_barrier() free function instead",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "           it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 379,
+        "column": 46,
+        "severity": "note",
+        "message": "while substituting into a lambda expression here",
+        "flag": null,
+        "snippet": "                    [=](sycl::nd_item<1> it) {"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 376,
+        "column": 34,
+        "severity": "note",
+        "message": "while substituting into a lambda expression here",
+        "flag": null,
+        "snippet": "  q.submit([&](sycl::handler &h) {"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 428,
+        "column": 15,
+        "severity": "note",
+        "message": "in instantiation of function template specialization 'launch_softmax_bwd6_impl<512>' requested here",
+        "flag": null,
+        "snippet": "    case 512: launch_softmax_bwd6_impl<512>(q, dpreatt, datt, att, B, T, C, NH); break;"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/nd_item.hpp",
+        "line": 206,
+        "column": 3,
+        "severity": "note",
+        "message": "'barrier' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "  __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 412,
+        "column": 15,
+        "severity": "warning",
+        "message": "'barrier' is deprecated: use sycl::group_barrier() free function instead",
+        "flag": "-Wdeprecated-declarations",
+        "snippet": "           it.barrier(sycl::access::fence_space::local_space);"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 379,
+        "column": 46,
+        "severity": "note",
+        "message": "while substituting into a lambda expression here",
+        "flag": null,
+        "snippet": "                    [=](sycl::nd_item<1> it) {"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 376,
+        "column": 34,
+        "severity": "note",
+        "message": "while substituting into a lambda expression here",
+        "flag": null,
+        "snippet": "  q.submit([&](sycl::handler &h) {"
+      },
+      {
+        "file": "/tmp/tmp.142mqNNZFT/task/agent_port/attention_backward.cpp",
+        "line": 429,
+        "column": 16,
+        "severity": "note",
+        "message": "in instantiation of function template specialization 'launch_softmax_bwd6_impl<1024>' requested here",
+        "flag": null,
+        "snippet": "    case 1024: launch_softmax_bwd6_impl<1024>(q, dpreatt, datt, att, B, T, C, NH); break;"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/nd_item.hpp",
+        "line": 206,
+        "column": 3,
+        "severity": "note",
+        "message": "'barrier' has been explicitly marked deprecated here",
+        "flag": null,
+        "snippet": "  __SYCL2020_DEPRECATED(\"use sycl::group_barrier() free function instead\")"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 75,
+        "column": 40,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL2020_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)"
+      },
+      {
+        "file": "/opt/sycl/bin/../include/sycl/detail/defines_elementary.hpp",
+        "line": 66,
+        "column": 38,
+        "severity": "note",
+        "message": "expanded from macro '__SYCL_DEPRECATED'",
+        "flag": null,
+        "snippet": "#define __SYCL_DEPRECATED(message) [[deprecated(message)]]"
+      }
+    ],
+    "counts": {
+      "error": 0,
+      "warning": 18,
+      "note": 90
+    }
+  },
+  "limitations": [
+    "A successful compile says nothing about numerical correctness; run verify."
+  ]
+}

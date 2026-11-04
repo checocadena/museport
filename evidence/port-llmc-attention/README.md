@@ -33,15 +33,20 @@ Muse spend: **$1.1599** ([SUMMARY.md](SUMMARY.md), [summary.json](summary.json),
   (verify and scan on the same sources) was not met. The hidden grade after the run checks
   the final sources, that edit included, and passes.
 
-## attention_forward: not ported yet
+## attention_forward: cut off here, ported on retry
 
 The run stopped at turn 5, while Muse was still reading the migrated code: the connection to
-`api.meta.ai` was refused, at the time this session's container restarted. It has not been
-retried; a retry needs at most $1 of Muse budget.
+`api.meta.ai` was refused, at the time this session's container restarted. A retry ported
+it: [port-llmc-attention-forward](../port-llmc-attention-forward/README.md).
 
-## Not run yet
+## GPUs
 
-- **GPUs:** the backward port has been checked on the CPU device only.
+| GPU | vs reference (worst max abs err) | vs llm.c's CUDA (worst max abs err) | atol |
+|---|---|---|---|
+| NVIDIA RTX 2000 Ada Generation | PASS (4.77e-07) | PASS (4.77e-07) | 1e-3 |
+| AMD | not run: two DigitalOcean MI350X machines never became ready, and the tool gave up ([log](gpu/logs/amd-not-ready.log)) | | |
+
+Results: [gpu/](gpu/). Each machine's deletion was confirmed.
 
 ## Checks
 
@@ -51,3 +56,4 @@ retried; a retry needs at most $1 of Muse budget.
 | Secrets | none (`museport.redact.secret_hits`) |
 | Muse | $1.1599 |
 | GPU (hidden-check proofs) | about $0.02 |
+| GPU (port runs) | $0.009 on NVIDIA (the tool's estimate); about $1.50 for the two AMD machines that never became ready |
