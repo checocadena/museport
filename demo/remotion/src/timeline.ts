@@ -17,10 +17,10 @@ export type Seg = {
   line: Line; from: number; frames: number; voFrom: number; voFrames: number; hasVo: boolean;
 };
 
-const DEFAULT_LEAD = 0.25;
-const DEFAULT_TAIL = 0.35;
-// Without a recorded take, estimate its length at a calm read of 2.6 words a second.
-export const estimate = (text: string) => text.split(/\s+/).length / 2.6 + 0.3;
+const DEFAULT_LEAD = 0.3;
+const DEFAULT_TAIL = 0.6; // a breath between lines, so the film doesn't feel rushed
+// Without a recorded take, estimate its length at a relaxed read of 2.4 words a second.
+export const estimate = (text: string) => text.split(/\s+/).length / 2.4 + 0.3;
 
 export function layout(lines: Line[], a: Assets): { segs: Seg[]; total: number } {
   let t = 0;

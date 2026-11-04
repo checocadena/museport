@@ -6,7 +6,8 @@ import { AbsoluteFill, Audio, interpolate, Sequence, staticFile, useCurrentFrame
 import { C, F, FPS } from './theme';
 import { Assets, chunks, Line, layout, Seg } from './timeline';
 import { Clip } from './shots/Clip';
-import { Data, End, Hook, Kernels, Limits, OneMath, Report, Speed, Terminal } from './shots/Cards';
+import { Data, End, Future, Hook, Intel, Kernels, Limits, OneMath, Rent, Report, Speed, Terminal,
+  Why } from './shots/Cards';
 
 export type FilmProps = { lines: Line[]; assets: Assets; data: Data };
 
@@ -15,12 +16,16 @@ const CLIP_SHOTS = new Set(['disclosure', 'term_scan', 'pipeline', 'term_bug', '
 const Shot: React.FC<{ seg: Seg; p: FilmProps }> = ({ seg, p }) => {
   const s = seg.line.shot;
   const d = p.data;
-  // l1 at its own speed: its first half is the port, its second half the tuning, which the
-  // next line (the speed card) covers
+  // l1: only its first 6 s, the port ("ported by Muse in one run"); its tuning half is
+  // replaced by the speed card two lines later
   if (CLIP_SHOTS.has(s)) return <Clip name={s} secs={p.assets.clips[s]} frames={seg.frames}
-    maxRate={s === 'l1' ? 1 : undefined} />;
+    maxRate={s === 'l1' ? 1 : undefined} upTo={s === 'l1' ? 6 : undefined} />;
   switch (s) {
+    case 'why': return <Why />;
     case 'hook': return <Hook />;
+    case 'intel': return <Intel />;
+    case 'rent': return <Rent d={d} />;
+    case 'future': return <Future />;
     case 'speed': return <Speed d={d} />;
     case 'kernels': return <Kernels d={d} />;
     case 'j3': return <Terminal cmd="make && ./test_gpt2fp32sycl" lines={d.film.j3_test}
@@ -38,7 +43,7 @@ const Shot: React.FC<{ seg: Seg; p: FilmProps }> = ({ seg, p }) => {
 // Short cross-fade into each shot.
 const FadeIn: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const f = useCurrentFrame();
-  return <AbsoluteFill style={{ opacity: interpolate(f, [0, 8], [0, 1],
+  return <AbsoluteFill style={{ opacity: interpolate(f, [0, 14], [0, 1],
     { extrapolateRight: 'clamp' }) }}>{children}</AbsoluteFill>;
 };
 

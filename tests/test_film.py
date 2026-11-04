@@ -21,26 +21,27 @@ def _film() -> dict:
 
 def test_spoken_numbers_come_from_the_evidence() -> None:
     f = _film()
-    k = f["devcuda"]
-    assert (k["files"], k["attempted"], k["correct"], k["nvidia"]) == (22, 21, 20, 19)
-    assert (f"ported {k['attempted']} of llm.c's {k['files']} kernel files" in LINES["kernels"]
-            and f"{k['correct']} pass their hidden check" in LINES["kernels"]
-            and f"{k['nvidia']} also pass on NVIDIA" in LINES["kernels"])
+    assert round(f["run5"]["ratio"]) == 36 and "36 times slower than CUDA" in LINES["speed"]
     ratios = {s["device"]: round(s["ratio"], 2) for s in f["portable_speeds"]}
-    assert ratios["NVIDIA H100 80GB HBM3"] == 2.90 and "2.9 times" in LINES["speed"]
     mid = [r for d, r in ratios.items() if "H100" not in d]
-    assert all(1.3 <= r <= 1.6 for r in mid) and "about one and a half" in LINES["speed"]
+    assert mid and all(1.3 <= r <= 1.6 for r in mid)
+    assert "about one and a half times on mid-range NVIDIA" in LINES["speed"]
+    assert ratios["NVIDIA H100 80GB HBM3"] > 2 and "newest cards still have a gap" in LINES["speed"]
     assert round(f["amd"]["before_ms"]) == 1274 and int(f["amd"]["after_ms"]) == 63
-    assert "1,274 milliseconds a step, down to 63" in LINES["speed"]
-    assert "2.9 times slower" in LINES["limits"]
+    assert f["gpu_calls"]["calls"] == 23
     assert f["onemath"] == {"pr": "uxlfoundation/oneMath#793", "passed_before": 323,
                             "passed_after": 325}
-    assert f["j3_test"][-1] == "overall okay: 1"
+    assert "one time out of two" in LINES["l1"]  # README: the one-run port succeeded in 1 of 2
+    assert "Intel" in LINES["intel"] and "couldn't get access" in LINES["intel"]
     assert f["j4_session"][-2].startswith("Once upon a time")
 
 
 def test_the_required_opening_line_is_the_submissions() -> None:
     sub = (ROOT / "docs/SUBMISSION.md").read_text()
-    start = sub.index('> "Pre-existing:')
+    start = sub.index("## Opening line of the 3-minute video (required)")
+    start = sub.index('> "', start)
     quote = " ".join(ln.lstrip("> ").strip() for ln in sub[start:].split("\n\n")[0].splitlines())
     assert LINES["disclosure"] == quote.strip('"')
+    # the disclosure the rules ask for: the pre-existing project, named, and what is new
+    assert "before the hackathon" in quote and "oneapi-agent-toolkit" in quote
+    assert "I built this week" in quote

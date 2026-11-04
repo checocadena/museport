@@ -169,35 +169,35 @@ footer { padding-block: 10px 14px; display: grid; gap: 10px; }
 
 <script>
 // The Muse Port film's 15 lines (demo/remotion/public/lines.json), so the app opens ready.
-const DEFAULT_SCRIPT = `Pre-existing: my open-source oneapi-agent-toolkit, the SYCL tools and agent loop, used here as a pinned dependency. Built this week: Muse Port. Meta's Muse plans and ports CUDA code against hidden checks, then tunes it on real NVIDIA and AMD GPUs: llm.c's bf16 trainer, GPT-2 and llama2.cu.
+const DEFAULT_SCRIPT = `Hey everyone, welcome. Today I'm showing you Muse Port. A quick note first: before the hackathon, I built an open-source toolkit, oneapi-agent-toolkit, with the bare-bones tools for an agent to port code. It's a dependency here. Everything on top of it, I built this week.
 
-Karpathy's GPT-2 trainer only runs on NVIDIA. Meta's Muse moved it to open SYCL, and it runs on NVIDIA, AMD and CPUs. And every step is proven.
+Muse Port takes code that only runs on NVIDIA GPUs and makes it run on other GPUs and CPUs. That's a first step toward more open AI: leaner, cheaper, and able to run on anybody's machine. So why not use AI to do it?
 
-Muse Port starts by reading the whole repository: llm.c, 22 CUDA files, 106 kernels.
+First up: Karpathy's GPT-2 trainer, llm.c. It normally only runs on NVIDIA. With Meta's Muse model, it now runs on SYCL, the open standard behind oneAPI: on NVIDIA, AMD, and CPUs.
 
-Muse writes a plan, checked against that scan. Then it ports each item in an agent loop.
+It should run on Intel GPUs too. I just couldn't get access to Intel's GPU cloud.
 
-Nothing counts until a check the model never sees agrees. It even catches a one-term slip.
+And Muse is the one doing this. It reads the entire repo, every CUDA file and kernel.
 
-Here Muse ports GPT-2's training step. The check fails, Muse finds its own transpose mistake, fixes it, and all 10 steps match PyTorch.
+It writes a plan, and then it ports each piece in a loop.
 
-The big test: llm.c's production trainer. Almost five thousand lines of bf16 CUDA, ported in one run, and llm.c's own test passes.
+Every piece is graded by a hidden check that the agent never sees.
 
-Then Muse tuned it on rented GPUs, in portable code. On mid-range NVIDIA cards, it takes about one and a half times CUDA's time. On an H100, 2.9 times. On AMD, 1,274 milliseconds a step, down to 63.
+The big test was llm.c's production trainer: almost five thousand lines of CUDA, ported in one run, and llm.c's own test passes. That worked one time out of two.
 
-It ported 21 of llm.c's 22 kernel files. 20 pass their hidden check, and 19 also pass on NVIDIA against llm.c's own CUDA.
+The toolkit also lets the agent rent GPUs by itself, on Runpod and DigitalOcean, with a spending cap, and every machine is deleted when the test is done.
 
-Put back together as llm.c-sycl, llm.c's own test prints: overall okay.
+Muse then tuned its own port on those GPUs: from 36 times slower than CUDA, to about one and a half times on mid-range NVIDIA cards. The newest cards still have a gap.
 
-And a repo it had never seen, llama2.cu: ported in one run for 45 cents. The story matches, byte for byte, on CPU, NVIDIA and AMD.
+We tried another repo, llama2.cu, and it was ported in one run too.
 
-Along the way, Muse's port hit a bug in oneMath, the open math library behind oneAPI. The fix is submitted upstream.
+Along the way, we found a bug in oneMath, the open math library behind oneAPI, and we submitted the fix upstream.
 
-Every number is in a report built only from committed evidence, failures included.
+And every result is in a report built only from the evidence, failures included.
 
-The limits: the one-run trainer port worked one time in two. Kernels are fp32 at reduced sizes. And on an H100, portable code is still 2.9 times slower.
+Next, I'd love access to Intel GPUs, to port even more. The most interesting part is the workflow: an agent that ports code, then tunes it on real hardware.
 
-Moving AI off one vendor's GPUs, with proof. github.com/checocadena/museport.`;
+Doing this for more projects is a great route to open AI that runs on more than NVIDIA. Thanks for watching!`;
 
 const $ = id => document.getElementById(id);
 const S = { lines: [], i: 0, takes: {}, sel: {}, recording: false };

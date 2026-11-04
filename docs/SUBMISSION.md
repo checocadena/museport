@@ -21,10 +21,10 @@ also found a bug in oneMath; the tested fix is submitted upstream as uxlfoundati
 
 ## Opening line of the 3-minute video (required)
 
-> "Pre-existing: my open-source oneapi-agent-toolkit, the SYCL tools and agent loop, used here
-> as a pinned dependency. Built this week: Muse Port. Meta's Muse plans and ports CUDA code
-> against hidden checks, then tunes it on real NVIDIA and AMD GPUs: llm.c's bf16 trainer,
-> GPT-2 and llama2.cu."
+> "Hey everyone, welcome. Today I'm showing you Muse Port. A quick note first: before the
+> hackathon, I built an open-source toolkit, oneapi-agent-toolkit, with the bare-bones tools
+> for an agent to port code. It's a dependency here. Everything on top of it, I built this
+> week."
 
 ## What it does
 

@@ -16,7 +16,7 @@ export const Eyebrow: React.FC<{ children: React.ReactNode }> = ({ children }) =
 export const Rise: React.FC<{ at?: number; children: React.ReactNode; style?: React.CSSProperties }>
   = ({ at = 0, children, style }) => {
     const f = useCurrentFrame();
-    const p = interpolate(f, [at, at + 14], [0, 1],
+    const p = interpolate(f, [at, at + 20], [0, 1],
       { extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.out(Easing.cubic) });
     return <div style={{ opacity: p, transform: `translateY(${(1 - p) * 24}px)`, ...style }}>
       {children}</div>;

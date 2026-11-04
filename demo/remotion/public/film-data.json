@@ -1558,6 +1558,14 @@
    "before_ms": 1274.31,
    "after_ms": 63.27
   },
+  "run5": {
+   "device": "NVIDIA RTX A5000",
+   "ratio": 35.99613995766405
+  },
+  "gpu_calls": {
+   "calls": 23,
+   "usd": 3.4970000000000003
+  },
   "onemath": {
    "pr": "uxlfoundation/oneMath#793",
    "passed_before": 323,

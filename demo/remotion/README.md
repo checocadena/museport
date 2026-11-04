@@ -3,7 +3,7 @@
 One Remotion composition, `Film` (`src/Film.tsx`), built from the voiceover, in the same way
 as the BALI film:
 
-- each of the 15 lines in [`public/lines.json`](public/lines.json) has its own shot;
+- each of the 15 lines in [`public/lines.json`](public/lines.json), written in the author's own words, has its own shot;
 - each line's take sets how long its shot runs (lead + take + tail), so re-recording a line
   moves every shot after it;
 - captions follow Whisper's word timings, or share the line by word count without them;
@@ -19,17 +19,21 @@ spoken numbers in `lines.json` against it. The two terminal shots replay committ
 
 | # | Shot | Made by |
 |---|---|---|
-| 1 | `disclosure` (the required opening line) | clip from `demo/render.mjs` |
-| 2 | `hook`: the trainer, NVIDIA / AMD / CPU, `overall okay: 1` | Remotion card |
-| 3-7 | `term_scan`, `pipeline`, `term_bug`, `replay`, `l1` | clips from `demo/render.mjs` |
-| 8 | `speed`: portable step time vs CUDA (L4, A4000, H100) and AMD 1274 → 63 ms | Remotion card |
-| 9 | `kernels`: 21 of 22 files, 20 correct, 19 on NVIDIA | Remotion card |
-| 10 | `j3`: llm.c-sycl's test to `overall okay: 1` | replay of a committed log |
+| 1 | `disclosure`: hello, and the pre-existing toolkit vs this week | clip from `demo/render.mjs` |
+| 2 | `why`: NVIDIA-only code, running on other GPUs and CPUs | Remotion card |
+| 3 | `hook`: Karpathy's GPT-2 trainer, NVIDIA / AMD / CPU | Remotion card |
+| 4 | `intel`: Intel GPUs should work, not tested (no cloud access) | Remotion card |
+| 5-8 | `term_scan`, `pipeline`, `term_bug`, `l1` | clips from `demo/render.mjs` |
+| 9 | `rent`: rent, test, delete; Muse's 23 GPU calls | Remotion card |
+| 10 | `speed`: 36x before tuning, then L4, A4000, H100; AMD 1274 → 63 ms | Remotion card |
 | 11 | `j4`: llama2-sycl's story | replay of a committed log |
 | 12 | `onemath`: uxlfoundation/oneMath#793, tests 323 → 325 | Remotion card |
 | 13 | `report`: a slow pan down the report | Playwright capture of `museport report` |
-| 14 | `limits` | Remotion card |
+| 14 | `future`: Intel GPUs, more repos; port, then tune | Remotion card |
 | 15 | `end` | Remotion card |
+
+`Kernels`, `Terminal` for llm.c-sycl (`j3`) and `Limits` are still in `src/shots/Cards.tsx`
+for a longer cut.
 
 ## Make it (on the laptop)
 
@@ -83,4 +87,4 @@ CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" scripts/re
   personal and are not committed.
 - The voice is the author's own; if a take is polished with a voice tool, say so in the
   video's description.
-- Keep the total under 3:00 (the hackathon's limit). The estimate at a calm read is about 2:24.
+- Keep the total under 3:00 (the hackathon's limit). At a relaxed read (2.4 words a second, with a breath between lines) the estimate is about 2:52.

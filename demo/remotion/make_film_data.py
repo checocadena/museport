@@ -81,6 +81,12 @@ def main() -> dict[str, object]:
         "amd": {"device": "AMD Instinct MI350X", "before_ms": data["l1"]["amd"]["run5"]["ms"],
                 "after_ms": next(s["ms"] for s in portable["speeds"]
                                  if s["device"] == "AMD Instinct MI350X")},
+        # the one-run port, before tuning: its time per step as a multiple of llm.c's CUDA
+        "run5": {"device": data["l1"]["nvidia"]["run5"]["device"],
+                 "ratio": data["l1"]["nvidia"]["run5"]["ratio"]},
+        # Muse's own GPU calls during the GPU tuning run, rented and deleted by the broker
+        "gpu_calls": {"calls": data["l1"]["gtune"]["gpu_calls"],
+                      "usd": data["l1"]["gtune"]["gpu_usd"]},
         "onemath": _onemath(),
         "j3_test": _session(EV / "j3-fresh-clone/test.log",
                             [r"^Device", r"OK \(LOGITS\)", r"^LOSS OK", r"^TENSOR OK",
