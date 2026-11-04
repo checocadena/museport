@@ -102,7 +102,11 @@ export const Hook: React.FC<{ cue: Cue }> = ({ cue }) => {
                   strokeLinecap="round" strokeLinejoin="round" strokeDasharray={32}
                   strokeDashoffset={32 * (1 - tick)} />
               </svg>
-              <span style={{ fontSize: 46, fontWeight: 700, color: on ? C.ok : C.muted }}>{c}</span>
+              <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.05 }}>
+                <span style={{ fontSize: 46, fontWeight: 700, color: on ? C.ok : C.muted }}>{c}</span>
+                {c === 'CPU' && <span style={{ fontSize: 21, color: C.muted, marginTop: 6 }}>
+                  x86 · tested on Intel Xeon</span>}
+              </div>
             </div>
           );
         })}
