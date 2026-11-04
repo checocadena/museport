@@ -6,7 +6,7 @@ import { resolve } from 'node:path';
 const { chromium } = createRequire(import.meta.url)('playwright');
 const [site, out] = process.argv.slice(2).map(p => resolve(p));
 const browser = await chromium.launch();
-const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1,
+const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 2,
   colorScheme: 'dark' });
 await page.goto('file://' + site + '/index.html');
 await page.waitForTimeout(500);

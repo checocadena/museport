@@ -13,15 +13,14 @@ echo "== numbers (from evidence/)"
 (cd "$ROOT" && PYTHONPATH=src python3 demo/make_data.py > demo/data.json)
 (cd "$ROOT" && PYTHONPATH=src python3 demo/remotion/make_film_data.py > "$PUB/film-data.json")
 
-echo "== clips (demo/render.mjs)"
-CLIPS="disclosure term_scan pipeline term_bug replay l1"
+echo "== clips (demo/render-hq.mjs: lossless frames, at 2x for a 4K film)"
+CLIPS="disclosure term_scan pipeline term_bug l1"
 todo=""
 for c in $CLIPS; do
   if [ "${1:-}" = "--force" ] || [ ! -s "$PUB/clips/$c.mp4" ]; then todo="$todo $c"; fi
 done
 if [ -n "$todo" ]; then
-  node "$ROOT/demo/render.mjs" "$PUB/clips" $todo
-  rm -f "$PUB"/clips/*.png
+  node "$ROOT/demo/render-hq.mjs" "$PUB/clips" $todo --scale 2
 fi
 python3 - "$PUB/clips" > "$PUB/clips.json" <<'EOF'
 import json, subprocess, sys
