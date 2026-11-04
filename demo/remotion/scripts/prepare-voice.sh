@@ -17,10 +17,11 @@ mkdir -p "$PUB/vo"
 shopt -s nullglob
 
 # The BALI chain: left channel to mono, high-pass, denoise, gentle compression, trim silence at
-# both ends, loudness to -16 LUFS, 48 kHz mono.
+# both ends, loudness to -16 LUFS, 48 kHz mono. The trim is gentle at the end (-58 dB, 0.3 s kept)
+# so a soft last sound, such as the s of "CPUs", is not cut.
 # NO_DENOISE=1 skips the denoiser, for takes already cleaned (scripts/isolate-takes.sh).
 DENOISE=",afftdn=nf=-60"; [ -n "${NO_DENOISE:-}" ] && DENOISE=""
-CHAIN="pan=mono|c0=c0,highpass=f=80${DENOISE},acompressor=threshold=-20dB:ratio=2.5:attack=10:release=200,silenceremove=start_periods=1:start_threshold=-45dB:start_silence=0.05,areverse,silenceremove=start_periods=1:start_threshold=-45dB:start_silence=0.08,areverse,loudnorm=I=-16:TP=-1.5:LRA=9"
+CHAIN="pan=mono|c0=c0,highpass=f=80${DENOISE},acompressor=threshold=-20dB:ratio=2.5:attack=10:release=200,silenceremove=start_periods=1:start_threshold=-50dB:start_silence=0.15,areverse,silenceremove=start_periods=1:start_threshold=-58dB:start_silence=0.3,areverse,loudnorm=I=-16:TP=-1.5:LRA=9"
 
 for raw in "$PUB"/vo-raw/*; do
   base=$(basename "$raw"); n=${base%%.*}; n=$(printf '%02d' "$((10#$n))")
