@@ -1,7 +1,7 @@
 // The shots made in Remotion. Every number comes from public/film-data.json, which
 // make_film_data.py reads from the committed evidence.
 import React from 'react';
-import { AbsoluteFill, Easing, Img, interpolate, staticFile, useCurrentFrame,
+import { AbsoluteFill, Easing, Img, interpolate, spring, staticFile, useCurrentFrame,
   useVideoConfig } from 'remotion';
 import { C, F } from '../theme';
 import { Count, Eyebrow, Rise, Source, Stage } from './common';
@@ -23,24 +23,88 @@ export type Data = { film: Film };
 
 const short = (d: string) => d.replace(/^NVIDIA (GeForce )?/, '').replace(/ 80GB HBM3$/, '');
 
+// The GPT-2 trainer's move, drawn as the voice says it: CUDA (NVIDIA only) -> SYCL, the open
+// standard behind oneAPI -> NVIDIA, AMD and CPU, each checked off as it is named.
 export const Hook: React.FC<{ cue: Cue }> = ({ cue }) => {
   const f = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const tCuda = cue(/NVIDIA/i, 60);           // "It normally only runs on NVIDIA"
+  const tSycl = cue(/SYCL/i, 150);            // "it now runs on SYCL"
+  const tApi = cue(/API/i, tSycl + 50);       // "the open standard behind oneAPI"
   const chips = ['NVIDIA', 'AMD', 'CPU'];
-  // each chip lights as it is said ("on NVIDIA, AMD, and CPUs": the last NVIDIA)
-  const at = [cue(/NVIDIA/i, 70, true), cue(/AMD/i, 90, true), cue(/CPU/i, 110, true)];
+  const at = [cue(/NVIDIA/i, tApi + 30, true), cue(/AMD/i, tApi + 55, true), cue(/CPU/i, tApi + 80, true)];
+  const pop = (t: number) => spring({ frame: f - t, fps, config: { damping: 11, stiffness: 160 } });
+  const draw = (t: number, d = 14) => interpolate(f, [t, t + d], [0, 1],
+    { extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.inOut(Easing.cubic) });
+  // diagram geometry (px, inside a 1640 x 470 box)
+  const H = 470, cy = H / 2;
+  const cuda = { x: 0, w: 330, h: 150 }, sycl = { x: 540, w: 430, h: 180 };
+  const chip = { x: 1250, w: 390, h: 104, gap: 34 };
+  const chipY = (i: number) => cy + (i - 1) * (chip.h + chip.gap);
+  const arrow = draw(tSycl - 6, 16);
+  const syclIn = pop(tSycl);
   return (
-    <Stage>
+    <Stage pad="80px 140px 170px">
       <Eyebrow>Meta's Muse · CUDA → SYCL (oneAPI)</Eyebrow>
-      <Rise at={4}><div style={{ fontFamily: F.display, fontSize: 104, fontWeight: 700,
-        lineHeight: 1.05, marginTop: 40 }}>Karpathy's GPT-2 trainer,<br />
-        <span style={{ color: C.muted }}>off NVIDIA-only CUDA.</span></div></Rise>
-      <div style={{ display: 'flex', gap: 28, marginTop: 70 }}>
+      <Rise at={4}><div style={{ fontFamily: F.display, fontSize: 84, fontWeight: 700,
+        lineHeight: 1.05, marginTop: 28 }}>Karpathy's GPT-2 trainer</div></Rise>
+      <div style={{ position: 'relative', width: 1640, height: H, marginTop: 50 }}>
+        <svg width={1640} height={H} style={{ position: 'absolute', inset: 0, overflow: 'visible' }}>
+          {/* CUDA -> SYCL */}
+          {arrow > 0 && <line x1={cuda.x + cuda.w + 14} y1={cy} x2={cuda.x + cuda.w + 14 + (sycl.x - cuda.x - cuda.w - 40) * arrow}
+            y2={cy} stroke={C.accent} strokeWidth={5} strokeLinecap="round" />}
+          {arrow > 0.95 && <path d={`M${sycl.x - 30},${cy - 14} L${sycl.x - 14},${cy} L${sycl.x - 30},${cy + 14}`}
+            fill="none" stroke={C.accent} strokeWidth={5} strokeLinecap="round" strokeLinejoin="round" />}
+          {/* SYCL -> each target, drawn as it is named */}
+          {chips.map((c, i) => {
+            const x0 = sycl.x + sycl.w + 10, y0 = cy, x1 = chip.x - 12, y1 = chipY(i);
+            const len = 420;
+            return <path key={c} d={`M${x0},${y0} C${x0 + 140},${y0} ${x1 - 140},${y1} ${x1},${y1}`}
+              fill="none" stroke={C.ok} strokeWidth={4} strokeLinecap="round"
+              strokeDasharray={len} strokeDashoffset={len * (1 - draw(at[i] - 10, 12))}
+              opacity={f >= at[i] - 10 ? 0.85 : 0} />;
+          })}
+        </svg>
+        {/* CUDA box */}
+        <div style={{ position: 'absolute', left: cuda.x, top: cy - cuda.h / 2, width: cuda.w, height: cuda.h,
+          borderRadius: 20, border: `2px solid ${C.line}`, background: C.panel, display: 'flex',
+          flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
+          opacity: pop(tCuda), transform: `scale(${0.85 + 0.15 * pop(tCuda)})` }}>
+          <div style={{ fontFamily: F.mono, fontSize: 54, fontWeight: 700, color: C.fg }}>CUDA</div>
+          <div style={{ fontSize: 26, color: C.muted, marginTop: 6 }}>NVIDIA only</div>
+        </div>
+        {/* SYCL box */}
+        <div style={{ position: 'absolute', left: sycl.x, top: cy - sycl.h / 2, width: sycl.w, height: sycl.h,
+          borderRadius: 22, border: `3px solid ${C.accent}`, background: 'rgba(91,140,255,.10)',
+          display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
+          opacity: Math.min(1, syclIn * 1.4), transform: `scale(${0.7 + 0.3 * syclIn})`,
+          boxShadow: `0 0 ${60 * syclIn}px rgba(91,140,255,${0.25 * syclIn})` }}>
+          <div style={{ fontFamily: F.mono, fontSize: 64, fontWeight: 700, color: C.fg }}>SYCL</div>
+          <div style={{ fontSize: 26, color: C.fg, marginTop: 8, opacity: draw(tApi, 12),
+            transform: `translateY(${(1 - draw(tApi, 12)) * 10}px)` }}>open standard · oneAPI</div>
+        </div>
+        {/* targets */}
         {chips.map((c, i) => {
+          const p = pop(at[i]);                // 0 -> 1 with a little overshoot
           const on = f >= at[i];
-          return <div key={c} style={{ padding: '22px 44px', borderRadius: 16, fontSize: 44,
-            fontWeight: 700, border: `2px solid ${on ? C.ok : C.line}`,
-            color: on ? C.ok : C.muted, background: on ? 'rgba(60,207,142,.08)' : C.panel,
-            transition: 'none' }}>{on ? '✓ ' : ''}{c}</div>;
+          const tick = draw(at[i] + 2, 10);   // the check mark draws itself
+          return (
+            <div key={c} style={{ position: 'absolute', left: chip.x, top: chipY(i) - chip.h / 2,
+              width: chip.w, height: chip.h, borderRadius: 18, display: 'flex', alignItems: 'center',
+              gap: 20, padding: '0 30px', boxSizing: 'border-box',
+              border: `2px solid ${on ? C.ok : C.line}`,
+              background: on ? `rgba(60,207,142,${0.12 * Math.min(1, p)})` : C.panel,
+              transform: `scale(${on ? 0.9 + 0.1 * p : 1})`,
+              boxShadow: on ? `0 0 ${40 * Math.max(0, 1 - (f - at[i]) / 20)}px rgba(60,207,142,.5)` : 'none' }}>
+              <svg width={44} height={44} viewBox="0 0 44 44">
+                <circle cx={22} cy={22} r={20} fill="none" stroke={on ? C.ok : C.line} strokeWidth={3} />
+                <path d="M12,23 L19,30 L32,15" fill="none" stroke={C.ok} strokeWidth={4.5}
+                  strokeLinecap="round" strokeLinejoin="round" strokeDasharray={32}
+                  strokeDashoffset={32 * (1 - tick)} />
+              </svg>
+              <span style={{ fontSize: 46, fontWeight: 700, color: on ? C.ok : C.muted }}>{c}</span>
+            </div>
+          );
         })}
       </div>
     </Stage>
