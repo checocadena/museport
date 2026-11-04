@@ -1,0 +1,17 @@
+[
+ {"n": 1, "shot": "disclosure", "lead": 0.5, "text": "Hello everyone, welcome. Today I'll be showing you Muse Port. Before the hackathon, I built an open-source toolkit with the bare-bones tools for an agent to port code. It's a dependency here, but everything on top of it, I built this week."},
+ {"n": 2, "shot": "why", "text": "Muse Port takes code that only runs on NVIDIA GPUs and makes it run on other GPUs and CPUs. That's the first step towards more open AI: leaner, cheaper, and able to run on anybody's machine. So why not use AI to do it?"},
+ {"n": 3, "shot": "hook", "text": "First up: Karpathy's GPT-2 trainer, llm.c. It normally only runs on NVIDIA. With Meta's Muse model, it now runs on SYCL, the open standard behind oneAPI: on NVIDIA, AMD, and CPUs."},
+ {"n": 4, "shot": "intel", "text": "It should run on Intel GPUs as well.", "tail": 2.2},
+ {"n": 5, "shot": "term_scan", "text": "And Muse is the one doing this. It reads the entire repo, every CUDA file and kernel."},
+ {"n": 6, "shot": "pipeline", "text": "It writes a plan, and then it ports each piece in a loop."},
+ {"n": 7, "shot": "term_bug", "text": "Every piece is graded by a hidden check that the agent never sees."},
+ {"n": 8, "shot": "l1", "text": "The big test was llm.c's production trainer: almost five thousand lines of CUDA, ported in one run.", "tail": 1.6},
+ {"n": 9, "shot": "rent", "text": "The toolkit also lets the agent rent GPUs by itself, on Runpod and DigitalOcean, with a spending cap, and every machine is deleted when the test is done."},
+ {"n": 10, "shot": "tuning", "text": "Muse then tuned its own port on those GPUs: from 36 times slower than CUDA, to about one and a half times on mid-range NVIDIA cards.", "tail": 1.6},
+ {"n": 11, "shot": "j4", "text": "We tried another repo, llama2.cu, and it was ported in one run too."},
+ {"n": 12, "shot": "onemath", "text": "Along the way, we found a bug in oneMath, the open math library behind oneAPI, and we submitted the fix upstream."},
+ {"n": 13, "shot": "report", "text": "And every result is in a report built only from the evidence, failures included."},
+ {"n": 14, "shot": "future", "text": "Next, I'd love access to Intel GPUs, to port even more. The most interesting part is the workflow: an agent that ports code, then tunes it on real hardware."},
+ {"n": 15, "shot": "end", "lead": 0.4, "tail": 2.0, "text": "Doing this for more projects is a great route to find a way for AI to run on more than just NVIDIA cards. Thanks for watching!"}
+]

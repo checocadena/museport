@@ -1,5 +1,12 @@
 # Demo video: script and shot list (3:00 max)
 
+**Nov 4: the film is now built in Remotion, from the voiceover:
+[`demo/remotion/`](remotion/README.md).** Its 15-line script is
+[`remotion/public/lines.json`](remotion/public/lines.json), with the numbers current as of
+Nov 3 (the H100, 21 of 22 kernel files, the oneMath fix), and `tests/test_film.py` checks them
+against the evidence. The rest of this page is the earlier Resolve plan; its clips are reused
+as shots 1 and 3-7.
+
 This is plan item I1. Every number on screen comes from `demo/data.json`, which
 `demo/make_data.py` builds from the committed evidence. The terminal shots replay real output
 that `demo/capture.py` recorded.
@@ -22,7 +29,7 @@ capture on the laptop; every other shot is a rendered clip from `demo/out/`.
 
 | # | Time | Shot | Voiceover |
 |---|---|---|---|
-| 1 | 0:00-0:08 | `disclosure` | "Pre-existing: my open-source oneapi-agent-toolkit, the SYCL tools and agent loop, used here as a pinned dependency. Built this week: Muse Port. Meta's Muse plans and ports CUDA code against hidden checks, then tunes it on real NVIDIA and AMD GPUs: llm.c's bf16 trainer, GPT-2 and llama2.cu." **This is the required opening line** (same as `docs/SUBMISSION.md`). |
+| 1 | 0:00-0:08 | `disclosure` | "Pre-existing: my open-source oneapi-agent-toolkit, the SYCL tools and agent loop, used here as a pinned dependency. Built this week: Muse Port. Meta's Muse plans and ports CUDA code against hidden checks, then tunes it on real NVIDIA and AMD GPUs: llm.c's bf16 trainer, GPT-2 and llama2.cu." (Earlier wording; the film's opening line is now line 1 of `remotion/public/lines.json`, the same as `docs/SUBMISSION.md`.) |
 | 2 | 0:08-0:14 | `open` | "CUDA locks code to NVIDIA. SYCL is the open standard. An AI port is only worth something if you can prove it's right." |
 | 3 | 0:14-0:23 | `term_scan` | "Muse Port starts by reading the repository: Karpathy's llm.c, 22 CUDA files, 106 kernels, cuBLAS and cuDNN calls." |
 | 4 | 0:23-0:30 | `pipeline` | "Muse writes a plan, checked against the scan: 23 items, 22 of 22 files, 0 issues. Then it ports each item in an agent loop." |
