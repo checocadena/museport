@@ -10,6 +10,7 @@ const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, de
   colorScheme: 'dark' });
 await page.goto('file://' + site + '/index.html');
 await page.waitForTimeout(500);
-await page.screenshot({ path: out, fullPage: true });
+// the film pans the top ~3,300 CSS px only: capture 3,600 (7,200 px at 2x) to keep memory low
+await page.screenshot({ path: out, clip: { x: 0, y: 0, width: 1920, height: 3600 } });
 await browser.close();
 console.log(`report: ${out}`);

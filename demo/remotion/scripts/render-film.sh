@@ -13,7 +13,8 @@ RAW="${OUT%.mp4}-raw.mp4"
 SCALE=${SCALE:-2}
 args=(render src/index.ts Film "$RAW" --codec=h264 --crf=12 --x264-preset=slow
       --color-space=bt709 --audio-codec=aac --audio-bitrate=320k --image-format=jpeg --jpeg-quality=100
-      --scale="$SCALE")
+      --scale="$SCALE" --concurrency="${CONCURRENCY:-2}"
+      --offthreadvideo-cache-size-in-bytes=1500000000)  # 4K frames: keep under ~8 GB of RAM
 [ -n "${CHROME:-}" ] && args+=(--browser-executable="$CHROME")
 npx remotion "${args[@]}"
 # the whole film to -16 LUFS (web level; the silences between lines pull the average down),
