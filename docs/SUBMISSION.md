@@ -260,6 +260,8 @@ Python, not CUDA. Muse Port had never run on it. It is much smaller than llm.c.
 
 ## Links
 
+- **Demo video:** https://youtu.be/uBpT5IuxPOY
+- **Evidence report (PDF):** [docs/museport-report.pdf](museport-report.pdf)
 - **Repository:** https://github.com/checocadena/museport.
 - **Report (live product):** https://claude.ai/artifact/5BnXqn4gNiefb81LWdADNC. *The author
   must share it publicly first.*
