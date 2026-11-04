@@ -8,11 +8,11 @@ cd "$(dirname "$0")/.."
 OUT=${1:-out/museport-film.mp4}
 mkdir -p "$(dirname "$OUT")"
 RAW="${OUT%.mp4}-raw.mp4"
-# 4K (SCALE=2) from lossless PNG frames: YouTube gives 4K uploads a far higher bitrate, so the
+# 4K (SCALE=2) from JPEG frames at quality 100 (PNG at 4K needs ~15 GB of temp space): YouTube gives 4K uploads a far higher bitrate, so the
 # film stays sharp even when watched at 1080p. SCALE=1 for a quick 1080p preview.
 SCALE=${SCALE:-2}
 args=(render src/index.ts Film "$RAW" --codec=h264 --crf=12 --x264-preset=slow
-      --color-space=bt709 --audio-codec=aac --audio-bitrate=320k --image-format=png
+      --color-space=bt709 --audio-codec=aac --audio-bitrate=320k --image-format=jpeg --jpeg-quality=100
       --scale="$SCALE")
 [ -n "${CHROME:-}" ] && args+=(--browser-executable="$CHROME")
 npx remotion "${args[@]}"
