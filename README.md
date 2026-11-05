@@ -71,6 +71,52 @@ runs on rented GPUs whose model varies, so compare the ratios to CUDA on the sam
 ports are fp32 at reduced sizes. Every mistake we made and its fix is in
 [`docs/LESSONS.md`](docs/LESSONS.md).
 
+## What a port looks like
+
+One real kernel from llm.c's fp32 trainer, before and after.
+
+CUDA ([llm.c](evidence/gpt2-stage3/task/train_gpt2_fp32.cu)):
+
+```cuda
+__global__ void residual_forward_kernel(float* out, float* inp1, float* inp2, int N) {
+    int idx = blockIdx.x * blockDim.x + threadIdx.x;
+    if (idx < N) {
+        out[idx] = __ldcs(&inp1[idx]) + __ldcs(&inp2[idx]);
+    }
+}
+// launched as residual_forward_kernel<<<grid_size, 256>>>(out, inp1, inp2, N);
+```
+
+SYCL, as Muse wrote it ([llm.c-sycl](llm.c-sycl/train_gpt2_fp32.cpp)):
+
+```cpp
+static void residual_forward(float *out, const float *a, const float *b, size_t N) {
+    launch_1d(N, [=](sycl::id<1> id) { out[id[0]] = a[id[0]] + b[id[0]]; });
+}
+```
+
+`__ldcs` is an NVIDIA-only cache hint, so the port drops it: the result is the same on every
+device, but that kind of vendor tuning is what has to be added back per target. The matmuls are
+not written in portable SYCL at all; they go through oneMath, which calls cuBLAS on NVIDIA and
+rocBLAS on AMD.
+
+Run it yourself:
+
+```bash
+cd llm.c-sycl
+./dev/download_starter_pack.sh
+make                      # CPU; or: make TARGET=nvidia / TARGET=amd AMD_ARCH=gfx950
+./test_gpt2fp32sycl       # llm.c's test: ends with "overall okay: 1"
+```
+
+**Portability vs. performance, and on what hardware:**
+
+- **Correct (portability):** llm.c's test passes on a CPU, an NVIDIA RTX 2000 Ada and an AMD
+  Instinct MI350X.
+- **Fast (performance), timed separately:** the bf16 trainer runs at 1.40-1.55x llm.c's CUDA
+  time on an NVIDIA L4 and RTX A4000, and 2.90x on an H100. Portable and correct does not yet
+  mean CUDA speed.
+
 ## What is ported, and what is not
 
 llm.c at `f1e2ace`, file by file. "Ported" means a hidden check confirmed it, as described below.
