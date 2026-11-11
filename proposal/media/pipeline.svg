@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 380" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#e8ecf4">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8a94a8"/></marker>
+    <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#3ccf8e"/></marker>
+    <marker id="r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#ff6b5e"/></marker>
+  </defs>
+  <rect width="1000" height="380" rx="14" fill="#12161f" stroke="#232a38"/>
+
+  <g fill="#0a0c11" stroke="#232a38" stroke-width="1.5">
+    <rect x="24" y="40" width="205" height="92" rx="10"/>
+    <rect x="272" y="40" width="205" height="92" rx="10"/>
+    <rect x="520" y="40" width="205" height="92" rx="10"/>
+    <rect x="768" y="40" width="208" height="92" rx="10" stroke="#5b8cff" stroke-width="2"/>
+    <rect x="768" y="244" width="208" height="92" rx="10" stroke="#3ccf8e" stroke-width="2"/>
+    <rect x="520" y="244" width="205" height="92" rx="10"/>
+    <rect x="272" y="244" width="205" height="92" rx="10"/>
+  </g>
+
+  <g text-anchor="middle">
+    <text x="126" y="80" font-weight="700" font-size="15">CUDA repo</text>
+    <text x="126" y="102" font-size="11.5" fill="#8a94a8">runs on NVIDIA only</text>
+
+    <text x="374" y="70" font-weight="700" font-size="15">1 · Scan</text>
+    <text x="374" y="92" font-size="11.5" fill="#8a94a8">no model: kernels, NVIDIA</text>
+    <text x="374" y="108" font-size="11.5" fill="#8a94a8">libraries, CUDA-only code</text>
+
+    <text x="622" y="70" font-weight="700" font-size="15">2 · Plan</text>
+    <text x="622" y="92" font-size="11.5" fill="#8a94a8">Muse writes a plan,</text>
+    <text x="622" y="108" font-size="11.5" fill="#8a94a8">checked against the scan</text>
+
+    <text x="872" y="70" font-weight="700" font-size="15" fill="#5b8cff">3 · Port</text>
+    <text x="872" y="92" font-size="11.5" fill="#8a94a8">item by item, in a loop:</text>
+    <text x="872" y="108" font-size="11.5" fill="#8a94a8">write, compile, verify</text>
+
+    <text x="872" y="274" font-weight="700" font-size="15" fill="#3ccf8e">4 · Hidden check</text>
+    <text x="872" y="296" font-size="11.5" fill="#8a94a8">the model never sees it;</text>
+    <text x="872" y="312" font-size="11.5" fill="#8a94a8">output must match the original</text>
+
+    <text x="622" y="274" font-weight="700" font-size="15">5 · Real GPUs</text>
+    <text x="622" y="296" font-size="11.5" fill="#8a94a8">NVIDIA vs the original CUDA</text>
+    <text x="622" y="312" font-size="11.5" fill="#8a94a8">AMD vs the reference</text>
+
+    <text x="374" y="274" font-weight="700" font-size="15">6 · Report</text>
+    <text x="374" y="296" font-size="11.5" fill="#8a94a8">built only from</text>
+    <text x="374" y="312" font-size="11.5" fill="#8a94a8">committed evidence</text>
+  </g>
+
+  <g stroke="#8a94a8" stroke-width="1.5" fill="none" marker-end="url(#a)">
+    <path d="M229 86 H270"/>
+    <path d="M477 86 H518"/>
+    <path d="M725 86 H766"/>
+    <path d="M912 132 V242"/>
+    <path d="M768 128 L662 242" stroke-dasharray="2 5"/>
+  </g>
+  <path d="M832 244 V134" stroke="#ff6b5e" stroke-width="1.5" fill="none" marker-end="url(#r)"/>
+  <g stroke="#3ccf8e" stroke-width="1.5" fill="none" marker-end="url(#g)">
+    <path d="M768 290 H727"/>
+    <path d="M520 290 H479"/>
+  </g>
+  <text x="922" y="192" font-size="11.5" fill="#8a94a8">check</text>
+  <text x="823" y="192" font-size="11.5" text-anchor="end" fill="#ff6b5e">fail: try again</text>
+  <text x="747" y="281" font-size="11.5" text-anchor="middle" fill="#3ccf8e">pass</text>
+  <text x="640" y="180" font-size="11.5" text-anchor="end" fill="#8a94a8">gpu_test: time and</text>
+  <text x="640" y="196" font-size="11.5" text-anchor="end" fill="#8a94a8">profile on rented GPUs</text>
+
+  <text x="24" y="282" font-size="11.5" fill="#8a94a8">solid: every port</text>
+  <text x="24" y="300" font-size="11.5" fill="#8a94a8">dotted: tuning runs</text>
+</svg>

@@ -1,0 +1,14 @@
+{
+  "title": "Muse Port",
+  "pdf": "Muse-Port-press-kit.pdf",
+  "stills": ["media/still-1.html", "media/still-2.html", "media/still-3.html"],
+  "fields": {
+    "ARTIST": "Checo Cadena",
+    "YEAR": "2026",
+    "CONTACT": "github.com/checocadena",
+    "WEBSITE": "checocadena.com",
+    "VIDEO_URL": "youtu.be/uBpT5IuxPOY",
+    "REPO_URL": "github.com/checocadena/museport",
+    "CHECKED": "11 November 2026"
+  }
+}

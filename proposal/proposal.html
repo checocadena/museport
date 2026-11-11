@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Muse Port · Press kit</title>
+<style>
+  /* Printed with Chrome: see proposal/build.py. Letter, no browser margins.
+     Palette and type are Muse Port's own (demo/shots.html, demo/remotion/src/theme.ts). */
+  @page { size: 8.5in 11in; margin: 0; }
+  :root {
+    --bg: #0a0c11; --panel: #12161f; --line: #232a38; --fg: #e8ecf4; --muted: #8a94a8;
+    --accent: #5b8cff; --ok: #3ccf8e; --bad: #ff6b5e; --warn: #f2b84b;
+    --display: "Inter Display", "Inter", system-ui, sans-serif;
+    --body: "Inter", system-ui, sans-serif;
+    --mono: "DejaVu Sans Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #000; }
+  body { font-family: var(--body); color: var(--fg); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page {
+    width: 8.5in; height: 11in; position: relative; overflow: hidden;
+    background: var(--bg); page-break-after: always; break-after: page;
+    padding: 0.8in 0.8in 0.75in;
+  }
+  .page:last-child { page-break-after: auto; break-after: auto; }
+  .folio {
+    position: absolute; left: 0.8in; right: 0.8in; bottom: 0.42in;
+    display: flex; justify-content: space-between;
+    font: 7.5pt/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+  }
+  h1, h2, h3 { font-weight: normal; margin: 0; }
+  h2 { font: 9pt/1 var(--mono); letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.3in; }
+  p { font-size: 10.5pt; line-height: 1.58; margin: 0 0 0.15in; max-width: 5.9in; color: #c9d0dd; }
+  p b { color: var(--fg); }
+  .lede { font: 700 19pt/1.25 var(--display); letter-spacing: -0.01em; max-width: 6.4in; margin-bottom: 0.26in; color: var(--fg); }
+  .mono { font-family: var(--mono); }
+  .small { font-size: 9pt; line-height: 1.55; }
+  img { display: block; }
+  a { color: var(--accent); text-decoration: none; }
+  .gap { font: 8pt/1.5 var(--mono); border: 1px dashed var(--warn); color: var(--warn); border-radius: 6px; padding: 0.08in 0.12in; max-width: 5.9in; }
+
+  /* Cover: the project's own title card. */
+  .cover { background: radial-gradient(9in 6in at 80% 26%, #16301f 0%, #0a0c11 62%); font-family: var(--display); padding: 1in 0.8in; }
+  .cover .k { font: 13pt/1 var(--mono); letter-spacing: 0.22em; color: var(--accent); }
+  .cover .big { font-size: 80pt; font-weight: 800; line-height: 1; letter-spacing: -0.02em; margin-top: 0.5in; }
+  .cover .big span { color: var(--ok); }
+  .cover .chips { display: flex; gap: 0.14in; margin-top: 0.5in; }
+  .cover .chips div { font-size: 19pt; font-weight: 700; color: var(--ok); border: 2px solid var(--ok); border-radius: 10px; padding: 0.07in 0.2in; background: rgba(60,207,142,.10); }
+  .cover .tag { font: 15pt/1.4 var(--body); color: var(--muted); margin-top: 0.75in; max-width: 5.6in; }
+  .cover .tag b { color: var(--fg); }
+  .cover .sub { position: absolute; left: 0.8in; right: 0.8in; bottom: 0.8in; display: flex; justify-content: space-between; align-items: flex-end;
+    font: 9pt/1.7 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+
+  .plan { width: 100%; margin: 0.05in 0 0.3in; }
+  .stills figure { margin: 0 0 0.2in; }
+  .stills img { width: 4.3in; height: auto; border: 1px solid var(--line); border-radius: 8px; }
+  .stills figcaption { font: 7.5pt/1.4 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 0.06in; color: var(--muted); }
+
+  table { border-collapse: collapse; width: 100%; font-size: 10pt; line-height: 1.45; color: #c9d0dd; }
+  td, th { text-align: left; vertical-align: top; padding: 0.085in 0.1in 0.085in 0; border-top: 1px solid var(--line); }
+  th { font: 7.5pt/1.5 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; width: 1.6in; font-weight: normal; color: var(--ok); }
+  td .mono { color: var(--fg); }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0.35in; }
+  .cols p b { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<!-- 1. Cover -->
+<section class="page cover">
+  <div class="k">MUSE PORT</div>
+  <div class="big">CUDA <span>→</span><br>any GPU</div>
+  <div class="chips"><div>✓ NVIDIA</div><div>✓ AMD</div><div>✓ CPU</div></div>
+  <div class="tag">An AI model ports real CUDA code to an open standard, and <b>has to prove every step</b>.</div>
+  <div class="sub"><span>Open-source software<br>Press kit</span><span style="text-align:right">{{ARTIST}}<br>{{YEAR}}</span></div>
+</section>
+
+<!-- 2. What it is -->
+<section class="page">
+  <h2>What it is</h2>
+  <p class="lede">Most GPU software is written in CUDA, which runs only on NVIDIA hardware. Muse Port has an AI model plan and port real CUDA projects to SYCL, an open standard, and accepts nothing until a check the model never sees confirms the result.</p>
+  <p>Muse Port reads a whole CUDA repository and plans its move off NVIDIA: the kernels, the NVIDIA library calls and their open equivalents, and the parts that assume NVIDIA hardware. It then drives an agent that ports the code piece by piece. The model is Meta's Muse Spark (<span class="mono small">muse-spark-1.3</span>). The ports are run on real NVIDIA GPUs against the original CUDA, and on AMD GPUs against a hidden reference.</p>
+  <p>The main test case is Andrej Karpathy's llm.c, a GPT-2 trainer written in C and CUDA. The model ported its production trainer (12 CUDA files, 4,884 lines) in one run. The port passes llm.c's own test on a CPU, an NVIDIA GPU and an AMD GPU. A second project, llama2.cu, was ported in one run for $0.45, and its output matches the original byte for byte.</p>
+  <p>A correct port is not yet a fast one. The first port of the trainer was 36 times slower than CUDA. After the model tuned it on rented GPUs, the portable version runs at 1.40 to 1.55 times CUDA's time on two NVIDIA GPUs, and 2.90 times on an H100.</p>
+  <p>The work also found a bug in oneMath, the open math library the ports use. A two-line fix was sent upstream as pull request 793. As of {{CHECKED}} it is open, not merged.</p>
+  <p><b>Stage:</b> a working research tool, built during the Meta Global AI Developer Hackathon 2026 and submitted to it. The repository was created on 26 October 2026. Every number in this kit comes from evidence committed in the repository, and failures are published there too.</p>
+  <div class="folio"><span>Muse Port</span><span>2</span></div>
+</section>
+
+<!-- 3. How it works -->
+<section class="page">
+  <h2>How it works</h2>
+  <img class="plan" src="media/pipeline.svg" alt="CUDA repo, then scan, plan, port loop, hidden check, real GPUs and report">
+  <div class="cols">
+    <div>
+      <p class="small"><b>Scan.</b> A plain program, with no model, lists every CUDA file and kernel, the NVIDIA libraries in use, and the code that only works on NVIDIA. This list is the ground truth.</p>
+      <p class="small"><b>Plan.</b> The model writes a migration plan in a fixed format. Every file and kernel it names must exist in the scan, and every CUDA file must be planned or left out on purpose.</p>
+      <p class="small"><b>Port.</b> The model works through the plan one item at a time in a loop: write, compile, verify. Each item has a spending cap.</p>
+    </div>
+    <div>
+      <p class="small"><b>Hidden check.</b> A reference built from the original project's own code and tolerances grades the result. The model never sees it. Each check is first proven on known-good code, before any model runs.</p>
+      <p class="small"><b>Real GPUs.</b> Passing ports run unchanged on rented NVIDIA and AMD GPUs. For tuning, the model gets a <span class="mono">gpu_test</span> tool that builds its code on a GPU and returns timings and a profile. The cloud keys and the budget stay outside the model's process.</p>
+      <p class="small"><b>Report.</b> A static site is generated only from the committed evidence. No number is typed by hand.</p>
+    </div>
+  </div>
+  <div class="folio"><span>Muse Port</span><span>3</span></div>
+</section>
+
+<!-- 4. Results -->
+<section class="page">
+  <h2>Results so far</h2>
+  <p class="small" style="color:var(--muted);margin-bottom:.3in">From the repository's README and evidence folder, as of {{CHECKED}}.</p>
+  <table>
+    <tr><th>GPT-2 trainer</th><td>llm.c's production bf16 trainer, 12 CUDA files and 4,884 lines, ported in one run. It passes llm.c's own test on a CPU, an NVIDIA GPU and an AMD GPU.</td></tr>
+    <tr><th>Speed</th><td>In portable SYCL + oneMath: 1.40 to 1.55 times llm.c's CUDA time on an NVIDIA L4 and RTX A4000, 2.90 times on an H100. With NVIDIA's cuBLAS called directly: 1.13 to 1.21 times.</td></tr>
+    <tr><th>Kernels</th><td>19 of llm.c's CUDA kernel files ported. 18 are correct, 17 pass on NVIDIA against llm.c's CUDA, 18 pass on AMD.</td></tr>
+    <tr><th>llm.c-sycl</th><td>The ports put back together as a repository laid out like llm.c. Its test prints <span class="mono">overall okay: 1</span> on CPU, NVIDIA and AMD.</td></tr>
+    <tr><th>Second project</th><td>llama2.cu (Llama 2 inference, one 772-line CUDA file) ported in one run for $0.45. The generated stories match byte for byte on CPU, NVIDIA and AMD.</td></tr>
+    <tr><th>Upstream</th><td>A bug found in oneMath: bf16 gemm on NVIDIA throws "unimplemented". The fix is submitted as uxlfoundation/oneMath#793 (open).</td></tr>
+  </table>
+  <p class="small" style="margin-top:.4in;max-width:6.3in"><b>Honest limits.</b> The one-run port of the trainer succeeded in 1 of 2 tries. Speeds are medians of 2 to 3 runs on rented GPUs whose model varies, so compare the ratios to CUDA on the same machine. The kernel ports are fp32 at reduced sizes. Multi-GPU training and cuDNN attention are not ported. Portable and correct does not yet mean CUDA speed.</p>
+  <div class="folio"><span>Muse Port</span><span>4</span></div>
+</section>
+
+<!-- 5. Images -->
+<section class="page">
+  <h2>Images</h2>
+  <div class="stills">
+    <figure><img src="{{IMG1}}" alt="Title card: CUDA to any GPU, with NVIDIA, AMD and CPU ticked"><figcaption>1 · Title card</figcaption></figure>
+    <figure><img src="{{IMG2}}" alt="Bar chart of time per training step against CUDA"><figcaption>2 · The trainer's time per step against CUDA</figcaption></figure>
+    <figure><img src="{{IMG3}}" alt="One CUDA kernel beside its SYCL port"><figcaption>3 · One kernel from llm.c, before and after</figcaption></figure>
+  </div>
+  <p class="small" style="color:var(--muted)">Supplied as 3840 × 2160 JPEGs with this kit. Images 1 and 2 are the project's own title card and speed chart, redrawn at high resolution. All three are graphics, not screen captures.</p>
+  <div class="folio"><span>Muse Port</span><span>5</span></div>
+</section>
+
+<!-- 6. Setup and links -->
+<section class="page">
+  <h2>Setup and links</h2>
+  <table>
+    <tr><th>Install</th><td><span class="mono small">git clone https://{{REPO_URL}} &amp;&amp; cd museport &amp;&amp; pip install -e .</span><br>Python 3.11 or 3.13.</td></tr>
+    <tr><th>Scan</th><td><span class="mono small">museport scan path/to/cuda/repo</span> needs nothing else: no model, no compiler, no key.</td></tr>
+    <tr><th>Plan and port</th><td>A Meta Model API key. <span class="mono small">museport plan --dry-run</span> works offline.</td></tr>
+    <tr><th>Toolchain</th><td>For porting: Intel's <span class="mono small">icpx</span> compiler, SYCLomatic and the CUDA headers, installed by the toolkit's <span class="mono small">scripts/install-toolchain.sh</span>. oneMath as well for code that calls cuBLAS.</td></tr>
+    <tr><th>GPU runs</th><td>A Runpod, Vast, Vultr or DigitalOcean key. Not needed to try the ported code on a CPU.</td></tr>
+    <tr><th>Try a port</th><td><span class="mono small">cd llm.c-sycl &amp;&amp; ./dev/download_starter_pack.sh &amp;&amp; make &amp;&amp; ./test_gpt2fp32sycl</span><br>Ends with <span class="mono small">overall okay: 1</span>.</td></tr>
+    <tr><th>Builds on</th><td>oneapi-agent-toolkit, by the same author (the agent loop and its tools). The code ported is from karpathy/llm.c and ankan-ban/llama2.cu, both MIT.</td></tr>
+    <tr><th>License</th><td>AGPL-3.0</td></tr>
+  </table>
+  <p class="small" style="margin-top:.35in"><b>Demo video (2:20):</b> <a class="mono" href="https://{{VIDEO_URL}}">{{VIDEO_URL}}</a><br><b>Code and evidence:</b> <a class="mono" href="https://{{REPO_URL}}">{{REPO_URL}}</a><br><b>Evidence report (PDF, 14 pages):</b> <span class="mono">docs/museport-report.pdf</span> in the repository</p>
+  <p class="small"><b>Contact:</b> {{ARTIST}} · <a class="mono" href="https://{{CONTACT}}">{{CONTACT}}</a> · <a class="mono" href="https://{{WEBSITE}}">{{WEBSITE}}</a></p>
+  <p class="small" style="color:var(--muted);margin-top:.3in">Model: Meta Muse Spark (muse-spark-1.3). Standards and libraries: SYCL 2020, oneAPI, oneMath. Muse Port is an independent project and is not affiliated with Meta, NVIDIA, AMD or Intel.</p>
+  <div class="folio"><span>Muse Port</span><span>6</span></div>
+</section>
+
+</body>
+</html>

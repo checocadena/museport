@@ -1,0 +1,17 @@
+/* Shared by the still images: 1920x1080 pages, captured at 2x by build.py.
+   Palette and type are Muse Port's own (demo/shots.html, demo/remotion/src/theme.ts). */
+:root {
+  --bg: #0a0c11; --panel: #12161f; --line: #232a38; --fg: #e8ecf4; --muted: #8a94a8;
+  --accent: #5b8cff; --ok: #3ccf8e; --bad: #ff6b5e;
+  --display: "Inter Display", "Inter", system-ui, sans-serif;
+  --body: "Inter", system-ui, sans-serif;
+  --mono: "DejaVu Sans Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--bg); color: var(--fg); font-family: var(--body); }
+.pad { position: absolute; inset: 90px 140px 110px; }
+.kicker { font: 26px/1 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }
+.title { font: 800 76px/1.05 var(--display); letter-spacing: -0.02em; margin: 26px 0 0; }
+.note { font: 30px/1.4 var(--body); color: var(--muted); margin-top: 26px; }
+.foot { position: absolute; left: 140px; right: 140px; bottom: 56px; display: flex; justify-content: space-between;
+  font: 22px/1 var(--mono); color: var(--muted); }

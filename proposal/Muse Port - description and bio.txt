@@ -1,0 +1,23 @@
+MUSE PORT
+Checo Cadena, 2026
+Open-source software (AGPL-3.0) · github.com/checocadena/museport
+Demo video (2:20): youtu.be/uBpT5IuxPOY
+
+
+DESCRIPTION (one paragraph)
+
+Most GPU software is written in CUDA, which runs only on NVIDIA hardware. Muse Port has an AI model (Meta's Muse Spark) plan and port real CUDA projects to SYCL, an open standard that also runs on AMD GPUs and CPUs. Nothing counts as done until a check the model never sees confirms that the port's output matches the original. Its main test case is Andrej Karpathy's llm.c: the model ported the production GPT-2 trainer (12 CUDA files, 4,884 lines) in one run, and the port passes llm.c's own test on a CPU, an NVIDIA GPU and an AMD GPU. After tuning on rented GPUs, the portable version trains at 1.40 to 1.55 times CUDA's time on two NVIDIA GPUs. Muse Port is a working research tool, built during the Meta Global AI Developer Hackathon 2026 and submitted to it. Every number comes from evidence committed in the repository, and its failures are published there too.
+
+
+SHORT BIO
+
+Checo Cadena is a New York-based singer-songwriter, sound artist and creative technologist from Monterrey, Mexico, who writes and produces records and builds the machines around them: plugins, robots, installations and software. Since 2023 Cadena has been Computer Control Engineer at Amorphic Robot Works, Chico MacMurtrie's robotic sculpture studio. Cadena holds a B.S. in Integrated Design and Media from NYU Tandon and an M.A. in Creative Media and Technology from Berklee NYC.
+
+(Bio shortened from the one in persistence-of-forms/submission/SAVE-DIE-RETRY-submission.md. "websites" was changed to "software" for this kit. Check it is still current.)
+
+
+STILL OPEN
+
+- The oneMath pull request (uxlfoundation/oneMath#793) was open, not merged, on 11 November 2026. Recheck before sending.
+- No screen captures of the tool running yet. Images 1 and 2 are the project's own title card and speed chart, redrawn at high resolution; image 3 is new. Worth adding real captures later (for example a museport report page, or a terminal run of museport scan).
+- The kit says the project was submitted to the hackathon. It does not mention the result.

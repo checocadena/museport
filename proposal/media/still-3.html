@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Muse Port · still 3 · one kernel, before and after</title>
+<link rel="stylesheet" href="still.css">
+<style>
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; margin-top: 56px; }
+  .card { background: var(--panel); border: 2px solid var(--line); border-radius: 18px; padding: 34px 38px 30px; height: 560px; position: relative; }
+  .card.ok { border-color: var(--ok); }
+  .tag { font: 700 26px/1 var(--mono); letter-spacing: 0.14em; color: var(--muted); margin-bottom: 30px; }
+  .card.ok .tag { color: var(--ok); }
+  pre { font: 24px/1.62 var(--mono); margin: 0; white-space: pre; }
+  .nv { color: var(--bad); }
+  .sm { position: absolute; left: 38px; bottom: 30px; font: 23px/1.5 var(--body); color: var(--muted); }
+</style></head>
+<body>
+<div class="pad">
+  <div class="kicker">What a port looks like</div>
+  <div class="title">One kernel, before and after</div>
+  <div class="cols">
+    <div class="card">
+      <div class="tag">CUDA</div>
+<pre><span class="nv">__global__</span> void residual_forward_kernel(
+    float* out, float* inp1, float* inp2, int N) {
+  int idx = <span class="nv">blockIdx.x * blockDim.x + threadIdx.x</span>;
+  if (idx &lt; N) {
+    out[idx] = <span class="nv">__ldcs</span>(&amp;inp1[idx])
+             + <span class="nv">__ldcs</span>(&amp;inp2[idx]);
+  }
+}</pre>
+      <div class="sm">llm.c, train_gpt2_fp32.cu · runs on NVIDIA GPUs only</div>
+    </div>
+    <div class="card ok">
+      <div class="tag">SYCL ✓</div>
+<pre>static void residual_forward(
+    float *out, const float *a,
+    const float *b, size_t N) {
+  launch_1d(N, [=](sycl::id&lt;1&gt; id) {
+    out[id[0]] = a[id[0]] + b[id[0]];
+  });
+}</pre>
+      <div class="sm">llm.c-sycl, as Muse wrote it · passes llm.c's test on a CPU,<br>an NVIDIA GPU and an AMD GPU</div>
+    </div>
+  </div>
+</div>
+<div class="foot"><span>Muse Port · Checo Cadena · 2026</span><span>github.com/checocadena/museport</span></div>
+</body></html>

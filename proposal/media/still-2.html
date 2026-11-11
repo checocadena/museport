@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Muse Port · still 2 · speed against CUDA</title>
+<link rel="stylesheet" href="still.css">
+<style>
+  /* The project's speed chart (docs/img/l1-speed.png), redrawn at high resolution. */
+  .rows { margin-top: 52px; }
+  .row { margin-bottom: 34px; }
+  .lab { font: 30px/1.3 var(--body); margin-bottom: 12px; }
+  .lab span { font-size: 24px; color: var(--muted); }
+  .bar { display: flex; align-items: center; gap: 24px; }
+  .bar i { display: block; height: 46px; border-radius: 6px; background: #3a4058; }
+  .bar i.hi { background: var(--accent); }
+  .bar b { font: 700 40px/1 var(--mono); }
+</style></head>
+<body>
+<div class="pad">
+  <div class="kicker">llm.c's production trainer · bf16 · 12 CUDA files, 4,884 lines</div>
+  <div class="title">Then Muse tuned it, measuring on real GPUs</div>
+  <div class="note">time per training step on NVIDIA, as a multiple of llm.c's CUDA on the same GPU (log scale)</div>
+  <!-- Bar width = 1180px * ln(x) / ln(36); ranges use their midpoint. Numbers: README and evidence/l1-llmc-bf16. -->
+  <div class="rows">
+    <div class="row"><div class="lab">Run 5 port <span>· RTX A5000</span></div><div class="bar"><i style="width:1180px"></i><b>36×</b></div></div>
+    <div class="row"><div class="lab">Tuned, no GPU to measure on <span>· RTX 2000 Ada</span></div><div class="bar"><i style="width:570px"></i><b>5.65×</b></div></div>
+    <div class="row"><div class="lab">Tuned with gpu_test: portable SYCL + oneMath <span>· RTX A4000, L4</span></div><div class="bar"><i class="hi" style="width:128px"></i><b>1.40 to 1.55×</b></div></div>
+    <div class="row"><div class="lab">... plus NVIDIA's own cuBLAS (vendor-specific) <span>· RTX 4090, L4, RTX 2000 Ada, RTX A4500</span></div><div class="bar"><i style="width:52px"></i><b>1.13 to 1.21×</b></div></div>
+  </div>
+</div>
+<div class="foot"><span>evidence/l1-llmc-bf16</span><span>portable row: no vendor code, and llm.c's test runs the same code as training</span></div>
+</body></html>
