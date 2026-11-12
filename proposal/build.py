@@ -22,8 +22,8 @@ F = D["fields"]
 
 
 def chrome(*args):
-    subprocess.run([CHROME, "--headless=new", "--disable-gpu", "--allow-file-access-from-files", *args],
-                   check=True, capture_output=True)
+    cmd = [CHROME, "--headless=new", "--disable-gpu", "--allow-file-access-from-files", *args]
+    subprocess.run(cmd, check=True, capture_output=True)
 
 
 # 1. Stills: each media/still-N.html is a 1920x1080 page, captured at 2x (3840x2160).
